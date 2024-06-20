@@ -1,8 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title "Émission : " ~ slug %}
+{% block title "Émission : " ~ emission.titre %}
 
 {% block body %}
-{{ slug }}
-Lorem fugiat quis in officia culpa amet consectetur est in cupidatat. Excepteur magna excepteur Lorem tempor voluptate mollit. Aliqua adipisicing duis laboris adipisicing tempor elit non velit id. Non amet dolor nisi reprehenderit in dolore voluptate et ea culpa mollit eiusmod cillum. Sit sit tempor laborum deserunt ex in culpa non amet. Veniam sit et est aute amet consectetur occaecat elit dolore et nulla. Fugiat ut laborum mollit ullamco nisi.
+<h1>{{ emission.titre }}</h1>
+
+    <p>
+        {{ emission.categorie.titre }} - {{ emission.datepub|date('d-m-Y') }}
+    </p>
+    <p>
+        {{ emission.descriptif }}
+    </p>
+    <p>
+        <a href="{{ emission.url }}">
+            Écoutez l'émission
+        </a>
+    </p>
+
 {% endblock %}
