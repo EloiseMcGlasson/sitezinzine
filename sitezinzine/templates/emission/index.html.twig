@@ -7,15 +7,33 @@
 {% block body %}
     <p>
         Lorem fugiat quis in officia culpa amet consectetur est in cupidatat. Excepteur magna excepteur Lorem tempor voluptate mollit.
-        Aliqua adipisicing duis laboris adipisicing tempor elit non velit id. Non amet dolor nisi reprehenderit in dolore voluptate et
-        mea culpa mollit eiusmod cillum. Sit sit tempor laborum deserunt ex in culpa non amet.
+            Aliqua adipisicing duis laboris adipisicing tempor elit non velit id. Non amet dolor nisi reprehenderit in dolore voluptate et
+            mea culpa mollit eiusmod cillum. Sit sit tempor laborum deserunt ex in culpa non amet.
         Veniam sit et est aute amet consectetur occaecat elit dolore et nulla. Fugiat ut laborum mollit ullamco nisi.
     </p>
-    <ul>
-        <li>
-            <a href="{{ path('emission.show', {id: 12, slug: 'schnagalaf'}) }}">
-                Schnagalaf
-            </a>
-        </li>
-    </ul>
+    <article>
+        <ul>
+            {% for emission in emissions %}
+                <li>
+                    
+                    <a href="{{ path('emission.show', {id: emission.id, slug: emission.titre|lower|slug|replace({' ': '-'}) }) }}">
+                        {{ emission.titre }}
+                        
+
+                    </a>
+                    <p>
+                        {{ emission.categorie.titre }}
+                    </p>
+                    <p>
+                        {{ emission.descriptif }}
+                    </p>
+                    <p>
+                        <a href="{{ emission.url }}">
+                            Écoutez l'émission
+                        </a>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    </article>
 {% endblock %}
