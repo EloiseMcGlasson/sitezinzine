@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\EmissionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Positive;
 
 #[ORM\Entity(repositoryClass: EmissionRepository::class)]
 class Emission
@@ -15,7 +17,7 @@ class Emission
     private ?int $id = null;
 
     #[ORM\Column(length: 250)]
-    private ?string $titre = null;
+    private string $titre = '';
 
     #[ORM\Column(length: 250)]
     private ?string $keyword = null;
@@ -27,13 +29,17 @@ class Emission
     private ?string $ref = null;
 
     #[ORM\Column]
+    #[Positive()]
+    #[Assert\NotBlank()]
+    #[Assert\LessThan(value: 720)]
     private ?int $duree = null;
 
     #[ORM\Column(length: 250)]
+    #[Assert\Url(message: 'This value is not a valid URL')]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $descriptif = null;
+    private string $descriptif = '';
 
     #[ORM\ManyToOne(inversedBy: 'emissions')]
     private ?Categories $categorie = null;
@@ -44,7 +50,7 @@ class Emission
         return $this->id;
     }
 
-    public function getTitre(): ?string
+    public function getTitre(): string
     {
         return $this->titre;
     }
@@ -117,7 +123,7 @@ class Emission
         return $this;
     }
 
-    public function getDescriptif(): ?string
+    public function getDescriptif(): string
     {
         return $this->descriptif;
     }
