@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\CategoriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
+#[UniqueEntity('titre')]
 class Categories
 {
     #[ORM\Id]
@@ -26,6 +29,7 @@ class Categories
     private ?int $editeur = null;
 
     #[ORM\Column]
+    #[Assert\LessThan(value: 720)]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::TEXT)]
