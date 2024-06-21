@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/admin.html.twig' %}
 
 {% block title %}
     Toutes les émissions !
@@ -6,7 +6,7 @@
 
 {% block body %}
     <p>
-        <a class="btn btn-primary btn-sm" href="{{ path('emission.create') }}">
+        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.create') }}">
             Créer une nouvelle émission
         </a>
     </p>
@@ -26,7 +26,7 @@
                 {% for emission in emissions %}
                     <tr>
                         <td>
-                            <a href="{{ path('emission.show', {id: emission.id, slug: emission.titre|lower|slug|replace({' ': '-'}) }) }}">
+                            <a href="{{ path('admin.emission.edit', {id: emission.id }) }}">
                                 {{ emission.titre }}
 
                             </a>
@@ -44,10 +44,10 @@
                         </td>
                         <td>
                             <div class="d-flex gap-1">
-                                <a class="btn btn-primary btn-sm" href="{{ path('emission.edit', {id: emission.id}) }}">
+                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
                                     Éditer
                                 </a>
-                                <form action="{{ path('emission.delete', {id: emission.id}) }}" method="post">
+                                <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
                                     <input type="hidden" name="_method" value="DELETE">
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             Supprimer

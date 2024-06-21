@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Emission;
 use App\Form\EmissionType;
@@ -11,21 +11,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
+
+#[Route("/admin/emission", name: 'admin.emission.')]
 class EmissionController extends AbstractController
 {
-    #[Route('/emission', name: 'emission.index')]
+    #[Route('/', name: 'index')]
     public function index(Request $request, EmissionRepository $emissionRepository, CategoriesRepository $categoriesRepository): Response
     {
         $emissions = $emissionRepository->findByExampleField('');
 
-        return $this->render('emission/index.html.twig', [
+        return $this->render('admin/emission/index.html.twig', [
             'emissions' => $emissions
 
         ]);
     }
 
-    #[Route('/emission/{slug}-{id}', name: 'emission.show', requirements: ['id' => '\d+', 'slug' => '[a-z\°0-9-]+'])]
+    /* #[Route('/emission/{slug}-{id}', name: 'emission.show', requirements: ['id' => '\d+', 'slug' => '[a-z\°0-9-]+'])]
     public function show(Request $request, string $slug, int $id, EmissionRepository $emissionRepository): Response
     {
         $emission = $emissionRepository->find($id);
@@ -36,8 +39,8 @@ class EmissionController extends AbstractController
             'emission' => $emission
         ]);
     }
-
-    #[Route('/emission/{id}/edit', name: 'emission.edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+ */
+    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function edit(Emission $emission, Request $request, EntityManagerInterface $em)
     {
         $formEmission = $this->createForm(EmissionType::class, $emission);
@@ -45,14 +48,14 @@ class EmissionController extends AbstractController
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
             $em->flush();
             $this->addFlash('success', 'L\'émission a bien été modifié');
-            return $this->redirectToRoute('emission.index');
+            return $this->redirectToRoute('admin.emission.index');
         }
-        return $this->render('emission/edit.html.twig', [
+        return $this->render('admin/emission/edit.html.twig', [
             'emission' => $emission,
             'formEmission' => $formEmission
         ]);
     }
-    #[Route('/emission/create', name: 'emission.create')]
+    #[Route('/create', name: 'create')]
     public function create(Request $request, EntityManagerInterface $em)
     {
         $emission = new Emission();
@@ -63,18 +66,19 @@ class EmissionController extends AbstractController
             $em->persist($emission);
             $em->flush();
             $this->addFlash('success', 'L\'émission a été crée !');
-            return $this->redirectToRoute('emission.index');
+            return $this->redirectToRoute('admin.emission.index');
         }
-        return $this->render('emission/create.html.twig', [
+        return $this->render('admin/emission/create.html.twig', [
             'form' => $form
         ]);
     }
 
-    #[Route('/emission/{id}', name: 'emission.delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    public function remove(Emission $emission, EntityManagerInterface $em) {
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
+    public function remove(Emission $emission, EntityManagerInterface $em)
+    {
         $em->remove($emission);
         $em->flush();
-        $this->addFlash('success','L\'émission a bien été supprimé');
-        return $this->redirectToRoute('emission.index');
+        $this->addFlash('success', 'L\'émission a bien été supprimé');
+        return $this->redirectToRoute('admin.emission.index');
     }
 }
