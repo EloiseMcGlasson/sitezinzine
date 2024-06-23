@@ -8,6 +8,7 @@ use App\Repository\CategoriesRepository;
 use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,6 +47,7 @@ class EmissionController extends AbstractController
         $formEmission = $this->createForm(EmissionType::class, $emission);
         $formEmission->handleRequest($request);
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
+            $emission->setUpdatedat(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'L\'émission a bien été modifié');
             return $this->redirectToRoute('admin.emission.index');
@@ -63,6 +65,7 @@ class EmissionController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $emission->setDatepub(new \DateTime());
+            $emission->setUpdatedat(new \DateTime());
             $em->persist($emission);
             $em->flush();
             $this->addFlash('success', 'L\'émission a été crée !');

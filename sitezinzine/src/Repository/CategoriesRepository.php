@@ -16,6 +16,17 @@ class CategoriesRepository extends ServiceEntityRepository
         parent::__construct($registry, Categories::class);
     }
 
+public function findAllAsc(): array
+        {
+            return $this->createQueryBuilder('c')
+                
+                ->orderBy('c.titre', 'ASC')
+               
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
     //    /**
     //     * @return Categories[] Returns an array of Categories objects
     //     */

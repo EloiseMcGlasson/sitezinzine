@@ -1,11 +1,9 @@
 {% extends 'admin/admin.html.twig' %}
-{% block title 'Créer une émission'%}
-
+{% block title 'Éditer la catégorie' ~ categorie.titre %}
 
 {% block body %}
-<h1>Créer une nouvelle émission</h1>
+<h1>{{ categorie.titre }}</h1>
 
     {{ form(form) }}
 
-    
 {% endblock %}
