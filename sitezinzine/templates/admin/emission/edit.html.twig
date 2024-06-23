@@ -4,7 +4,9 @@
 {% block body %}
 <h1>{{ emission.titre }}</h1>
 
+    {% if emission.thumbnail %}
     <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+    {% endif %}
 
     {{ form(formEmission) }}
 

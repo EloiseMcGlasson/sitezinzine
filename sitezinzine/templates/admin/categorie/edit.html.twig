@@ -4,6 +4,11 @@
 {% block body %}
 <h1>{{ categorie.titre }}</h1>
 
+    {% if categorie.thumbnail %}
+    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+    {% endif %}
+
+
     {{ form(form) }}
 
 {% endblock %}
