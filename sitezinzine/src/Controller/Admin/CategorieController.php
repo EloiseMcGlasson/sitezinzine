@@ -33,6 +33,7 @@ class CategorieController extends AbstractController
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $categorie->setUpdatedAt(new \DateTimeImmutable());
             $em->flush();
             $this->addFlash('success', 'La catégorie a bien été modifié');
             return $this->redirectToRoute('admin.categorie.index');
@@ -50,6 +51,7 @@ class CategorieController extends AbstractController
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $categorie->setUpdatedAt(new \DateTimeImmutable());
             $em->persist($categorie);
             $em->flush();
             $this->addFlash('success', 'La catégorie a été crée !');
