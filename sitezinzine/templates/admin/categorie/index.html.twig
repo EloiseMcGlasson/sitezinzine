@@ -1,13 +1,13 @@
 {% extends 'admin/admin.html.twig' %}
 
 {% block title %}
-    Toutes les émissions !
+    Toutes les catégories !
 {% endblock %}
 
 {% block body %}
     <p>
-        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.create') }}">
-            Créer une nouvelle émission
+        <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.create') }}">
+            Créer une nouvelle categorie
         </a>
     </p>
     <article>
@@ -15,7 +15,7 @@
             <thead>
                 <tr>
                     <th>
-                        Titre
+                        Noms
                     </th>
                     <th style="width: 200px">
                         Actions
@@ -23,31 +23,25 @@
                 </tr>
             </thead>
             <tbody>
-                {% for emission in emissions %}
+                {% for categorie in categories %}
                     <tr>
                         <td>
-                            <a href="{{ path('admin.emission.edit', {id: emission.id }) }}">
-                                {{ emission.titre }}
+                            <a href="{{ path('admin.categorie.edit', {id: categorie.id }) }}">
+                                {{ categorie.titre }}
 
                             </a>
+                            
                             <p>
-                                {{ emission.categorie.titre }}
+                                {{ categorie.descriptif }}
                             </p>
-                            <p>
-                                {{ emission.descriptif }}
-                            </p>
-                            <p>
-                                <a href="{{ emission.url }}">
-                                    Écoutez l'émission
-                                </a>
-                            </p>
+                           
                         </td>
                         <td>
                             <div class="d-flex gap-1">
-                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
                                     Éditer
                                 </a>
-                                <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                                <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
                                     <input type="hidden" name="_method" value="DELETE">
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             Supprimer

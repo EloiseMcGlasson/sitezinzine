@@ -22,9 +22,11 @@ class EmissionRepository extends ServiceEntityRepository
     public function findByExampleField($value): array
     {
         return $this->createQueryBuilder('e')
+            ->select('e', 'c')
             ->andWhere('e.url != :val')
             ->setParameter('val', $value)
             ->orderBy('e.datepub', 'DESC')
+            ->leftJoin('e.categorie', 'c')
             ->getQuery()
             ->getResult();
     }
@@ -36,12 +38,13 @@ class EmissionRepository extends ServiceEntityRepository
     public function findWithDureeLowerThan(int $duree): array
     {
         return $this->createQueryBuilder('r')
+            ->select('r', 'c')
             ->where('r.duree < :duree')
-            ->orderBy('r.duree','ASC')
+            ->orderBy('r.duree', 'ASC')
+            ->leftJoin('r.categorie', 'c')
             ->setParameter('duree', $duree)
             ->getQuery()
             ->getResult();
-
     }
     //    public function findOneBySomeField($value): ?Emission
     //    {

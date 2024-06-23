@@ -20,7 +20,7 @@ class Categories
     private ?int $id = null;
 
     #[ORM\Column(length: 250)]
-    private ?string $titre = null;
+    private string $titre = '';
 
     #[ORM\Column]
     private ?int $oldid = null;
@@ -53,7 +53,7 @@ class Categories
         return $this->id;
     }
 
-    public function getTitre(): ?string
+    public function getTitre(): string
     {
         return $this->titre;
     }

@@ -1,8 +1,10 @@
 {% extends 'admin/admin.html.twig' %}
-
+{% block title 'Éditer l\'émission ' ~ emission.titre %}
 
 {% block body %}
 <h1>{{ emission.titre }}</h1>
+
+    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
 
     {{ form(formEmission) }}
 
