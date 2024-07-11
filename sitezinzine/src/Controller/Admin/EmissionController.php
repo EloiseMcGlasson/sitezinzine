@@ -15,18 +15,23 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
 #[Route("/admin/emission", name: 'admin.emission.')]
 #[IsGranted('ROLE_USER')]
 class EmissionController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(Request $request, EmissionRepository $emissionRepository, CategoriesRepository $categoriesRepository): Response
+    public function index(Request $request, EmissionRepository $emissionRepository): Response
     {
     
-        $emissions = $emissionRepository->findByExampleField('');
-
+        $page = $request->query->getInt('page', 1);
+        $limit= 25;
+        $emissions = $emissionRepository->paginateEmissions($page, '');
+        $maxPage = ceil($emissions->getTotalItemCount() / $limit);
+        //dd($emissions->count());
         return $this->render('admin/emission/index.html.twig', [
-            'emissions' => $emissions
+            'emissions' => $emissions,
+            
 
         ]);
     }

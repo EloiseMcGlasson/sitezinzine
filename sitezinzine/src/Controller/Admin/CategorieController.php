@@ -21,10 +21,17 @@ class CategorieController extends AbstractController
     #[Route(name: 'index')]
     public function index(Request $request, EmissionRepository $emissionRepository, CategoriesRepository $categoriesRepository): Response
     {
-        $categorie = $categoriesRepository->findAllAsc();
-
+        $page = $request->query->getInt('page', 1);
+        $limit = 10;
+        $categorie = $categoriesRepository->paginateCategoriesWithCount($page, $limit);
+        $maxPage = ceil($categorie->getTotalItemCount()/ $limit);
+        //dd($categoriesRepository->findAllWithCount());
         return $this->render('admin/categorie/index.html.twig', [
-            'categories' => $categorie
+            'categorie' => $categoriesRepository->findAllWithCount(),
+            'categories' => $categorie,
+            'maxPage' => $maxPage,
+            'page' => $page
+
 
         ]);
     }
