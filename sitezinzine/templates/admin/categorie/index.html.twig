@@ -17,6 +17,9 @@
                     <th>
                         Noms
                     </th>
+                    <th>
+                        Émissions
+                    </th>
                     <th style="width: 200px">
                         Actions
                     </th>
@@ -30,11 +33,13 @@
                                 {{ categorie.titre }}
 
                             </a>
-                            
+
                             <p>
                                 {{ categorie.descriptif }}
                             </p>
-                           
+                        </td>
+                        <td>
+                            {{ categorie.count }}
                         </td>
                         <td>
                             <div class="d-flex gap-1">
@@ -53,6 +58,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {{ knp_pagination_render(categories) }}
         </article>
     {% endblock %}
     
