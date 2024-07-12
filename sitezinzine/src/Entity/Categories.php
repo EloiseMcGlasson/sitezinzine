@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
@@ -20,22 +21,27 @@ class Categories
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['categories.index'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 250)]
+    #[Groups(['categories.index', 'emissions.index'])]
     private string $titre = '';
 
     #[ORM\Column]
+    #[Groups(['categories.index'])]
     private ?int $oldid = null;
 
     #[ORM\Column]
     private ?int $editeur = null;
 
     #[ORM\Column]
+    #[Groups(['categories.index'])]
     #[Assert\LessThan(value: 720)]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['categories.index'])]
     private ?string $descriptif = null;
 
     /**
@@ -45,13 +51,16 @@ class Categories
     private Collection $emissions;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['categories.index'])]
     private ?string $thumbnail = null;
 
     #[Vich\UploadableField(mapping: 'categories', fileNameProperty: 'thumbnail')]
     #[Assert\Image()] //ajouter les contraintes d'image ici voir doc
+    #[Groups(['categories.index'])]
     private ?File $thumbnailFile = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['categories.index'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
