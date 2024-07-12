@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: EmissionRepository::class)]
@@ -18,17 +19,22 @@ class Emission
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['emissions.index'])]
     private ?int $id = null;
 
+    #[Groups(['emissions.index'])]
     #[ORM\Column(length: 250)]
     private string $titre = '';
 
+    #[Groups(['emissions.index'])]
     #[ORM\Column(length: 250)]
     private ?string $keyword = null;
 
+    #[Groups(['emissions.index'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datepub = null;
 
+    #[Groups(['emissions.index'])]
     #[ORM\Column(length: 250)]
     private ?string $ref = null;
 
@@ -36,26 +42,33 @@ class Emission
     #[Positive()]
     #[Assert\NotBlank()]
     #[Assert\LessThan(value: 240)]
+    #[Groups(['emissions.index'])]
     private ?int $duree = null;
 
     #[ORM\Column(length: 250)]
     #[Assert\Url(message: 'This value is not a valid URL')]
+    #[Groups(['emissions.index'])]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['emissions.index'])]
     private string $descriptif = '';
 
     #[ORM\ManyToOne(inversedBy: 'emissions', cascade: ['persist'])]
+    #[Groups(['emissions.index'])]
     private ?Categories $categorie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['emissions.index'])]
     private ?string $thumbnail = null;
 
     #[Vich\UploadableField(mapping: 'emissions', fileNameProperty: 'thumbnail')]
     #[Assert\Image()] //ajouter les contraintes d'image ici voir doc
+    #[Groups(['emissions.index'])]
     private ?File $thumbnailFile = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['emissions.index'])]
     private ?\DateTimeInterface $updatedat = null;
 
 
