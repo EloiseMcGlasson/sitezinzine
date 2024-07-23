@@ -18,8 +18,7 @@
                     <th>
                         {{ knp_pagination_sortable(emissions, 'Titre', 'r.titre') }}
                     </th>
-                    
-                    
+
                     <th style="width: 200px">
                         Actions
                     </th>
@@ -37,34 +36,36 @@
                                 {{ emission.categorie.titre }}
                             </p>
                             <p>
-                                {{ emission.descriptif }}
-                            </p>
-                            <p>
-                                <a href="{{ emission.url }}">
-                                    Écoutez l'émission
-                                </a>
-                            </p>
-                        </td>
-                        
-
-                        <td>
-                            <div class="d-flex gap-1">
-                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                    Éditer
-                                </a>
-                                <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            Supprimer
-                                        </button>
-                                    </form>
-                                </div>
+                                {% if emission.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                    {% endif %}
+                                    {{ emission.descriptif }}
+                                </p>
+                                <p>
+                                    <a href="{{ emission.url }}">
+                                        Écoutez l'émission
+                                    </a>
+                                </p>
                             </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {{ knp_pagination_render(emissions) }}
-        </article>
-    {% endblock %}
-    
+
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                        Éditer
+                                    </a>
+                                    <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {{ knp_pagination_render(emissions) }}
+            </article>
+        {% endblock %}
+        

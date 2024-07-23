@@ -34,31 +34,35 @@
 
                             </a>
 
+                            {# {{ dump(categorie) }} #}
                             <p>
-                                {{ categorie.descriptif }}
-                            </p>
-                        </td>
-                        <td>
-                            {{ categorie.count }}
-                        </td>
-                        <td>
-                            <div class="d-flex gap-1">
-                                <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
-                                    Éditer
-                                </a>
-                                <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            Supprimer
-                                        </button>
-                                    </form>
-                                </div>
+                               {#  {% if categorie.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+                                    {% endif %} #}
+                                    {{ categorie.descriptif }}
+                                </p>
                             </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {{ knp_pagination_render(categories) }}
-        </article>
-    {% endblock %}
-    
+                            <td>
+                                {{ categorie.count }}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
+                                        Éditer
+                                    </a>
+                                    <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {{ knp_pagination_render(categories) }}
+            </article>
+        {% endblock %}
+        

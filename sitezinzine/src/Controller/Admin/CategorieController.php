@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CategorieController extends AbstractController
 {
     #[Route(name: 'index')]
-    public function index(Request $request, EmissionRepository $emissionRepository, CategoriesRepository $categoriesRepository): Response
+    public function index(Request $request, CategoriesRepository $categoriesRepository): Response
     {
         $page = $request->query->getInt('page', 1);
         $limit = 10;
@@ -27,13 +27,12 @@ class CategorieController extends AbstractController
         $maxPage = ceil($categorie->getTotalItemCount()/ $limit);
         //dd($categoriesRepository->findAllWithCount());
         return $this->render('admin/categorie/index.html.twig', [
-            'categorie' => $categoriesRepository->findAllWithCount(),
-            'categories' => $categorie,
-            'maxPage' => $maxPage,
-            'page' => $page
-
-
+            //'categorie' => $categoriesRepository->findAllWithCount(),
+            'categories' => $categorie
+            
+            
         ]);
+        
     }
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]

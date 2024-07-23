@@ -22,11 +22,11 @@ class Emission
     #[Groups(['emissions.index'])]
     private ?int $id = null;
 
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     #[ORM\Column(length: 250)]
     private string $titre = '';
 
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     #[ORM\Column(length: 250)]
     private ?string $keyword = null;
 
@@ -34,7 +34,7 @@ class Emission
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datepub = null;
 
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     #[ORM\Column(length: 250)]
     private ?string $ref = null;
 
@@ -42,29 +42,29 @@ class Emission
     #[Positive()]
     #[Assert\NotBlank()]
     #[Assert\LessThan(value: 240)]
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     private ?int $duree = null;
 
     #[ORM\Column(length: 250)]
     #[Assert\Url(message: 'This value is not a valid URL')]
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     private string $descriptif = '';
 
     #[ORM\ManyToOne(inversedBy: 'emissions', cascade: ['persist'])]
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     private ?Categories $categorie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     private ?string $thumbnail = null;
 
     #[Vich\UploadableField(mapping: 'emissions', fileNameProperty: 'thumbnail')]
     #[Assert\Image()] //ajouter les contraintes d'image ici voir doc
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.create'])]
     private ?File $thumbnailFile = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -181,7 +181,7 @@ class Emission
 
     public function setThumbnail(?string $thumbnail): static
     {
-        $this->thumbnail = $thumbnail;
+        $this->thumbnail = trim($thumbnail);
 
         return $this;
     }

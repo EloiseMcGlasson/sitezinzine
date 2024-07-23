@@ -24,7 +24,7 @@ class CategoriesRepository extends ServiceEntityRepository
         return $this->paginator->paginate(
             
             $this->createQueryBuilder('c')
-            ->select('NEW App\\DTO\\CategoriesWithCountDTO(c.id, c.titre, c.descriptif, COUNT(c.id))')
+            ->select('NEW App\\DTO\\CategoriesWithCountDTO(c.id, c.titre, c.thumbnail, c.descriptif, COUNT(c.id))')
             ->leftJoin('c.emissions', 'r')
             ->groupBy('c.id')
             ->getQuery()
@@ -54,7 +54,7 @@ public function findAllAsc(): array
         public function findAllWithCount(): array
         {
             return $this->createQueryBuilder('c')
-            ->select('NEW App\\DTO\\CategoriesWithCountDTO(c.id, c.titre, c.descriptif, COUNT(c.id))')
+            ->select('NEW App\\DTO\\CategoriesWithCountDTO(c.id, c.titre, c.thumbnail, c.descriptif, COUNT(c.id))')
             ->leftJoin('c.emissions', 'r')
             ->groupBy('c.id')
             ->getQuery()

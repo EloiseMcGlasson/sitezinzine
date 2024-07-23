@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title " Toutes les émissions " %}
+
+{% block body %}
+
+    <article>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        {{ knp_pagination_sortable(emissions, 'Titre', 'r.titre') }}
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for emission in emissions %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('emission.show', {id: emission.id }) }}">
+                                {{ emission.titre }}
+                            </a>
+                            -
+                            {{ emission.datepub|date('d-m-Y') }}
+                            <p>
+                                {{ emission.categorie.titre }}
+                            </p>
+                            <p>
+                                {% if emission.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                    {% endif %}
+                                    {{ emission.descriptif }}
+                                </p>
+                                <p>
+                                    <a href="{{ emission.url }}">
+                                        Écoutez l'émission
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {{ knp_pagination_render(emissions) }}
+        </article>
+    {% endblock %}
+    
