@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block title "Émission : " ~ emission.titre %}
+{% block body %}
+    <h1>
+        {{ emission.titre }}
+    </h1>
+    <p>
+        {{ emission.categorie.titre }}
+        -
+        {{ emission.datepub|date('d-m-Y') }}
+    </p>
+    <p>
+        {% if emission.thumbnail %}
+        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+    {% endif %}
+                {{ emission.descriptif }}
+            </p>
+        <p>
+            <a href="{{ emission.url }}">
+                Écoutez l'émission
+            </a>
+        </p>
+        <h2>
+            {{ emission.categorie.titre }}
+        </h2>
+        <p>
+            {% if emission.categorie.thumbnail %}
+        <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
+    {% endif %}
+            {{ emission.categorie.descriptif }}
+        </p>
+    {% endblock %}
+    

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 #[UniqueEntity('titre')]
 #[Vich\Uploadable()]
