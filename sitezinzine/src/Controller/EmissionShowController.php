@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 
 #[Route("/emission", name: 'emission.')]
@@ -27,9 +27,10 @@ class EmissionShowController extends AbstractController
         $limit= 25;
         $emissions = $emissionRepository->paginateEmissions($page, '');
         $maxPage = ceil($emissions->getTotalItemCount() / $limit);
+      
         //dd($emissions->count());
         return $this->render('/home/emissions.html.twig', [
-            'emissions' => $emissions,
+            'emissions' => $emissions
             
 
         ]);
@@ -43,7 +44,7 @@ class EmissionShowController extends AbstractController
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
             $emission->setUpdatedat(new \DateTime());
             $em->flush();
-            $this->addFlash('success', 'L\'émission a bien été modifié');
+            //$this->addFlash('success', 'L\'émission a bien été modifié');
             return $this->redirectToRoute('admin.emission.index');
         }
         return $this->render('/home/show.html.twig', [

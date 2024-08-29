@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -39,6 +41,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, Emission>
+     */
+    #[ORM\OneToMany(targetEntity: Emission::class, mappedBy: 'user')]
+    private Collection $emissions;
+
+    public function __construct()
+    {
+        $this->emissions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -138,6 +151,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Emission>
+     */
+    public function getEmissions(): Collection
+    {
+        return $this->emissions;
+    }
+
+    public function addEmission(Emission $emission): static
+    {
+        if (!$this->emissions->contains($emission)) {
+            $this->emissions->add($emission);
+            $emission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmission(Emission $emission): static
+    {
+        if ($this->emissions->removeElement($emission)) {
+            // set the owning side to null (unless already changed)
+            if ($emission->getUser() === $this) {
+                $emission->setUser(null);
+            }
+        }
 
         return $this;
     }

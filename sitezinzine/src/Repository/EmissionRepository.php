@@ -91,4 +91,17 @@ class EmissionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function lastEmissions($value): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r', 'c')
+            ->andWhere('r.url != :val')
+            ->setParameter('val', $value)
+            ->orderBy('r.datepub', 'DESC')
+            ->leftJoin('r.categorie', 'c')
+            ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
+    }
 }

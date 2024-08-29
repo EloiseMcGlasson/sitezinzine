@@ -1,0 +1,111 @@
+<style>
+   
+    ul {
+      
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background-color: white;
+        overflow: hidden;
+    }
+
+    li {
+        text-align: center;
+        display: inline;
+        vertical-align: middle;
+    }
+        
+    li a {
+            padding: 14px 16px;
+            color: #1C1C1A;
+            text-decoration: none;
+            font-weight: 800;
+            
+    }
+
+   
+    
+
+    nav {
+        width: 100%;
+        display: flex;
+        padding: 1rem;
+        text-align: center;
+        align-items: center;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-size: 21pt;
+        
+        justify-content: space-between;
+      
+    
+    }
+    .button-nav-don {
+        all : unset;
+        font-family: "Montserrat", sans-serif;
+        font-size: 13px;
+        background-color: #e4013A;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        box-shadow: 0px 3px 5px black;
+        padding: 10px;
+        cursor:pointer;
+    }
+
+    .button-nav-don:hover {
+        background-color: #B81C61;
+    }
+
+
+
+
+    @media (min-width: 1200px) {
+
+    }
+
+</style>
+<nav>
+    <img src="{{ asset('/images/logo.gif') }}">
+        <ul>
+            <li>
+                <a "{{ app.current_route == 'home' ? 'active' : '' }}" href="{{ path('home') }}">
+                    Accueil
+                </a>
+            </li>
+            <li>
+                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                <li>
+                    <a "{{ app.current_route == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
+                        Radio Zinzine
+                    </a>
+                </li>
+                <li>
+                    <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                    <li>
+                        <a "{{ app.current_route == 'emission' ? 'active' : '' }}" href="{{ path('emission.index') }}">
+                            Émissions
+                        </a>
+                    </li>
+                    <li>
+                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                        <li>
+                            <a "{{ app.current_route == 'infos' ? 'active' : '' }}" href="{{ path('infos') }}">
+                                Infos du soir
+                            </a>
+                        </li>
+                        <li>
+                            <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                            <li>
+                                <a "{{ app.current_route == 'programme' ? 'active' : '' }}" href="{{ path('programme') }}">
+                                    Programme
+                                </a>
+                            </li>
+                        </ul>
+                        <button class="button-nav-don">
+                            FAIRE UN DON
+                        </button>
+                        <img src="{{ asset('/images/ico-recherche.gif') }}"></nav>
+                    </li>
+                </li>
+            </li>
+            

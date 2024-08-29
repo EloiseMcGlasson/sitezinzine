@@ -4,11 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Emission;
 use App\Form\EmissionType;
-use App\Repository\CategoriesRepository;
 use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -35,14 +33,23 @@ class EmissionController extends AbstractController
 
         ]);
     }
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+    public function show(Emission $emission, int $id, EmissionRepository $emissionRepository)
+    {
+        $emission = $emissionRepository->find($id);
+        return $this->render('admin/emission/show.html.twig', [
+            'emission' => $emission,
+            
+        ]);
+    }
 
-    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function edit(Emission $emission, Request $request, EntityManagerInterface $em)
     {
         $formEmission = $this->createForm(EmissionType::class, $emission);
         $formEmission->handleRequest($request);
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
-            $emission->setUpdatedat(new \DateTime());
+            $emission->setUpdatedat(new \DateTimeImmutable());
             $em->flush();
             $this->addFlash('success', 'L\'émission a bien été modifié');
             return $this->redirectToRoute('admin.emission.index');

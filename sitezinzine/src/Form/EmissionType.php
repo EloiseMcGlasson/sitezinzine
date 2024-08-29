@@ -4,10 +4,11 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Emission;
+use App\Entity\Theme;
+use App\Entity\User;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Image;
+
 
 
 class EmissionType extends AbstractType
@@ -41,12 +42,16 @@ class EmissionType extends AbstractType
                 'class' => Categories::class,
                 'choice_label' => 'titre',
             ])
+            ->add('theme', EntityType::class, [
+                'class' => Theme::class,
+                'choice_label' => 'name',
+            ])
             ->add('thumbnailFile', FileType::class)
             
 
             ->add('Sauvegarder', SubmitType::class)
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoKeyword(...))
-            
+            ->addEventListener(FormEvents::PRE_SUBMIT,$this->autoUser(...))
         ;
     }
 
@@ -60,11 +65,22 @@ class EmissionType extends AbstractType
 
     }
 
+    public function autoUser(PreSubmitEvent $event)
+    {
+        $data=$event->getData();
+        if (empty($data['user_id'])) {
+            $data['user_id']='Keyword';
+            $event->setData($data);
+        }
+
+    }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Emission::class,
+            'allow_extra_fields' => true,
         ]);
     }
 }

@@ -1,0 +1,52 @@
+{% extends 'admin/admin.html.twig' %}
+{% block title "Catégorie : " ~ categorie.titre %}
+{% block body %}
+
+<style>
+h1 {
+font-size: 21px;
+text-align: center;
+
+    }
+article{
+    border-color: black;
+    border: solid;
+}
+
+</style>
+
+<h1>
+    {{ categorie.titre }}
+</h1>
+
+<p>
+    {% if categorie.thumbnail %}
+    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+{% endif %}
+{{ categorie.descriptif }}
+</p>
+
+<h1>
+    Toutes les émissions de cette catégorie :
+</h1>
+{% for emission in categorie.emissions %}
+{% if emission.url %}
+<article>
+            <h1>
+                {{ emission.titre }}
+            </h1>
+            <p>
+                {{ emission.descriptif }}
+            </p>
+            <p>
+                <a href="{{ emission.url }}">
+                    Écoutez l'émission
+                </a>
+            </p>
+
+
+        </article>
+    {% endif %}
+        {% endfor %}
+    {% endblock %}
+    

@@ -1,0 +1,13 @@
+{% extends 'admin/admin.html.twig' %}
+{% block title 'Éditer le thème ' ~ theme.name %}
+
+{% block body %}
+<h1>{{ theme.name }}</h1>
+
+    {% if theme.thumbnail %}
+    <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
+    {% endif %}
+
+    {{ form(form) }}
+
+{% endblock %}

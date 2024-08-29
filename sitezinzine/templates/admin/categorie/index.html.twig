@@ -29,21 +29,22 @@
                 {% for categorie in categories %}
                     <tr>
                         <td>
-                            <a href="{{ path('admin.categorie.edit', {id: categorie.id }) }}">
+                            {# {{categorie.id}}
+                            <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}"> #}
                                 {{ categorie.titre }}
 
                             </a>
 
-                            {# {{ dump(categorie) }} #}
+                        
                             <p>
-                               {#  {% if categorie.thumbnail %}
+                                {% if categorie.thumbnail %}
                                     <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
-                                    {% endif %} #}
+                                    {% endif %}
                                     {{ categorie.descriptif }}
                                 </p>
                             </td>
                             <td>
-                                {{ categorie.count }}
+                                {{ categorie.total }}
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
