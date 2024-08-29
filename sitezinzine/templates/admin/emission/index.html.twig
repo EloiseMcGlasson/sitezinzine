@@ -6,30 +6,50 @@
 
 {% block body %}
 
+<style>
+.table {
+    border-color: black;
+    border: solid;
+    
+    }
+thead {
+    border-color: black;
+    border: solid;
+    
+}
+th, tr, td {
+    border-color: black;
+    border: solid;
+    
+}
+
+
+</style>
+
     <p>
         <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.create') }}">
             Créer une nouvelle émission
         </a>
     </p>
-    <article>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        {{ knp_pagination_sortable(emissions, 'Titre', 'r.titre') }}
-                    </th>
-
-                    <th style="width: 200px">
-                        Actions
-                    </th>
-
-                </tr>
-            </thead>
-            <tbody>
-                {% for emission in emissions %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                {{ knp_pagination_sortable(emissions, 'Titre', 'r.titre') }}
+            </th>
+            
+            <th style="width: 200px">
+            Actions
+        </th>
+        
+    </tr>
+</thead>
+<tbody>
+    {% for emission in emissions %}
+    
                     <tr>
                         <td>
-                            <a href="{{ path('admin.emission.edit', {id: emission.id }) }}">
+                            <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
                                 {{ emission.titre }}
                             </a>
                             <p>
@@ -38,8 +58,8 @@
                             <p>
                                 {% if emission.thumbnail %}
                                     <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                    {% endif %}
-                                    {{ emission.descriptif }}
+                                {% endif %}
+                                {{ emission.descriptif }}
                                 </p>
                                 <p>
                                     <a href="{{ emission.url }}">
@@ -62,10 +82,10 @@
                                     </div>
                                 </td>
                             </tr>
+                        
                         {% endfor %}
                     </tbody>
                 </table>
                 {{ knp_pagination_render(emissions) }}
-            </article>
         {% endblock %}
         

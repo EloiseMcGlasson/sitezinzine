@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\Categories;
 use App\Form\CategorieType;
 use App\Repository\CategoriesRepository;
-use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +24,7 @@ class CategorieController extends AbstractController
         $limit = 10;
         $categorie = $categoriesRepository->paginateCategoriesWithCount($page, $limit);
         $maxPage = ceil($categorie->getTotalItemCount()/ $limit);
-        //dd($categoriesRepository->findAllWithCount());
+        /* dd($categoriesRepository->paginateCategoriesWithCount($page, $limit)); */
         return $this->render('admin/categorie/index.html.twig', [
             //'categorie' => $categoriesRepository->findAllWithCount(),
             'categories' => $categorie
@@ -35,7 +34,17 @@ class CategorieController extends AbstractController
         
     }
 
-    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+    public function show(Categories $categorie, int $id, CategoriesRepository $categorieRepository)
+    {
+        $categorie = $categorieRepository->find($id);
+        return $this->render('admin/categorie/show.html.twig', [
+            'categorie' => $categorie,
+            
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function edit(Categories $categorie, Request $request, EntityManagerInterface $em)
     {
         $form = $this->createForm(CategorieType::class, $categorie);

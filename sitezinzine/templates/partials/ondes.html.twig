@@ -1,0 +1,90 @@
+
+<style>
+
+
+    .bodyondes {
+        background: white;
+        background-size: 100%;
+        margin: 0%;
+        padding: 0%;
+        height: 100%;
+        width: 100%;
+    }
+
+    .bodyondes h1, h3 {
+      color: #7E4093;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .bodyondes h1 {
+      font-size: 36pt;
+      font-weight: 900;
+    }
+
+    .bodyondes h3 {
+      font-family: "Montserrat Alternates", sans-serif;
+      font-weight: 300;
+      font-style: normal;
+      justify-content: center;
+      text-align: center;
+      font-size: 24pt;
+  }
+
+    .ondestitres {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+    }
+    .ondestitres img {
+      width: 150px;
+      margin-right: 10px;
+      padding-bottom: 15px;
+    }
+ 
+</style>
+<div class="bodyondes">
+  <div class="ondestitres">
+    <img src="{{ asset('/images/illu-ondes.gif') }}">
+      <div>
+        <h1>
+          SUR LES ONDES
+        </h1>
+        <h3>
+          La programmation d'aujourd'hui
+        </h3>
+      </div>
+    </div>
+    <div class="carrousel">
+      <div class="glide">
+        <div class="glide__track" data-glide-el="track">
+          <ul class="glide__slides">
+            <li class="glide__slide">
+              0
+            </li>
+            <li class="glide__slide">
+              1
+            </li>
+            <li class="glide__slide">
+              2
+            </li>
+           
+           
+          </ul>
+        </div>
+        <div class="glide__arrows" data-glide-el="controls">
+      <button class="glide__arrow glide__arrow--left" data-glide-dir="<">prev</button>
+      <button class="glide__arrow glide__arrow--right" data-glide-dir=">">next</button>
+    </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+
+<script>
+  new Glide('.glide').mount()
+</script>
+
+  

@@ -71,6 +71,12 @@ class Emission
     #[Groups(['emissions.index'])]
     private ?\DateTimeInterface $updatedat = null;
 
+    #[ORM\ManyToOne(inversedBy: 'emissions')]
+    private ?Theme $theme = null;
+
+    #[ORM\ManyToOne(inversedBy: 'emissions')]
+    private ?User $user = null;
+
 
     public function getId(): ?int
     {
@@ -212,6 +218,30 @@ class Emission
     public function setUpdatedat(?\DateTimeInterface $updatedat): static
     {
         $this->updatedat = $updatedat;
+
+        return $this;
+    }
+
+    public function getTheme(): ?Theme
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(?Theme $theme): static
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

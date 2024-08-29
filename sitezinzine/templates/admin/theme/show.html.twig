@@ -1,0 +1,53 @@
+{% extends 'admin/admin.html.twig' %}
+{% block title "Thème : " ~ theme.name %}
+{% block body %}
+
+<style>
+    h1 {
+    font-size: 21px;
+    text-align: center;
+    
+        }
+    article{
+        border-color: black;
+        border: solid;
+    }
+    
+    </style>
+    <h1>
+        {{ theme.name }}
+    </h1>
+    
+    <p>
+        {% if theme.thumbnail %}
+        <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
+    {% endif %}
+               
+            </p>
+            <h1>
+                Toutes les émissions de ce thème :
+            </h1>
+            {% for emission in theme.emissions %}
+            {% if emission.url %}
+            <article>
+                        <h1>
+                            {{ emission.titre }}
+                        </h1>
+                        <p>
+                            {{ emission.descriptif }}
+                        </p>
+                        <p>
+                        
+                            <a href="{{ emission.url }}">
+                                Écoutez l'émission
+                            </a>
+                        </p>
+            </article>
+            {% endif %}
+                         {% endfor %}
+            
+        
+        
+        
+    {% endblock %}
+    

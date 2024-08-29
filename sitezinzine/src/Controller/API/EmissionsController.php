@@ -4,7 +4,6 @@ namespace App\Controller\API;
 
 use App\Entity\Emission;
 use App\Repository\EmissionRepository;
-use DateTime;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

@@ -37,6 +37,9 @@ installation symfony cli
 scoop install symfony-cli
 pour lancer le server => symfony server
 
+installation de glide (pour les carrousel)
+ npm install @glidejs/glide
+
 
 
 
