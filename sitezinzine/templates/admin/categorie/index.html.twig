@@ -5,6 +5,28 @@
 {% endblock %}
 
 {% block body %}
+<style>
+    .table {
+        border-color: black;
+        border: solid;
+        
+        }
+    thead {
+        border-color: black;
+        border: solid;
+        
+    }
+    th, tr, td {
+        border-color: black;
+        border: solid;
+        
+    }
+    .table img {
+        width: 100px;
+    }
+    
+    
+    </style>
     <p>
         <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.create') }}">
             Créer une nouvelle categorie
@@ -18,7 +40,7 @@
                         Noms
                     </th>
                     <th>
-                        Émissions
+                        Nombre d'Émissions
                     </th>
                     <th style="width: 200px">
                         Actions
@@ -28,17 +50,20 @@
             <tbody>
                 {% for categorie in categories %}
                     <tr>
+                        {% if categorie.active %}
                         <td>
-                            {# {{categorie.id}}
-                            <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}"> #}
+                            {% else %}
+                            <td style="background-color:gray">
+                        {% endif %}
+                            <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
                                 {{ categorie.titre }}
 
                             </a>
 
-                        
+                           
                             <p>
                                 {% if categorie.thumbnail %}
-                                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+                                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
                                     {% endif %}
                                     {{ categorie.descriptif }}
                                 </p>

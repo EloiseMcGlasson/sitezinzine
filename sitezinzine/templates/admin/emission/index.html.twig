@@ -22,6 +22,9 @@ th, tr, td {
     border: solid;
     
 }
+.table img {
+    width: 100px;
+}
 
 
 </style>
@@ -54,10 +57,13 @@ th, tr, td {
                             </a>
                             <p>
                                 {{ emission.categorie.titre }}
+                               
                             </p>
                             <p>
                                 {% if emission.thumbnail %}
                                     <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                 {% elseif  emission.categorie.thumbnail %}
+                                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
                                 {% endif %}
                                 {{ emission.descriptif }}
                                 </p>

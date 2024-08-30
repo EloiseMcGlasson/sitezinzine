@@ -1,6 +1,29 @@
 {% extends 'base.html.twig' %}
 {% block title "Émission : " ~ emission.titre %}
 {% block body %}
+    <style>
+        .bodyemission {
+            background: linear-gradient(#E4013A, #B81C61);
+            background-size: 100%;
+            width: 100%;
+            margin: 0%;
+            padding: 0%;
+           display: flex;
+           flex-direction: column;
+            font-family: "Montserrat Alternates", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+            }
+            .top img{
+                width: 100%;
+            }
+    
+    
+    </style>
+    <div class="bodyemission">
+    <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}">
+        </div>
     <h1>
         {{ emission.titre }}
     </h1>
@@ -11,10 +34,10 @@
     </p>
     <p>
         {% if emission.thumbnail %}
-        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-    {% endif %}
-                {{ emission.descriptif }}
-            </p>
+            <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+            {% endif %}
+            {{ emission.descriptif }}
+        </p>
         <p>
             <a href="{{ emission.url }}">
                 Écoutez l'émission
@@ -24,10 +47,11 @@
             {{ emission.categorie.titre }}
         </h2>
         <p>
-           {#  {% if emission.categorie.thumbnail %}
-        <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
-    {% endif %} #}
+            {#  {% if emission.categorie.thumbnail %}
+                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
+            {% endif %} #}
             {{ emission.categorie.descriptif }}
         </p>
+    </p>
+    </div>
     {% endblock %}
-    

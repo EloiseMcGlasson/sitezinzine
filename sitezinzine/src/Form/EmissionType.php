@@ -46,7 +46,9 @@ class EmissionType extends AbstractType
                 'class' => Theme::class,
                 'choice_label' => 'name',
             ])
-            ->add('thumbnailFile', FileType::class)
+            ->add('thumbnailFile', FileType::class, [
+                'required' => false
+            ])
             
 
             ->add('Sauvegarder', SubmitType::class)

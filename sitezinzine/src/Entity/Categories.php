@@ -64,6 +64,9 @@ class Categories
     #[Groups(['categories.index'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
     public function __construct()
     {
         $this->emissions = new ArrayCollection();
@@ -204,6 +207,18 @@ class Categories
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
