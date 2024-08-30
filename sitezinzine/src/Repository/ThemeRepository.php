@@ -16,6 +16,18 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
+    public function lastEmissionsByTheme($value): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t')
+            ->andWhere('r.url != :val')
+            ->setParameter('val', $value)
+            ->orderBy('r.datepub', 'DESC')
+            ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Theme[] Returns an array of Theme objects
     //     */

@@ -49,7 +49,7 @@ class EmissionController extends AbstractController
         $formEmission = $this->createForm(EmissionType::class, $emission);
         $formEmission->handleRequest($request);
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
-            $emission->setUpdatedat(new \DateTimeImmutable());
+            $emission->setUpdatedat(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'L\'émission a bien été modifié');
             return $this->redirectToRoute('admin.emission.index');

@@ -24,9 +24,10 @@ class CategoriesRepository extends ServiceEntityRepository
         return $this->paginator->paginate(
             
             $this->createQueryBuilder('c')
-            ->select('c', 'COUNT(c.id) as total')
+            ->select('c','c.id', 'COUNT(c.id) as total', 'c.descriptif', 'c.thumbnail', 'c.titre', 'c.active', 'r')
             ->leftJoin('c.emissions', 'r')
             ->groupBy('c.id')
+            ->orderBy('c.titre', 'ASC')
             ->getQuery()
             ->getResult(),
             $page,

@@ -9,8 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\Event\PreSubmitEvent;
+
 
 class ThemeType extends AbstractType
 {
@@ -18,7 +17,9 @@ class ThemeType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('thumbnailFile', FileType::class)
+            ->add('thumbnailFile', FileType::class, [
+                'required' => false
+            ])
             ->add('Sauvegarder', SubmitType::class)
             
         ;

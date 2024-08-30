@@ -7,6 +7,7 @@ use App\Entity\Emission;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +21,7 @@ class CategorieType extends AbstractType
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle catégorie'
             ])
-            ->add('oldid')
+            
             ->add('editeur')
             ->add('duree')
             ->add('descriptif')
@@ -31,7 +32,10 @@ class CategorieType extends AbstractType
                 'expanded' => true,
                 'by_reference' => false
             ]) */
-            ->add('thumbnailFile', FileType::class)
+            ->add('thumbnailFile', FileType::class, [
+                'required' => false
+            ])
+            ->add('active', RadioType::class)
             ->add('Sauvegarder', SubmitType::class);
     }
 

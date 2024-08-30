@@ -24,7 +24,7 @@ class CategorieController extends AbstractController
         $limit = 10;
         $categorie = $categoriesRepository->paginateCategoriesWithCount($page, $limit);
         $maxPage = ceil($categorie->getTotalItemCount()/ $limit);
-        /* dd($categoriesRepository->paginateCategoriesWithCount($page, $limit)); */
+        /* dd($categorie); */
         return $this->render('admin/categorie/index.html.twig', [
             //'categorie' => $categoriesRepository->findAllWithCount(),
             'categories' => $categorie

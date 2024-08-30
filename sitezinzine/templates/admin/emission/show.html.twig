@@ -24,9 +24,9 @@
             {{ emission.categorie.titre }}
         </h2>
         <p>
-           {#  {% if emission.categorie.thumbnail %}
-        <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
-    {% endif %} #}
+            {% if emission.categorie.thumbnail %}
+        <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.categorie.titre }}">
+    {% endif %}
             {{ emission.categorie.descriptif }}
         </p>
     {% endblock %}

@@ -7,13 +7,13 @@ vich_uploader:
             upload_destination: '%kernel.project_dir%/public/images/emissions'
             namer:
                 service: Vich\UploaderBundle\Naming\PropertyNamer
-                options: { property: 'titre'}
+                options: { property: 'titre' }
         categories:
             uri_prefix: /images/categories
             upload_destination: '%kernel.project_dir%/public/images/categories'
             namer:
                 service: Vich\UploaderBundle\Naming\PropertyNamer
-                options: { property: 'titre'}
+                options: { property: 'titre' }
         themes:
             uri_prefix: /images/theme
             upload_destination: '%kernel.project_dir%/public/images/theme'
