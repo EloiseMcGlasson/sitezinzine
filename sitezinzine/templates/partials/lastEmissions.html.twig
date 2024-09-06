@@ -45,12 +45,14 @@
         display: block;
         background-color: black;
         width: 350px;
-        height: 280px;
+        height: 300px;
         
         position: relative;
         flex-direction: row;
-        box-shadow: 8px 8px 12px #aaa;
         margin:50px 100px;
+        
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+        
         
         
     
@@ -60,13 +62,14 @@
         font-family: "Source Code Pro", monospace;
         font-optical-sizing: auto;
         font-weight: 600;
-        font-size: 14px;
+        font-size: 16px;
         font-style: normal;
         color: white;
-        text-align: left;
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-top: 60px;
+        
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 80px;
+        padding: 5px;
         text-align: center;
     }
 
@@ -74,20 +77,25 @@
         font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
         font-weight: 800;
-        font-size: 12px;
+        font-size: 27px;
         font-style: normal;
         color: white;
         margin-left: 20px;
         margin-right: 20px;
+        padding: 5px;
+        -webkit-text-stroke-width: 0.5px;
+        -webkit-text-stroke-color: black;
     }
 
     .date {
         font-family: "Montserrat Alternates", sans-serif;
         font-weight: 400;
         font-style: normal;
-        font-size: 16px;
+        font-size: 20px;
         color: white;
         margin-left: 20px;
+        -webkit-text-stroke-width: 0.5px;
+        -webkit-text-stroke-color: black;
     }
 
 
@@ -126,16 +134,44 @@
         padding-bottom: 15px;
     }
 
+    a {
+        text-decoration: none;
+    }
+    .shadow {
+        width: 70px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        box-shadow: -8px 6px 20px 2px #000000;
+    }
+
+    .theme {
+        background-color: #7E4095;
+        text-align: center;
+        font-size: 16px;
+        margin: 0px;
+        padding: 10px;
+        color: white;
+        -webkit-text-stroke-width: 0.5px;
+        -webkit-text-stroke-color: black;
+    }
+
+    .transparent {
+        margin-top: 5px;
+        background: rgba(160, 160, 160, 0.4) /* Grey background with 30% opacity */
+
+    }
+
+    {#   @media (min-width: 480px) {
+        h1 {
+        color: black;
+        }
+    } #}
 
   
     
     
 </style>
-{#   @media (min-width: 480px) {
-    h1 {
-    color: black;
-    }
-} #}
 <div class='bodylast'>
     <div>
         <div class="top">
@@ -154,8 +190,21 @@
             </div>
                 <article>
                     {% for lastEmission in lastEmissions %}
+                    {% if lastEmission.thumbnail %}
                         <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/{{ lastEmission.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
-                            <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
+                        {% elseif lastEmission.categorie.thumbnail %}
+                        <div class='carte' style="background-image: url('https://localhost:8000/images/categories/{{ lastEmission.categorie.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                        {% else %}
+                        <div class='carte' style="background-image: url('https://localhost:8000/images/theme/{{ lastEmission.theme.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                         {% endif %}
+                        <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
+                        <div class="theme">
+                        <p>
+                            {{ lastEmission.theme.name | upper}}
+                        </p>
+
+                        </div>
+                        <div class="transparent">
                                 <div class='categorie'>
                                     <p>
                                         {{ lastEmission.categorie.titre | upper }}
@@ -174,11 +223,13 @@
                                 <div class='ecoute'>
                                     <p>
                                         <a href="{{ lastEmission.url }}">
-                                        <img src="{{ asset('/images/lecteur.gif') }}" alt="écoutez l'émission">
+                                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                                         </a>
                                     </p>
                                 </div>
+                        </div>
                             </a>
+                            <div class="shadow"></div>
                         </div>
                     {% endfor %}
                 </article>

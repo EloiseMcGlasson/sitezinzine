@@ -40,6 +40,8 @@ pour lancer le server => symfony server
 installation de glide (pour les carrousel)
  npm install @glidejs/glide
 
+ -tinymce pour mise en page auto des forms
+
 
 
 

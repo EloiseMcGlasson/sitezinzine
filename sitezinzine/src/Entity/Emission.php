@@ -19,10 +19,10 @@ class Emission
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.lastemissions'])]
     private ?int $id = null;
 
-    #[Groups(['emissions.index', 'emissions.create'])]
+    #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
     #[ORM\Column(length: 250)]
     private string $titre = '';
 
@@ -30,7 +30,7 @@ class Emission
     #[ORM\Column(length: 250)]
     private ?string $keyword = null;
 
-    #[Groups(['emissions.index'])]
+    #[Groups(['emissions.index', 'emissions.lastemissions'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datepub = null;
 
@@ -42,16 +42,16 @@ class Emission
     #[Positive()]
     #[Assert\NotBlank()]
     #[Assert\LessThan(value: 240)]
-    #[Groups(['emissions.index', 'emissions.create'])]
+    #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
     private ?int $duree = null;
 
     #[ORM\Column(length: 250)]
     #[Assert\Url(message: 'This value is not a valid URL')]
-    #[Groups(['emissions.index', 'emissions.create'])]
+    #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['emissions.index', 'emissions.create'])]
+    #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
     private string $descriptif = '';
 
     #[ORM\ManyToOne(inversedBy: 'emissions', cascade: ['persist'])]

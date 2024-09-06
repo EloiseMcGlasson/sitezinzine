@@ -1,6 +1,13 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title "Émission : " ~ emission.titre %}
 {% block body %}
+
+<style>
+    .bodyshowemission img {
+        width: 150px;
+    }
+</style>
+<div class="bodyshowemission">
     <h1>
         {{ emission.titre }}
     </h1>
@@ -13,13 +20,14 @@
         {% if emission.thumbnail %}
         <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
     {% endif %}
-                {{ emission.descriptif }}
+                {{ emission.descriptif  | raw}}
             </p>
         <p>
             <a href="{{ emission.url }}">
                 Écoutez l'émission
             </a>
         </p>
+        <div class="cat">
         <h2>
             {{ emission.categorie.titre }}
         </h2>
@@ -27,7 +35,9 @@
             {% if emission.categorie.thumbnail %}
         <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.categorie.titre }}">
     {% endif %}
-            {{ emission.categorie.descriptif }}
+            {{ emission.categorie.descriptif | raw}}
         </p>
+        </div>
+</div>
     {% endblock %}
     

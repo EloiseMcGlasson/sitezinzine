@@ -8,22 +8,39 @@
             width: 100%;
             margin: 0%;
             padding: 0%;
-           display: flex;
-           flex-direction: column;
+            display: flex;
+            flex-direction: column;
             font-family: "Montserrat Alternates", sans-serif;
             font-weight: 700;
             font-style: normal;
+            position: relative;
+  min-height: 100vh;
             }
-            .top img{
-                width: 100%;
-            }
+    .top img{
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+.texteemission {
+    padding: 20px;
+}
+
+.texteemission img {
+    float: left;
+    margin: 10px;
+    width: 250px;
+}
+
     
     
     </style>
     <div class="bodyemission">
     <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}">
-        </div>
+    </div>
+    <div class="texteemission">
     <h1>
         {{ emission.titre }}
     </h1>
@@ -36,7 +53,7 @@
         {% if emission.thumbnail %}
             <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
             {% endif %}
-            {{ emission.descriptif }}
+            {{ emission.descriptif | raw }}
         </p>
         <p>
             <a href="{{ emission.url }}">
@@ -47,11 +64,12 @@
             {{ emission.categorie.titre }}
         </h2>
         <p>
-            {#  {% if emission.categorie.thumbnail %}
+             {% if (not emission.thumbnail) and ( emission.categorie.thumbnail) %}
                 <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
-            {% endif %} #}
-            {{ emission.categorie.descriptif }}
+            {% endif %}
+            {{ emission.categorie.descriptif | raw }}
         </p>
     </p>
+    </div>
     </div>
     {% endblock %}

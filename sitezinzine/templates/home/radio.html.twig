@@ -1,8 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Radio Zinzine{% endblock %}
 
 {% block body %}
-"hello radio"
+<style>
+.bodyradio {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0%;
+        padding: 0%;
+        display: flex;
+        flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        line-height: 1.5em;
+        position: relative;
+        min-height: 100vh;
+        }
+.top img{
+    width: 100%;
+}
+
+.texteradio {
+    padding: 20px;
+    
+    justify-content: center;
+    
+  align-items: center;
+   
   
+}
+.texte1 {
+    padding:20px;
+}
+.texte1img img {
+    float:left;
+    padding:20px;
+    width: 500px;
+}
+.texte2 {
+    padding:20px;
+}
+.texte2img img {
+    float:right;
+    padding:20px;
+    width: 500px;
+}
+h1 {
+    font-weight: 800;
+    font-size: 23px;
+    padding: 10px;
+    
+}
+
+p {
+    margin: 20px;
+}
+
+</style>
+
+<div class="bodyradio">
+<div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+<div class="texteradio">
+<div class="texte1img">
+<p>
+<img src="{{ asset('/images/radio.jpeg') }}"></p>
+           
+<h1>Pour la petite histoire</h1>
+Au début il y avait une belle colline provençale en Haute Provence entre Limans et Forcalquier (04), où se trouvait le « Jas de la Zinzine » sur laquelle une « radio libre » éponyme : Radio Zinzine, s'est installée en juin 1981. C'est, au milieu des chênes pubescents, une radio en pierre qui se chauffe au soleil ou au poêle à bois...
+Quelques personnes de la ferme autogérée Longo maï et des ami·es du coin avaient alors commencé par commenter les aventures socio-politico-culturelles du pays. Pays local et national, mais aussi international, puisque l'équipe est issue de divers horizons européens. Entre-temps, notre zone d'écoute a évolué, avec des aléas : alors que nous émettions du côté des Alpes sur Briançon, et de l'autre vers Marseille, l'autorité de l'audiovisuel nous a repoussé sur nos alpages en 1991, nous considérant comme trop turbulent·es… Il aura fallu 7 ans de bagarre et l'appui d'ami·es d'Aix pour s'installer en cette ville, avec un autre studio et une équipe sur place, indépendante mais associée au studio historique de Limans. Et finalement nous avons mis un pied à Marseille à travers la radio numérique, encore balbutiante.
+Avec le temps nos centres d'intérêt varient, notre fonctionnement s'est d'avantage personnalisé, et nous avons désormais un site, qui s'ajoute à l'hebdo papier de la radio : L'Ire Des Chênaies. On s'adapte et on poursuit notre chemin buissonnier, avec la conviction qu'une radio locale indépendante comme celle-ci garde sa raison, et sa passion d'être !</p>
+<div style="clear:both"></div>
+
+<div class="texte2img">
+            <p><img src="{{ asset('/images/radiozinzine.jpeg') }}"></p>
+           
+        <h1>Entre les deux oreilles</h1>
+Notre programmation, très musique du monde et chansons rebelles au niveau musical, s'accompagne d'infos critiques et d'émissions thématiques qui continuent de se diversifier, de la santé à la forêt en passant par les luttes émancipatrices sociétales et politiques françaises, internationales et migrantes.
+Pour cela nous nous appuyons sur un réseau de milliers de contacts, ami·es et partenaires, spécialistes, activistes et autres indépendant·es. De même, c'est incroyable mais nous parlons simplement, sans avoir besoin d'adopter le ton impersonnel des média conventionnels. Et nous prenons le temps de contextualiser, ce qui n'est pas évident à une époque où l'info est fragmentée, donc facilement orientable, ou en roue libre sur les réseaux sociaux.
+Radio Zinzine est une radio d'opinion, de caractère, qui tient à son indépendance financière, refusant toute publicité, s'appuyant sur le Fonds de Soutien à l'Expression Radiophonique, des concerts de soutien, des collectes auprès des auditrices et auditeurs, etc. Une indépendance qui n'en est pas moins un état d'esprit adossé à notre volonté, et la vôtre ..
+</p>
+
+<div style="clear:both"></div>
+</div>
 {% endblock %}

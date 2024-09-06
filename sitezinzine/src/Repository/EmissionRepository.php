@@ -31,7 +31,7 @@ class EmissionRepository extends ServiceEntityRepository
             ->setParameter('val', $value)
             ->orderBy('r.datepub', 'DESC'),
             $page,
-            25,
+            20,
             [
                 'distinct' => true,
                 'sortFieldAllowList' => ['r.titre']

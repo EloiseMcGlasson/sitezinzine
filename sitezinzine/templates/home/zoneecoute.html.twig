@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Radio Zinzine{% endblock %}
+
+{% block body %}
+<style>
+    .bodyzoneecoute {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0%;
+        padding: 0%;
+       display: flex;
+       flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        font-size: 24px;
+        position: relative;
+min-height: 100vh;
+    }
+    .top img{
+        width: 100%;
+    }
+</style>
+
+<div class="bodyzoneecoute">
+<div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+
+Légende
+
+    100.7 Forcalquier
+
+    87.9 Embrun Guillestre
+
+    95.6 Digne
+
+    103 Sisteron
+
+    101.4 Briançon
+
+    88.1 Aix
+
+    106.3 Gap
+
+    105 Manosque
+
+    92.7 Apt
+
+Depuis juin 2014 Radio Zinzine diffuse tout son programme  sur la zone Marseille - Aix-en-Provence - Aubagne en DAB+.
+
+Vous pouvez nous écouter confortablement sur le canal 8C (199.36MHz) Si vous avez l'intention d'acheter une nouvelle voiture ou un nouveau récépteur radio, vérifiez bien qu'il est compatible DAB+.
+
+On vous souhaite un bon écoute.
+
+PS: La carte sera bientôt mise à jour.
+
+</div>
+{% endblock %}

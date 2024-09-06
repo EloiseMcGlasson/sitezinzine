@@ -3,6 +3,31 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
+<style>
+.bodyinfos {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+   display: flex;
+   flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 24px;
+    position: relative;
+min-height: 100vh;
+    }
+    .top img{
+        width: 100%;
+    }
+
+</style>
+
+<div class="bodyinfos">
+<div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
 "hello infos du soir"
-  
+</div>
 {% endblock %}

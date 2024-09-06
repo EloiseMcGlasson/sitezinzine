@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}<style>
+    .bodymentions {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0%;
+        padding: 0%;
+       display: flex;
+       flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        font-size: 24px;
+        position: relative;
+    min-height: 100vh;
+        }
+        .top img{
+        width: 100%;
+    }
+    
+    </style>
+    
+    <div class="bodymentions">
+    <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            Mentions légales
+            Conformément aux dispositions des Articles 6-III et 19 de la Loi n°2004-575 du 21 juin 2004 pour la Confiance dans l’économie numérique, dite L.C.E.N., il est porté à la connaissance des utilisateur/trices du site radiozinzine.org les présentes mentions légales.
+            Le site de Radio Zinzine est accessible à l’adresse suivante:  radiozinzine.org
+                • L’accès et l’utilisation du site sont soumis aux présentes Mentions Légales détaillées ci-après ainsi qu’aux lois et/ou règlement applicables.
+                • La connexion, l’utilisation et l’accès à ce site impliquent l’acceptation intégrale et sans réserve de l’internaute de toutes les dispositions des présentes Mentions Légales.
+                • Nous nous réservons le droit de modifier à tout moment la présente page. Nous vous invitons par conséquent à la consulter régulièrement afin de vous informer de ses évolutions.
+            Dernière date de Mise à jour : 03/09/2024
+            
+            1. Mentions légales
+            En vertu de l’Article 6 de la Loi n°2004-575 du 21 juin 2004 pour la confiance dans l’économie numérique, il est précisé dans cet article l’identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
+            
+            A. PROPRIÉTAIRE DU SITE
+            Le site radiozinzine.org est la propriété de 
+            Association Radio Zinzine
+            Hameau St-Hipollyte
+            F-04300 Limans
+            
+            N° SIRET de l’établissement: 39838272100015
+            
+            
+            B. RÉALISATION DU SITE
+            Le site radiozinzine.org est édité par
+            Mme Eloïse McGlasson
+            mc.glasson@free.fr
+            
+            
+            C. DIRECTEUR DE LA PUBLICATION
+            Le Directeur de la publication est :
+            Mr Alex Robin
+            alexrobin04@gmail.com
+            
+            D. HÉBERGEUR
+            Le site radiozinzine.org est hébergé par
+            Domaine Public 
+            Rue Van Elewyck 35, B-1050 Ixelles
+            
+            E. UTILISATEUR/TRICE
+            Sont considérés comme utilisateur/trices tous les internautes qui naviguent, lisent, visionnent et utilisent le site radiozinzine.org.
+            
+            F. DROITS D’AUTEURS ET COPYRIGHT
+            (je ne sais pas quoi faire avec ça...)
+            Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations photographiques. La reproduction de tout ou partie de ce site, sur quelque support que ce soit, est formellement interdite sauf autorisation expresse du responsable de la publication. Les documents ne peuvent faire l’objet de copies qu’à titre d’information, la copie étant réservée au seul usage privé.
+            La violation de l’un des droits d’auteur, à savoir toute reproduction, représentation, diffusion ou rediffusion, en tout ou partie, du contenu de ce site sur quelque support ou par tout procédé que ce soit (notamment par voie de caching, framing) de même que toute vente, revente, retransmission ou mise à disposition de tiers de quelque manière que ce soit, est interdite et constituent une contrefaçon susceptible d’engager la responsabilité civile et pénale du contrefacteur.
+            Les marques citées sur ce site sont déposées par RADIO GRENOUILLE qui en est propriétaire. Toute reproduction totale ou partielle des marques et/ou logos est interdite sans l’accord préalable de cette dernière, conformément aux articles L. 713-2 et L 713-3 du Code de la Propriété Intellectuelle. Il en est de même des bases de données figurant au sein du site dont le contenu est protégé, notamment par les dispositions de la loi du 1er juillet 1998 relative à la protection juridique des bases de données.
+            2 . Traitements relatifs à vos données personnelles
+            Notre site ne demande pas d’enregistrement nominatif à ses visiteur·euses et ne procède à aucun enregistrement nominatif pour la simple consultation de ses pages.
+            Cependant, dans certains cas (formulaire de contact, fonctionnalités de partage et modules sociaux, rubrique création de compte, paiement en ligne…), vous pouvez être invité à laisser des données personnelles (noms, prénoms, numéros de téléphones, adresses postales, adresse électronique…). Le caractère obligatoire ou facultatif des données vous est signalé lors de la collecte par un astérisque.
+            Le cas échéant, le formulaire de collecte pourra être accompagné d’une case à cocher vous permettant d’accepter ou de refuser que vos données soient utilisées à des fins commerciales pour le compte de tiers, et/ou cédées à des tiers.
+            Nous ne collectons aucune donnée sensible, à savoir aucune donnée relative à vos origines raciales ou ethniques, à vos opinions politiques, philosophiques ou religieuses ou votre appartenance syndicale, ou qui sont relatives à votre santé ou votre vie sexuelle.
+            
+            A. QUAND
+            Nous collectons vos données notamment quand :
+                • vous utilisez notre formulaire de contact ;
+                • vous naviguez sur notre site et consultez nos produits et services ;
+                • quand vous souscrivez à notre newsletter.
+            
+            B. POURQUOI
+            Nous utilisons vos données personnelles pour :
+                • vous permettre d’utiliser nos services ;
+                • vous informer sur les services pour lesquels vous avez exprimé un intérêt et qui vous sont proposés sur notre site ;
+                • vous contacter ;
+                • avec votre consentement, vous inscrire à une newsletter et vous envoyer des informations relatives à nos produits et services ;
+                • nous permettre d’établir des statistiques et comptages de fréquentation et d’utilisation des diverses rubriques et contenus de notre site et de nos services notamment afin d’adapter lesdites rubriques et lesdits contenus en fonction de votre navigation.
+            
+            C. VOS DROITS
+            Conformément à la loi Informatique et Libertés du 6 janvier 1978 modifiée, vous disposez de droits d’accès, de rectification, d’effacement, d’opposition au ou de limitation du traitement de vos données, de retrait de votre consentement auprès du propriétaire du site.
+            
+            3. Loi applicable et juridiction
+            Les présentes Mentions Légales sont régies par la loi française. En cas de différend et à défaut d’accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur.
+            
+            4. Contact
+            Pour tout signalement de contenus ou d’activités illicites, l’Utilisateur peut contacter l’Editeur à l’adresse suivante: info@radiozinzine.org, ou par courrier recommandé avec accusé de réception adressé à l’Editeur aux coordonnées précisées dans les présentes Mentions Légales.
+            
+            
+    </div>
+
+  
+{% endblock %}
