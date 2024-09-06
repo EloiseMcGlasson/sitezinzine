@@ -36,7 +36,8 @@ class EmissionType extends AbstractType
             ->add('duree')
             ->add('url', UrlType::class)
             ->add('descriptif', TextareaType::class, [
-                'empty_data' => 'Description à remplir'
+                'empty_data' => 'Description à remplir',
+                'label'=> 'descriptif',
             ])
             ->add('categorie', EntityType::class, [
                 'class' => Categories::class,
@@ -53,7 +54,7 @@ class EmissionType extends AbstractType
 
             ->add('Sauvegarder', SubmitType::class)
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoKeyword(...))
-            ->addEventListener(FormEvents::PRE_SUBMIT,$this->autoUser(...))
+            
         ;
     }
 
@@ -67,15 +68,6 @@ class EmissionType extends AbstractType
 
     }
 
-    public function autoUser(PreSubmitEvent $event)
-    {
-        $data=$event->getData();
-        if (empty($data['user_id'])) {
-            $data['user_id']='Keyword';
-            $event->setData($data);
-        }
-
-    }
 
 
     public function configureOptions(OptionsResolver $resolver): void

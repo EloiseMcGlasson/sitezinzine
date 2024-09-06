@@ -19,6 +19,7 @@ class HomeController extends AbstractController
     {
         $lastEmissions = $emissionRepository->lastEmissions('');
         
+        
         return $this->render('home/index.html.twig', [
             'lastEmissions' => $lastEmissions
             
@@ -45,5 +46,52 @@ class HomeController extends AbstractController
     {
         
         return $this->render('home/infos.html.twig');
+    }
+
+    #[Route("/zone", name: "zone")]
+    function zone(Request $request): Response
+    {
+        
+        return $this->render('home/zoneecoute.html.twig');
+    }
+    #[Route("/aide", name: "aide")]
+    function aide(Request $request): Response
+    {
+        
+        return $this->render('home/aide.html.twig');
+    }
+    #[Route("/amis", name: "amis")]
+    function amis(Request $request): Response
+    {
+        
+        return $this->render('home/amis.html.twig');
+    }
+
+    #[Route("/mentions", name: "mentions")]
+    function mentions(Request $request): Response
+    {
+        
+        return $this->render('home/mentions.html.twig');
+    }
+
+    #[Route("/contacts", name: "contacts")]
+    function contacts(Request $request): Response
+    {
+        
+        return $this->render('home/contacts.html.twig');
+    }
+
+    #[Route("/don", name: "don")]
+    function don(Request $request): Response
+    {
+        
+        return $this->render('home/don.html.twig');
+    }
+
+    #[Route("/annonces", name: "annonces")]
+    function annonces(Request $request): Response
+    {
+        
+        return $this->render('home/annonces.html.twig');
     }
 }

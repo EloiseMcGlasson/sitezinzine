@@ -49,4 +49,15 @@ Public function create(Request $request, SerializerInterface $serializer)
 
 }
 
+#[Route("/api/lastemissions", methods: ["GET"])]
+Public function lastEmissions(EmissionRepository $repository, Request $request)
+{
+    $lastEmissions = $repository->lastEmissions('');
+        
+    return $this->json($lastEmissions, 200, [], [
+        'groups' => ['emissions.lastemissions']
+    ]);
+
+}
+
 }

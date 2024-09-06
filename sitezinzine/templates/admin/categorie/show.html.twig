@@ -3,6 +3,12 @@
 {% block body %}
 
 <style>
+.catshow {
+    padding: 50px;
+}
+.catshow h1{
+    padding: 10px;
+}
 h1 {
 font-size: 21px;
 text-align: center;
@@ -11,10 +17,18 @@ text-align: center;
 article{
     border-color: black;
     border: solid;
+    padding: 15px;
+}
+
+.catshow img {
+    width: 150px;
+}
+.catemission {
+
 }
 
 </style>
-
+<div class="catshow">
 <h1>
     {{ categorie.titre }}
 </h1>
@@ -23,24 +37,55 @@ article{
     {% if categorie.thumbnail %}
     <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
 {% endif %}
-{{ categorie.descriptif }}
+{{ categorie.descriptif | raw }}
 </p>
 
 <h1>
     Toutes les émissions de cette catégorie :
 </h1>
-{% for emission in categorie.emissions %}
+
+<div class="catemission">
+{% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
 {% if emission.url %}
 <article>
             <h1>
                 {{ emission.titre }}
             </h1>
             <p>
-                {{ emission.descriptif }}
+            {% if emission.thumbnail %}
+            <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+        {% endif %}
+            </p>
+            <p>
+                {{ emission.datepub|date('d-m-Y') }}
+                {{ emission.descriptif | raw }}
             </p>
             <p>
                 <a href="{{ emission.url }}">
                     Écoutez l'émission
+                </a>
+                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                        Éditer
+                                    </a>
+            </p>
+
+
+        </article>
+        {% else %}
+        <article>
+            <h1>
+                {{ emission.titre }}
+            </h1>
+            <p>
+                {{ emission.datepub|date('d-m-Y') }}
+                {{ emission.descriptif | raw }}
+            </p>
+            <p>
+                
+                    Pas de fichier audio disponible
+                    <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                        Éditer
+                                    </a>
                 </a>
             </p>
 
@@ -48,5 +93,7 @@ article{
         </article>
     {% endif %}
         {% endfor %}
+</div>
+</div>
     {% endblock %}
     

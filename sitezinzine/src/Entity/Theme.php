@@ -12,13 +12,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: ThemeRepository::class)]
-
+ #[Vich\Uploadable()]
 class Theme
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Vich\Uploadable()]
+   
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]

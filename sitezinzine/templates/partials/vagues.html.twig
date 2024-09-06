@@ -7,20 +7,145 @@
         background-image: url("{{ asset('/images/motif.jpg') }}");
         background-size: 100%;
         color: black;
-        height: 280px;
+        display: flex;
+        flex-direction: column;
+        
     }
-    .vagues img {
+    .blocks {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 50px;
+        
+    }
+
+    
+
+    .blocdon {
+        width: 250px;
+        background-color: white;
+        border: solid;
+        border-color: gray;
+        margin: 25px;
+        padding: 25px;
+        text-align: center;
+        justify-content: center;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+
+    }
+
+    .blocdon h1 {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 900;
+        font-size: 22px;
+        color: #E40039;
+        margin-bottom: 5px;
+    }
+    .blocdon h2 {
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: italic;
+        font-size: 16px;
+        color: gray;
+    }
+
+    .blocannonces {
+        width: 250px;
+        background-color: white;
+        border: solid;
+        border-color: gray;
+        margin: 25px;
+        padding: 25px;
+        text-align: center;
+        justify-content: center;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+
+    }
+    .blocannonces h1 {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 900;
+        font-size: 22px;
+        color: black;
+        margin-bottom: 5px;
+    }
+    .blocannonces h2 {
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: italic;
+        font-size: 16px;
+        color: gray;
+    }
+
+    .blocaide {
+        width: 250px;
+        background-color: white;
+        border: solid;
+        border-color: gray;
+        margin: 25px;
+        padding: 25px;
+        text-align: center;
+        justify-content: center;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+
+    }
+
+    .blocaide h1 {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 900;
+        font-size: 22px;
+        color: black;
+        margin-bottom: 5px;
+    }
+    .blocaide h2 {
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: italic;
+        font-size: 16px;
+        color: gray;
+    }
+
+   
+    .bottomvagues img{
         width: 100%;
+        
         margin-bottom: 0px;
         padding-bottom: 0px;
-        position: absolute;
-        bottom: 0;
-        right: 0;
+        
+        
     }
 </style>
 <div class='vagues'>
-    block vagues
-    {# <div class="bottomvagues">
-        <img src="{{ asset('/images/top-content-dechire-G.gif') }}"></div>
-    </div> #}
-</div>
+    <div class="blocks">
+        <a href="{{ path('don') }}">
+            <div class="blocdon">
+                <h1>
+                    FAIRE UN DON
+                </h1>
+                <h2>
+                    Indépendant, mais pas riche pour autant !
+                </h2>
+            </div>
+        </a>
+        <a href="{{ path('annonces') }}">
+        <div class="blocannonces">
+            <h1>
+                ANNONCES
+            </h1>
+            <h2>
+                Déposer une nouvelle annonce.
+            </h2>
+        </div>
+    </a>
+        <a href="{{ path('aide') }}">
+        <div class="blocaide">
+            <h1>
+                AIDE À L'ÉCOUTE
+            </h1>
+            <h2>
+                Pour plus d'information sur le stream de la radio.
+            </h2>
+        </div>
+    </a>
+    </div>
+    <img class="bottomvagues" src="{{ asset('/images/top-content-dechire-G.gif') }}"></div>
+    

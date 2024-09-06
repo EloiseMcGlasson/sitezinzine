@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Emission;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Form\EmissionType;
 use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,11 +45,15 @@ class EmissionController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    public function edit(Emission $emission, Request $request, EntityManagerInterface $em)
+    public function edit(Emission $emission, Request $request, EntityManagerInterface $em, Security $security)
     {
         $formEmission = $this->createForm(EmissionType::class, $emission);
         $formEmission->handleRequest($request);
+        $userId = $security->getUser();
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
+            if (!$emission->getUser()){
+                $emission->setUser($userId);
+            }
             $emission->setUpdatedat(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'L\'émission a bien été modifié');
@@ -60,14 +65,18 @@ class EmissionController extends AbstractController
         ]);
     }
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em)
+    public function create(Request $request, EntityManagerInterface $em, Security $security)
+
     {
         $emission = new Emission();
+        $userId = $security->getUser();
         $form = $this->createForm(EmissionType::class, $emission);
         $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $emission->setDatepub(new \DateTime());
             $emission->setUpdatedat(new \DateTime());
+            $emission->setUser($userId);
             $em->persist($emission);
             $em->flush();
             $this->addFlash('success', 'L\'émission a été crée !');

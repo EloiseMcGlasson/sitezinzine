@@ -11,27 +11,55 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-grow: 0;
+        flex-shrink: 0;
+  
+    }
+    .footer a {
+        text-decoration: none;
+        color: white;
+    }
+
+    .footer a:hover {
+        text-decoration: none;
+        color: #E40039;
     }
     .footer div {
         margin: 20px;
     }
 </style>
-
 <div class='footer'>
-<div>
-Radio Zinzine Saint Hyppolyte F-04300 Limans
-</div><div>
-Contacts
-</div><div>
-Mentions légales
-</div><div>
-Sites amis
-</div><div>
-Aide à l'écoute
-</div><div>
-Zone d'écoute
-</div><div>
-<a class="btn btn-primary btn-sm" href="{{ path('admin.emission.index') }}">Admin
-</a>
-</div>
+    <div>
+        Radio Zinzine Saint Hyppolyte F-04300 Limans
+    </div>
+    <div>
+        <a class="btn btn-primary btn-sm" href="{{ path('contacts') }}">
+        Contacts
+    </a>
+    </div>
+    <div>
+        <a class="btn btn-primary btn-sm" href="{{ path('mentions') }}">
+        Mentions légales
+    </a>
+    </div>
+    <div>
+        <a class="btn btn-primary btn-sm" href="{{ path('amis') }}">
+        Sites amis
+    </a>
+    </div>
+    <div>
+        <a class="btn btn-primary btn-sm" href="{{ path('aide') }}">
+        Aide à l'écoute
+    </a>
+    </div>
+    <div>
+        <a class="btn btn-primary btn-sm" href="{{ path('zone') }}">
+            Zone d'écoute
+        </a>
+    </div>
+    <div>
+        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.index') }}">
+            Admin
+        </a>
+    </div>
 </div>

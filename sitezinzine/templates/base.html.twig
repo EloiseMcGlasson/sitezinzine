@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-            @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";    
+            @import "https://cdn.jsdelivr.net/npm/@glidejs/glide/src/assets/sass/glide.core";    
         </style>
         <title>
             {% block title %}
@@ -14,8 +14,8 @@
        
         {% block stylesheets %}
             <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-            <link rel="stylesheet" href="node_modules/@glidejs/glide/dist/css/glide.core.min.css">
-            <link rel="stylesheet" href="node_modules/@glidejs/glide/dist/css/glide.theme.min.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
         {% endblock %}
 
         {% block javascripts %}
@@ -25,8 +25,10 @@
         {% endblock %}
     </head>
     <body>
+        <header>
         {% include 'partials/lecteur.html.twig' %}
         {% include 'navbar.html.twig' %}
+        </header>
         <div class=" container my-4">
             {% include 'partials/flash.html.twig' %}
 
