@@ -21,26 +21,36 @@
     <p>
         {% if theme.thumbnail %}
         <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
-    {% endif %}
+        {% endif %}
                
             </p>
             <h1>
                 Toutes les émissions de ce thème :
             </h1>
-            {% for emission in theme.emissions %}
+            <div class="themeemission">
+            {% for emission in theme.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
             {% if emission.url %}
             <article>
                         <h1>
                             {{ emission.titre }}
                         </h1>
                         <p>
-                            {{ emission.descriptif }}
+                            {% if emission.thumbnail %}
+                            <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                        {% endif %}
+                            </p>
+                        <p>
+                            {{ emission.datepub|date('d-m-Y') }}
+                            {{ emission.descriptif | raw }}
                         </p>
                         <p>
                         
                             <a href="{{ emission.url }}">
                                 Écoutez l'émission
                             </a>
+                            <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                        Éditer
+                                    </a>
                         </p>
             </article>
             {% endif %}

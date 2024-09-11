@@ -2,26 +2,26 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+
 use App\Repository\EmissionRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
     #[Route("/", name: "home")]
-    function index(Request $request, EmissionRepository $emissionRepository): Response
+    function index(EmissionRepository $emissionRepository): Response
     {
         $lastEmissions = $emissionRepository->lastEmissions('');
+        $lastEmissionsByTheme=$emissionRepository->lastEmissionsByTheme('');
         
         
         return $this->render('home/index.html.twig', [
-            'lastEmissions' => $lastEmissions
+            //dd($lastEmissionsByTheme),
+            'lastEmissions' => $lastEmissions,
+            'lastEmissionsByTheme'=>$lastEmissionsByTheme
             
 
         ]);

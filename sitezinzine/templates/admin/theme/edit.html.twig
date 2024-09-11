@@ -2,10 +2,16 @@
 {% block title 'Éditer le thème ' ~ theme.name %}
 
 {% block body %}
+<style>
+    .imageTheme {
+        width: 150px;
+    }
+</style>
+
 <h1>{{ theme.name }}</h1>
 
     {% if theme.thumbnail %}
-    <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
+    <img class="imageTheme" src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
     {% endif %}
 
     {{ form(form) }}

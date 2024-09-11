@@ -42,6 +42,11 @@ installation de glide (pour les carrousel)
 
  -tinymce pour mise en page auto des forms
 
+ installation format_datetime pour twig
+ composer require twig/intl-extra
+ composer require twig/extra-bundle
+ activer l'extension dans php.ini (décommenter la ligne intl)
+
 
 
 

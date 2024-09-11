@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Categories;
 use App\Entity\Emission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -103,5 +104,21 @@ class EmissionRepository extends ServiceEntityRepository
             ->setMaxResults(6)
             ->getQuery()
             ->getResult();
+    }
+
+    public function lastEmissionsByTheme($value): array
+    {
+        return $this->createQueryBuilder('r')
+        ->select('r', 'c', 't')
+        
+        ->leftJoin('r.categorie', 'c')
+        ->leftJoin('r.theme', 't')
+        ->Where('r.url != :val')
+        ->andWhere('r.theme != 0')
+        ->setParameter('val', $value)
+        ->groupBy( 'r.theme')
+        
+        ->getQuery()
+        ->getResult();
     }
 }

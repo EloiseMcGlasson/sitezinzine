@@ -19,13 +19,16 @@ class ThemeRepository extends ServiceEntityRepository
     public function lastEmissionsByTheme($value): array
     {
         return $this->createQueryBuilder('t')
-            ->select('t')
-            ->andWhere('r.url != :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.datepub', 'DESC')
-            ->setMaxResults(6)
-            ->getQuery()
-            ->getResult();
+        ->select('r', 'c', 't')
+        ->andWhere('r.url != :val')
+        ->setParameter('val', $value)
+        ->leftJoin('r.categorie', 'c')
+        ->leftJoin('r.theme', 't')
+        ->groupBy('r.theme')
+        ->orderBy('r.theme', 'DESC')
+        
+        ->getQuery()
+        ->getResult();
     }
 
     //    /**
