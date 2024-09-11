@@ -44,7 +44,8 @@
         "symfony/web-link": "7.1.*",
         "symfony/yaml": "7.1.*",
         "symfonycasts/verify-email-bundle": "^1.17",
-        "twig/extra-bundle": "^3.10",
+        "twig/extra-bundle": "^3.12",
+        "twig/intl-extra": "^3.12",
         "twig/string-extra": "^3.10",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^2.3"

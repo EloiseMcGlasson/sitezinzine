@@ -2,27 +2,55 @@
     .lecteur {
         font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
-        font-weight: <weight>;
+        font-weight: normal;
         font-style: normal;
         background-color: black;
         background-size: 100%;
         color: white;
         height: 60px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
     audio {
         width: 500px;
     }
+    .gauche {
+        padding: 10px;
+    }
+    .direct {
+        padding: 2px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 16px;
+    }
+    .programme {
+        padding: 2px;
+    }
+    .milieu {
+
+    }
+    .droite {
+       
+        font-family: "Montserrat", sans-serif;
+        font-size: 16px;
+    }
+
 </style>
 
 
 
 <div class='lecteur'>
-Le direct
-Le programme du moment
-<audio controls="controls" autoplay="autoplay" preload="auto">
+<div class="gauche">
+<p class="direct">Le direct</p>
+<p class="programme">Le programme du moment</p>
+</div>
+<div class="milieu">
+{# <audio controls="controls" autoplay="autoplay" preload="auto">
   <source src="http://91.121.65.189:8000/3" type="" />
   Votre navigateur n'est pas compatible
-</audio>
+</audio> #}
+</div>
+<div class="droite">
 RADIO ZINZINE, UNE RADIO LIBRE !
-
+</div>
 </div>

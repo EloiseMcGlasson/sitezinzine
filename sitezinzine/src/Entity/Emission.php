@@ -23,7 +23,7 @@ class Emission
     private ?int $id = null;
 
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
-    #[ORM\Column(length: 250)]
+    #[ORM\Column(length: 40)]
     private string $titre = '';
 
     #[Groups(['emissions.index', 'emissions.create'])]

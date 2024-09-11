@@ -1,12 +1,15 @@
 <style>
+    @media screen and (min-width: 1024px) {
+        
+    
     .bodylast {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
         width: 100%;
         margin: 0%;
         padding: 0%;
-       display: flex;
-       flex-direction: column;
+        display: flex;
+        flex-direction: column;
         font-family: "Montserrat Alternates", sans-serif;
         font-weight: 700;
         font-style: normal;
@@ -37,8 +40,6 @@
         grid-template-columns: 1fr 1fr 1fr;
         padding: auto;
         margin:auto;
-        
-    
     }
 
     .carte {
@@ -46,18 +47,13 @@
         background-color: black;
         width: 350px;
         height: 300px;
-        
         position: relative;
         flex-direction: row;
-        margin:50px 100px;
-        
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-        
-        
-        
-    
+        margin:50px 100px; 
     }
+
     .categorie {
+        
         background-color: #35BAC0;
         font-family: "Source Code Pro", monospace;
         font-optical-sizing: auto;
@@ -65,10 +61,9 @@
         font-size: 16px;
         font-style: normal;
         color: white;
-        
         margin-left: 10px;
         margin-right: 10px;
-        margin-top: 80px;
+        margin-top: -10px;
         padding: 5px;
         text-align: center;
     }
@@ -77,7 +72,7 @@
         font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
         font-weight: 800;
-        font-size: 27px;
+        font-size: 25px;
         font-style: normal;
         color: white;
         margin-left: 20px;
@@ -85,6 +80,7 @@
         padding: 5px;
         -webkit-text-stroke-width: 0.5px;
         -webkit-text-stroke-color: black;
+      
     }
 
     .date {
@@ -94,8 +90,6 @@
         font-size: 20px;
         color: white;
         margin-left: 20px;
-        -webkit-text-stroke-width: 0.5px;
-        -webkit-text-stroke-color: black;
     }
 
 
@@ -147,6 +141,7 @@
 
     .theme {
         background-color: #7E4095;
+        font-family: "Source Code Pro", monospace;
         text-align: center;
         font-size: 16px;
         margin: 0px;
@@ -157,16 +152,30 @@
     }
 
     .transparent {
-        margin-top: 5px;
-        background: rgba(160, 160, 160, 0.4) /* Grey background with 30% opacity */
+        all: unset;
+        width: 350px;
+        height: 150px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        max-height: 100%;
+        background: rgba(163, 163, 142, 0.5) /* Grey background with 30% opacity */
 
     }
+    }
 
-    {#   @media (min-width: 480px) {
-        h1 {
-        color: black;
+    @media screen and (max-width: 767px) {
+        .bodylast {
+            background-color: #35BAC0;
         }
-    } #}
+        
+        }
+    @media screen and (min-width: 767px) and (max-width:1023) {
+        .bodylast {
+            background-color: #7E4095;
+        }
+    }
+
 
   
     
@@ -189,48 +198,52 @@
                     </div>
             </div>
                 <article>
-                    {% for lastEmission in lastEmissions %}
-                    {% if lastEmission.thumbnail %}
-                        <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/{{ lastEmission.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmission.categorie.thumbnail %}
-                        <div class='carte' style="background-image: url('https://localhost:8000/images/categories/{{ lastEmission.categorie.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
-                        {% else %}
-                        <div class='carte' style="background-image: url('https://localhost:8000/images/theme/{{ lastEmission.theme.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
-                         {% endif %}
-                        <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
-                        <div class="theme">
-                        <p>
-                            {{ lastEmission.theme.name | upper}}
-                        </p>
-
-                        </div>
-                        <div class="transparent">
+                    {% for lastEmissionByTheme in lastEmissionsByTheme %}
+                        {% if lastEmissionByTheme.thumbnail %}
+                    
+                            <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/{{ lastEmissionByTheme.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                        {% elseif lastEmissionByTheme.categorie.thumbnail %}
+                            <div class='carte' style="background-image: url('https://localhost:8000/images/categories/{{ lastEmissionByTheme.categorie.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                        {% elseif lastEmissionByTheme.theme.thumbnail | default ('') %}
+                            <div class='carte' style="background-image: url('https://localhost:8000/images/theme/{{ lastEmissionByTheme.theme.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                         {% else %}
+                         <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/fondcarte.jpg');background-size: cover;background-repeat: no-repeat;">
+                        {% endif %}
+                    <a href="{{ path('emission.show', {id: lastEmissionByTheme.id }) }}">
+                    <div class="theme">
+                    <p>
+                    {{ lastEmissionByTheme.theme.name | default ('')}}
+                    </p>
+                
+                    </div>
+                    <div class="transparent">
+                        
                                 <div class='categorie'>
                                     <p>
-                                        {{ lastEmission.categorie.titre | upper }}
+                                        {{ lastEmissionByTheme.categorie.titre | upper }}
                                     </p>
                                 </div>
                                 <div class='titre'>
                                     <p>
-                                        {{ lastEmission.titre | upper }}
+                                        {{ lastEmissionByTheme.titre | upper }}
                                     </p>
                                 </div>
                                 <div class='date'>
                                     <p>
-                                        {{ lastEmission.datepub|date('d-m-Y') }}
+                                        {{ "Le " ~ lastEmissionByTheme.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
                                     </p>
                                 </div>
                                 <div class='ecoute'>
                                     <p>
-                                        <a href="{{ lastEmission.url }}">
+                                        <a href="{{ lastEmissionByTheme.url }}">
                                         <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                                         </a>
                                     </p>
                                 </div>
-                        </div>
                             </a>
-                            <div class="shadow"></div>
-                        </div>
+                        <div class="shadow"></div>
+                    </div>
+                </div>
                     {% endfor %}
                 </article>
     </div>

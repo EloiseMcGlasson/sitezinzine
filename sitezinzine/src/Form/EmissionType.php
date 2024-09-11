@@ -26,6 +26,15 @@ class EmissionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+
+        ->add('categorie', EntityType::class, [
+            'class' => Categories::class,
+            'choice_label' => 'titre',
+        ])
+        ->add('theme', EntityType::class, [
+            'class' => Theme::class,
+            'choice_label' => 'name',
+        ])
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle émission'
             ])
@@ -39,14 +48,7 @@ class EmissionType extends AbstractType
                 'empty_data' => 'Description à remplir',
                 'label'=> 'descriptif',
             ])
-            ->add('categorie', EntityType::class, [
-                'class' => Categories::class,
-                'choice_label' => 'titre',
-            ])
-            ->add('theme', EntityType::class, [
-                'class' => Theme::class,
-                'choice_label' => 'name',
-            ])
+        
             ->add('thumbnailFile', FileType::class, [
                 'required' => false
             ])

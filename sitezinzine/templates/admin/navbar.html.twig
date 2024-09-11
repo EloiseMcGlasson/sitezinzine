@@ -1,73 +1,6 @@
 <style>
-    nav {
-        width: 100%;
-        display: flex;
-        padding: 1rem;
-        text-align: center;
-        align-items: center;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-size: 21pt;
-        
-        justify-content: space-between;
-      
-    
-    }
    
-
-        ul {
-          
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            overflow: hidden;
-        }
-    
-        li {
-            text-align: center;
-            display: inline;
-            vertical-align: middle;
-        }
-            
-        li a {
-                padding: 14px 16px;
-                color: #1C1C1A;
-                text-decoration: none;
-                font-weight: 800;
-                
-        }
-    
-       
-        
-    
-        .button-nav-don {
-            all : unset;
-            font-family: "Montserrat", sans-serif;
-            font-size: 13px;
-            background-color: #e4013A;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            box-shadow: 0px 3px 5px black;
-            padding: 10px;
-            cursor:pointer;
-        }
-    
-        .button-nav-don:hover {
-            background-color: #B81C61;
-        }
-    
-    
-    
-    
-        @media (min-width: 1200px) {
-    
-        }
-    
-    </style>
-
-   {#  ul {
-      
+    ul {
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -86,38 +19,37 @@
             color: #1C1C1A;
             text-decoration: none;
             font-weight: 800;
-            
     }
-
-   
-    
+    li a:hover {
+            padding: 14px 16px;
+            color: #E40039;
+            text-decoration: none;
+            font-weight: 800;
+    }
 
     nav {
         width: 100%;
         display: flex;
-        padding: 1rem;
         text-align: center;
         align-items: center;
         font-family: "Montserrat Alternates", sans-serif;
         font-size: 21pt;
-        
-        justify-content: space-between;
-      
-    
+        justify-content: center;
     }
-   
 
-
-
+    nav h1 {
+        font-size: 31pt;
+        padding: 10px;
+    }
 
     @media (min-width: 1200px) {
+    
+        }
+    
+    </style>
 
-    }
-
-</style> #}
-
-<img src="{{ asset('/images/logo.gif') }}">
-        <nav>
+<nav>
+    <img src="{{ asset('/images/logo.gif') }}">
             <div >
                 
                     <h1>Administration</h1>
