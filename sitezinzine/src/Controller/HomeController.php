@@ -19,7 +19,7 @@ class HomeController extends AbstractController
         
         
         return $this->render('home/index.html.twig', [
-            //dd($lastEmissionsByTheme),
+            
             'lastEmissions' => $lastEmissions,
             'lastEmissionsByTheme'=>$lastEmissionsByTheme
             

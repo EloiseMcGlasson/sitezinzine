@@ -47,6 +47,10 @@ installation de glide (pour les carrousel)
  composer require twig/extra-bundle
  activer l'extension dans php.ini (décommenter la ligne intl)
 
+ 11/09/24 maj de twig de la 3.11 à la 3.14 pour corriger une vulnerabilité du sandbox
+ composer update twig/twig
+
+
 
 
 

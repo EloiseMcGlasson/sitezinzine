@@ -63,7 +63,7 @@
     .titre_carousel {
       font-family: "Montserrat", sans-serif;
       font-weight: 900;
-      font-size: 30px;
+      font-size: 25px;
     }
 
     .categorie_carousel {
@@ -71,6 +71,23 @@
         font-weight: 600;
         font-size: 16px;
         background-color: #35BAC0;
+    }
+    .glide__arrows img {
+      width: 100px;
+      
+    }
+
+    .glide__arrow--right {
+      all: none;
+      border-radius: 50%;
+    }
+
+    .glide__arrow--left {
+      all: none;
+      border-radius: 50%;
+    }
+    .glide {
+      margin: 0px 20px;
     }
  
 </style>
@@ -86,7 +103,6 @@
         </h3>
       </div>
     </div>
-    <div class="carrousel">
       <div class="glide">
         <div class="glide__track" data-glide-el="track">
           <ul class="glide__slides">
@@ -116,9 +132,9 @@
           </ul>
         </div>
         <div class="glide__arrows" data-glide-el="controls">
-          <button class="glide__arrow glide__arrow--left" data-glide-dir="<">prev</button>
+          <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="{{ asset('/images/previous.png') }}"></button>
           <button class=" glide__arrow glide__arrow--right" data-glide-dir=">
-            ">next
+            "><img src="{{ asset('/images/next.png') }}">
           </button>
         </div>
         </div>
@@ -133,6 +149,7 @@
     perView:6,
     gap: 0
   }
+
   new Glide('.glide', config ).mount()
 </script>
         
