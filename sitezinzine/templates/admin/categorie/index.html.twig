@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-<style>
+    <style>
    
     .bodyadmincategorie {
         background: linear-gradient(#E4013A, #B81C61);
@@ -22,47 +22,52 @@
     .top img{
         width: 100%;
     }
-
-    .table {
-        width: 70%;
-        margin: 20px auto 20px;
-        background-color: black;
-        }
-
-    thead {
-        text-align: center;
-        
-    }
-
-    tr {
-        display: flex;
-        padding: 10px;
-        color: white;
-        
-        }
-
-  
-
-    th {
+   
+    .categorie {
         background-color: black;
         color: white;
+        display: grid;
+        margin: 70px;
+        align-items: center; 
+        }
         
+       section {
+        border: solid;
+        display: grid;
+        border-collapse: collapse;
+        grid-template-columns: 0.5fr 4fr 0.5fr 0.5fr;
     }
-
-    td {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: auto;
-    }
-
-
-    .table img {
+   
+    .col1 {
+        
         width: 150px;
-        height: 150px;
-        border-radius: 3px;           
+        display: flex;
+        align-items: center;
+        justify-content: center;
+       
+       
     }
-
+    .col1 img {
+        width: 150px;
+        margin: 10px;
+    }
+    .col2 {
+     
+    }
+    .col3 {
+     
+        display: flex;
+        align-items: center;
+        justify-content: center;
+     
+    }
+    .col4 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+     
+    }
+ 
     .img {
         padding: 10px;
     }
@@ -81,11 +86,6 @@
         font-weight: 800; 
     }
 
-    .texte {
-        width: fit-content;
-        color: white;
-        margin: 20px;
-    }
     
     .titre {
         padding: 10px;
@@ -101,16 +101,14 @@
 
     .descriptif {
         padding: 10px;
+        margin: 15px;
     }
 
     .url {
         text-align: right;
         padding: 10px;
     }
-    .create {
-        margin: auto;
-        padding: 20px;
-    }
+  
 
     .btn-create-categorie {
         text-decoration: none;
@@ -151,98 +149,80 @@
         text-decoration: none;
         font-weight: 800;
     }
-
-    .nbEmissions {
-        width: 200px;
+    .create {
+        margin: auto;
+        padding: 20px;
     }
-
-    .action {
-        width: 200px;
-    }
-
-    
-    
+   
     </style>
     <div class="bodyadmincategorie">
-<div class="top">
+        <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
 
+            <p class="create">
+                <a class="btn-create-categorie" href="{{ path('admin.categorie.create') }}">
+                    Créer une nouvelle categorie
+                </a>
+            </p>
+            <div class="pagination">
+                {{ knp_pagination_render(categories) }}
+            </div>
             
-    <p class="create">
-        <a class="btn-create-categorie" href="{{ path('admin.categorie.create') }}">
-            Créer une nouvelle categorie
-        </a>
-    </p>
-    <div class="pagination">
-                {{ knp_pagination_render(categories) }}
-                </div>
-    <article>
-        
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        Noms
-                    </th>
-                    <th class="action">
-                        Nombre d'Émissions
-                    </th>
-                    <th class="action">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for categorie in categories %}
-                    {% if categorie.active %}
-                        <tr>
-                        <td>
-                            {% else %}
-                            <tr>
-                            <td style="background-color:gray">
-                        {% endif %}
-                        <div class="img">
-                        {% if categorie.thumbnail %}
-                            <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
-                            {% endif %}
-                        </div>
-                        <div class="texte">
-                        <div class="titre">
-                            <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
-                                {{ categorie.titre }}
+            <article>
+            <div class="categorie">
 
-                            </a>
+                    {% for categorie in categories %}
+
+                        {% if categorie.active %}
+                        <section>
+                        {% else %}
+                        
+                        <section style="background-color:gray">
+                        {% endif %}
+                        <div class="col1">
+                            {% if categorie.thumbnail %}
+                                <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
+                                {% endif %}
                         </div>
-                        <div class="descriptif">
-                        <p>
-                                    {{ categorie.descriptif | raw }}
-                                </p>
-                            </div>
-                            </td>
-                            <td class="nbEmissions">
-                                {{ categorie.total }}
-                            </td>
-                        </div>
-                            <td class="action">
-                                <div class="d-flex gap-1">
-                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
-                                        Éditer
+                        <div class="col2">
+                                <div class="titre">
+                                    <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
+                                        {{ categorie.titre }}
+
                                     </a>
-                                    <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                Supprimer
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                                </div>
+                                <div class="descriptif">
+                                  
+                                        {{ categorie.descriptif | raw }}
+                                
+                                </div>
+                        </div>
+                        <div class="col3">
+                                    
+                                    {{ categorie.total ~ ' émission(s)'}}
+                        </div>
+                            
+                        <div class="col4">
+
+                                <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
+                                    Éditer
+                                </a>
+                            {# <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                Supprimer
+                                </button>
+                            </form> #}
+                        </div>
+                      
+                    </section>
+                         
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </div>
+
+                </article>
                 <div class="pagination">
-                {{ knp_pagination_render(categories) }}
+                    {{ knp_pagination_render(categories) }}
                 </div>
-            </article>
-        {% endblock %}
-        
+            {% endblock %}
+            

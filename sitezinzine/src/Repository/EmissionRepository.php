@@ -110,13 +110,13 @@ class EmissionRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
         ->select('r', 'c', 't')
-        
+        ->orderBy('r.datepub', 'DESC')
         ->leftJoin('r.categorie', 'c')
         ->leftJoin('r.theme', 't')
         ->Where('r.url != :val')
         ->andWhere('r.theme != 0')
         ->setParameter('val', $value)
-        ->groupBy( 'r.theme')
+        ->GroupBy( 'r.theme')
         
         ->getQuery()
         ->getResult();

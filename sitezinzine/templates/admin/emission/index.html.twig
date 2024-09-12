@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<style>
+    <style>
     
     .bodyadminemission {
         background: linear-gradient(#E4013A, #B81C61);
@@ -23,47 +23,43 @@
     .top img{
         width: 100%;
     }
-
-    .table {
-        width: 70%;
-        margin: 20px auto 20px;
+    .emissions {
         background-color: black;
-        }
-
-    thead {
-        text-align: center;
-        
-    }
-
-    tr {
-        display: flex;
-        padding: 10px;
         color: white;
-        justify-content: space-between;
+        display: grid;
+        margin: 80px;
+        align-items: center; 
         }
 
-    tr:nth-child(even){
-        background-color: #454545
-        }
-
-    th {
-        background-color: #04AA6D;
-        color: white;
-        
+        section {
+        border: solid;
+        border-collapse: collapse;
+        display: grid;
+        grid-template-columns: 1fr 4fr 1fr;
     }
-
-    td {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: auto;
-    }
-
-
-    .table img {
+    .col1 {
         width: 150px;
-        height: 150px;
-        border-radius: 3px;           
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .col1 img {
+        width: 150px;
+        margin: 10px;
+    }
+    .col2 {
+       
+    }
+    .col3 {
+        background-color: black;
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "ecoute dl"; 
+    align-items: center;
+    justify-self: center;
     }
 
     .img {
@@ -164,97 +160,80 @@
 
 
 </style>
-<div class="bodyadminemission">
-<div class="top">
+    <div class="bodyadminemission">
+        <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}" alt=""></div>
-    <p class="create">
-        <a class="btn-create-emission" href="{{ path('admin.emission.create') }}">
-        
-            Créer une nouvelle émission
-      
-        </a>
-    </p>
+            <p class="create">
+                <a class="btn-create-emission" href="{{ path('admin.emission.create') }}">
 
-    <div class="pagination">
-    {{ knp_pagination_render(emissions) }}
-    </div>
-    <table class="table">
-    <thead>
-        <tr>
-            <th>
-               
-            </th>
-            
-            <th style="width: 200px">
-            Actions
-        </th>
-        
-    </tr>
-</thead>
-<tbody>
-    {% for emission in emissions %}
-    
-                    <tr>
-                        <td>
-                            <div class="img">
-                            
-                                {% if emission.thumbnail %}
-                                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                 {% elseif  emission.categorie.thumbnail %}
-                                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
-                                {# {% elseif  emission.theme.thumbnail %}
-                                                <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
-                                                
-                             #}{% endif %}
-                        </div>
-                        <div class="texte">
-                        <div class="titre">
-                              <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
-                                {{ emission.titre }}
-                            </a>
-                        </div>
-                        <div class="cat">
-                            
-                                {{ emission.categorie.titre }}
-                               
-                            
-                        </div>
-                        <div class="descriptif">
-                        <p>
-                            {{ emission.descriptif | raw}}
-                        </p>
-                        </div>
-                            </div>
-                            <div class='ecoute'>
+                    Créer une nouvelle émission
+                </a>
+            </p>
+
+            <div class="pagination">
+                {{ knp_pagination_render(emissions) }}
+            </div>
+            <article>
+            <div class="emissions">
+
+                {% for emission in emissions %}
+                <section>
+                    <div class="col1">
+
+                        {% if emission.thumbnail %}
+                            <img
+                            src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                {% elseif  emission.categorie.thumbnail %}
+                                <img
+                                src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
+                                    {% elseif  emission.theme.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
+                                    {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <div class="titre">
+                                        <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
+                                            {{ emission.titre }}
+                                        </a>
+                                    </div>
+                                    <div class="cat">
+                                        <p>
+                                            {{ emission.categorie.titre }}
+                                        </p>
+
+                                    </div>
+                                    <div class="descriptif">
+                                        <p>
+                                            {{ emission.descriptif | raw }}
+                                        </p>
+                                    </div>
+                                
+                                <div class='ecoute'>
                                     <a href="{{ emission.url }}">
                                         Écoutez l'émission
                                     </a>
-                            </div>
-                            <p>
-                                {{ emission.datepub|date('d-m-Y') }}
-                            </p>
-                            </td>
-
-                            <td>
-                                <div class="d-flex gap-1">
+                                </div>
+                                <p>
+                                    {{ emission.datepub|date('d-m-Y') }}
+                                </p>
+                                </div>
+                                <div class="col3">
                                     <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
                                         Éditer
                                     </a>
-                                    <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                                    {# <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
                                         <input type="hidden" name="_method" value="DELETE">
                                             <button type="submit" class="btn btn-danger btn-sm">
                                                 Supprimer
                                             </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <div class="pagination">
-                {{ knp_pagination_render(emissions) }}
-                </div>
-        {% endblock %}
-        
+                                        </form> #}
+                                </div>
+                            </section>
+                                {% endfor %}
+            </div>
+            </article>
+                                <div class="pagination">
+                                    {{ knp_pagination_render(emissions) }}
+                                </div>
+                            {% endblock %}
+                            
