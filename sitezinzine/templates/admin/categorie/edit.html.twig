@@ -10,7 +10,24 @@
 <style>
     .catedit img {
         width: 150px;
+        margin: auto;
     }
+    .catedit {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0%;
+        padding: 0%;
+        display: flex;
+        flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        }
+    .top img{
+        width: 100%;
+    }
+
     .tox-checklist > li:not(.tox-checklist--hidden) {
     list-style: none;
     margin: 0.25em 0;
@@ -28,55 +45,100 @@
     .tox-checklist li:not(.tox-checklist--hidden).tox-checklist--checked::before {
     content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-checked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%234099FF%22%20fill-rule%3D%22nonzero%22%20rx%3D%222%22%2F%3E%3Cpath%20id%3D%22Path%22%20fill%3D%22%23FFF%22%20fill-rule%3D%22nonzero%22%20d%3D%22M11.5703186%2C3.14417309%20C11.8516238%2C2.73724603%2012.4164781%2C2.62829933%2012.83558%2C2.89774797%20C13.260121%2C3.17069355%2013.3759736%2C3.72932262%2013.0909105%2C4.14168582%20L7.7580587%2C11.8560195%20C7.43776896%2C12.3193404%206.76483983%2C12.3852142%206.35607322%2C11.9948725%20L3.02491697%2C8.8138662%20C2.66090143%2C8.46625845%202.65798871%2C7.89594698%203.01850234%2C7.54483354%20C3.373942%2C7.19866177%203.94940006%2C7.19592841%204.30829608%2C7.5386474%20L6.85276923%2C9.9684299%20L11.5703186%2C3.14417309%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
     }
-    form {
-        background-color:#FAFAFA;
-        padding:10px;
-        width:280px;
-        }
-       fieldset {
-        padding:0 20px 20px 20px;
-        margin-bottom:10px;
-        border:1px solid #DF3F3F;
-        }
-       legend {
-        color:#DF3F3F;
-        font-weight:bold
-        }
-       label {
-        margin-top:10px;
-        display:block;
-        }
-       label.inline {
-        display:inline;
-        margin-right:50px;
-        }
-       input, textarea, select, option {
-        background-color:#FFF3F3;
-        }
-       input, textarea, select {
-        padding:3px;
-        border:1px solid #F5C5C5;
-        border-radius:5px;
-        width:200px;
-        box-shadow:1px 1px 2px #C0C0C0 inset;
-        }
-       select {
-        margin-top:10px;
-        }
-       input[type=radio] {
-        background-color:transparent;
-        border:none;
-        width:10px;
-        }
-       input[type=submit], input[type=reset] {
-        width:100px;
-        margin-left:5px;
-        box-shadow:1px 1px 1px #D83F3D;
-        cursor:pointer;
-        }</style>
+    
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  
+  form {
+    padding: 50px;
+  }
+  div.mb-3 {
+    margin: 15px;
+  }
+  label {
+    margin-bottom: 15px;
+  }
+  
+  #mceu_14 {
+    margin: 15px 0;
+  }
+  
+  textarea {
+    width: auto;
+  }
+  .form-label { color:white;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  
+  font-size: 16pt;
+  }
+  input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .catedit h1 {
+    color:white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 36pt;
+    margin: 20px;
+  }
+
+  .form-check {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: "Montserrat Alternates", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  color: white;
+  font-size: 16pt;
+  align-items: center;
+    text-align: center;
+    
+  }
+</style>
 <script src="{{ asset('js\tinymce.min.js') }}" type="text/javascript"></script>
 <div class="catedit">
-<h1>{{ categorie.titre }}</h1>
+<div class="top">
+<img src="{{ asset('/images/bottom-header.gif') }}"></div>
+<h1>{{ "Modifier " ~ categorie.titre }}</h1>
 
     {% if categorie.thumbnail %}
     <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
@@ -88,7 +150,7 @@
     tinymce.init(
         {
             selector: "textarea",
-            width:800,
+           
             plugins: [
                 'lists', 'link', 'preview'
                 

@@ -17,7 +17,7 @@
         display: flex;
         flex-direction: column;
         font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
+        font-weight: normal;
         font-style: normal;
         }
     .top img{
@@ -39,6 +39,7 @@
     }
     .col1 {
         width: 150px;
+        margin: auto;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -208,16 +209,17 @@
                                         </p>
                                     </div>
                                 
-                                <div class='ecoute'>
-                                    <a href="{{ emission.url }}">
-                                        Écoutez l'émission
-                                    </a>
-                                </div>
+                                
                                 <p>
-                                    {{ emission.datepub|date('d-m-Y') }}
+                                    {{ 'Dernière diffusion le ' ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
                                 </p>
                                 </div>
                                 <div class="col3">
+                                <div class='ecoute'>
+                                    <a href="{{ emission.url }}">
+                                    <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
+                                    </a>
+                                </div>
                                     <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
                                         Éditer
                                     </a>

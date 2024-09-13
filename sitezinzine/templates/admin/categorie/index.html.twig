@@ -35,15 +35,16 @@
         border: solid;
         display: grid;
         border-collapse: collapse;
-        grid-template-columns: 0.5fr 4fr 0.5fr 0.5fr;
+        grid-template-columns: 1fr 4fr 0.5fr 0.5fr;
     }
    
     .col1 {
-        
+     
         width: 150px;
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: auto;
        
        
     }
@@ -198,8 +199,11 @@
                                 </div>
                         </div>
                         <div class="col3">
-                                    
-                                    {{ categorie.total ~ ' émission(s)'}}
+                                    {% if categorie.total > 1 %}
+                                    {{ categorie.total ~ ' émissions'}}
+                                    {% else %}
+                                    {{ categorie.total ~ ' émission'}}
+                    {% endif %}
                         </div>
                             
                         <div class="col4">
