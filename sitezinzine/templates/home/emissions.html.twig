@@ -90,14 +90,22 @@
         background-color: black;
         color: white;
         display: grid;
-        grid-template-columns: 0.5fr 4fr 0.5fr;
-        margin: 70px;
-        grid-column-gap: 0px;
-        grid-row-gap: 3px ;
+        margin: 80px;
         align-items: center; 
         }
+
+        section {
+            border: solid;
+        border-collapse: collapse;
+        display: grid;
+        grid-template-columns: 1fr 4fr 1fr;
+        }
     .col1 {
-        background-color: black;
+        width: 150px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
        
     }
     .col1 img {
@@ -105,8 +113,7 @@
         padding: 10px;
     }
     .col2 {
-        background-color: black;
-        border-bottom: solid;
+       
     }
     .col3 {
         background-color: black;
@@ -133,7 +140,7 @@
            
                 <div class="emissions">
                     {% for emission in emissions %}
-                    
+                    <section>
                         <div class="col1">
                             {% if emission.thumbnail %}
                                 <img
@@ -164,7 +171,7 @@
                                 </p>
                             </div>
                             <div class="date">
-                                {{ 'Dernière diffusion le ' ~ emission.datepub|date('d-m-Y') }}
+                                {{ 'Dernière diffusion le ' ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
                             </div>
 
                         </div>
@@ -180,6 +187,7 @@
                                     <img src="{{ asset('/images/telecharger.jpg') }}" alt="télécharger l'émission"></a>
                             </div>
                         </div>
+                    </section>
                     {% endfor %}
 
                 </div>
