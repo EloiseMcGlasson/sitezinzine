@@ -1,43 +1,104 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title "Émission : " ~ emission.titre %}
 {% block body %}
-
-<style>
-    .bodyshowemission img {
-        width: 150px;
-    }
-</style>
-<div class="bodyshowemission">
-    <h1>
-        {{ emission.titre }}
-    </h1>
-    <p>
-        {{ emission.categorie.titre }}
-        -
-        {{ emission.datepub|date('d-m-Y') }}
-    </p>
-    <p>
-        {% if emission.thumbnail %}
-        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-    {% endif %}
-                {{ emission.descriptif  | raw}}
-            </p>
-        <p>
-            <a href="{{ emission.url }}">
-                Écoutez l'émission
-            </a>
-        </p>
-        <div class="cat">
-        <h2>
-            {{ emission.categorie.titre }}
-        </h2>
-        <p>
-            {% if emission.categorie.thumbnail %}
-        <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.categorie.titre }}">
-    {% endif %}
-            {{ emission.categorie.descriptif | raw}}
-        </p>
-        </div>
-</div>
-    {% endblock %}
+    <style>
+    .bodyemission {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    position: relative;
+    color: white;
     
+    line-height: 1.5em;
+    }
+.top img{
+    width: 100%;
+}
+.titre {
+    text-align: center;
+    margin: 10px;
+}
+h1 {
+    font-size: 23px;  
+}
+.texteemission {
+    margin: 20px;
+}
+
+.texteemission img {
+    float: left;
+    margin: 10px;
+    width: 250px;
+}
+.catemission {
+    background-color: white;
+        background-size: 100%;
+        color: black;
+}
+.catemission img {
+    float: right;
+    margin: 10px;
+    width: 250px;
+}
+.descriptif {
+    margin: 15px;
+}
+.bottom img {
+    width: 100%;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    
+}
+    
+    
+</style>
+    <div class="bodyemission">
+        <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            <div class="texteemission">
+                <div class="titre">
+                    <h1>
+                        {{ emission.titre }}
+                    </h1>
+                </div>
+                {% if emission.thumbnail %}
+                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                    {% endif %}
+                    <div class="descriptif">
+                        {{ emission.descriptif  | raw }}
+                    </div>
+                    <p>
+                        {{ "Dernière rediffusion le " ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
+                    </p>
+                    <p>
+                        <a href="{{ emission.url }}">
+                            Écoutez l'émission
+                        </a>
+                    </p>
+                </div>
+                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
+                    <div class="catemission">
+                        <div class="titre">
+                            <h1>
+                                {{ emission.categorie.titre }}
+                            </h1>
+                        </div>
+                        <p>
+                            {% if emission.categorie.thumbnail %}
+                                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.categorie.titre }}">
+                                {% endif %}
+                                <div class="descriptif">
+                                    {{ emission.categorie.descriptif | raw }}
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                {% endblock %}
+                

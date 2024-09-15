@@ -6,7 +6,7 @@ use App\Entity\Categories;
 use App\Entity\Emission;
 use App\Entity\Theme;
 use App\Entity\User;
-
+use Doctrine\DBAL\Types\IntegerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSubmitEvent;
@@ -36,12 +36,16 @@ class EmissionType extends AbstractType
             'choice_label' => 'name',
         ])
             ->add('titre', TextType::class, [
-                'empty_data' => 'Nouvelle émission'
+                'empty_data' => 'Nouvelle émission',
+                'label'=> 'Titre de l\'émission'
             ])
             ->add('keyword', TextType::class, [
-                'required' => false
+                'required' => false,
+                'label'=> 'Mot(s) clé(s)'
             ])
-            ->add('ref')
+            ->add('ref', TextType::class, [
+                'label'=> 'Créateurice(s)'
+            ])
             ->add('duree')
             ->add('url', UrlType::class)
             ->add('descriptif', TextareaType::class, [
@@ -50,7 +54,8 @@ class EmissionType extends AbstractType
             ])
         
             ->add('thumbnailFile', FileType::class, [
-                'required' => false
+                'required' => false,
+                'label' => 'Ajouter une image :'
             ])
             
 
