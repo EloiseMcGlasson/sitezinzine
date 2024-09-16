@@ -1,11 +1,8 @@
 {% extends 'admin/admin.html.twig' %}
-
 {% block title %}
     Toutes les émissions !
 {% endblock %}
-
 {% block body %}
-
     <style>
     
     .bodyadminemission {
@@ -166,74 +163,69 @@
             <img src="{{ asset('/images/bottom-header.gif') }}" alt=""></div>
             <p class="create">
                 <a class="btn-create-emission" href="{{ path('admin.emission.create') }}">
-
                     Créer une nouvelle émission
                 </a>
             </p>
-
             <div class="pagination">
                 {{ knp_pagination_render(emissions) }}
             </div>
             <article>
-            <div class="emissions">
-
-                {% for emission in emissions %}
-                <section>
-                    <div class="col1">
-
-                        {% if emission.thumbnail %}
-                            <img
-                            src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                {% elseif  emission.categorie.thumbnail %}
-                                <img
-                                src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
-                                    {# {% elseif  emission.theme.thumbnail %}
-                                    <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
-                                     #}{% endif %}
-                                </div>
-                                <div class="col2">
-                                    <div class="titre">
-                                        <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
-                                            {{ emission.titre }}
-                                        </a>
+                <div class="emissions">
+                    {% for emission in emissions %}
+                        <section>
+                            <div class="col1">
+                                {% if emission.thumbnail %}
+                                    <img
+                                    src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                        {% elseif  emission.categorie.thumbnail %}
+                                        <img
+                                        src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
+                                            {% elseif emission.theme.thumbnail is defined %}
+                                            <img
+                                            src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
+                                                {% else %}
+                                                <img src="{{ asset('/images/emission-zinzine.jpg') }}">
+                                                {% endif %}
+                                            </div>
+                                            <div class="col2">
+                                                <div class="titre">
+                                                    <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
+                                                        {{ emission.titre }}
+                                                    </a>
+                                                </div>
+                                                <div class="cat">
+                                                    <p>
+                                                        {{ emission.categorie.titre }}
+                                                    </p>
+                                                </div>
+                                                <div class="descriptif">
+                                                    <p>
+                                                        {{ emission.descriptif | raw }}
+                                                    </p>
+                                                </div>
+                                                <p>
+                                                    {{ 'Dernière diffusion le ' ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
+                                                </p>
+                                            </div>
+                                            <div class="col3">
+                                                <div class='ecoute'>
+                                                    <a href="{{ emission.url }}">
+                                                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></a>
+                                                    </div>
+                                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                        Éditer
+                                                    </a>
+                                                {# <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                    Supprimer
+                                                    </button>
+                                                </form> #}
+                                                </div>
+                                            </section>
+                                        {% endfor %}
                                     </div>
-                                    <div class="cat">
-                                        <p>
-                                            {{ emission.categorie.titre }}
-                                        </p>
-
-                                    </div>
-                                    <div class="descriptif">
-                                        <p>
-                                            {{ emission.descriptif | raw }}
-                                        </p>
-                                    </div>
-                                
-                                
-                                <p>
-                                    {{ 'Dernière diffusion le ' ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
-                                </p>
-                                </div>
-                                <div class="col3">
-                                <div class='ecoute'>
-                                    <a href="{{ emission.url }}">
-                                    <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
-                                    </a>
-                                </div>
-                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                        Éditer
-                                    </a>
-                                    {# <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                Supprimer
-                                            </button>
-                                        </form> #}
-                                </div>
-                            </section>
-                                {% endfor %}
-            </div>
-            </article>
+                                </article>
                                 <div class="pagination">
                                     {{ knp_pagination_render(emissions) }}
                                 </div>
