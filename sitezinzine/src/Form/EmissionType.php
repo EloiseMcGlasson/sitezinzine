@@ -6,11 +6,11 @@ use App\Entity\Categories;
 use App\Entity\Emission;
 use App\Entity\Theme;
 use App\Entity\User;
-use Doctrine\DBAL\Types\IntegerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -30,10 +30,12 @@ class EmissionType extends AbstractType
         ->add('categorie', EntityType::class, [
             'class' => Categories::class,
             'choice_label' => 'titre',
+            'label'=> 'Catégorie'
         ])
         ->add('theme', EntityType::class, [
             'class' => Theme::class,
             'choice_label' => 'name',
+            'label'=> 'Thème'
         ])
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle émission',
@@ -46,11 +48,15 @@ class EmissionType extends AbstractType
             ->add('ref', TextType::class, [
                 'label'=> 'Créateurice(s)'
             ])
-            ->add('duree')
-            ->add('url', UrlType::class)
+            ->add('duree', IntegerType::class, [
+                'label'=> 'Durée'
+            ])
+            ->add('url', UrlType::class, [
+                'label'=> 'Url de l\'émission'
+            ])
             ->add('descriptif', TextareaType::class, [
                 'empty_data' => 'Description à remplir',
-                'label'=> 'descriptif',
+                'label'=> 'Descriptif',
             ])
         
             ->add('thumbnailFile', FileType::class, [
