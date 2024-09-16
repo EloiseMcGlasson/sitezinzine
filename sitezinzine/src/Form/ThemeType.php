@@ -16,9 +16,12 @@ class ThemeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'label'=> 'Nom du thème'
+            ])
             ->add('thumbnailFile', FileType::class, [
-                'required' => false
+                'required' => false,
+                'label' => 'Ajouter une image :'
             ])
             ->add('Sauvegarder', SubmitType::class)
             

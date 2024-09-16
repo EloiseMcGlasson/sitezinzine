@@ -1,10 +1,20 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title "Catégorie : " ~ categorie.titre %}
 {% block body %}
-
-<style>
+    <style>
 .catshow {
-    padding: 50px;
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    position: relative;
+    color: white;
 }
 .titre {
     text-align: center;
@@ -14,81 +24,149 @@ h1 {
     font-size: 23px;  
 }
 article{
-    border-color: black;
     border: solid;
-    padding: 15px;
+    border-collapse: collapse;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    margin: 0 80px;
 }
-
-.catshow img {
+.col1 {
     width: 150px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.catemission {
+.col1 img {
+        width: 150px;
+        margin: 10px;
+    }
+    
+    .col2 {
+       margin: 20px;
+    }
+    .col3 {
+        
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "ecoute dl"; 
+    align-items: center;
+    justify-self: center;
+    }
 
-}
-.descriptif {
+.catdescriptif {
     margin: 15px;
 }
+.top img{
+    width: 100%;
+}
+.bottom img{
+    width: 100%;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    
+}
+.catemission img {
+    width: 150px;
+}
+.catimg img {
+    float: left;
+    margin: 10px;
+    width: 250px;
+}
+.ecoute img {
+        width: 40px;
+        height: 40px;
+        align-content: right;
+    }
+    
+    a {
+        padding: 14px 16px;
+        color: black;
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    a:hover {
+        padding: 14px 16px;
+        color: #E40039;
+        text-decoration: none;
+        font-weight: 800; 
+    }
 
 </style>
-<div class="catshow">
-<div class="titre">
-<h1>
-    {{ categorie.titre }}
-</h1>
-</div>
-<p>
-    {% if categorie.thumbnail %}
-    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
-{% endif %}
-<div class="catdescriptif">
-{{ categorie.descriptif | raw }}
-</div>
-</div>
-<div class="emissionsdelacategorie">
-<div class="titre">
-<h1>
-    Toutes les émissions de cette catégorie :
-</h1>
-</div>
-<div class="catemission">
-{% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
-
-<article>
-            <h1>
-                {{ emission.titre }}
-            </h1>
-            <p>
-            {% if emission.thumbnail %}
-            <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-        {% endif %}
-            </p>
-            <p>
-                {{ emission.datepub|date('d-m-Y') }}
-                {{ emission.descriptif | raw }}
-            </p>
-            {% if emission.url %}
-            <p>
-                <a href="{{ emission.url }}">
-                    Écoutez l'émission
-                </a>
-                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                        Éditer
-                                    </a>
-            </p>
-            {% else %}
-            <p>
-                
-                Pas de fichier audio disponible
-                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                    Éditer
-                                </a>
-            </a>
-        </p>
-        
-    {% endif %}
-</article>
-{% endfor %}
-</div>
-</div>
-    {% endblock %}
-    
+    <div class="catshow">
+        <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            <div class="catblock">
+            
+            <div class="titre">
+                <h1>
+                    {{ categorie.titre }}
+                </h1>
+            </div>
+            <div class="catimg">
+                {% if categorie.thumbnail %}
+                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+                    {% endif %}
+                </div>
+                <div class="catdescriptif">
+                    {{ categorie.descriptif | raw }}
+                </div>
+            </div>
+                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+                <div class="emissionsdelacategorie">
+                    <div class="titre">
+                        <h1>
+                            Toutes les émissions de cette catégorie :
+                        </h1>
+                    </div>
+                    <div class="catemission">
+                        {% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+                            <article>
+                                <div class="col1">
+                                    {% if emission.thumbnail %}
+                                        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col2">
+                                        <h1>
+                                            {{ emission.titre }}
+                                        </h1>
+                                        <p>
+                                            {{ emission.datepub|date('d-m-Y') }}
+                                            {{ emission.descriptif | raw }}
+                                        </p>
+                                    </div>
+                                    <div class="col3">
+                                        {% if emission.url %}
+                                        <div class='ecoute'>
+                                                <a href="{{ emission.url }}">
+                                                <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
+                                                </a>
+                                        </div>
+                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                    Éditer
+                                                </a>
+                                       
+                                        {% else %}
+                                            <p>
+                                                <div class='ecoute'>
+                                                Pas de fichier audio disponible
+                                                </div>
+                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                    Éditer
+                                                </a>
+                                            </a>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endblock %}
+            
