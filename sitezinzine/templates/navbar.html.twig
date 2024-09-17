@@ -120,6 +120,12 @@
                             FAIRE UN DON
                         </button>
                         </a>
+                        {% if form is defined %}
+                            
+                        {% include 'partials/searchdata.html.twig' with {
+                            form : form
+                        } only %}
+                        {% endif %}
                         <img src="{{ asset('/images/ico-recherche.gif') }}"></nav>
                    
             

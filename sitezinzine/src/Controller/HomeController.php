@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-
+use App\Form\SearchType;
+use App\Model\SearchData;
 use App\Repository\EmissionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,16 +13,23 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     #[Route("/", name: "home")]
-    function index(EmissionRepository $emissionRepository): Response
+    function index(EmissionRepository $emissionRepository, Request $request): Response
     {
         $lastEmissions = $emissionRepository->lastEmissions('');
         $lastEmissionsByTheme=$emissionRepository->lastEmissionsByTheme('');
-        
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchType::class, $searchData);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            dd($searchData->q);
+        }
         
         return $this->render('home/index.html.twig', [
             
+            'form' => $form->createView(),
             'lastEmissions' => $lastEmissions,
-            'lastEmissionsByTheme'=>$lastEmissionsByTheme
+            'lastEmissionsByTheme'=>$lastEmissionsByTheme,
+            
             
 
         ]);
