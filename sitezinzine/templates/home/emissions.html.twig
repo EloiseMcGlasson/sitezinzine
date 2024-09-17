@@ -133,6 +133,12 @@
     <div class="bodyemissions">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            {% if form is defined %}
+                            
+                        {% include 'partials/searchdata.html.twig' with {
+                            form : form
+                        } only %}
+                        {% endif %}
             <div class="pagination">
                 {{ knp_pagination_render(emissions) }}
             

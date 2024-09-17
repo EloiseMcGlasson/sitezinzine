@@ -5,8 +5,6 @@ namespace App\Form;
 use App\Entity\Categories;
 use App\Entity\Emission;
 use App\Entity\Theme;
-use App\Entity\User;
-use Doctrine\DBAL\Types\IntegerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSubmitEvent;

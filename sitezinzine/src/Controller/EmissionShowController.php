@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Emission;
 use App\Form\EmissionType;
-
+use App\Model\SearchData;
 use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,7 +22,12 @@ class EmissionShowController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request, EmissionRepository $emissionRepository): Response
     {
-    
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchType::class, $searchData);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            dd($searchData->q);
+        }
         $page = $request->query->getInt('page', 1);
         $limit= 25;
         $emissions = $emissionRepository->paginateEmissions($page, '');
@@ -30,7 +35,8 @@ class EmissionShowController extends AbstractController
       
         //dd($emissions->count());
         return $this->render('/home/emissions.html.twig', [
-            'emissions' => $emissions
+            'emissions' => $emissions,
+            'form' => $form->createView()
             
 
         ]);

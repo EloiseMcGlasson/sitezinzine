@@ -1,3 +1,6 @@
- {{ form(form.q) }}
-
- 
+ {{ form_start(form) }}
+ {{ form(form)  }}
+ <button type="submit">
+Rechercher
+ </button>
+ {{ form_end(form) }}
