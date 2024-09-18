@@ -21,6 +21,7 @@ class CategorieType extends AbstractType
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle catégorie',
                 'label'=> 'Titre de la catégorie',
+                
             ])
             
             ->add('editeur', TextType::class, [
