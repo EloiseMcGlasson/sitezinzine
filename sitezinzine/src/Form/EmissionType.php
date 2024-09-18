@@ -39,7 +39,8 @@ class EmissionType extends AbstractType
         ])
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle émission',
-                'label'=> 'Titre de l\'émission'
+                'label'=> 'Titre de l\'émission',
+               
             ])
             ->add('keyword', TextType::class, [
                 'required' => false,

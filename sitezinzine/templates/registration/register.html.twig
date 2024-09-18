@@ -3,15 +3,49 @@
 {% block title %}Inscrivez-vous !{% endblock %}
 
 {% block body %}
+<style>
+    
+    .bodyregister {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0%;
+        padding: 0%;
+        display: flex;
+        flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: normal;
+        font-style: normal;
+        height: 100vh;
+        }
+    .top img{
+        width: 100%;
+    }
+    .form {
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        line-height: 2em;
+    }
+    .form h1 {
+        font-size: 23px;  
+    }
+    label.form-label {
+        margin: 10px;
+    }
+</style>
+<div class="bodyregister">
+<div class="top">
+<img src="{{ asset('/images/bottom-header.gif') }}" alt=""></div>
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
-
+    <div class="form">
     <h1>S'inscrire</h1>
 
     {{ form_errors(registrationForm) }}
 
     {{ form(registrationForm) }}
-      
-    
+    </div>
+</div>
 {% endblock %}
