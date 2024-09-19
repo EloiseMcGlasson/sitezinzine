@@ -56,7 +56,40 @@ h1 {
     width: 100%;
     margin-bottom: 0px;
     padding-bottom: 0px;
-    
+}
+.texteemission a img {
+    width: 60px;
+        
+}
+
+.texteemission a {
+    padding: 14px 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+.texteemission a:hover {
+    padding: 14px 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+
+.catemission a {
+    padding: 14px 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+.catemission a:hover {
+    padding: 14px 16px;
+    color: #E40039;
+    text-decoration: none;
+    font-weight: 800;
+        
 }
     
     
@@ -67,7 +100,7 @@ h1 {
             <div class="texteemission">
                 <div class="titre">
                     <h1>
-                        {{ "Titre de l'émission : " ~ emission.titre }}
+                        {{ emission.titre }}
                     </h1>
                 </div>
                 {% if emission.thumbnail %}
@@ -80,8 +113,8 @@ h1 {
                         {{ "Dernière rediffusion le " ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
                     </p>
                     <p>
-                        <a href="{{ emission.url }}">
-                            Écoutez l'émission
+                        <a href="{{ emission.url }}"  target="_blank">
+                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                         </a>
                     </p>
                 </div>
@@ -89,7 +122,7 @@ h1 {
                     <div class="catemission">
                         <div class="titre">
                             <h1>
-                                {{ "Catégorie : " ~ emission.categorie.titre }}
+                                {{ emission.categorie.titre }}
                             </h1>
                         </div>
                         <p>

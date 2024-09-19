@@ -45,12 +45,17 @@
     }
 
     .carousel {
+      background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
       width: 250px;
       height: 300px;
       margin-bottom: 50px;
       margin-top: 50px;
       border:solid;
       border-color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
   
@@ -58,12 +63,14 @@
     .date_carousel {
       font-family: "Montserrat Alternates", sans-serif;
       font-size: 30px;
+      padding: 10px;
     }
 
     .titre_carousel {
       font-family: "Montserrat", sans-serif;
       font-weight: 900;
       font-size: 25px;
+      padding: 10px;
     }
 
     .categorie_carousel {
@@ -71,6 +78,7 @@
         font-weight: 600;
         font-size: 16px;
         background-color: #35BAC0;
+        padding: 10px;
     }
     .glide__arrows img {
       width: 100px;
@@ -89,6 +97,21 @@
     .glide {
       margin: 0px 20px;
     }
+
+    .titre_carousel a {
+    padding: 14px 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+.titre_carousel a:hover {
+    padding: 14px 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
  
 </style>
 <div class="bodyondes">
@@ -117,7 +140,9 @@
                             </div>
                             <div class='titre_carousel'>
                               <p>
+                                <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
                                 {{ lastEmission.titre | upper }}
+                                </a>
                               </p>
                             </div>
                             <div class='categorie_carousel'>

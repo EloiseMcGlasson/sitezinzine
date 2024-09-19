@@ -56,6 +56,40 @@ h1 {
     padding-bottom: 0px;
     
 }
+.texteemission a img {
+    width: 60px;
+        
+}
+
+.texteemission a {
+    padding: 14px 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+.texteemission a:hover {
+    padding: 14px 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+
+.catemission a {
+    padding: 14px 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+.catemission a:hover {
+    padding: 14px 16px;
+    color: #E40039;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
     
     
 </style>
@@ -79,8 +113,11 @@ h1 {
                     </p>
                     <p>
                         <a href="{{ emission.url }}">
-                            Écoutez l'émission
+                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                         </a>
+                        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                        Éditer
+                                                    </a>
                     </p>
                 </div>
                 <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
@@ -98,6 +135,9 @@ h1 {
                                     {{ emission.categorie.descriptif | raw }}
                                 </div>
                             </p>
+                            <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: emission.categorie.id}) }}">
+                                                        Éditer
+                                                    </a>
                         </div>
                     </div>
                 {% endblock %}
