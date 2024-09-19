@@ -143,7 +143,7 @@
         background-color: #7E4095;
         font-family: "Source Code Pro", monospace;
         text-align: center;
-        font-size: 16px;
+        font-size: 17px;
         margin: 0px;
         padding: 10px;
         color: white;
@@ -212,7 +212,7 @@
                     <a href="{{ path('emission.show', {id: lastEmissionByTheme.id }) }}">
                     <div class="theme">
                     <p>
-                    {{ lastEmissionByTheme.theme.name | default ('')}}
+                    {{ lastEmissionByTheme.theme.name | default ('') | upper }}
                     </p>
                 
                     </div>
@@ -225,7 +225,7 @@
                                 </div>
                                 <div class='titre'>
                                     <p>
-                                        {{ lastEmissionByTheme.titre | upper }}
+                                        {{ lastEmissionByTheme.titre }}
                                     </p>
                                 </div>
                                 <div class='date'>
