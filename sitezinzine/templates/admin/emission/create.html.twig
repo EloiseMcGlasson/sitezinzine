@@ -112,7 +112,10 @@ input {
   font-size: 36pt;
 }
 
-
+.ligne1 {
+  display: flex;
+  flex-direction: row;
+}
 </style>
 
 <div class="bodyadmincreateemission">
@@ -121,7 +124,16 @@ input {
     <h1>
         Créer une nouvelle émission
     </h1>
-    {{ form(form) }}
+    {{ form_start (form) }}
+      <div class="ligne1">
+        {{ form_row (form.categorie) }}
+        {{ form_row (form.theme) }}
+        {# TODO rajouter un if pour préremplir la durée de l'émission avec celle de la catégorie #}
+        {{ form_row (form.duree) }}
+        {{ form_row (form.ref) }}
+
+      </div>
+      {{ form_end (form) }}
 </div>
         <script type="text/javascript" language="javascript">
     tinymce.init(
