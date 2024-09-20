@@ -6,6 +6,8 @@ use App\Entity\Categories;
 use App\Entity\Emission;
 use App\Entity\Theme;
 use App\Entity\User;
+use App\Repository\CategoriesRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSubmitEvent;
@@ -30,7 +32,12 @@ class EmissionType extends AbstractType
         ->add('categorie', EntityType::class, [
             'class' => Categories::class,
             'choice_label' => 'titre',
-            'label'=> 'Catégorie'
+            'label'=> 'Catégorie',
+            'query_builder' => function (CategoriesRepository $er): QueryBuilder {
+                return $er->createQueryBuilder('u')
+                    ->where('u.active = 1' )
+                    ->orderBy('u.titre', 'ASC');
+            }
         ])
         ->add('theme', EntityType::class, [
             'class' => Theme::class,
