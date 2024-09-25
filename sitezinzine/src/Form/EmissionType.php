@@ -47,7 +47,7 @@ class EmissionType extends AbstractType
             ->add('duree')
             ->add('url', UrlType::class)
             ->add('descriptif', TextareaType::class, [
-                'empty_data' => 'Description à remplir',
+                'attr' => ['class' => 'tinymce'],
                 'label'=> 'descriptif',
             ])
         
