@@ -37,6 +37,9 @@ class Theme
     #[ORM\OneToMany(targetEntity: Emission::class, mappedBy: 'theme')]
     private Collection $emissions;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->emissions = new ArrayCollection();
@@ -117,6 +120,18 @@ class Theme
                 $emission->setTheme(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
