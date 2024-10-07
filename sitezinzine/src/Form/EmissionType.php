@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\Categories;
 use App\Entity\Emission;
 use App\Entity\Theme;
-use App\Entity\User;
+use App\Entity\Editeur;
 use App\Repository\CategoriesRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -44,38 +44,43 @@ class EmissionType extends AbstractType
             'choice_label' => 'name',
             'label'=> 'Thème'
         ])
-            ->add('titre', TextType::class, [
-                'empty_data' => 'Nouvelle émission',
-                'label'=> 'Titre de l\'émission',
-               
-            ])
-            ->add('keyword', TextType::class, [
-                'required' => false,
-                'label'=> 'Mot(s) clé(s)'
-            ])
-            ->add('ref', TextType::class, [
-                'label'=> 'Créateurice(s)'
-            ])
-            ->add('duree', IntegerType::class, [
-                'label'=> 'Durée'
-            ])
-            ->add('url', UrlType::class, [
-                'label'=> 'Url de l\'émission'
-            ])
-            ->add('descriptif', TextareaType::class, [
-                'empty_data' => 'Description à remplir',
-                'label'=> 'Descriptif',
-            ])
+        ->add('editeur', EntityType::class, [
+            'class' => Editeur::class,
+            'choice_label' => 'name',
+            'label'=> 'Éditeur'
+        ])
+        ->add('titre', TextType::class, [
+            'empty_data' => 'Nouvelle émission',
+            'label'=> 'Titre de l\'émission',
+            
+        ])
+        ->add('keyword', TextType::class, [
+            'required' => false,
+            'label'=> 'Mot(s) clé(s)'
+        ])
+        ->add('ref', TextType::class, [
+            'label'=> 'Créateurice(s)'
+        ])
+        ->add('duree', IntegerType::class, [
+            'label'=> 'Durée'
+        ])
+        ->add('url', UrlType::class, [
+            'label'=> 'Url de l\'émission'
+        ])
+        ->add('descriptif', TextareaType::class, [
+            'empty_data' => 'Description à remplir',
+            'label'=> 'Descriptif',
+        ])
+    
+        ->add('thumbnailFile', FileType::class, [
+            'required' => false,
+            'label' => 'Ajouter une image :'
+        ])
         
-            ->add('thumbnailFile', FileType::class, [
-                'required' => false,
-                'label' => 'Ajouter une image :'
-            ])
-            
 
-            ->add('Sauvegarder', SubmitType::class)
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoKeyword(...))
-            
+        ->add('Sauvegarder', SubmitType::class)
+        ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoKeyword(...))
+        
         ;
     }
 

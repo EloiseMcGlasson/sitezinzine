@@ -77,6 +77,10 @@ class Emission
     #[ORM\ManyToOne(inversedBy: 'emissions')]
     private ?User $user = null;
 
+    #[ORM\ManyToOne(inversedBy: 'emissions')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Editeur $editeur = null;
+
 
     public function getId(): ?int
     {
@@ -242,6 +246,18 @@ class Emission
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getEditeur(): ?Editeur
+    {
+        return $this->editeur;
+    }
+
+    public function setEditeur(?Editeur $editeur): static
+    {
+        $this->editeur = $editeur;
 
         return $this;
     }

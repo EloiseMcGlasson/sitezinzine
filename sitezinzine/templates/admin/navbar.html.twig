@@ -85,6 +85,11 @@
                                 Thèmes
                             </a>
                         </li>
+                        <li>
+                            <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
+                                Éditeurs
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
