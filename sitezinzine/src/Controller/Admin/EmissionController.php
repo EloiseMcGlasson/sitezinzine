@@ -27,7 +27,6 @@ class EmissionController extends AbstractController
         $limit= 25;
         $emissions = $emissionRepository->paginateEmissions($page, '');
         $maxPage = ceil($emissions->getTotalItemCount() / $limit);
-        //dd($emissions->count());
         return $this->render('admin/emission/index.html.twig', [
             'emissions' => $emissions,
             

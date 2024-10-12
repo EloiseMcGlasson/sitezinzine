@@ -21,7 +21,7 @@ class HomeController extends AbstractController
         $form = $this->createForm(SearchType::class, $searchData);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($searchData);
+            
         }
         
         return $this->render('home/index.html.twig', [
