@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\EmissionRepository;
 
@@ -23,7 +25,7 @@ class Emission
     private ?int $id = null;
 
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
-    #[ORM\Column(length: 40)]
+    #[ORM\Column(length: 250)]
     private string $titre = '';
 
     #[Groups(['emissions.index', 'emissions.create'])]
@@ -48,7 +50,7 @@ class Emission
     #[ORM\Column(length: 250)]
     #[Assert\Url(message: 'This value is not a valid URL')]
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
-    private ?string $url = null;
+    private string $url;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
@@ -80,6 +82,17 @@ class Emission
     #[ORM\ManyToOne(inversedBy: 'emissions')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Editeur $editeur = null;
+
+    /**
+     * @var Collection<int, Invite>
+     */
+    #[ORM\ManyToMany(targetEntity: Invite::class, inversedBy: 'emissions')]
+    private Collection $invites;
+
+    public function __construct()
+    {
+        $this->invites = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -258,6 +271,30 @@ class Emission
     public function setEditeur(?Editeur $editeur): static
     {
         $this->editeur = $editeur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invite>
+     */
+    public function getInvites(): Collection
+    {
+        return $this->invites;
+    }
+
+    public function addInvite(Invite $invite): static
+    {
+        if (!$this->invites->contains($invite)) {
+            $this->invites->add($invite);
+        }
+
+        return $this;
+    }
+
+    public function removeInvite(Invite $invite): static
+    {
+        $this->invites->removeElement($invite);
 
         return $this;
     }

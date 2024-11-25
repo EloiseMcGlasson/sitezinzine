@@ -71,8 +71,8 @@ class EmissionController extends AbstractController
         $emission = new Emission();
         $userId = $security->getUser();
         $form = $this->createForm(EmissionType::class, $emission);
-        $form->handleRequest($request);
         
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $emission->setDatepub(new \DateTime());
             $emission->setUpdatedat(new \DateTime());

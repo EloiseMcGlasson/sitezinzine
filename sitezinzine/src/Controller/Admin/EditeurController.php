@@ -70,4 +70,13 @@ class EditeurController extends AbstractController
             'form' => $form
         ]);
     }
+
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
+    public function remove(Editeur $editeur, EntityManagerInterface $em)
+    {
+        $em->remove($editeur);
+        $em->flush();
+        $this->addFlash('success', 'L\'editeur a bien été supprimé');
+        return $this->redirectToRoute('admin.editeur.index');
+    }
 }

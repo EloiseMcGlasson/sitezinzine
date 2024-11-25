@@ -200,17 +200,17 @@
             </div>
                 <article>
                     {% for lastEmissionByTheme in lastEmissionsByTheme %}
-                        {% if lastEmissionByTheme.thumbnail %}
+                        {% if lastEmissionByTheme.emission_thumbnail %}
                     
-                            <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/{{ lastEmissionByTheme.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmissionByTheme.categorie.thumbnail %}
-                            <div class='carte' style="background-image: url('https://localhost:8000/images/categories/{{ lastEmissionByTheme.categorie.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmissionByTheme.theme.thumbnail | default ('') %}
-                            <div class='carte' style="background-image: url('https://localhost:8000/images/theme/{{ lastEmissionByTheme.theme.thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                            <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/{{ lastEmissionByTheme.emission_thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                        {% elseif lastEmissionByTheme.categorie_thumbnail %}
+                            <div class='carte' style="background-image: url('https://localhost:8000/images/categories/{{ lastEmissionByTheme.categorie_thumbnail }}');background-size: cover;background-repeat: no-repeat;">
+                        {% elseif lastEmissionByTheme.theme_thumbnail | default ('') %}
+                            <div class='carte' style="background-image: url('https://localhost:8000/images/theme/{{ lastEmissionByTheme.theme_thumbnail }}');background-size: cover;background-repeat: no-repeat;">
                          {% else %}
                          <div class='carte' style="background-image: url('https://localhost:8000/images/emissions/fondcarte.jpg');background-size: cover;background-repeat: no-repeat;">
                         {% endif %}
-                    <a href="{{ path('emission.show', {id: lastEmissionByTheme.id }) }}">
+                    <a href="{{ path('emission.show', {id: lastEmissionByTheme.emission_id }) }}">
                     <div class="theme">
                     <p>
                     {{ lastEmissionByTheme.theme.name | default ('') | upper }}
@@ -221,22 +221,23 @@
                         
                                 <div class='categorie'>
                                     <p>
-                                        {{ lastEmissionByTheme.categorie.titre | upper }}
+                                        
+                                        {{ lastEmissionByTheme.categorie_titre | upper }}
                                     </p>
                                 </div>
                                 <div class='titre'>
                                     <p>
-                                        {{ lastEmissionByTheme.titre }}
+                                        {{ lastEmissionByTheme.emission_titre }}
                                     </p>
                                 </div>
                                 <div class='date'>
                                     <p>
-                                        {{ "Le " ~ lastEmissionByTheme.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
+                                        {{ "Le " ~ lastEmissionByTheme.emission_datepub| format_datetime ('medium', 'short', locale = 'fr') }}
                                     </p>
                                 </div>
                                 <div class='ecoute'>
                                     <p>
-                                        <a href="{{ lastEmissionByTheme.url }}">
+                                        <a href="{{ lastEmissionByTheme.emission_url }}">
                                         <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                                         </a>
                                     </p>

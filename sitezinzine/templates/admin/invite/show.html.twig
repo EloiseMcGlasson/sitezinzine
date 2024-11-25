@@ -1,0 +1,165 @@
+{% extends 'admin/admin.html.twig' %}
+{% block title "Éditeur : " ~ invite.Lastname %}
+{% block body %}
+    <style>
+.editshow {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    position: relative;
+    color: white;
+}
+.titre {
+    text-align: center;
+    margin: 10px;
+}
+h1 {
+    font-size: 23px;  
+}
+article{
+    border: solid;
+    border-collapse: collapse;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    margin: 0 80px;
+}
+{# .col1 {
+    width: 150px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.col1 img {
+        width: 150px;
+        margin: 10px;
+    } #}
+    
+    .col2 {
+       margin: 20px;
+    }
+    .col3 {
+        
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "ecoute dl"; 
+    align-items: center;
+    justify-self: center;
+    }
+
+.invitedescriptif {
+    margin: 15px;
+}
+.top img{
+    width: 100%;
+}
+.bottom img{
+    width: 100%;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    
+}
+.inviteemission img {
+    width: 150px;
+}
+.inviteimg img {
+    float: left;
+    margin: 10px;
+    width: 250px;
+}
+.ecoute img {
+        width: 40px;
+        height: 40px;
+        align-content: right;
+    }
+    
+    a {
+        padding: 14px 16px;
+        color: black;
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    a:hover {
+        padding: 14px 16px;
+        color: #E40039;
+        text-decoration: none;
+        font-weight: 800; 
+    }
+
+</style>
+    <div class="inviteshow">
+        <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            <div class="inviteblock">
+            
+            <div class="titre">
+                <h1>
+                    {{ invite.Lastname }}
+                </h1>
+            </div>
+          
+            </div>
+                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+                <div class="emissionsdelainvite">
+                    <div class="titre">
+                        <h1>
+                            Toutes les émissions de cet éditeur :
+                        </h1>
+                    </div>
+                    <div class="inviteemission">
+                        {% for emission in invite.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+                            <article>
+                                <div class="col1">
+                                    {% if emission.thumbnail %}
+                                        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col2">
+                                        <h1>
+                                            {{ emission.titre }}
+                                        </h1>
+                                        <p>
+                                            {{ emission.datepub|date('d-m-Y') }}
+                                            {{ emission.descriptif | raw }}
+                                        </p>
+                                    </div>
+                                    <div class="col3">
+                                        {% if emission.url %}
+                                        <div class='ecoute'>
+                                                <a href="{{ emission.url }}">
+                                                <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
+                                                </a>
+                                        </div>
+                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                    Éditer
+                                                </a>
+                                       
+                                        {% else %}
+                                            <p>
+                                                <div class='ecoute'>
+                                                Pas de fichier audio disponible
+                                                </div>
+                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                    Éditer
+                                                </a>
+                                            </a>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endblock %}
+            
