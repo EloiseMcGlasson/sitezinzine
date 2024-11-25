@@ -116,6 +116,11 @@ input {
   display: flex;
   flex-direction: row;
 }
+
+.ligne2 {
+  display: flex;
+  flex-direction: row;
+}
 </style>
 
 <div class="bodyadmincreateemission">
@@ -132,8 +137,10 @@ input {
         {{ form_row (form.duree) }}
         {{ form_row (form.ref) }}
         {{ form_row (form.editeur) }}
-
+        {{ form_row (form.invites) }}
+        
       </div>
+    
       {{ form_end (form) }}
 </div>
         <script type="text/javascript" language="javascript">
