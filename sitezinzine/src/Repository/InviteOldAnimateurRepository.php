@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Invite;
+use App\Entity\InviteOldAnimateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Invite>
+ * @extends ServiceEntityRepository<InviteOldAnimateur>
  */
-class InviteRepository extends ServiceEntityRepository
+class InviteOldAnimateurRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Invite::class);
+        parent::__construct($registry, InviteOldAnimateur::class);
     }
 
     //    /**
-    //     * @return Invite[] Returns an array of Invite objects
+    //     * @return InviteOldAnimateur[] Returns an array of InviteOldAnimateur objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class InviteRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Invite
+    //    public function findOneBySomeField($value): ?InviteOldAnimateur
     //    {
     //        return $this->createQueryBuilder('i')
     //            ->andWhere('i.exampleField = :val')

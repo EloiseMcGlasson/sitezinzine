@@ -1,5 +1,5 @@
 {% extends 'admin/admin.html.twig' %}
-{% block title "Éditeur : " ~ invite.Lastname %}
+{% block title "Éditeur : " ~ InviteOldAnimateur.Lastname %}
 {% block body %}
     <style>
 .editshow {
@@ -57,7 +57,7 @@ article{
     justify-self: center;
     }
 
-.invitedescriptif {
+.InviteOldAnimateurdescriptif {
     margin: 15px;
 }
 .top img{
@@ -69,10 +69,10 @@ article{
     padding-bottom: 0px;
     
 }
-.inviteemission img {
+.InviteOldAnimateuremission img {
     width: 150px;
 }
-.inviteimg img {
+.InviteOldAnimateurimg img {
     float: left;
     margin: 10px;
     width: 250px;
@@ -98,27 +98,27 @@ article{
     }
 
 </style>
-    <div class="inviteshow">
+    <div class="InviteOldAnimateurshow">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            <div class="inviteblock">
+            <div class="InviteOldAnimateurblock">
             
             <div class="titre">
                 <h1>
-                    {{ invite.Lastname }}
+                    {{ InviteOldAnimateur.Lastname }} {{ InviteOldAnimateur.Firstname }}
                 </h1>
             </div>
           
             </div>
                 <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
-                <div class="emissionsdelainvite">
+                <div class="emissionsdelaInviteOldAnimateur">
                     <div class="titre">
                         <h1>
                             Toutes les émissions de cet éditeur :
                         </h1>
                     </div>
-                    <div class="inviteemission">
-                        {% for emission in invite.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+                    <div class="InviteOldAnimateuremission">
+                        {% for emission in InviteOldAnimateur.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
                             <article>
                                 <div class="col1">
                                     {% if emission.thumbnail %}

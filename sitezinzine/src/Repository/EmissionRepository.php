@@ -124,31 +124,23 @@ class EmissionRepository extends ServiceEntityRepository
 $sql = '
     SELECT e.id AS emission_id,
     e.titre AS emission_titre,
-    e.keyword AS emission_keyword,
     e.datepub AS emission_datepub,
-    e.ref AS emission_ref,
     e.duree AS emission_duree,
     e.url AS emission_url,
     e.descriptif AS emission_descriptif,
     e.thumbnail AS emission_thumbnail,
-    e.updatedat AS emission_updatedat,
     e.categorie_id AS emission_categorie_id,
     e.theme_id AS emission_theme_id,
-    e.user_id AS emission_user_id,
-    e.editeur_id AS emission_editeur_id,
     c.id AS categorie_id,
     c.titre AS categorie_titre,
-    c.oldid AS categorie_oldid,
     c.editeur AS categorie_editeur,
     c.duree AS categorie_duree,
     c.descriptif AS categorie_descriptif,
     c.thumbnail AS categorie_thumbnail,
-    c.updated_at AS categorie_updated_at,
     c.active AS categorie_active,
     t.id AS theme_id,
     t.name AS theme_name,
     t.thumbnail AS theme_thumbnail,
-    t.updated_at AS theme_updated_at
     FROM emission e
     LEFT JOIN categories c ON e.categorie_id = c.id
     LEFT JOIN theme t ON e.theme_id = t.id
