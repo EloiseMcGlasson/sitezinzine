@@ -3,12 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Categories;
-use App\Entity\Invite;
+use App\Entity\InviteOldAnimateur;
 use App\Entity\Emission;
 use App\Entity\Theme;
 use App\Entity\Editeur;
 use App\Repository\CategoriesRepository;
-use App\Repository\InviteRepository;
+use App\Repository\InviteOldAnimateurRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -53,15 +53,15 @@ class EmissionType extends AbstractType
         ])
 
         
-        ->add('invites', EntityType::class, [
-            'class' => Invite::class,
-            'choice_label' => function (Invite $invite) {
-                return $invite->getLastName() . ' ' . $invite->getFirstName();},
+        ->add('InviteOldAnimateurs', EntityType::class, [
+            'class' => InviteOldAnimateur::class,
+            'choice_label' => function (InviteOldAnimateur $InviteOldAnimateur) {
+                return $InviteOldAnimateur->getLastName() . ' ' . $InviteOldAnimateur->getFirstName();},
             'label'=> 'Invité·es',
             'required' => false,
             'multiple' => true, // Enable multiple selections
             'expanded' => false, // Display checkboxes instead of a dropdown
-            'query_builder' => function (InviteRepository $er): QueryBuilder {
+            'query_builder' => function (InviteOldAnimateurRepository $er): QueryBuilder {
                 return $er->createQueryBuilder('u')
                     ->orderBy('u.lastName', 'ASC');}
         ])

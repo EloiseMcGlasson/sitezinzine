@@ -84,14 +84,14 @@ class Emission
     private ?Editeur $editeur = null;
 
     /**
-     * @var Collection<int, Invite>
+     * @var Collection<int, InviteOldAnimateur>
      */
-    #[ORM\ManyToMany(targetEntity: Invite::class, inversedBy: 'emissions')]
-    private Collection $invites;
+    #[ORM\ManyToMany(targetEntity: InviteOldAnimateur::class, inversedBy: 'emissions')]
+    private Collection $InviteOldAnimateurs;
 
     public function __construct()
     {
-        $this->invites = new ArrayCollection();
+        $this->InviteOldAnimateurs = new ArrayCollection();
     }
 
 
@@ -276,25 +276,25 @@ class Emission
     }
 
     /**
-     * @return Collection<int, Invite>
+     * @return Collection<int, InviteOldAnimateur>
      */
-    public function getInvites(): Collection
+    public function getInviteOldAnimateurs(): Collection
     {
-        return $this->invites;
+        return $this->InviteOldAnimateurs;
     }
 
-    public function addInvite(Invite $invite): static
+    public function addInviteOldAnimateur(InviteOldAnimateur $InviteOldAnimateur): static
     {
-        if (!$this->invites->contains($invite)) {
-            $this->invites->add($invite);
+        if (!$this->InviteOldAnimateurs->contains($InviteOldAnimateur)) {
+            $this->InviteOldAnimateurs->add($InviteOldAnimateur);
         }
 
         return $this;
     }
 
-    public function removeInvite(Invite $invite): static
+    public function removeInviteOldAnimateur(InviteOldAnimateur $InviteOldAnimateur): static
     {
-        $this->invites->removeElement($invite);
+        $this->InviteOldAnimateurs->removeElement($InviteOldAnimateur);
 
         return $this;
     }

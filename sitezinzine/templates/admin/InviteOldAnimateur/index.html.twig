@@ -7,7 +7,7 @@
 {% block body %}
     <style>
    
-    .bodyadmininvite {
+    .bodyadminInviteOldAnimateur {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
         width: 100%;
@@ -24,7 +24,7 @@
         width: 100%;
     }
    
-    .invite {
+    .InviteOldAnimateur {
         background-color: black;
         color: white;
         display: grid;
@@ -94,7 +94,7 @@
     }
   
 
-    .btn-create-invite {
+    .btn-create-InviteOldAnimateur {
         text-decoration: none;
         padding: 5px;
         font-size: 1.2em;
@@ -109,7 +109,7 @@
         -moz-box-shadow: 3px 7px 13px #444444;
     }
 
-    .btn-create-invite:hover {
+    .btn-create-InviteOldAnimateur:hover {
         padding: 5px;
         background-color: #E40039;
         color: #000000;
@@ -127,28 +127,30 @@
     }
    
     </style>
-    <div class="bodyadmininvite">
+    <div class="bodyadminInviteOldAnimateur">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
 
             <p class="create">
-                <a class="btn-create-invite" href="{{ path('admin.invite.create') }}">
-                    Créer un nouveau invite
+                <a class="btn-create-InviteOldAnimateur" href="{{ path('admin.InviteOldAnimateur.create') }}">
+                    Créer un nouveau invité ou ancien·ne animateurice
                 </a>
             </p>
            
             
             <article>
-            <div class="invite">
+            <div class="InviteOldAnimateur">
 
-                    {% for invite in invites %}
+                    {% for InviteOldAnimateur in InviteOldAnimateurs %}
 
                         <section>
                
                         <div class="col2">
                                 <div class="titre">
-                                    <a href="{{ path('admin.invite.show', {id: invite.id }) }}">
-                                        {{ invite.lastName }} {{ invite.firstName }}
+                                    <a href="{{ path('admin.InviteOldAnimateur.show', {id: InviteOldAnimateur.id }) }}">
+                                        {{ InviteOldAnimateur.lastName }} {{ InviteOldAnimateur.firstName }}
+                                     {% if InviteOldAnimateur.ancienanimateur %} Ancien·ne animateurice {% endif %}
+
 
                                     </a>
                                 </div>
@@ -158,10 +160,10 @@
                             
                         <div class="col4">
 
-                                <a class="btn btn-primary btn-sm" href="{{ path('admin.invite.edit', {id: invite.id}) }}">
+                                <a class="btn btn-primary btn-sm" href="{{ path('admin.InviteOldAnimateur.edit', {id: InviteOldAnimateur.id}) }}">
                                     Éditer
                                 </a>
-                            {# <form action="{{ path('admin.invite.delete', {id: invite.id}) }}" method="post">
+                            {# <form action="{{ path('admin.InviteOldAnimateur.delete', {id: InviteOldAnimateur.id}) }}" method="post">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-danger btn-sm">
                                 Supprimer

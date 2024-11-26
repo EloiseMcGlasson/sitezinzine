@@ -1,5 +1,5 @@
 {% extends 'admin/admin.html.twig' %}
-{% block title 'Éditer l\'éditeur' ~ editeur.name %}
+{% block title 'Éditer l\'invité ou l\'ancien·ne animateurice' ~ InviteOldAnimateur.lastName %}
 
 {% block body %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
@@ -139,7 +139,7 @@ input[type=text], select {
 <div class="editedit">
 <div class="top">
 <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-<h1>{{ "Modifier " ~ editeur.name }}</h1>
+<h1>{{ "Modifier " ~ InviteOldAnimateur.lastName }}</h1>
 
    
 

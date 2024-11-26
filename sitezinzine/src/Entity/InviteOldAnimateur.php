@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\InviteRepository;
+use App\Repository\InviteOldAnimateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: InviteRepository::class)]
-class Invite
+#[ORM\Entity(repositoryClass: InviteOldAnimateurRepository::class)]
+class InviteOldAnimateur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,8 +30,11 @@ class Invite
     /**
      * @var Collection<int, Emission>
      */
-    #[ORM\ManyToMany(targetEntity: Emission::class, mappedBy: 'invites')]
+    #[ORM\ManyToMany(targetEntity: Emission::class, mappedBy: 'InviteOldAnimateurs')]
     private Collection $emissions;
+
+    #[ORM\Column()]
+    private ?bool $ancienanimateur = null;
 
     public function __construct()
     {
@@ -105,7 +108,7 @@ class Invite
     {
         if (!$this->emissions->contains($emission)) {
             $this->emissions->add($emission);
-            $emission->addInvite($this);
+            $emission->addInviteOldAnimateur($this);
         }
 
         return $this;
@@ -114,8 +117,20 @@ class Invite
     public function removeEmission(Emission $emission): static
     {
         if ($this->emissions->removeElement($emission)) {
-            $emission->removeInvite($this);
+            $emission->removeInviteOldAnimateur($this);
         }
+
+        return $this;
+    }
+
+    public function isAncienanimateur(): ?bool
+    {
+        return $this->ancienanimateur;
+    }
+
+    public function setAncienanimateur(bool $ancienanimateur): static
+    {
+        $this->ancienanimateur = $ancienanimateur;
 
         return $this;
     }
