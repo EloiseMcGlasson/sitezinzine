@@ -19,4 +19,10 @@ vich_uploader:
             upload_destination: '%kernel.project_dir%/public/images/theme'
             namer:
                 service: Vich\UploaderBundle\Naming\PropertyNamer
-                options: { property: 'name'}
+                options: { property: 'name'}      
+        emissionsMp3:
+                    uri_prefix: /emissionsMp3
+                    upload_destination: '%kernel.project_dir%/public/emissionsMp3'
+                    namer:
+                        service: Vich\UploaderBundle\Naming\PropertyNamer
+                        options: { property: 'titre' }

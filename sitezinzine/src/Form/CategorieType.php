@@ -20,30 +20,34 @@ class CategorieType extends AbstractType
         $builder
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle catégorie',
-                'label'=> 'Titre de la catégorie',
-                
+                'label' => 'Titre de la catégorie',
+
             ])
-            
+
             ->add('editeur', TextType::class, [
-                
-                'label'=> 'Éditeur',
+
+                'label' => 'Éditeur',
             ])
+
             ->add('duree', IntegerType::class, [
-                'label'=> 'Durée'
-                ])
+                'label' => 'Durée'
+            ])
+
             ->add('descriptif', TextareaType::class, [
                 'empty_data' => 'Description à remplir',
-                'label'=> 'Descriptif',
+                'label' => 'Descriptif',
             ])
-           
+
             ->add('thumbnailFile', FileType::class, [
                 'required' => false,
                 'label' => 'Ajouter une image :'
             ])
+
             ->add('active', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Cocher si la catégorie est active'
             ])
+            
             ->add('Sauvegarder', SubmitType::class);
     }
 

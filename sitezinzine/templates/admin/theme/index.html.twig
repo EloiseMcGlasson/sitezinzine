@@ -97,6 +97,12 @@
         -webkit-box-shadow: 3px 7px 13px #777777;
         -moz-box-shadow: 3px 7px 13px #777777;
     }
+
+    .imagetheme{
+        width: 300px;
+        margin: auto;
+      }
+      
 </style>
 <div class="bodyadmintheme">
         <div class="top">
@@ -114,7 +120,7 @@
             <div class="col1">
             <p>
                 {% if theme.thumbnail %}
-                    <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
+                    <img class="imagetheme" src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
                     {% endif %}
                    
                 </p>

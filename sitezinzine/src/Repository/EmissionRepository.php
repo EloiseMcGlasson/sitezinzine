@@ -2,13 +2,13 @@
 
 namespace App\Repository;
 
-use App\Entity\Categories;
+
 use App\Entity\Emission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * @extends ServiceEntityRepository<Emission>
@@ -22,15 +22,15 @@ class EmissionRepository extends ServiceEntityRepository
 
     public function paginateEmissions(int $page, $value): PaginationInterface
     {
-        
+
         return $this->paginator->paginate(
-            
+
             $this->createQueryBuilder('r')
-            ->select('r', 'c')
-            ->leftJoin('r.categorie', 'c') 
-            ->andWhere('r.url != :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.datepub', 'DESC'),
+                ->select('r', 'c')
+                ->leftJoin('r.categorie', 'c')
+                ->andWhere('r.url != :val')
+                ->setParameter('val', $value)
+                ->orderBy('r.datepub', 'DESC'),
             $page,
             20,
             [
@@ -38,20 +38,6 @@ class EmissionRepository extends ServiceEntityRepository
                 'sortFieldAllowList' => ['r.titre']
             ]
         );
-        /* return new Paginator($this
-            ->createQueryBuilder('r')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->select('r', 'c')
-            ->andWhere('r.url != :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.datepub', 'DESC')
-            ->leftJoin('r.categorie', 'c')
-            ->getQuery()
-            ->setHint(Paginator::HINT_ENABLE_DISTINCT, false)
-            
-        ); */
-            
     }
     //    /**
     //     * @return Emission[] Returns an array of Emission objects
@@ -108,52 +94,43 @@ class EmissionRepository extends ServiceEntityRepository
 
     public function lastEmissionsByTheme($value): array
     {
-        /* return $this->createQueryBuilder('r')
-        ->select('r', 'c', 't')
-        ->leftJoin('r.categorie', 'c')
-        ->leftJoin('r.theme', 't')
-        ->addOrderBy('r.datepub', 'DESC')
-        ->Where('r.url != :val')
-        ->andWhere('r.theme != 0')
-        ->setParameter('val', $value)
-        ->GroupBy( 'r.theme')
-        ->getQuery()
-        ->getResult(); */
-
         $connection = $this->getEntityManager()->getConnection();
-$sql = '
-    SELECT e.id AS emission_id,
-    e.titre AS emission_titre,
-    e.datepub AS emission_datepub,
-    e.duree AS emission_duree,
-    e.url AS emission_url,
-    e.descriptif AS emission_descriptif,
-    e.thumbnail AS emission_thumbnail,
-    e.categorie_id AS emission_categorie_id,
-    e.theme_id AS emission_theme_id,
-    c.id AS categorie_id,
-    c.titre AS categorie_titre,
-    c.editeur AS categorie_editeur,
-    c.duree AS categorie_duree,
-    c.descriptif AS categorie_descriptif,
-    c.thumbnail AS categorie_thumbnail,
-    c.active AS categorie_active,
-    t.id AS theme_id,
-    t.name AS theme_name,
-    t.thumbnail AS theme_thumbnail,
-    FROM emission e
-    LEFT JOIN categories c ON e.categorie_id = c.id
-    LEFT JOIN theme t ON e.theme_id = t.id
-    WHERE e.url != :val
-      AND e.theme_id != 0
-    GROUP BY e.theme_id DESC
-    LIMIT 6
-';
-$stmt = $connection->prepare($sql);
-$stmt->bindValue('val', $value);
+        $sql = 'SELECT *
+                FROM (
+                SELECT e.id AS emission_id,
+                    e.titre AS emission_titre,
+                    e.datepub AS emission_datepub,
+                    e.duree AS emission_duree,
+                    e.url AS emission_url,
+                    e.descriptif AS emission_descriptif,
+                    e.thumbnail AS emission_thumbnail,
+                    e.categorie_id AS emission_categorie_id,
+                    e.theme_id AS emission_theme_id,
+                    c.id AS categorie_id,
+                    c.titre AS categorie_titre,
+                    c.editeur AS categorie_editeur,
+                    c.duree AS categorie_duree,
+                    c.descriptif AS categorie_descriptif,
+                    c.thumbnail AS categorie_thumbnail,
+                    c.active AS categorie_active,
+                    t.id AS theme_id,
+                    t.name AS theme_name,
+                    t.thumbnail AS theme_thumbnail
+                FROM emission e
+                LEFT JOIN categories c ON e.categorie_id = c.id
+                LEFT JOIN theme t ON e.theme_id = t.id
+                WHERE e.url != :val
+                AND e.theme_id != 0
+                ORDER BY e.theme_id, e.datepub DESC
+                ) subquery
+                    GROUP BY emission_theme_id
+                    ORDER BY emission_theme_id DESC
+                    LIMIT 6';
 
-$result = $stmt->executeQuery()->fetchAllAssociative();
-    return $result;
+        $stmt = $connection->prepare($sql);
+        $stmt->bindValue('val', $value);
 
+        $result = $stmt->executeQuery()->fetchAllAssociative();
+        return $result;
     }
 }
