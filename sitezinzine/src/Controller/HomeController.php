@@ -15,83 +15,83 @@ class HomeController extends AbstractController
     function index(EmissionRepository $emissionRepository): Response
     {
         $lastEmissions = $emissionRepository->lastEmissions('');
-        $lastEmissionsByTheme=$emissionRepository->lastEmissionsByTheme('');
-        
-        
+        $lastEmissionsByTheme = $emissionRepository->lastEmissionsByTheme('');
+
+
         return $this->render('home/index.html.twig', [
-            
+
             'lastEmissions' => $lastEmissions,
-            'lastEmissionsByTheme'=>$lastEmissionsByTheme
-            
+            'lastEmissionsByTheme' => $lastEmissionsByTheme
+
 
         ]);
     }
 
     #[Route("/radio", name: "radio")]
-    function radio(Request $request): Response
+    function radio(): Response
     {
-        
+
         return $this->render('home/radio.html.twig');
     }
 
     #[Route("/programme", name: "programme")]
-    function programme(Request $request): Response
+    function programme(): Response
     {
-        
+
         return $this->render('home/programme.html.twig');
     }
 
     #[Route("/infos", name: "infos")]
-    function infos(Request $request): Response
+    function infos(): Response
     {
-        
+
         return $this->render('home/infos.html.twig');
     }
 
     #[Route("/zone", name: "zone")]
-    function zone(Request $request): Response
+    function zone(): Response
     {
-        
+
         return $this->render('home/zoneecoute.html.twig');
     }
     #[Route("/aide", name: "aide")]
-    function aide(Request $request): Response
+    function aide(): Response
     {
-        
+
         return $this->render('home/aide.html.twig');
     }
     #[Route("/amis", name: "amis")]
-    function amis(Request $request): Response
+    function amis(): Response
     {
-        
+
         return $this->render('home/amis.html.twig');
     }
 
     #[Route("/mentions", name: "mentions")]
-    function mentions(Request $request): Response
+    function mentions(): Response
     {
-        
+
         return $this->render('home/mentions.html.twig');
     }
 
     #[Route("/contacts", name: "contacts")]
-    function contacts(Request $request): Response
+    function contacts(): Response
     {
-        
+
         return $this->render('home/contacts.html.twig');
     }
 
     #[Route("/don", name: "don")]
-    function don(Request $request): Response
+    function don(): Response
     {
-        
+
         return $this->render('home/don.html.twig');
     }
 
     #[Route("/annonces", name: "annonces")]
-    function annonces(Request $request): Response
+    function annonces(): Response
     {
-        
+
         return $this->render('home/annonces.html.twig');
     }
 }

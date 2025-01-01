@@ -56,8 +56,8 @@ class EmissionType extends AbstractType
         ->add('InviteOldAnimateurs', EntityType::class, [
             'class' => InviteOldAnimateur::class,
             'choice_label' => function (InviteOldAnimateur $InviteOldAnimateur) {
-                return $InviteOldAnimateur->getLastName() . ' ' . $InviteOldAnimateur->getFirstName();},
-            'label'=> 'Invité·es',
+                return $InviteOldAnimateur->getLastName() . ' ' . $InviteOldAnimateur->getFirstName() . ' ' . $InviteOldAnimateur->isAncienanimateur();},
+            'label'=> 'Invité·es Animateurices',
             'required' => false,
             'multiple' => true, // Enable multiple selections
             'expanded' => false, // Display checkboxes instead of a dropdown
@@ -93,6 +93,11 @@ class EmissionType extends AbstractType
         ->add('thumbnailFile', FileType::class, [
             'required' => false,
             'label' => 'Ajouter une image :'
+        ])
+
+        ->add('thumbnailFileMp3', FileType::class, [
+            'required' => false,
+            'label' => 'Ajouter un Mp3 :'
         ])
         
 

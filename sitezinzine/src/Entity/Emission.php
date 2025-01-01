@@ -65,9 +65,24 @@ class Emission
     private ?string $thumbnail = null;
 
     #[Vich\UploadableField(mapping: 'emissions', fileNameProperty: 'thumbnail')]
-    #[Assert\Image()] //ajouter les contraintes d'image ici voir doc
+    #[Assert\Image(
+        maxWidth: 650,
+        maxHeight: 500,
+    )]
     #[Groups(['emissions.index', 'emissions.create'])]
     private ?File $thumbnailFile = null;
+
+    #[Groups(['emissions.index', 'emissions.create'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $thumbnailMp3 = null;
+
+    #[Vich\UploadableField(mapping: 'emissionsMp3', fileNameProperty: 'thumbnailMp3')]
+    #[Assert\File(
+        extensions: ['mp3'],
+        extensionsMessage: 'Please upload a valid mp3',
+    )]
+    #[Groups(['emissions.index', 'emissions.create'])]
+    private ?File $thumbnailFileMp3 = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['emissions.index'])]
@@ -88,6 +103,8 @@ class Emission
      */
     #[ORM\ManyToMany(targetEntity: InviteOldAnimateur::class, inversedBy: 'emissions')]
     private Collection $InviteOldAnimateurs;
+
+
 
     public function __construct()
     {
@@ -299,5 +316,37 @@ class Emission
         return $this;
     }
 
+    public function getThumbnailMp3(): ?string
+    {
+        return $this->thumbnailMp3;
+    }
 
+    public function setThumbnailMp3(?string $thumbnailMp3): static
+    {
+        $this->thumbnailMp3 = $thumbnailMp3;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Get the value of thumbnailFileMp3
+     */ 
+    public function getThumbnailFileMp3()
+    {
+        return $this->thumbnailFileMp3;
+    }
+
+    /**
+     * Set the value of thumbnailFileMp3
+     *
+     * @return  self
+     */ 
+    public function setThumbnailFileMp3($thumbnailFileMp3): static
+    {
+        $this->thumbnailFileMp3 = $thumbnailFileMp3;
+
+        return $this;
+    }
 }
