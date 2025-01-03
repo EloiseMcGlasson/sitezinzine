@@ -51,6 +51,10 @@ installation de glide (pour les carrousel)
  composer update twig/twig
 
 
+gestion des tags mp3
+composer require james-heinrich/getid3
+
+
 
 
 

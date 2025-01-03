@@ -22,17 +22,13 @@ class EmissionShowController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request, EmissionRepository $emissionRepository): Response
     {
-    
         $page = $request->query->getInt('page', 1);
-        $limit= 25;
+        $limit = 25;
         $emissions = $emissionRepository->paginateEmissions($page, '');
         $maxPage = ceil($emissions->getTotalItemCount() / $limit);
-      
-        //dd($emissions->count());
+
         return $this->render('/home/emissions.html.twig', [
             'emissions' => $emissions
-            
-
         ]);
     }
 
@@ -44,13 +40,11 @@ class EmissionShowController extends AbstractController
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
             $emission->setUpdatedat(new \DateTime());
             $em->flush();
-            //$this->addFlash('success', 'L\'émission a bien été modifié');
             return $this->redirectToRoute('admin.emission.index');
         }
         return $this->render('/home/show.html.twig', [
             'emission' => $emission,
-            
+
         ]);
     }
-    
 }
