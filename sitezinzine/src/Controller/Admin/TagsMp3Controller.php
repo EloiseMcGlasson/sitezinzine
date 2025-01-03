@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\TagsMp3;
 use App\Form\TagsMp3Type;
@@ -71,7 +71,7 @@ class TagsMp3Controller extends AbstractController
             return $this->redirectToRoute('tagsmp3_index');
         }
 
-        return $this->render('tagsmp3/edit.html.twig', [
+        return $this->render('tagsmp3/tags.html.twig', [
             'tagsMp3' => $tagsMp3,
             'form' => $form->createView(),
         ]);
