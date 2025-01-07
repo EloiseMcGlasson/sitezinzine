@@ -112,7 +112,7 @@ input {
   font-size: 36pt;
 }
 
-.ligne1 {
+.ligne1 { {{ form_start (form) }}
   display: flex;
   flex-direction: row;
 }
@@ -129,7 +129,7 @@ input {
     <h1>
         Créer une nouvelle émission
     </h1>
-    {{ form_start (form) }}
+   
       <div class="ligne1">
         {{ form_row (form.categorie) }}
         {{ form_row (form.theme) }}

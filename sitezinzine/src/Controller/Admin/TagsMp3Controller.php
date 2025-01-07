@@ -1,92 +1,92 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
-use App\Entity\TagsMp3;
+use App\Model\TagsMp3;
 use App\Form\TagsMp3Type;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use getID3;
 
-#[IsGranted('ROLE_USER')]
 class TagsMp3Controller extends AbstractController
 {
-    /*  #[Route('/tagsmp3', name: 'tagsmp3_index', methods: ['GET'])]
-    public function index(): Response
-    {
-        // Afficher une page d'accueil ou une liste de fichiers MP3
-        return $this->render('tagsmp3/index.html.twig');
-    } */
+    private EntityManagerInterface $entityManager;
 
-    #[Route('/tagsmp3/new', name: 'tagsmp3_new', methods: ['GET', 'POST'])]
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    #[Route('/tags/new', name: 'tags_mp3_new')]
     public function new(Request $request): Response
     {
         $tagsMp3 = new TagsMp3();
         $form = $this->createForm(TagsMp3Type::class, $tagsMp3);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Traiter le fichier MP3 et mettre à jour les métadonnées
-            $file = $form->get('logo')->getData();
-            if ($file) {
-                $filePath = $file->getRealPath();
-                $getID3 = new getID3;
-                $ThisFileInfo = $getID3->analyze($filePath);
-
-                // Mettre à jour les métadonnées du fichier MP3
-                // (ajoutez ici le code pour modifier les métadonnées en utilisant getID3)
+            // Si un fichier logo est téléchargé, gère son traitement ici
+            /** @var File $logoFile */
+            $logoFile = $tagsMp3->getLogo();
+            if ($logoFile) {
+                $fileName = uniqid().'.'.$logoFile->guessExtension();
+                $logoFile->move($this->getParameter('logos_directory'), $fileName);
+                $tagsMp3->setLogo($fileName); // Enregistre le nom du fichier dans l'entité
             }
 
-            return $this->redirectToRoute('tagsmp3_index');
+            // Sauvegarde l'entité en base de données
+            $this->entityManager->persist($tagsMp3);
+            $this->entityManager->flush();
+
+            // Redirection ou réponse après la soumission
+            return $this->redirectToRoute('tags_mp3_list'); // Remplacez par votre route de liste
         }
 
-        return $this->render('tagsmp3/new.html.twig', [
-            'tagsMp3' => $tagsMp3,
+        return $this->render('tags_mp3/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/tagsmp3/edit', name: 'tagsmp3_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request): Response
+    #[Route('/tags/{id}/edit', name: 'tags_mp3_edit')]
+    public function edit(Request $request, TagsMp3 $tagsMp3): Response
     {
-        $tagsMp3 = new TagsMp3();
         $form = $this->createForm(TagsMp3Type::class, $tagsMp3);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Traiter le fichier MP3 et mettre à jour les métadonnées
-            $file = $form->get('logo')->getData();
-            if ($file) {
-                $filePath = $file->getRealPath();
-                $getID3 = new getID3;
-                $ThisFileInfo = $getID3->analyze($filePath);
-
-                // Mettre à jour les métadonnées du fichier MP3
-                // (ajoutez ici le code pour modifier les métadonnées en utilisant getID3)
+            // Si un nouveau fichier logo est téléchargé, gère son traitement ici
+            /** @var File $logoFile */
+            $logoFile = $tagsMp3->getLogo();
+            if ($logoFile) {
+                $fileName = uniqid().'.'.$logoFile->guessExtension();
+                $logoFile->move($this->getParameter('logos_directory'), $fileName);
+                $tagsMp3->setLogo($fileName); // Enregistre le nom du fichier dans l'entité
             }
 
-            return $this->redirectToRoute('tagsmp3_index');
+            // Sauvegarde les modifications en base de données
+            $this->entityManager->flush();
+
+            // Redirection ou réponse après la soumission
+            return $this->redirectToRoute('tags_mp3_list'); // Remplacez par votre route de liste
         }
 
-        return $this->render('tagsmp3/tags.html.twig', [
-            'tagsMp3' => $tagsMp3,
+        return $this->render('tags_mp3/edit.html.twig', [
             'form' => $form->createView(),
+            'tagsMp3' => $tagsMp3,
         ]);
     }
 
-    #[Route('/tagsmp3/show', name: 'tagsmp3_show', methods: ['GET'])]
-    public function show(Request $request): Response
+    #[Route('/tags', name: 'tags_mp3_list')]
+    public function list(): Response
     {
-        // Afficher les détails d'un fichier MP3
-        $filePath = $request->query->get('file');
-        $getID3 = new getID3;
-        $ThisFileInfo = $getID3->analyze($filePath);
+        $tagsMp3List = $this->entityManager->getRepository(TagsMp3::class)->findAll();
 
-        return $this->render('tagsmp3/show.html.twig', [
-            'fileInfo' => $ThisFileInfo,
+        return $this->render('tags_mp3/list.html.twig', [
+            'tagsMp3List' => $tagsMp3List,
         ]);
     }
 }

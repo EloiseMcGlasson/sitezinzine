@@ -122,8 +122,56 @@ input[type=text], select {
     flex-direction: row;
   }
 
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: block; /* Important : la popup doit s'afficher en "block" par défaut */
+}
+
+.popup.hidden {
+    display: none; /* La classe "hidden" cache la popup */
+}
+
+.popup-content {
+   
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    max-width: 500px; /* Limite la largeur */
+    max-height: 80vh; /* Limite la hauteur à 80% de la hauteur de la fenêtre */
+    overflow-y: auto; /* Ajoute un scroll vertical si le contenu dépasse */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.popup-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.popup-content form input,
+.popup-content form button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+
  </style>
-    <script src="{{ asset('js\tinymce.min.js') }}" type="text/javascript"></script> 
+ <head
+    <script src="{{ asset('js/tinymce.min.js') }}" type="text/javascript"></script> 
+    </head>
     <div class="bodyadmineditemission">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
@@ -145,14 +193,22 @@ input[type=text], select {
 
       <div class="ligne2">
         {{ form_row (formEmission.thumbnailFile) }}
-        {{ form_row (formEmission.thumbnailFileMp3) }}
+        {{ form_row (formEmission.thumbnailFileMp3, {'attr': {'id': 'emission_thumbnailFileMp3'}}) }}
 
       </div>
 <div id="thumbnailFileMp3Message">
+{# {% include 'partials/tags.html.twig' %} #}
       </div>
-      {{ form_end (formEmission) }}
+      <div id="popup" class="popup hidden">
+    <div class="popup-content">
+        <!-- Contenu du formulaire -->
+        {% include 'partials/tags.html.twig' %}
+        <button id="closePopup">Fermer</button>
+    </div>
+</div>
 
       
+      {{ form_end (formEmission) }}
       
     <script type="text/javascript" language="javascript">
     tinymce.init(
@@ -173,17 +229,32 @@ input[type=text], select {
             tinymce.triggerSave(true, true);
            
         }
+        
         document.addEventListener('DOMContentLoaded', function() {
-          document.getElementById('emission_thumbnailFileMp3').addEventListener('input', function() {
-              var messageDiv = document.getElementById('thumbnailFileMp3Message');
-              if (this.value === '') {
-                  console.log(this.value);
-                  messageDiv.innerHTML = '<p>Le champ thumbnailFileMp3 est vide.</p>';
-              } else {
-                {% include 'partials/tags.html.twig' %}
-              }
-          });
-      });
+          const thumbnailFileMp3 = document.getElementById('emission_thumbnailFileMp3');
+          var messageDiv = document.getElementById('thumbnailFileMp3Message');
+          const popup = document.getElementById('popup');
+          const closePopup = document.getElementById('closePopup');
+           // Vérification au chargement initial
+    if (!thumbnailFileMp3.value) {
+   // messageDiv.innerHTML = '<p>Le champ thumbnailFileMp3 est vide.</p>';
+}
+          // Écoute de l'événement input
+    thumbnailFileMp3.addEventListener('input', function () {
+      if (!this.value) {
+        //  messageDiv.innerHTML = '<p>Le champ thumbnailFileMp3 est vide.</p>';
+      } else {
+          messageDiv.innerHTML = ''; // Efface le message si le champ n'est plus vide
+          // Affiche la popup
+          popup.classList.remove('hidden');
+      }
+  });
+
+  // Ferme la popup
+  closePopup.addEventListener('click', function () {
+      popup.classList.add('hidden');
+  });
+});
         
         </script>
 

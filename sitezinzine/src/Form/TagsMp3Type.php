@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\TagsMp3;
+use App\Model\TagsMp3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -21,15 +21,15 @@ class TagsMp3Type extends AbstractType
                 'required' => false,
             ])
             ->add('artiste', TextType::class, [
-                'label' => 'Artiste',
+                'label' => 'Créateur/trice',
                 'required' => false,
             ])
             ->add('album', TextType::class, [
-                'label' => 'Album',
+                'label' => 'Catégorie',
                 'required' => false,
             ])
             ->add('comment', TextType::class, [
-                'label' => 'Commentaire',
+                'label' => 'Présentation de l\'émission',
                 'required' => false,
             ])
             ->add('genre', TextType::class, [

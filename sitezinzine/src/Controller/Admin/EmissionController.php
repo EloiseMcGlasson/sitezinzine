@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\TagsMp3;
+use App\Form\TagsMp3Type;
 use App\Entity\Emission;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Form\EmissionType;
@@ -13,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
+use getID3;
 
 #[Route("/admin/emission", name: 'admin.emission.')]
 #[IsGranted('ROLE_USER')]
@@ -50,6 +52,9 @@ class EmissionController extends AbstractController
         $formEmission = $this->createForm(EmissionType::class, $emission);
         $formEmission->handleRequest($request);
         $userId = $security->getUser();
+        $tagsMp3 = new TagsMp3();
+        $form = $this->createForm(TagsMp3Type::class, $tagsMp3);
+        $form->handleRequest($request);
         if ($formEmission->isSubmitted() && $formEmission->isValid()) {
             if (!$emission->getUser()){
                 $emission->setUser($userId);
@@ -59,9 +64,24 @@ class EmissionController extends AbstractController
             $this->addFlash('success', 'L\'émission a bien été modifié');
             return $this->redirectToRoute('admin.emission.index');
         }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traiter le fichier MP3 et mettre à jour les métadonnées
+            $file = $form->get('logo')->getData();
+            if ($file) {
+                $filePath = $file->getRealPath();
+                $getID3 = new getID3;
+                $ThisFileInfo = $getID3->analyze($filePath);
+
+                // Mettre à jour les métadonnées du fichier MP3
+                // (ajoutez ici le code pour modifier les métadonnées en utilisant getID3)
+            }
+            return $this->redirectToRoute('admin.emission.index');
+        }
         return $this->render('admin/emission/edit.html.twig', [
             'emission' => $emission,
-            'formEmission' => $formEmission
+            'formEmission' => $formEmission,
+            'tagsMp3' => $tagsMp3,
+            'form' => $form->createView(),
         ]);
     }
     #[Route('/create', name: 'create')]

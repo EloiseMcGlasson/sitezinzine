@@ -1,4 +1,28 @@
-<style>
-</style>
 
-<p>Le champ thumbnailFileMp3 est rempli.</p>
+
+
+{% block body %}
+<style>
+
+.bodytagsmp3 {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+</style>
+<div class="bodytagsmp3">
+    <h1>Modifier les tags MP3</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">Enregistrer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
