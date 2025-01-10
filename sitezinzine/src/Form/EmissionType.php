@@ -33,6 +33,8 @@ class EmissionType extends AbstractType
 
         ->add('categorie', EntityType::class, [
             'class' => Categories::class,
+            'placeholder' => 'Sélectionnez une catégorie',// Texte par défaut
+            'data' => null, // Assure qu'aucune valeur n'est sélectionnée par défaut
             'choice_label' => 'titre',
             'label'=> 'Catégorie',
             'query_builder' => function (CategoriesRepository $er): QueryBuilder {
@@ -43,6 +45,8 @@ class EmissionType extends AbstractType
         ])
         ->add('theme', EntityType::class, [
             'class' => Theme::class,
+            'placeholder' => 'Sélectionnez un thème',// Texte par défaut
+            'data' => null, // Assure qu'aucune valeur n'est sélectionnée par défaut
             'choice_label' => 'name',
             'label'=> 'Thème'
         ])
