@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\TagsMp3;
+use App\Model\TagsMp3;
 use App\Form\TagsMp3Type;
 use App\Entity\Emission;
 use Symfony\Bundle\SecurityBundle\Security;

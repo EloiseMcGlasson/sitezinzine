@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Model\TagsMp3;
 use App\Form\TagsMp3Type;
@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use getID3;
 
 class TagsMp3Controller extends AbstractController
 {
@@ -50,33 +51,30 @@ class TagsMp3Controller extends AbstractController
         ]);
     }
 
-    #[Route('/tags/{id}/edit', name: 'tags_mp3_edit')]
-    public function edit(Request $request, TagsMp3 $tagsMp3): Response
+    #[Route('/tagsmp3/edit', name: 'tags_mp3_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request): Response
     {
-        $form = $this->createForm(TagsMp3Type::class, $tagsMp3);
+        $form = $this->createForm(TagsMp3Type::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Si un nouveau fichier logo est téléchargé, gère son traitement ici
-            /** @var File $logoFile */
-            $logoFile = $tagsMp3->getLogo();
-            if ($logoFile) {
-                $fileName = uniqid().'.'.$logoFile->guessExtension();
-                $logoFile->move($this->getParameter('logos_directory'), $fileName);
-                $tagsMp3->setLogo($fileName); // Enregistre le nom du fichier dans l'entité
+            // Traiter le fichier MP3 et lire les métadonnées
+            $file = $form->get('logo')->getData();
+            if ($file) {
+                $filePath = $file->getRealPath();
+                $getID3 = new getID3;
+                $ThisFileInfo = $getID3->analyze($filePath);
+
+                // Afficher les informations des tags MP3
+                return $this->render('tags_mp3/show.html.twig', [
+                    'fileInfo' => $ThisFileInfo,
+                ]);
             }
-
-            // Sauvegarde les modifications en base de données
-            $this->entityManager->flush();
-
-            // Redirection ou réponse après la soumission
-            return $this->redirectToRoute('tags_mp3_list'); // Remplacez par votre route de liste
         }
 
         return $this->render('tags_mp3/edit.html.twig', [
             'form' => $form->createView(),
-            'tagsMp3' => $tagsMp3,
         ]);
     }
 

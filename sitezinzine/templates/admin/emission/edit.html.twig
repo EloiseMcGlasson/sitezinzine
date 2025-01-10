@@ -190,21 +190,20 @@ input[type=text], select {
         {{ form_row (formEmission.ref) }}
         {{ form_row (formEmission.editeur) }}
       </div>
-
       <div class="ligne2">
         {{ form_row (formEmission.thumbnailFile) }}
         {{ form_row (formEmission.thumbnailFileMp3, {'attr': {'id': 'emission_thumbnailFileMp3'}}) }}
 
+        <div id="thumbnailFileMp3Message">
+        <button id="openPopup">Ajouter des tags</button>
+              </div>
+              <div id="popup" class="popup hidden">
+            <div class="popup-content">
+                <!-- Contenu du formulaire -->
+                {% include 'partials/tags.html.twig' %}
+                <button id="closePopup">Fermer</button>
+            </div>
       </div>
-<div id="thumbnailFileMp3Message">
-{# {% include 'partials/tags.html.twig' %} #}
-      </div>
-      <div id="popup" class="popup hidden">
-    <div class="popup-content">
-        <!-- Contenu du formulaire -->
-        {% include 'partials/tags.html.twig' %}
-        <button id="closePopup">Fermer</button>
-    </div>
 </div>
 
       
@@ -249,6 +248,9 @@ input[type=text], select {
           popup.classList.remove('hidden');
       }
   });
+  openPopup.addEventListener('click', function () {
+    popup.classList.remove('hidden');
+});
 
   // Ferme la popup
   closePopup.addEventListener('click', function () {
