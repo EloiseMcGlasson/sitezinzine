@@ -16,7 +16,7 @@ class TagsMp3Type extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre', TextType::class, [
+            ->add('title', TextType::class, [
                 'label' => 'Titre',
                 'required' => false,
             ])

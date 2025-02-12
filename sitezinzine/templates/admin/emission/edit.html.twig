@@ -169,7 +169,7 @@ input[type=text], select {
 
 
  </style>
- <head
+ <head>
     <script src="{{ asset('js/tinymce.min.js') }}" type="text/javascript"></script> 
     </head>
     <div class="bodyadmineditemission">
@@ -178,38 +178,36 @@ input[type=text], select {
     <h1>{{ "Modifier " ~ emission.titre }}</h1>
 
     {% if emission.thumbnail %}
-    <img class="imageemission" src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-    {% endif %}
-
-    {{ form_start (formEmission) }}
-
-      <div class="ligne1">
-        {{ form_row (formEmission.categorie) }}
-        {{ form_row (formEmission.theme) }}
-        {{ form_row (formEmission.duree) }}
-        {{ form_row (formEmission.ref) }}
-        {{ form_row (formEmission.editeur) }}
+  <img class="imageemission" src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+  {% endif %}
+  {{ form_start (formEmission) }}
+  <div class="ligne1">
+    {{ form_row (formEmission.categorie) }}
+    {{ form_row (formEmission.theme) }}
+    {{ form_row (formEmission.duree) }}
+    {{ form_row (formEmission.ref) }}
+    {{ form_row (formEmission.editeur) }}
+  </div>
+  <div class="ligne2">
+    {{ form_row (formEmission.thumbnailFile) }}
+    {{ form_row (formEmission.thumbnailFileMp3, {'attr': {'id': 'emission_thumbnailFileMp3' }}
+    ) }}
+    <div id="thumbnailFileMp3Message">
+      <button id="openPopup">
+        Ajouter des tags
+      </button>
+    </div>
+    <div id="popup" class="popup hidden">
+      <div class="popup-content">
+        <!-- Contenu du formulaire -->
+        {#  {% include 'partials/tags.html.twig' %} #}
+          <button id="closePopup"> Fermer
+        </button>
       </div>
-      <div class="ligne2">
-        {{ form_row (formEmission.thumbnailFile) }}
-        {{ form_row (formEmission.thumbnailFileMp3, {'attr': {'id': 'emission_thumbnailFileMp3'}}) }}
-
-        <div id="thumbnailFileMp3Message">
-        <button id="openPopup">Ajouter des tags</button>
-              </div>
-              <div id="popup" class="popup hidden">
-            <div class="popup-content">
-                <!-- Contenu du formulaire -->
-                {% include 'partials/tags.html.twig' %}
-                <button id="closePopup">Fermer</button>
-            </div>
-      </div>
-</div>
-
-      
-      {{ form_end (formEmission) }}
-      
-    <script type="text/javascript" language="javascript">
+    </div>
+  </div>
+  {{ form_end (formEmission) }}
+  <script type="text/javascript" language="javascript">
     tinymce.init(
         {
             selector: "textarea",
@@ -259,5 +257,4 @@ input[type=text], select {
 });
         
         </script>
-
 {% endblock %}

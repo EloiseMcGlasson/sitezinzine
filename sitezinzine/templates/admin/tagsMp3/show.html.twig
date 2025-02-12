@@ -1,0 +1,30 @@
+{# filepath: /c:/Users/mcgla/xampp/htdocs/siteZinzine/sitezinzine/sitezinzine/templates/tagsmp3/show.html.twig #}
+<!DOCTYPE html>
+<html>
+<style>
+img {
+    width: 200px ;
+}
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>MP3 Metadata</title>
+</head>
+<body>
+    <h1>Informations sur le fichier MP3</h1>
+
+        {{ form_start (formTags) }}
+        {{ form_row (formTags) }}
+
+
+    {% if imageData and imageMime %}
+        <img src="data:{{ imageMime }};base64,{{ imageData }}" alt="Embedded Image">
+    {% endif %}
+
+    {{ form_end (formTags) }}
+
+
+    <pre>{{ fileInfo.comments_html | json_encode(constant('JSON_PRETTY_PRINT'))|raw }}</pre>
+</body>
+</html>
