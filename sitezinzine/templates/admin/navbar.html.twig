@@ -20,7 +20,7 @@
             text-decoration: none;
             font-weight: 800;
     }
-    li a:hover {
+    li a:hover, .dropbtn:hover {
             padding: 14px 16px;
             color: #E40039;
             text-decoration: none;
@@ -33,7 +33,7 @@
         text-align: center;
         align-items: center;
         font-family: "Montserrat Alternates", sans-serif;
-        font-size: 21pt;
+        font-size: 1.6em;
         justify-content: center;
     }
 
@@ -42,9 +42,39 @@
         padding: 10px;
     }
 
-    @media (min-width: 1200px) {
-    
+    button.dropbtn {
+        background-color: white;
+        font-family: "Montserrat Alternates", sans-serif;
+        color: #1C1C1A;
+        padding: 14px 16px;
+        font-size: 1.1em;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+    }
+
+    div.dropdown div.dropdown-content{
+    display: none;
+    }
+
+    .dropdown {
+       
+        display: inline-block;
+    }
+
+    div.dropdown:hover div.dropdown-content{
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        background-color: white;
+        width: inherit;
         }
+
+    
+
+    @media (min-width: 1200px) {
+       
+    }
     
     </style>
 
@@ -63,14 +93,34 @@
                         </li>
                         <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                        
                         <li>
-                            <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
-                                Émissions
-                            </a>
+                        <div class="dropdown">
+                            <button class="dropbtn">Gestion des émissions</button>
+                            <div class="dropdown-content">
+                                <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
+                                    Émissions
+                                </a>
+                                <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
+                                    Catégories
+                                </a>
+                                <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
+                                    Thèmes
+                                </a>
+                                <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
+                                    Éditeurs
+                                </a>
+                                <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
+                                    Invité/animateur
+                                </a>
+                            </div>
                         </li>
                         <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                        <li><a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
+                        Annonces
+                    </a></li>
+                    {# 
+                        
                         <li>
                         <li>
                             <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
@@ -98,7 +148,7 @@
                             <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
                                 Invité/animateur
                             </a>
-                        </li>
+                        </li> #}
                     </ul>
                 </div>
             </div>
