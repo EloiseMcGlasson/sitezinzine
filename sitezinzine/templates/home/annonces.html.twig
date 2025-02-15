@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello HomeController!{% endblock %}
-
-{% block body %}<style>
+{% block title %}
+    Annonces des auditeurices !
+{% endblock %}
+{% block body %}
+<style>
     .bodyannonces {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
@@ -23,18 +24,57 @@
     }
     
     </style>
-    
-    <div class="bodyannonces">
+<div class="bodyannonces">
     <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-    "hello annonces"
-
-    <p class="create">
-                <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
-                    Créer une nouvelle annonce
-                </a>
+        <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+        "Annonces des auditeurices"
+        <p class="create">
+            <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
+                Créer une nouvelle annonce
+            </a>
+        </p>
+        <article>
+            {% for annonce in annonces %}
+            
+            <div class='type'>
+            <p>
+                {{ annonce.type }}
             </p>
+        </div>
+            <div class='titre'>
+                <p>
+                    {{ annonce.titre }}
+                </p>
+            </div>
+            <div class='orga'>
+                <p>
+                    {{ annonce.organisateur }}
+                </p>
+            </div>
+            <div class='ville'>
+                <p>
+                    {{ annonce.ville }}
+                </p>
+            </div>
+            <div class='departement'>
+                <p>
+                    {{ annonce.departement }}
+                </p>
+            </div>
+            <div class='debutFin'>
+                <p>
+                    {{ annonce.dateDebut|date('d/m/Y') }} - {{ annonce.dateFin|date('d/m/Y') }} - {{ annonce.horaire }}
+                </p>
+            </div>
+            <div class='presentation'>
+                <p>
+                    {{ annonce.presentation | raw }}
+                </p>
+            </div>
+            -----------------------------------------
+            {% endfor %}
+        </article>
     </div>
-
-  
-{% endblock %}
+</div>    
+        {% endblock %}
+            

@@ -47,6 +47,15 @@ class Annonce
     #[ORM\Column(length: 200)]
     private ?string $contact = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $type = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $valid = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updateAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +189,42 @@ class Annonce
     public function setContact(string $contact): static
     {
         $this->contact = $contact;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function isValid(): ?bool
+    {
+        return $this->valid;
+    }
+
+    public function setValid(?bool $valid): static
+    {
+        $this->valid = $valid;
+
+        return $this;
+    }
+
+    public function getUpdateAt(): ?\DateTimeImmutable
+    {
+        return $this->updateAt;
+    }
+
+    public function setUpdateAt(\DateTimeImmutable $updateAt): static
+    {
+        $this->updateAt = $updateAt;
 
         return $this;
     }
