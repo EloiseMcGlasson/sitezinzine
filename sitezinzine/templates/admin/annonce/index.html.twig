@@ -3,7 +3,7 @@
     Validation des annonces auditeur
 {% endblock %}
 {% block body %}
-<style>
+    <style>
     .bodyadmincannonce {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
@@ -20,10 +20,62 @@
         width: 100%;
     }
 </style>
-<div class="bodyadmincannonce">
+    <div class="bodyadmincannonce">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-
+            <article>
+            {% for annonce in annonces %}
             
-</div>
+                    <div class='type'>
+                        <p>
+                            {{ annonce.type }}
+                        </p>
+                    </div>
+                    <div class='titre'>
+                        <p>
+                            {{ annonce.titre }}
+                        </p>
+                    </div>
+                    <div class='orga'>
+                        <p>
+                            {{ annonce.organisateur }}
+                        </p>
+                    </div>
+                    <div class='ville'>
+                        <p>
+                            {{ annonce.ville }}
+                        </p>
+                    </div>
+                    <div class='departement'>
+                        <p>
+                            {{ annonce.departement }}
+                        </p>
+                    </div>
+                    <div class='debutFin'>
+                        <p>
+                            {{ annonce.dateDebut|date('d/m/Y') }}
+                            -
+                            {{ annonce.dateFin|date('d/m/Y') }}
+                            -
+                            {{ annonce.horaire }}
+                        </p>
+                    </div>
+                    <div class='presentation'>
+                        <p>
+                            {{ annonce.presentation | raw }}
+                        </p>
+                    </div>
+                    <div class='form'>
+                        {{ form_start (form) }}
+                        {{ form_rest (form) }}
+                        <button class="btn">
+                            Enregistrer
+                        </button>
+                        {{ form_end (form) }}
+                    </div>
+                </article>
+                -----------------------------------------
+                {% endfor %}
+        </div>
+    </div>
 {% endblock %}

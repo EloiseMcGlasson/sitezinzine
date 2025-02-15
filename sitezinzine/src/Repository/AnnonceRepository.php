@@ -16,6 +16,20 @@ class AnnonceRepository extends ServiceEntityRepository
         parent::__construct($registry, Annonce::class);
     }
 
+    /**
+     * @return Annonce[] Returns an array of Annonce objects
+     */
+    public function findUpcomingAnnonces(): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.dateDebut >= :today')
+            ->andWhere('a.valid = 1')
+            ->setParameter('today', new \DateTimeImmutable('today'))
+            ->orderBy('a.dateDebut', 'ASC');
+
+
+        return $qb->getQuery()->getResult();
+    }
     //    /**
     //     * @return Annonce[] Returns an array of Annonce objects
     //     */

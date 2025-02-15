@@ -27,8 +27,30 @@
     <div class="bodyannonces">
     <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-    "créer une annonces"
-
+     
+            <h1>Créer une nouvelle annonce</h1>
+        
+                {{ form_start (form) }}
+                
+                  {{ form_row (form.titre) }}
+                  {{ form_row (form.type) }}
+                    {{ form_row (form.organisateur) }}
+                    {{ form_row (form.ville) }}
+                    {{ form_row (form.departement) }}
+                    {{ form_row (form.adresse) }}
+                    {{ form_row (form.dateDebut) }}
+                    {{ form_row (form.dateFin) }}
+                    {{ form_row (form.horaire) }}
+                    {{ form_row (form.prix) }}
+                    {{ form_row (form.presentation) }}
+                    {{ form_row (form.contact) }}
+            
+                  
+                
+            <button class="btn">Enregistrer</button>
+               
+                {{ form_end (form) }}
+                
     
     </div>
 
