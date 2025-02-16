@@ -32,6 +32,7 @@ class AnnonceController extends AbstractController
                 'show_valid' => false, // Cacher le champ valid
                 'show_annonce' => true, // Afficher les champs du form annonce
             ]);
+            
             $form->handleRequest($request);
     
             if ($form->isSubmitted() && $form->isValid()) {

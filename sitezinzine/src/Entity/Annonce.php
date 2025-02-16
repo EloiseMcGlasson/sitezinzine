@@ -5,8 +5,13 @@ namespace App\Entity;
 use App\Repository\AnnonceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
+#[Vich\Uploadable()]
+
 class Annonce
 {
     #[ORM\Id]
@@ -35,7 +40,7 @@ class Annonce
     #[ORM\Column]
     private ?\DateTimeImmutable $dateFin = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 50)]
     private ?string $horaire = null;
 
     #[ORM\Column(length: 50)]
@@ -55,6 +60,16 @@ class Annonce
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updateAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $thumbnail = null;
+
+    #[Vich\UploadableField(mapping: 'annonces', fileNameProperty: 'thumbnail')]
+    #[Assert\Image(
+        maxWidth: 650,
+        maxHeight: 500,
+    )]
+    private ?File $thumbnailFile = null;
 
     public function getId(): ?int
     {
@@ -228,4 +243,52 @@ class Annonce
 
         return $this;
     }
+
+    
+    /**
+     * Get the value of thumbnail
+     */ 
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * Set the value of thumbnail
+     *
+     * @return  self
+     */ 
+    public function setThumbnail(?string $thumbnail): static
+    {
+        $this->thumbnail = trim($thumbnail);
+
+        return $this;
+    }
+
+    /**
+     * Get the value of thumbnailFile
+     */ 
+    public function getThumbnailFile(): ?File
+    {
+        return $this->thumbnailFile;
+    }
+
+    /**
+     * Set the value of thumbnailFile
+     *
+     * @return  self
+     */ 
+    public function setThumbnailFile(?File $thumbnailFile): static
+    {
+        $this->thumbnailFile = $thumbnailFile;
+
+        if (null !== $thumbnailFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updateAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
 }

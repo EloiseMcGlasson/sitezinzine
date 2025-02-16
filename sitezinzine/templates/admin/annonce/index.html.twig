@@ -28,7 +28,7 @@
             
                     <div class='type'>
                         <p>
-                            {{ annonce.type }}
+                         Type d'évènement :   {{ annonce.type }}
                         </p>
                     </div>
                     <div class='titre'>
@@ -67,10 +67,7 @@
                     </div>
                     <div class='form'>
                         {{ form_start (form) }}
-                        {{ form_rest (form) }}
-                        <button class="btn">
-                            Enregistrer
-                        </button>
+                        {{ form_rest (form) }}                     
                         {{ form_end (form) }}
                     </div>
                 </article>
