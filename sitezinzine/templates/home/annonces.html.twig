@@ -22,7 +22,45 @@
         .top img{
         width: 100%;
     }
-    
+    .annonce {
+        background-color: black;
+        color: white;
+        display: grid;
+        margin: 40px 80px;
+        align-items: center; 
+        }
+    .create {
+        margin: auto;
+        padding: 20px;
+    }
+
+    .btn-create-annonce {
+        text-decoration: none;
+        padding: 5px;
+        font-size: 1.2em;
+        color: #000000;
+        background-color: #ffffff;
+        border-radius: 26px;
+        -webkit-border-radius: 26px;
+        -moz-border-radius: 26px;
+        border: 4px solid black;
+        box-shadow: 3px 7px 13px #444444;
+        -webkit-box-shadow: 3px 7px 13px #444444;
+        -moz-box-shadow: 3px 7px 13px #444444;
+    }
+
+    .btn-create-annonce:hover {
+        padding: 5px;
+        background-color: #E40039;
+        color: #000000;
+        border-radius: 24px;
+        -webkit-border-radius: 24px;
+        -moz-border-radius: 24px;
+        box-shadow: 3px 7px 13px #777777;
+        -webkit-box-shadow: 3px 7px 13px #777777;
+        -moz-box-shadow: 3px 7px 13px #777777;
+    }
+
     </style>
 <div class="bodyannonces">
     <div class="top">
@@ -34,6 +72,8 @@
             </a>
         </p>
         <article>
+            <div class="annonce">
+
             {% for annonce in annonces %}
             
             <div class='type'>
@@ -73,6 +113,8 @@
             </div>
             -----------------------------------------
             {% endfor %}
+        </div>
+
         </article>
     </div>
 </div>    
