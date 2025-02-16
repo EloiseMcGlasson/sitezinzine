@@ -71,6 +71,9 @@ class Annonce
     )]
     private ?File $thumbnailFile = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $softDelete = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -287,6 +290,18 @@ class Annonce
             // otherwise the event listeners won't be called and the file is lost
             $this->updateAt = new \DateTimeImmutable();
         }
+
+        return $this;
+    }
+
+    public function isSoftDelete(): ?bool
+    {
+        return $this->softDelete;
+    }
+
+    public function setSoftDelete(?bool $softDelete): static
+    {
+        $this->softDelete = $softDelete;
 
         return $this;
     }

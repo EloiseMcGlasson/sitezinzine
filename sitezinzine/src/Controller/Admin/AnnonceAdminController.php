@@ -19,7 +19,7 @@ class AnnonceAdminController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function index(Request $request, EntityManagerInterface $em, AnnonceRepository $annonceRepository): Response
     {
-        $annonces = $annonceRepository->findAll();
+        $annonces = $annonceRepository->findAllDesc();
         $annonce = new Annonce();
         $form = $this->createForm(AnnonceType::class, $annonce, [
             'show_valid' => true, // Montrer le champ valid
@@ -42,6 +42,45 @@ class AnnonceAdminController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+    public function edit(Annonce $annonce, Request $request, EntityManagerInterface $em)
+    {
+        $form = $this->createForm(AnnonceType::class, $annonce, [
+            'show_valid' => true, // Montrer le champ valid
+            'show_annonce' => true, // cacher le reste des champs
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $annonce->setUpdateAt(new \DateTimeImmutable());
+            $em->flush();
+            $this->addFlash('success', 'L\'annonce a bien été modifié');
+            return $this->redirectToRoute('admin.annonce.index');
+        }
+        return $this->render('admin/annonce/edit.html.twig', [
+            'annonce' => $annonce,
+            'form' => $form
+        ]);
+    }
+
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+    public function show(Annonce $annonce, int $id, AnnonceRepository $annonceRepository)
+    {
+        $annonce = $annonceRepository->find($id);
+        return $this->render('admin/annonce/show.html.twig', [
+            'annonce' => $annonce,
+            
+        ]);
+    }
+
+    #[Route('/{id}', name: 'softDelete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
+    public function remove(Annonce $annonce, EntityManagerInterface $em)
+    {
+        $annonce->setSoftDelete(true);
+
+        $em->flush();
+        $this->addFlash('success', 'L\'émission a bien été supprimé');
+        return $this->redirectToRoute('admin.annonce.index');
+    }
     
 }
 
