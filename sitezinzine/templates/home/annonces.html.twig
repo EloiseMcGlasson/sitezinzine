@@ -3,7 +3,7 @@
     Annonces des auditeurices !
 {% endblock %}
 {% block body %}
-<style>
+    <style>
     .bodyannonces {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
@@ -28,6 +28,18 @@
         display: grid;
         margin: 40px 80px;
         align-items: center; 
+        }
+
+        .col1 {
+            width: 150px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .col1 img {
+            width: 150px;
+            margin: 10px;
         }
     .create {
         margin: auto;
@@ -62,61 +74,69 @@
     }
 
     </style>
-<div class="bodyannonces">
-    <div class="top">
-        <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-        "Annonces des auditeurices"
-        <p class="create">
-            <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
-                Créer une nouvelle annonce
-            </a>
-        </p>
-        <article>
-            <div class="annonce">
-
-            {% for annonce in annonces %}
-            
-            <div class='type'>
-            <p>
-                {{ annonce.type }}
+    <div class="bodyannonces">
+        <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            "Annonces des auditeurices"
+            <p class="create">
+                <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
+                    Créer une nouvelle annonce
+                </a>
             </p>
+            <article>
+                <div class="annonce">
+                    {% for annonce in annonces %}
+                        <div class="col1">
+                            {% if annonce.thumbnail %}
+                                <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
+                                {% endif %}
+                            </div>
+                            <div class="col2">
+                                <div class='type'>
+                                    <p>
+                                        {{ annonce.type }}
+                                    </p>
+                                </div>
+                                <div class='titre'>
+                                    <p>
+                                        {{ annonce.titre }}
+                                    </p>
+                                </div>
+                                <div class='orga'>
+                                    <p>
+                                        {{ annonce.organisateur }}
+                                    </p>
+                                </div>
+                                <div class='ville'>
+                                    <p>
+                                        {{ annonce.ville }}
+                                    </p>
+                                </div>
+                                <div class='departement'>
+                                    <p>
+                                        {{ annonce.departement }}
+                                    </p>
+                                </div>
+                                <div class='debutFin'>
+                                    <p>
+                                        {{ annonce.dateDebut|date('d/m/Y') }}
+                                        -
+                                        {{ annonce.dateFin|date('d/m/Y') }}
+                                        -
+                                        {{ annonce.horaire }}
+                                    </p>
+                                </div>
+                                <div class='presentation'>
+                                    <p>
+                                        {{ annonce.presentation | raw }}
+                                    </p>
+                                </div>
+                            </div>
+                            -----------------------------------------
+                        {% endfor %}
+                    </div>
+                </article>
+            </div>
         </div>
-            <div class='titre'>
-                <p>
-                    {{ annonce.titre }}
-                </p>
-            </div>
-            <div class='orga'>
-                <p>
-                    {{ annonce.organisateur }}
-                </p>
-            </div>
-            <div class='ville'>
-                <p>
-                    {{ annonce.ville }}
-                </p>
-            </div>
-            <div class='departement'>
-                <p>
-                    {{ annonce.departement }}
-                </p>
-            </div>
-            <div class='debutFin'>
-                <p>
-                    {{ annonce.dateDebut|date('d/m/Y') }} - {{ annonce.dateFin|date('d/m/Y') }} - {{ annonce.horaire }}
-                </p>
-            </div>
-            <div class='presentation'>
-                <p>
-                    {{ annonce.presentation | raw }}
-                </p>
-            </div>
-            -----------------------------------------
-            {% endfor %}
-        </div>
-
-        </article>
-    </div>
-</div>    
-        {% endblock %}
-            
+    {% endblock %}
+    

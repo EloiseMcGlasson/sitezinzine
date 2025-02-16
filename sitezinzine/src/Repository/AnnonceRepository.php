@@ -30,6 +30,15 @@ class AnnonceRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findAllDesc() : array {
+        return $this->createQueryBuilder('a')
+            ->where('a.softDelete = 0')
+            ->orderBy('a.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+        
+    }
     //    /**
     //     * @return Annonce[] Returns an array of Annonce objects
     //     */

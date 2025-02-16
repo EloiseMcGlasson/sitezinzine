@@ -33,7 +33,10 @@
                     </div>
                     <div class='titre'>
                         <p>
+                            <a href="{{ path('admin.annonce.show', {id: annonce.id }) }}">
                             {{ annonce.titre }}
+
+                                    </a>
                         </p>
                     </div>
                     <div class='orga'>
@@ -65,11 +68,15 @@
                             {{ annonce.presentation | raw }}
                         </p>
                     </div>
-                    <div class='form'>
-                        {{ form_start (form) }}
-                        {{ form_rest (form) }}                     
-                        {{ form_end (form) }}
-                    </div>
+                    
+                    <a class="btn btn-primary btn-sm" href="{{ path('admin.annonce.edit', {id: annonce.id}) }}">
+                                    Éditer
+                                </a>
+                                <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                    Supprimer
+                                                    </button>
                 </article>
                 -----------------------------------------
                 {% endfor %}
