@@ -20,16 +20,17 @@ class AnnonceRepository extends ServiceEntityRepository
      * @return Annonce[] Returns an array of Annonce objects
      */
     public function findUpcomingAnnonces(): array
-    {
-        $qb = $this->createQueryBuilder('a')
-            ->where('a.dateDebut >= :today')
-            ->andWhere('a.valid = 1')
-            ->setParameter('today', new \DateTimeImmutable('today'))
-            ->orderBy('a.dateDebut', 'ASC');
+{
+    $qb = $this->createQueryBuilder('a')
+        ->where('a.dateDebut >= :today')  // Événements futurs
+        ->orWhere('(:today BETWEEN a.dateDebut AND a.dateFin)') // Événements en cours
+        ->andWhere('a.valid = 1')
+        ->setParameter('today', new \DateTimeImmutable('today'))
+        ->orderBy('a.dateDebut', 'ASC');
 
+    return $qb->getQuery()->getResult();
+}
 
-        return $qb->getQuery()->getResult();
-    }
 
     public function findAllDesc() : array {
         return $this->createQueryBuilder('a')

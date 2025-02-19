@@ -10,37 +10,58 @@
         width: 100%;
         margin: 0%;
         padding: 0%;
-       display: flex;
-       flex-direction: column;
+        display: flex;
+        flex-direction: column;
         font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
+        font-weight: normal;
         font-style: normal;
-        font-size: 24px;
-        position: relative;
-    min-height: 100vh;
-        }
-        .top img{
+        min-height: 100vh;
+    }
+    .top img{
         width: 100%;
     }
     .annonce {
-        background-color: black;
+        background-color: transparent;
         color: white;
         display: grid;
         margin: 40px 80px;
         align-items: center; 
-        }
+    }
+    section {
+        border: solid;
+        border-collapse: collapse;
+        display: grid;
+        grid-template-columns: 1fr 4fr 1fr;
+        margin-bottom: 20px;
+        background-color: black;
+        
+    }
+    a {
+        padding: 14px 16px;
+        color: white;
+        text-decoration: none;
+        font-weight: 800;
+    }
 
-        .col1 {
-            width: 150px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .col1 img {
-            width: 150px;
-            margin: 10px;
-        }
+    a:hover {
+        padding: 14px 16px;
+        color: #E40039;
+        text-decoration: none;
+        font-weight: 800; 
+    }
+
+    .col1 {
+        width: 150px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .col1 img {
+        width: 150px;
+        padding: 10px;
+    }
+  
     .create {
         margin: auto;
         padding: 20px;
@@ -73,11 +94,25 @@
         -moz-box-shadow: 3px 7px 13px #777777;
     }
 
+    .type, .orga, .ville, .departement, .debutFin {
+        margin: 10px;
+    }
+    .titre {
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        
+    }
+   
+
+    .presentation {
+        padding: 10px;
+    }
+
     </style>
     <div class="bodyannonces">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            "Annonces des auditeurices"
             <p class="create">
                 <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
                     Créer une nouvelle annonce
@@ -85,54 +120,58 @@
             </p>
             <article>
                 <div class="annonce">
-                    {% for annonce in annonces %}
-                        <div class="col1">
-                            {% if annonce.thumbnail %}
-                                <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
-                                {% endif %}
-                            </div>
-                            <div class="col2">
-                                <div class='type'>
-                                    <p>
-                                        {{ annonce.type }}
-                                    </p>
-                                </div>
-                                <div class='titre'>
-                                    <p>
-                                        {{ annonce.titre }}
-                                    </p>
-                                </div>
-                                <div class='orga'>
-                                    <p>
-                                        {{ annonce.organisateur }}
-                                    </p>
-                                </div>
-                                <div class='ville'>
-                                    <p>
-                                        {{ annonce.ville }}
-                                    </p>
-                                </div>
-                                <div class='departement'>
-                                    <p>
-                                        {{ annonce.departement }}
-                                    </p>
-                                </div>
-                                <div class='debutFin'>
-                                    <p>
-                                        {{ annonce.dateDebut|date('d/m/Y') }}
-                                        -
-                                        {{ annonce.dateFin|date('d/m/Y') }}
-                                        -
-                                        {{ annonce.horaire }}
-                                    </p>
-                                </div>
-                                <div class='presentation'>
-                                    <p>
-                                        {{ annonce.presentation | raw }}
-                                    </p>
-                                </div>
-                            </div>
-                            -----------------------------------------
+                {% for annonce in annonces %}
+                <section>
+                    <div class="col1">
+                    {% if annonce.thumbnail %}
+                        <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
+                        {% endif %}
+                    </div>
+                    <div class="col2">
+                        <div class='type'>
+                            <p>
+                                Type d'évènement :
+                                {{ annonce.type }}
+                            </p>
+                        </div>
+                        <div class='titre'>
+                            <p>
+                                <a href="{{ path('annonce.show', {id: annonce.id }) }}">
+                                    {{ annonce.titre }}
+                                </a>
+                            </p>
+                        </div>
+                        <div class='orga'>
+                            <p>
+                                {{ annonce.organisateur }}
+                            </p>
+                        </div>
+                        <div class='ville'>
+                            <p>
+                                {{ annonce.ville }}
+                            </p>
+                        </div>
+                        <div class='departement'>
+                            <p>
+                                {{ annonce.departement }}
+                            </p>
+                        </div>
+                        <div class='debutFin'>
+                            <p>
+                                {{ annonce.dateDebut|date('d/m/Y') }}
+                                -
+                                {{ annonce.dateFin|date('d/m/Y') }}
+                                -
+                                {{ annonce.horaire }}
+                            </p>
+                        </div>
+                        <div class='presentation'>
+                            <p>
+                                {{ annonce.presentation | raw }}
+                            </p>
+                        </div>
+                    </div>
+                </section>
                         {% endfor %}
                     </div>
                 </article>

@@ -32,7 +32,12 @@
             </h1>
             {{ form_start (form) }}
             {{ form_row (form.titre) }}
-            {{ form_row (form.type) }}
+            {{ form_row (form.type, { 'attr': {'id': 'type-select'} }) }}
+
+            <div id="autre-type-wrapper" style="display: none;">
+            {{ form_row (form.autreType, { 'attr': {'id': 'autre-type'} }) }}
+            </div>
+
             {{ form_row (form.organisateur) }}
             {{ form_row (form.ville) }}
             {{ form_row (form.departement) }}
@@ -45,5 +50,36 @@
             {{ form_row (form.contact) }}
             {{ form_end (form) }}
         </div>
+
+        <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+        let typeSelect = document.getElementById("annonce_type"); // Sélection du menu déroulant
+        let autreTypeWrapper = document.getElementById("autre-type-wrapper"); // Sélection du div contenant le label + input
+
+        function toggleAutreType() {
+            if (!typeSelect) {
+                console.error("⚠️ ERREUR : annonce_type est NULL !");
+                return;
+            }
+
+            console.log("Valeur sélectionnée :", typeSelect.value);
+            
+            if (typeSelect.value === "autre") {
+                autreTypeWrapper.style.display = "block"; // ✅ Afficher tout le bloc (label + input)
+            } else {
+                autreTypeWrapper.style.display = "none"; // ✅ Cacher tout le bloc
+            }
+        }
+
+        // Exécuter immédiatement au chargement pour masquer si nécessaire
+        toggleAutreType();
+
+        // Écouter le changement de sélection
+        typeSelect.addEventListener("change", toggleAutreType);
+    });
+</script>
+
+
+
     {% endblock %}
     
