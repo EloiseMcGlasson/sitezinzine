@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route("/admin/annonce", name: 'admin.annonce.')]
+#[Route('/admin/annonce', name: 'admin.annonce.')]
 class AnnonceAdminController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
@@ -23,7 +23,7 @@ class AnnonceAdminController extends AbstractController
         $annonce = new Annonce();
         $form = $this->createForm(AnnonceType::class, $annonce, [
             'show_valid' => true, // Montrer le champ valid
-            'show_annonce' => false, // cacher le reste des champs
+       
         ]);
         $form->handleRequest($request);
 
@@ -47,7 +47,7 @@ class AnnonceAdminController extends AbstractController
     {
         $form = $this->createForm(AnnonceType::class, $annonce, [
             'show_valid' => true, // Montrer le champ valid
-            'show_annonce' => true, // cacher le reste des champs
+          
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -79,6 +79,26 @@ class AnnonceAdminController extends AbstractController
 
         $em->flush();
         $this->addFlash('success', 'L\'émission a bien été supprimé');
+        return $this->redirectToRoute('admin.annonce.index');
+    }
+
+    #[Route('/{id}/valid', name: 'valid', methods: ['POST'], requirements: ['id' => Requirement::DIGITS])]
+    public function valid(Annonce $annonce, EntityManagerInterface $em)
+    {
+        $annonce->setValid(true);
+
+        $em->flush();
+        $this->addFlash('success', 'L\'émission a bien été validé');
+        return $this->redirectToRoute('admin.annonce.index');
+    }
+
+    #[Route('/{id}/unvalid', name: 'unvalid', methods: ['POST'], requirements: ['id' => Requirement::DIGITS])]
+    public function unvalid(Annonce $annonce, EntityManagerInterface $em)
+    {
+        $annonce->setValid(false);
+
+        $em->flush();
+        $this->addFlash('success', 'L\'émission a bien été dé-validé');
         return $this->redirectToRoute('admin.annonce.index');
     }
     

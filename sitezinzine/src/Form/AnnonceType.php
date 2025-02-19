@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,85 +19,96 @@ class AnnonceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         
-        if ($options['show_annonce']) {
-            $builder->add('titre', TextType::class, [
+       
+            $builder
+            ->add('titre', TextType::class, [
                 'label' => 'Titre',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('organisateur', TextType::class, [
+            ])
+            ->add('organisateur', TextType::class, [
                 'label' => 'Organisateur',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('ville', TextType::class, [
+            ])
+            ->add('ville', TextType::class, [
                 'label' => 'Ville',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('departement', TextType::class, [
+            ])
+            ->add('departement', TextType::class, [
                 'label' => 'Département',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('adresse', TextType::class, [
+            ])
+            ->add('adresse', TextType::class, [
                 'label' => 'Adresse',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('dateDebut', DateTimeType::class, [
+            ])
+            ->add('dateDebut', DateTimeType::class, [
                 'input' => 'datetime_immutable',
                 'label' => 'Date de début',
                 'widget' => 'single_text',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('dateFin', DateTimeType::class, [
+            ])
+            ->add('dateFin', DateTimeType::class, [
                 'input' => 'datetime_immutable',
                 'label' => 'Date de fin',
                 'widget' => 'single_text',
 
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('horaire', TextType::class, [
+            ])
+            ->add('horaire', TextType::class, [
                 'label' => 'Horaire',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('prix', TextType::class, [
+            ])
+            ->add('prix', TextType::class, [
                 'label' => 'Prix',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('presentation', TextareaType::class, [
+            ])
+            ->add('presentation', TextareaType::class, [
                 'label' => 'Présentation',
                 'empty_data' => 'Description à remplir',
-            ]);}
-            if ($options['show_annonce']) {
-                $builder->add('contact', TextType::class, [
+            ])
+            ->add('contact', TextType::class, [
                 'label' => 'Contact',
-            ]);
-        }
-        if ($options['show_annonce']) {
-            $builder->add('type', TextType::class, [
+            ])
+        
+            ->add('type', ChoiceType::class, [
                 'label' => 'Type',
-            ]);
-        }
-        if ($options['show_valid']) {
-            $builder->add('valid', CheckboxType::class, [
-                'label' => 'Valide',
+                'choices' => [
+                    'Concert' => 'Concert',
+                    'Spectacle' => 'Spectacle',
+                    'Exposition' => 'Exposition',
+                    'Festival' => 'Festival',
+                    'Cinéma' => 'Cinéma',
+                    'Randonnée' => 'Randonnée',
+                    'Conférence - Débat' => 'Conférence - Débat',
+                    'Stage - Cours - Atelier' => 'Stage - Cours - Atelier',
+                    'Rassemblement - Manifestation' => 'Rassemblement - Manifestation',
+                    'Autre' => 'autre',
+                ],
+                'placeholder' => 'Sélectionnez un type d\'évènement', // Optionnel, affiche un choix vide par défaut
+            ])
+
+            ->add('autreType', TextType::class, [
+                'label' => 'Autre type',
                 'required' => false,
-            ]);
-        }
-        if ($options['show_annonce']) {
-            $builder->add('thumbnailFile', FileType::class, [
+                
+                'mapped' => false, // Ne lie pas cette propriété à l'entité
+            ])
+        
+                
+            ->add('thumbnailFile', FileType::class, [
             'required' => false,
             'label' => 'Ajouter une image :',
             ]);
-        }
-        if ($options['show_valid'] or $options['show_annonce']) {
+
+            if ($options['show_valid']) {
+                $builder->add('valid', CheckboxType::class, [
+                    'label' => 'Valide',
+                    'required' => false,
+                ]);
+            }
+        
+       
             $builder->add('Sauvegarder', SubmitType::class);
         
-        }
+        
     }
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Annonce::class,
             'show_valid' => false, // Option par défaut
-            'show_annonce' => true, // Option par défaut
+            
         ]);
     }
 }
