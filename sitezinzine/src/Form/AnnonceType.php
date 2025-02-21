@@ -18,9 +18,38 @@ class AnnonceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+        $existingType = trim($options['data']->getType()); // Supprime les espaces invisibles
+        $existingType = ucfirst(strtolower($existingType)); // Normalise la casse (1ère lettre majuscule, le reste minuscule)
+       
+        
+        $choices = [
+            'Concert' => 'Concert',
+            'Spectacle' => 'Spectacle',
+            'Exposition' => 'Exposition',
+            'Festival' => 'Festival',
+            'Cinéma' => 'Cinéma',
+            'Randonnée' => 'Randonnée',
+            'Conférence - Débat' => 'Conférence - Débat',
+            'Stage - Cours - Atelier' => 'Stage - Cours - Atelier',
+            'Rassemblement - Manifestation' => 'Rassemblement - Manifestation',
+            'Autre' => 'autre'
+        ];
+        
+        $autreTypeValue = '';
+$typeValue = $existingType;
+
+// ✅ Si le type existant n'est pas dans la liste, il est considéré comme un type personnalisé
+if (!in_array($existingType, $choices, true) && !empty($existingType)) {
+    $autreTypeValue = $existingType;
+    $typeValue = 'autre'; // Forcer la sélection de "Autre" si un type personnalisé est trouvé
+}
+  
+        
         
        
             $builder
+            
             ->add('titre', TextType::class, [
                 'label' => 'Titre',
             ])
@@ -60,29 +89,21 @@ class AnnonceType extends AbstractType
             ->add('contact', TextType::class, [
                 'label' => 'Contact',
             ])
-        
+            
             ->add('type', ChoiceType::class, [
                 'label' => 'Type',
-                'choices' => [
-                    'Concert' => 'Concert',
-                    'Spectacle' => 'Spectacle',
-                    'Exposition' => 'Exposition',
-                    'Festival' => 'Festival',
-                    'Cinéma' => 'Cinéma',
-                    'Randonnée' => 'Randonnée',
-                    'Conférence - Débat' => 'Conférence - Débat',
-                    'Stage - Cours - Atelier' => 'Stage - Cours - Atelier',
-                    'Rassemblement - Manifestation' => 'Rassemblement - Manifestation',
-                    'Autre' => 'autre',
-                ],
-                'placeholder' => 'Sélectionnez un type d\'évènement', // Optionnel, affiche un choix vide par défaut
+                'choices' => $choices,
+                'placeholder' => 'Sélectionnez un type d\'évènement',
+                'data' => $typeValue, // ✅ Sélectionne correctement "Autre" si besoin
+                'choice_label' => fn ($choice, $key, $value) => $key,
+                'choice_value' => fn ($choice) => strtolower($choice), // 🔥 Normalisation
             ])
-
             ->add('autreType', TextType::class, [
                 'label' => 'Autre type',
                 'required' => false,
-                
                 'mapped' => false, // Ne lie pas cette propriété à l'entité
+                'data' => $autreTypeValue, // ✅ Remplit l'input si un type personnalisé est déjà sélectionné
+                'attr' => ['style' => ($autreTypeValue ? 'display:block;' : 'display:none;')], // Cache si pas nécessaire
             ])
         
                 
@@ -101,7 +122,8 @@ class AnnonceType extends AbstractType
        
             $builder->add('Sauvegarder', SubmitType::class);
         
-        
+            
+            
     }
     public function configureOptions(OptionsResolver $resolver): void
     {

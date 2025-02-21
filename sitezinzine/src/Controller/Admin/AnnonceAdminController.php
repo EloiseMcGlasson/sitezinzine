@@ -47,10 +47,19 @@ class AnnonceAdminController extends AbstractController
     {
         $form = $this->createForm(AnnonceType::class, $annonce, [
             'show_valid' => true, // Montrer le champ valid
-          
+            
         ]);
+      
         $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
+              // ✅ Récupérer la valeur du champ "Autre type"
+        $autreType = $form->get('autreType')->getData();
+
+        // ✅ Si "Autre" est sélectionné et que le champ "Autre type" est rempli, on l'enregistre
+        if ($annonce->getType() === 'autre' && !empty($autreType)) {
+            $annonce->setType($autreType);
+        }
             $annonce->setUpdateAt(new \DateTimeImmutable());
             $em->flush();
             $this->addFlash('success', 'L\'annonce a bien été modifié');
