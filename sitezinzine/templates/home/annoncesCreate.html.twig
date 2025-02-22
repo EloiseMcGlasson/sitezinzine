@@ -3,7 +3,7 @@
     Créer une nouvelle annonce
 {% endblock %}
 {% block body %}
-    <style>
+<style>
     .bodyannonces {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
@@ -24,62 +24,93 @@
     }
     
     </style>
-    <div class="bodyannonces">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            <h1>
-                Créer une nouvelle annonce
-            </h1>
-            {{ form_start (form) }}
-            {{ form_row (form.titre) }}
-            {{ form_row (form.type, { 'attr': {'id': 'type-select'} }) }}
+<div class="bodyannonces">
+    <div class="top">
+        <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+        <h1>
+            Créer une nouvelle annonce
+        </h1>
+        {{ form_start (form) }}
+        {{ form_row (form.titre) }}
 
-            <div id="autre-type-wrapper" style="display: none;">
-            {{ form_row (form.autreType, { 'attr': {'id': 'autre-type'} }) }}
-            </div>
+        {{ form_row (form.type, { 'attr': {'id': 'annonce_type'} }) }}
 
-            {{ form_row (form.organisateur) }}
-            {{ form_row (form.ville) }}
-            {{ form_row (form.departement) }}
-            {{ form_row (form.adresse) }}
-            {{ form_row (form.dateDebut) }}
-            {{ form_row (form.dateFin) }}
-            {{ form_row (form.horaire) }}
-            {{ form_row (form.prix) }}
-            {{ form_row (form.presentation) }}
-            {{ form_row (form.contact) }}
-            {{ form_end (form) }}
+        <div id="autre-type-wrapper" {% if form.autreType.vars.data %} style="display: block;" {% else %} style="display: none;" {% endif %}>
+            {{ form_row (form.autreType, { 'attr': {'id': 'annonce_autreType'} }) }}
         </div>
+        
+        {{ form_row (form.organisateur) }}
+        {{ form_row (form.ville) }}
+        {{ form_row (form.departement) }}
+        {{ form_row (form.adresse) }}
+        {{ form_row (form.dateDebut) }}
+        {{ form_row (form.dateFin) }}
+        {{ form_row (form.horaire) }}
+        {{ form_row (form.prix) }}
+        {{ form_row (form.presentation) }}
+        {{ form_row (form.contact) }}
+        {{ form_end (form) }}
+    </div>
 
-        <script defer>
-    document.addEventListener("DOMContentLoaded", function() {
-        let typeSelect = document.getElementById("annonce_type"); // Sélection du menu déroulant
-        let autreTypeWrapper = document.getElementById("autre-type-wrapper"); // Sélection du div contenant le label + input
 
+<script defer>
+document.addEventListener("DOMContentLoaded", function() {
+    let typeSelect = document.getElementById("annonce_type"); // Sélection du menu déroulant
+    let autreTypeWrapper = document.getElementById("autre-type-wrapper"); // Sélection du div contenant autreType
+    let autreTypeInput = document.getElementById("annonce_autreType"); // Sélection de l'input texte
+
+    function toggleAutreType() {
         function toggleAutreType() {
-            if (!typeSelect) {
-                console.error("⚠️ ERREUR : annonce_type est NULL !");
-                return;
-            }
-
-            console.log("Valeur sélectionnée :", typeSelect.value);
-            
-            if (typeSelect.value === "autre") {
-                autreTypeWrapper.style.display = "block"; // ✅ Afficher tout le bloc (label + input)
-            } else {
-                autreTypeWrapper.style.display = "none"; // ✅ Cacher tout le bloc
-            }
+        if (!typeSelect || !autreTypeWrapper || !autreTypeInput) {
+            console.error("⚠️ ERREUR : Un élément est introuvable !");
+            return;
         }
 
-        // Exécuter immédiatement au chargement pour masquer si nécessaire
-        toggleAutreType();
+        // ✅ Vérifier avec "autre" en minuscule pour correspondre à ChoiceType
+        if (typeSelect.value.toLowerCase() === "autre") {
+            autreTypeWrapper.style.display = "block"; // ✅ Afficher le champ si "Autre" est sélectionné
+            autreTypeInput.style.display = "block"; // ✅ Afficher le champ si "Autre" est sélectionné
+        } else {
+            autreTypeWrapper.style.display = "none"; // ✅ Cacher le champ sinon
+            autreTypeInput.value = ''; // Réinitialiser si on sélectionne autre chose
+        }
+    }
 
-        // Écouter le changement de sélection
-        typeSelect.addEventListener("change", toggleAutreType);
-    });
+    // ✅ Vérifie si un type personnalisé est déjà sélectionné
+    if (typeSelect.value.toLowerCase() === "autre") {
+        autreTypeWrapper.style.display = "block";
+    }
+
+    // Exécuter immédiatement pour masquer si nécessaire
+    toggleAutreType();
+
+    // Écouter les changements sur le select
+    typeSelect.addEventListener("change", toggleAutreType);
+});
 </script>
 
 
+    <script type="text/javascript" language="javascript">
+    tinymce.init(
+        {
+            selector: "textarea",
+           
+            plugins: [
+                'lists', 'link', 'preview'
+                
+              ],
+            menubar:false,
+            statusbar:false,
+            toolbar:"undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
+            
+            });
+        
+        {
+            tinymce.triggerSave(true, true);
+           
+        }
+        </script>
 
-    {% endblock %}
+{% endblock %}
+    
     

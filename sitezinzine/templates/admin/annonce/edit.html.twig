@@ -6,6 +6,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
 
 <style>
     .anedit img {
@@ -131,10 +133,32 @@ input[type=text], select {
   font-size: 16pt;
   align-items: center;
     text-align: center;
-    
   }
+  .ligne1, .ligne3, .ligne4, .ligne6, .ligne7 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* 🔥 Espacement maximal entre les champs */
+    gap: 10px; /* 🔥 Ajoute un espace entre les champs */
+    width: 100%; /* 🔥 Occupe toute la largeur du parent */
+    
+}
+
+.ligne1 > div, .ligne3 > div, .ligne4 > div, .ligne6 > div, .ligne7 > div {
+    flex: 1; /* 🔥 Étire chaque champ pour qu'ils occupent un espace équitable */
+    min-width: 200px; /* 🔥 Empêche que les champs deviennent trop petits */
+}
+
+.error-message {
+    color: white !important; /* 🔥 Force la couleur blanche */
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 5px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+  
 </style>
-<script src="{{ asset('js\tinymce.min.js') }}" type="text/javascript"></script>
+{# <script src="{{ asset('js\\tinymce.min.js') }}" type="text/javascript"></script> #}
 <div class="anedit">
 <div class="top">
 <img src="{{ asset('/images/bottom-header.gif') }}"></div>
@@ -146,24 +170,33 @@ input[type=text], select {
 
 
     {{ form_start (form) }}
+    <div class="ligne1">
     {{ form_row (form.titre) }}
-    {{ form_row (form.type, { 'attr': {'id': 'annonce_type'} }) }}
-
-<div id="autre-type-wrapper" {% if form.autreType.vars.data %}style="display: block;"{% else %}style="display: none;"{% endif %}>
-    {{ form_row (form.autreType, { 'attr': {'id': 'annonce_autreType'} }) }}
-</div>
-   
-
     {{ form_row (form.organisateur) }}
+    {{ form_row (form.type, { 'attr': {'id': 'annonce_type'} }) }}
+  <div id="autre-type-wrapper"{% if form.autreType.vars.data %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+      {{ form_row (form.autreType, { 'attr': {'id': 'annonce_autreType'} }) }}
+  </div>
+    </div>
+   
+<div class="ligne3">
     {{ form_row (form.ville) }}
     {{ form_row (form.departement) }}
     {{ form_row (form.adresse) }}
+    </div>
+    <div class="ligne4">
     {{ form_row (form.dateDebut) }}
     {{ form_row (form.dateFin) }}
     {{ form_row (form.horaire) }}
     {{ form_row (form.prix) }}
+    </div>
+    
+    <div class="ligne6">  
     {{ form_row (form.presentation) }}
+    </div>
+    <div class="ligne7">
     {{ form_row (form.contact) }}
+    </div>
     {{ form_end (form) }}
 </div>
 
@@ -174,6 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let autreTypeInput = document.getElementById("annonce_autreType"); // Sélection de l'input texte
 
     function toggleAutreType() {
+      
         if (!typeSelect) {
             console.error("⚠️ ERREUR : annonce_type est NULL !");
             return;
@@ -181,7 +215,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // ✅ Vérifier avec "autre" en minuscule pour correspondre à ChoiceType
         if (typeSelect.value.toLowerCase() === "autre") {
-            autreTypeWrapper.style.display = "block"; // ✅ Afficher le champ si "Autre" est sélectionné
+          autreTypeInput.style.display = "block"; // 🔥 Affiche l'input au lieu de juste le div
+          autreTypeWrapper.style.display = "block"; // ✅ Afficher le champ si "Autre" est sélectionné
+            
         } else {
             autreTypeWrapper.style.display = "none"; // ✅ Cacher le champ sinon
             autreTypeInput.value = ''; // Réinitialiser si on sélectionne autre chose
@@ -197,30 +233,106 @@ document.addEventListener("DOMContentLoaded", function() {
     toggleAutreType();
 
     // Écouter les changements sur le select
-    typeSelect.addEventListener("change", toggleAutreType);
+    typeSelect.addEventListener("change", toggleAutreType);    
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    flatpickr("#annonce_dateDebut", {
+        dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
+        altInput: true, // Affiche un format plus lisible
+        altFormat: "d/m/Y", // Affichage visuel en format français
+        locale: "fr", // 🔥 Met Flatpickr en français !
+        allowInput: true, // Permet d'écrire la date à la main
+    });
+});
+document.addEventListener("DOMContentLoaded", function() {
+    flatpickr("#annonce_dateFin", {
+      dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
+      altInput: true, // Affiche un format plus lisible
+      altFormat: "d/m/Y", // Affichage visuel en format français
+      locale: "fr", // 🔥 Met Flatpickr en français !
+      allowInput: true, // Permet d'écrire la date à la main
+    });
+});
+
+
+
+</script>
+
+<script defer>
+document.addEventListener("DOMContentLoaded", function() {
+    // 🔥 Définition des champs et de leurs limites de caractères
+    let fieldsWithLimits = {
+        "annonce_titre": 100,
+        "annonce_organisateur": 100,
+        "annonce_ville": 50,
+        "annonce_adresse": 50,
+        "annonce_horaire": 50,
+        "annonce_prix": 50,
+        "annonce_contact": 100,
+        "annonce_type": 50,
+        "annonce_autreType": 50
+    };
+
+    // 🔥 Fonction de validation
+    function enforceMaxLength(event) {
+        let field = event.target;
+        let maxLength = fieldsWithLimits[field.id];
+
+        // Vérifie si le message d'erreur existe déjà
+        let errorMessage = field.nextElementSibling;
+        if (!errorMessage || !errorMessage.classList.contains("error-message")) {
+            errorMessage = document.createElement("div");
+            errorMessage.className = "error-message";
+            errorMessage.style.color = "red";
+            errorMessage.style.fontSize = "0.9em";
+            errorMessage.style.marginTop = "5px";
+            field.parentNode.appendChild(errorMessage);
+        }
+
+        if (field.value.length >= maxLength) {
+            errorMessage.textContent = `🚨 Ce champ est limité à ${maxLength} caractères.`;
+            field.value = field.value.substring(0, maxLength); // Coupe immédiatement le texte
+        } else {
+            errorMessage.textContent = ""; // Efface le message si la limite n'est pas atteinte
+        }
+    }
+
+    // 🔥 Applique l'événement à tous les champs concernés
+    Object.keys(fieldsWithLimits).forEach(function(fieldId) {
+        let field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener("input", enforceMaxLength);
+        }
+    });
+
+    console.log("✅ Script de limitation de caractères avec message d'erreur activé !");
 });
 </script>
 
 
-    <script type="text/javascript" language="javascript">
-    tinymce.init(
-        {
-            selector: "textarea",
-           
-            plugins: [
-                'lists', 'link', 'preview'
-                
-              ],
-            menubar:false,
-            statusbar:false,
-            toolbar:"undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-            
-            });
+
+<script type="text/javascript" language="javascript">
+document.addEventListener("DOMContentLoaded", function() {
+    tinymce.init({
+        selector: "textarea",
+        plugins: ['lists', 'link', 'preview'],
+        menubar: false,
+        statusbar: false,
+        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
         
-        {
-            tinymce.triggerSave(true, true);
-           
+        setup: function(editor) {
+            editor.on('init', function() {
+                // ✅ Corrige l'alerte en ajoutant un event listener passif
+                document.addEventListener('touchstart', function() {}, { passive: true });
+            });
         }
-        </script>
-</div>
+    });
+
+    // 🔥 Force la sauvegarde du contenu TinyMCE
+    tinymce.triggerSave(true, true);
+});
+</script>
+
+
 {% endblock %}
