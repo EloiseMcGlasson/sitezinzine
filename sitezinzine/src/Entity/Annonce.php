@@ -20,18 +20,34 @@ class Annonce
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(
+        max: 100, // 🔥 Limite à 100 caractères
+        maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $titre = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(
+        max: 100, // 🔥 Limite à 100 caractères
+        maxMessage: "L'organisateur ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $organisateur = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(
+        max: 50, // 🔥 Limite à 50 caractères
+        maxMessage: "La ville ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $ville = null;
 
     #[ORM\Column(length: 2)]
     private ?string $departement = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(
+        max: 50, // 🔥 Limite à 50 caractères
+        maxMessage: "L'adresse ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $adresse = null;
 
     #[ORM\Column]
@@ -41,15 +57,27 @@ class Annonce
     private ?\DateTimeImmutable $dateFin = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(
+        max: 50, // 🔥 Limite à 50 caractères
+        maxMessage: "L'horaire ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $horaire = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(
+        max: 50, // 🔥 Limite à 50 caractères
+        maxMessage: "Le prix ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $prix = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $presentation = null;
 
     #[ORM\Column(length: 200)]
+    #[Assert\Length(
+        max: 200, // 🔥 Limite à 200 caractères
+        maxMessage: "Le contact ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $contact = null;
 
     #[ORM\Column(length: 50)]
@@ -65,10 +93,10 @@ class Annonce
     private ?string $thumbnail = null;
 
     #[Vich\UploadableField(mapping: 'annonces', fileNameProperty: 'thumbnail')]
-    #[Assert\Image(
+   /*  #[Assert\Image(
         maxWidth: 650,
         maxHeight: 500,
-    )]
+    )] */
     private ?File $thumbnailFile = null;
 
     #[ORM\Column(nullable: true)]
