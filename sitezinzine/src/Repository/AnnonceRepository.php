@@ -40,6 +40,16 @@ class AnnonceRepository extends ServiceEntityRepository
             ->getResult();
         
     }
+
+    public function findOldAnnonces(\DateTimeImmutable $dateLimit): array
+{
+    return $this->createQueryBuilder('a')
+        ->where('a.dateFin < :dateLimit')
+        ->setParameter('dateLimit', $dateLimit)
+        ->getQuery()
+        ->getResult();
+}
+
     //    /**
     //     * @return Annonce[] Returns an array of Annonce objects
     //     */
