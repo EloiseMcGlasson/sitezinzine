@@ -1,7 +1,274 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title "Annonce : " ~ annonce.titre %}
 {% block body %}
-    <style>
+
+<style>
+    .anshow {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    position: relative;
+    color: black;
+    min-height: 100vh;
+}
+    .annonce-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+    .annonce-container img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.annonce-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.annonce-titre {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-top: 20px;
+}
+
+.annonce-infos {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.annonce-col {
+    width: 48%;
+}
+
+.annonce-section {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 2px solid #ddd;
+}
+
+.annonce-section h3 {
+    font-size: 20px;
+    color: #444;
+}
+
+.annonce-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+.btn-secondary {
+    background-color: #6c757d;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    opacity: 0.9;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+    .annonce-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .annonce-thumbnail img {
+        max-width: 100%;
+    }
+
+    .annonce-info {
+        text-align: center;
+    }
+}
+
+    /* Styles pour la modal */
+    .annonce-container img {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.annonce-container img:hover {
+    transform: scale(1.02);
+}
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    }
+
+    .modal-content {
+        max-width: 90%;
+        max-height: 90vh;
+        margin: auto;
+        display: block;
+        cursor: pointer;
+        transform: scale(0.9);
+    transition: transform 0.3s ease;
+    }
+
+    .modal.active {
+        display: flex;
+        opacity: 1;
+    pointer-events: auto;
+    }
+
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .close:hover {
+    color: #E40039;
+}
+    .modal.active .modal-content {
+    transform: scale(1);
+}
+
+    /* Rendre l'image cliquable */
+    .annonce-container img {
+        cursor: pointer;
+    }
+    </style>
+    <div class="anshow">
+    <div class="top">
+<img src="{{ asset('/images/bottom-header.gif') }}"></div>
+<div class="annonce-container">
+
+{% if annonce.thumbnail %}
+    <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" 
+         alt="Photo de {{ annonce.titre }}"
+         onclick="openModal(this.src)">
+{% endif %}
+    
+    <h1 class="annonce-titre">{{ annonce.titre }}</h1>
+
+    <div class="annonce-infos">
+        <div class="annonce-col">
+            <p><strong>Organisateur :</strong> {{ annonce.organisateur }}</p>
+            <p><strong>Lieu :</strong> {{ annonce.ville }} ({{ annonce.departement }})</p>
+            <p><strong>Adresse :</strong> {{ annonce.adresse }}</p>
+        </div>
+        <div class="annonce-col">
+            <p><strong>Date :</strong> Du {{ annonce.dateDebut|date('d/m/Y') }} au {{ annonce.dateFin|date('d/m/Y') }}</p>
+            <p><strong>Horaires :</strong> {{ annonce.horaire }}</p>
+            <p><strong>Prix :</strong> {{ annonce.prix }}</p>
+        </div>
+    </div>
+
+    <div class="annonce-section">
+        <h3>Présentation</h3>
+        <p>{{ annonce.presentation| raw }}</p>
+    </div>
+
+    <div class="annonce-section">
+        <h3>Informations supplémentaires</h3>
+        <p><strong>Type :</strong> {{ annonce.type }}</p>
+        
+    </div>
+
+    <div class="annonce-section">
+        <h3>Contact</h3>
+        <p><strong>Email/Téléphone :</strong> {{ annonce.contact }}</p>
+    </div>
+
+    <div class="annonce-actions">
+<a href="{{ path('admin.annonce.index') }}" class="btn btn-secondary">Retour</a>
+        <a href="{{ path('admin.annonce.edit', {id: annonce.id}) }}" class="btn">Modifier</a>
+        <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+    </div>
+</div>
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+    </div>
+
+    <script>
+        function openModal(imgSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.classList.add('active');
+            modalImg.src = imgSrc;
+        }
+    
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+        }
+    
+        // Fermer la modal en cliquant en dehors de l'image
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    
+        // Fermer la modal avec la touche Echap
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+   {#  <style>
 .anshow {
     background: linear-gradient(#E4013A, #B81C61);
     background-size: 100%;
@@ -121,6 +388,6 @@ article{
                             </article>
                        
                     </div>
-                </div>
+                </div> #}
             {% endblock %}
             

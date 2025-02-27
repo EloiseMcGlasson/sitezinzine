@@ -31,15 +31,11 @@ class AnnonceController extends AbstractController
             $annonce = new Annonce();
             $form = $this->createForm(AnnonceType::class, $annonce, [
                 'show_valid' => false, // Cacher le champ valid
-
             ]);
-
             $form->handleRequest($request);
-
             if ($form->isSubmitted() && $form->isValid()) {
                 // Récupérer la valeur du champ "autreType"
                 $autreType = $form->get('autreType')->getData();
-
                 // Si "Autre" est sélectionné ET que l'utilisateur a entré une valeur, on l'enregistre dans "type"
                 if ($annonce->getType() === 'autre' && !empty($autreType)) {
                     $annonce->setType($autreType);
