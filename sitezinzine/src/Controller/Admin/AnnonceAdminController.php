@@ -87,7 +87,7 @@ class AnnonceAdminController extends AbstractController
         $annonce->setSoftDelete(true);
 
         $em->flush();
-        $this->addFlash('success', 'L\'émission a bien été supprimé');
+        $this->addFlash('success', 'L\'annonce a bien été supprimé');
         return $this->redirectToRoute('admin.annonce.index');
     }
 
@@ -97,7 +97,7 @@ class AnnonceAdminController extends AbstractController
         $annonce->setValid(true);
 
         $em->flush();
-        $this->addFlash('success', 'L\'émission a bien été validé');
+        $this->addFlash('success', 'L\'annonce a bien été validé');
         return $this->redirectToRoute('admin.annonce.index');
     }
 
@@ -107,7 +107,7 @@ class AnnonceAdminController extends AbstractController
         $annonce->setValid(false);
 
         $em->flush();
-        $this->addFlash('success', 'L\'émission a bien été dé-validé');
+        $this->addFlash('success', 'L\'annonce a bien été dé-validé');
         return $this->redirectToRoute('admin.annonce.index');
     }
     
