@@ -70,7 +70,7 @@ class Annonce
     )]
     private ?string $prix = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $presentation = null;
 
     #[ORM\Column(length: 200)]

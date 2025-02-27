@@ -3,46 +3,54 @@
     Validation des annonces auditeur
 {% endblock %}
 {% block body %}
+
     <style>
-        
     .bodyadminannonce {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
         width: 100%;
-        margin: 0%;
-        padding: 0%;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
         display: flex;
         flex-direction: column;
         font-family: "Montserrat Alternates", sans-serif;
         font-weight: 400;
         font-style: normal;
-        }
-        strong {
-    font-weight: 700 !important;
-}
-em {
-    font-style: italic !important;
-}
-    .top img{
+    }
+
+    .top img {
         width: 100%;
     }
+
     .annonce {
         background-color: transparent;
         color: white;
         display: grid;
-        margin: 40px 80px;
-        align-items: center; 
-        }
-        section {
-            border: solid;
-            border-collapse: collapse;
-            display: grid;
-            grid-template-columns: 1fr 4fr 1fr;
-            margin-bottom: 20px;
-            background-color: black;
-            
-        }
-        a {
+        margin:  20px 40px;
+        align-items: center;
+        width: calc(100% - 80px); /* Largeur calculée en tenant compte des marges */
+    }
+
+    section {
+        border: solid 1px #ccc;
+        border-radius: 8px;
+        display: grid;
+        
+        grid-template-columns: 150px auto 150px; /* Colonnes fixes pour le contenu */
+        background-color: black;
+        padding: 15px;
+        transition: background-color 0.3s ease;
+        min-width: 0; /* Empêche le dépassement */
+    overflow: hidden; /* Cache le contenu qui dépasse */
+    }
+
+    section:hover {
+        background-color: #333;
+    }
+
+    a {
         padding: 14px 16px;
         color: white;
         text-decoration: none;
@@ -50,140 +58,227 @@ em {
     }
 
     a:hover {
-        padding: 14px 16px;
         color: #E40039;
-        text-decoration: none;
-        font-weight: 800; 
     }
 
     .col1 {
-            width: 150px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-        }
-        .col1 img {
-            width: 150px;
-            margin: 10px;
-            padding: 10px;
+        width: 150px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+    }
 
-        }
-        .col2 {
-            padding: 10px;
-         
+    .col1 img {
+        width: 150px;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .col2 {
+        padding: 10px;
+    overflow: hidden; /* Cache le contenu qui dépasse */
+    word-wrap: break-word; /* Permet la césure des mots longs */
+    }
+
+    .col2 p {
+        margin: 5px 0;
+        padding-left: 15px;
+    }
+
+    .col3 {
+        width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    }
+
+    .col3 .btn {
+        margin: 5px;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        
+    }
+
+    .col3 form {
+        display: inline;
+    }
+
+    .btn-primary {
+        
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .annonces-row {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr); /* Deux colonnes égales */
+    gap: 20px; /* ✅ Espacement entre les annonces */
+    margin-bottom: 20px;
+    justify-content: center; /* ✅ Centre bien les annonces */
+}
+
+/* ✅ Annonces non validées en gris */
+.grise {
+    background-color: gray !important;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 1200px) {
+    .annonces-row {
+        grid-template-columns: 1fr;
+    }
+    
+    section {
+        grid-template-columns: 100px auto 100px;
+    }
+    
+    .col1 {
+        width: 100px;
+    }
+    
+    .col1 img {
+        width: 100%;
+        max-width: 100px;
     }
     
     .col3 {
-    
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    grid-template-rows: 1fr; 
-    gap: 0px 0px; 
-    grid-template-areas: 
-      "ecoute dl"; 
-    align-items: center;
-    justify-self: center;
-    padding: 10px;
-
+        width: 100px;
     }
+}
+
+@media (max-width: 768px) {
+    .annonce {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    section {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .col1, .col2, .col3 {
+        width: 100%;
+    }
+}
+
+    
 </style>
+  
     <div class="bodyadminannonce">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
             <article>
                 <div class="annonce">
                     {% for annonce in annonces %}
-                        {% if annonce.valid %}
-                            <section>
-                            {% else %}
-                                <section style="background-color:gray">
-                                {% endif %}
+                        {% if loop.index == 0 or loop.index % 2 == 1 %}
+                            {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
+                            <div class="annonces-row">
+                            {% endif %}
+                            <section {% if not annonce.valid %} style="background-color:gray" {% endif %}>
                                 <div class="col1">
                                     {% if annonce.thumbnail %}
                                         <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
                                         {% endif %}
                                     </div>
                                     <div class="col2">
-                                        <div class='type'>
-                                            <p>
-                                                Type d'évènement :
-                                                {{ annonce.type }}
-                                            </p>
-                                        </div>
-                                        <div class='titre'>
-                                            <p>
-                                                <a href="{{ path('admin.annonce.show', {id: annonce.id }) }}">
-                                                    {{ annonce.titre }}
-                                                </a>
-                                            </p>
-                                        </div>
-                                        <div class='orga'>
-                                            <p>
-                                                {{ annonce.organisateur }}
-                                            </p>
-                                        </div>
-                                        <div class='ville'>
-                                            <p>
-                                                {{ annonce.ville }}
-                                            </p>
-                                        </div>
-                                        <div class='departement'>
-                                            <p>
-                                                {{ annonce.departement }}
-                                            </p>
-                                        </div>
-                                        <div class='debutFin'>
-                                            <p>
-                                                {{ annonce.dateDebut|date('d/m/Y') }}
-                                                -
-                                                {{ annonce.dateFin|date('d/m/Y') }}
-                                                -
-                                                {{ annonce.horaire }}
-                                            </p>
-                                        </div>
-                                        <div class='presentation'>
-                                            <p>
-                                                {{ annonce.presentation | raw }}
-                                            </p>
-                                        </div>
+                                        <p class="type">
+                                            {{ annonce.type }}
+                                        </p>
+                                        <p class="titre">
+                                            <a href="{{ path('admin.annonce.show', {id: annonce.id }) }}">
+                                                {{ annonce.titre }}
+                                            </a>
+                                        </p>
+                                        <p class="orga">
+                                            {{ annonce.organisateur }}
+                                        </p>
+                                        <p class="ville">
+                                            {{ annonce.ville }}
+                                        </p>
+                                        <p class="departement">
+                                            {{ annonce.departement }}
+                                        </p>
+                                        <p class="debutFin">
+                                            {{ annonce.dateDebut|date('d/m/Y') }}
+                                            -
+                                            {{ annonce.dateFin|date('d/m/Y') }}
+                                            -
+                                            {{ annonce.horaire }}
+                                        </p>
+                                        <p class="presentation">
+                                            {{ annonce.presentation | raw }}
+                                        </p>
                                     </div>
                                     <div class="col3">
                                         <a class="btn btn-primary btn-sm" href="{{ path('admin.annonce.edit', {id: annonce.id}) }}">
                                             Éditer
                                         </a>
-                                        
-                                                {% if annonce.valid %}
-                                                    <form action="{{ path('admin.annonce.unvalid', {id: annonce.id}) }}" method="post">
-                                                        <button type="submit" class="btn btn-danger btn-sm">
-                                                            Dévalider
-                                                        </button>
-                                                    </form>
-                                                {% else %}
-                                                    <form action="{{ path('admin.annonce.valid', {id: annonce.id}) }}" method="post">
-                                                        <button type="submit" class="btn btn-danger btn-sm">
-                                                            Valider
-                                                        </button>
-                                                    </form>
-                                                {% endif %}
-
-                                                <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
+                                        {% if annonce.valid %}
+                                            <form action="{{ path('admin.annonce.unvalid', {id: annonce.id}) }}" method="post">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    Dévalider
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form action="{{ path('admin.annonce.valid', {id: annonce.id}) }}" method="post">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    Valider
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
                                             <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     Supprimer
                                                 </button>
-                                        </form>
-                                                
-                                            </div>
-                                        </section>
-                                    {% endfor %}
-                                </div>
-                            </article>
+                                            </form>
+                                        </div>
+                                    </section>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    {# ✅ Ferme la ligne après 2 annonces ou si c'est la DERNIÈRE annonce seule #}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
-                        <script>
-                          
-                            </script>
-                            
-                    {% endblock %}
-                    
+                    </article>
+                </div>
+            {% endblock %}
+            

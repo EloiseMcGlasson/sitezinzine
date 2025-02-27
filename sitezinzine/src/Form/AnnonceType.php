@@ -64,7 +64,7 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
                 'label' => 'Titre',
                 'attr' => [
                 'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
-            ]
+                ]
             ])
             ->add('organisateur', TextType::class, [
                 'label' => 'Organisateur',
@@ -119,7 +119,11 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
             ])
             ->add('presentation', TextareaType::class, [
                 'label' => 'Présentation',
-                'empty_data' => 'Description à remplir',
+                'empty_data' => '', // ✅ Remplit le champ avec une chaîne vide si null
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
+                'attr' => [
+                    'class' => 'hidden-textarea', // 🔥 Cache le textarea sans display: none;
+    ],
             ])
             ->add('contact', TextType::class, [
                 'label' => 'Contact',
