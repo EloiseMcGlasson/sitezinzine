@@ -3,37 +3,65 @@
         
     
     .bodylast {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 700;
-        font-style: normal;
-        }
+    background: linear-gradient(#E4013A, #B81C61);
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+.bodylast h1, .bodylast h3 {
+    color: white;
+    text-align: center;
+}
 
-        .bodylast h1 {
-        color:white;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 900;
-        font-style: normal;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        font-size: 36pt;
-    }
-    .bodylast h3 {
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 300;
-        font-style: normal;
-        justify-content: center;
-        text-align: center;
-        color:white;
-        font-size: 24pt;
-    }
+.bodylast h1 {
+    font-size: 28pt;
+}
+
+.bodylast h3 {
+    font-size: 18pt;
+}
+  
+/* Grid adaptable */
+article {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Cartes */
+.carte {
+    background-color: black;
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Texte et éléments internes */
+.categorie, .titre, .date {
+    margin: 10px;
+    text-align: center;
+}
+
+.theme {
+    background-color: #7E4095;
+    padding: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Icône d'écoute */
+.ecoute img {
+    width: 30px;
+}
 
     article {
         display: grid;
@@ -165,20 +193,79 @@
     }
     }
 
-    @media screen and (max-width: 767px) {
-        .bodylast {
-            background-color: #35BAC0;
-        }
-        
-        }
-    @media screen and (min-width: 767px) and (max-width:1023) {
-        .bodylast {
-            background-color: #7E4095;
-        }
-    }
+   
+   /* Responsive */
+@media screen and (max-width: 1023px) {
 
+.bodylast {
+    background: linear-gradient(#E4013A, #B81C61);
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+.top img{
+    width: 100%;
+}
+    /* Grid adaptable */
+article {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 50px;
+    padding: 20px;
+    justify-content: center;
+}
 
-  
+/* Cartes */
+.carte {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+/* Texte et éléments internes */
+.categorie, .titre, .date {
+    margin: 10px;
+    text-align: center;
+}
+
+.theme {
+    background-color: #7E4095;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* Icône d'écoute */
+.ecoute {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.ecoute img {
+    width: 40px;
+    transition: transform 0.3s;
+}
+
+.ecoute img:hover {
+    transform: scale(1.1);
+}
+
+ 
+}
     
     
 </style>

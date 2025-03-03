@@ -1,0 +1,301 @@
+{% extends 'admin/admin.html.twig' %}
+{% block title %}
+    Validation des évènements Radio Zinzine
+{% endblock %}
+{% block body %}
+
+    <style>
+    .bodyadminevenement {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        height: 100vh;
+    }
+
+    .top img {
+        width: 100%;
+    }
+    em {
+    font-style: italic !important;
+}
+strong {
+    font-weight: 700 !important;
+}
+
+ul, li {
+   background-color: transparent; 
+}
+
+    .evenement {
+        background-color: transparent;
+        color: white;
+        display: grid;
+        margin:  20px 40px;
+        align-items: center;
+        width: calc(100% - 80px); /* Largeur calculée en tenant compte des marges */
+    }
+
+    section {
+        border: solid 1px #ccc;
+        border-radius: 8px;
+        display: grid;
+        
+        grid-template-columns: 150px auto 150px; /* Colonnes fixes pour le contenu */
+        background-color: black;
+        padding: 15px;
+        transition: background-color 0.3s ease;
+        min-width: 0; /* Empêche le dépassement */
+    overflow: hidden; /* Cache le contenu qui dépasse */
+    }
+
+    section:hover {
+        background-color: #333;
+    }
+
+    a {
+        padding: 14px 16px;
+        color: white;
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    a:hover {
+        color: #E40039;
+    }
+
+    .col1 {
+        width: 150px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+    }
+
+    .col1 img {
+        width: 150px;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .col2 {
+        padding: 10px;
+    overflow: hidden; /* Cache le contenu qui dépasse */
+    word-wrap: break-word; /* Permet la césure des mots longs */
+    }
+
+    .col2 p {
+        margin: 5px 0;
+        padding-left: 15px;
+    }
+
+    .col3 {
+        width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    }
+
+    .col3 .btn {
+        margin: 5px;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        
+    }
+
+    .col3 form {
+        display: inline;
+    }
+
+    .btn-primary {
+        
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .evenements-row {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr); /* Deux colonnes égales */
+    gap: 20px; /* ✅ Espacement entre les evenements */
+    margin-bottom: 20px;
+    justify-content: center; /* ✅ Centre bien les evenements */
+}
+
+/* ✅ evenements non validées en gris */
+.grise {
+    background-color: gray !important;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 1200px) {
+    .evenements-row {
+        grid-template-columns: 1fr;
+    }
+    
+    section {
+        grid-template-columns: 100px auto 100px;
+    }
+    
+    .col1 {
+        width: 100px;
+    }
+    
+    .col1 img {
+        width: 100%;
+        max-width: 100px;
+    }
+    
+    .col3 {
+        width: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .evenement {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    section {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .col1, .col2, .col3 {
+        width: 100%;
+    }
+}
+
+    
+</style>
+  
+    <div class="bodyadminevenement">
+        <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+
+            <p class="create">
+                <a class="btn-create-evenement" href="{{ path('admin.evenement.create') }}">
+                    Créer un nouvel évènement
+                </a>
+            </p>
+            <article>
+                <div class="evenement">
+                    {% for evenement in evenements %}
+                        {% if loop.index == 0 or loop.index % 2 == 1 %}
+                            {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
+                            <div class="evenements-row">
+                            {% endif %}
+                            <section {% if not evenement.valid %} style="background-color:gray" {% endif %}>
+                                <div class="col1">
+                                    {% if evenement.thumbnail %}
+                                        <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col2">
+                                        <p class="type">
+                                            {{ evenement.type }}
+                                        </p>
+                                        <p class="titre">
+                                            <a href="{{ path('admin.evenement.show', {id: evenement.id }) }}">
+                                                {{ evenement.titre }}
+                                            </a>
+                                        </p>
+                                        <p class="orga">
+                                            {{ evenement.organisateur }}
+                                        </p>
+                                        <p class="ville">
+                                            {{ evenement.ville }}
+                                        </p>
+                                        <p class="departement">
+                                            {{ evenement.departement }}
+                                        </p>
+                                        <p class="debutFin">
+                                            {{ evenement.dateDebut|date('d/m/Y') }}
+                                            -
+                                            {{ evenement.dateFin|date('d/m/Y') }}
+                                            -
+                                            {{ evenement.horaire }}
+                                        </p>
+                                        <p class="presentation">
+                                            {{ evenement.presentation | raw }}
+                                        </p>
+                                    </div>
+                                    <div class="col3">
+                                        <a class="btn btn-primary btn-sm" href="{{ path('admin.evenement.edit', {id: evenement.id}) }}">
+                                            Éditer
+                                        </a>
+                                        {% if evenement.valid %}
+                                            <form action="{{ path('admin.evenement.unvalid', {id: evenement.id}) }}" method="post">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    Dévalider
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form action="{{ path('admin.evenement.valid', {id: evenement.id}) }}" method="post">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    Valider
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <form action="{{ path('admin.evenement.softDelete', {id: evenement.id}) }}" method="post">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </section>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    {# ✅ Ferme la ligne après 2 evenements ou si c'est la DERNIÈRE evenement seule #}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </article>
+                </div>
+            {% endblock %}
+            
