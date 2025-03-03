@@ -50,6 +50,9 @@ installation de glide (pour les carrousel)
  11/09/24 maj de twig de la 3.11 à la 3.14 pour corriger une vulnerabilité du sandbox
  composer update twig/twig
 
+ installation de phpunit
+ composer require --dev phpunit/phpunit
+
 
 
 

@@ -26,6 +26,8 @@ class EvenementType extends AbstractType
         $choices = [
             'Emission' => 'Emission',
             'Fete' => 'Fete',
+            'Studio Mobile' => 'Studio Mobile',
+            'Table Ronde' => 'Table Ronde',
             'Rassemblement - Manifestation' => 'Rassemblement - Manifestation',
             'Autre' => 'autre'
         ];
@@ -48,10 +50,7 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
     $typeValue = 'autre'; // Forcer la sélection de "Autre" si un type personnalisé est trouvé
     $autreTypeValue = $options['data']?->getType() ?? ''; // Si pas de type, on initialise à vide
 }
-  
-        
-        
-       
+     
             $builder
             
             ->add('titre', TextType::class, [
