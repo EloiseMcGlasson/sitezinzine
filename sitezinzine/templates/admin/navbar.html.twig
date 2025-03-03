@@ -119,16 +119,23 @@
                         <li><a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
                         Annonces
                     </a></li>
+                    <li>
+                    <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+
+                    <li>
+                        <a class="nav-link {{ app.current_route starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
+                            Évènements
+                        </a>
+                    </li>
+
                     {# 
+                    
+                    <li><a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
+                        Utilisateurs
+                    </a></li>
+                        <li>
                         
-                        <li>
-                        <li>
-                            <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
-                                Catégories
-                            </a>
-                        </li>
-                        <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                       
                         
                         <li>
                             <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
