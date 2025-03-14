@@ -41,7 +41,129 @@
     align-items: center;
     justify-content: center;
 }
+
+article {
+    display: grid;
+    grid-template-areas:
+        "article1 article1"
+        "article2 article3";
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    padding: 20px;
+    margin: auto;
+    max-width: 1200px;
+}
+
+
+.evenement:nth-child(1) {
+    grid-area: article1;
+}
+
+.evenement:nth-child(2) {
+    grid-area: article2;
+}
+
+.evenement:nth-child(3) {
+    grid-area: article3;
+}
+
+    .evenement {
+        display: flex;
+        flex-direction: row;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .evenement:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .evenement .top {
+        flex: 1;
+        max-width: 40%; /* L'image occupe 40% de la largeur */
+    }
+
+    .evenement .top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .evenement .bottom {
+        flex: 2;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .evenement .date {
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        color: #E4013A;
+    }
+
+    .evenement .titre {
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 800;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .evenement .presentation {
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @media screen and (max-width: 768px) {
+        .titreevenement {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .titreevenement img {
+            margin: 0 0 20px 0;
+        }
+
+        article {
+            grid-template-areas:
+                "article1"
+                "article2"
+                "article3";
+            grid-template-columns: 1fr;
+        }
+
+        .evenement {
+            flex-direction: column;
+        }
+
+        .evenement .top {
+            max-width: 100%;
+        }
+
+        .evenement .top img {
+            height: 200px;
+        }
+
+        .evenement .bottom {
+            padding: 15px;
+        }
+    }
 </style>
+
 <div class='bodyEvenement'>
 
     <div class="titreevenement">
@@ -56,8 +178,28 @@
             </div>
     </div>
     
-    
-    
-    
-    </div>
-    
+    <article>
+        {% for evenement in evenements %}
+        <div class="evenement evenement-{{ loop.index }}">
+            <div class="top">
+                {% if evenement.thumbnail %}
+                <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
+                {% endif %}
+            </div>
+            <div class="bottom">
+                <div class="date">
+                    {{ "Le " ~ evenement.dateDebut|format_date('long', locale='fr') }} {{ " à " ~ evenement.horaire }}
+                </div>
+                <a href="{{ path('showEvenement', {id: evenement.id }) }}">
+                <div class="titre">
+                    {{ evenement.titre }}
+                </div>
+            </a>
+                <div class="presentation">
+                    {{ evenement.presentation|raw }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </article>
+</div>

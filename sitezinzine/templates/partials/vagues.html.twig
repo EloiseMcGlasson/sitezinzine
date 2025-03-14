@@ -19,56 +19,39 @@
         
     }
 
+
     
 
-    .blocdon {
+  
+    
+
+    .blocdon, .blocannonces, .blocaide {
         width: 250px;
         background-color: white;
-        border: solid;
-        border-color: gray;
+        border: solid 2px gray;
         margin: 25px;
         padding: 25px;
         text-align: center;
         justify-content: center;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
-    .blocdon h1 {
-        font-family: "Montserrat", sans-serif;
-        font-weight: 900;
-        font-size: 22px;
-        color: #E40039;
-        margin-bottom: 5px;
-    }
-    .blocdon h2 {
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 400;
-        font-style: italic;
-        font-size: 16px;
-        color: gray;
+    .blocdon:hover, .blocannonces:hover, .blocaide:hover {
+        transform: translateY(-5px); /* Légère élévation */
+        box-shadow: rgba(50, 50, 93, 0.35) 0px 20px 40px -5px, rgba(0, 0, 0, 0.4) 0px 10px 20px -8px;
+        border-color: #E40039; /* Changement de couleur de bordure */
     }
 
-    .blocannonces {
-        width: 250px;
-        background-color: white;
-        border: solid;
-        border-color: gray;
-        margin: 25px;
-        padding: 25px;
-        text-align: center;
-        justify-content: center;
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-
-    }
-    .blocannonces h1 {
+    .blocdon h1, .blocannonces h1, .blocaide h1 {
         font-family: "Montserrat", sans-serif;
         font-weight: 900;
         font-size: 22px;
         color: black;
         margin-bottom: 5px;
     }
-    .blocannonces h2 {
+
+    .blocdon h2, .blocannonces h2, .blocaide h2 {
         font-family: "Montserrat Alternates", sans-serif;
         font-weight: 400;
         font-style: italic;
@@ -76,33 +59,7 @@
         color: gray;
     }
 
-    .blocaide {
-        width: 250px;
-        background-color: white;
-        border: solid;
-        border-color: gray;
-        margin: 25px;
-        padding: 25px;
-        text-align: center;
-        justify-content: center;
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-
-    }
-
-    .blocaide h1 {
-        font-family: "Montserrat", sans-serif;
-        font-weight: 900;
-        font-size: 22px;
-        color: black;
-        margin-bottom: 5px;
-    }
-    .blocaide h2 {
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 400;
-        font-style: italic;
-        font-size: 16px;
-        color: gray;
-    }
+    
 
    
     .bottomvagues img{

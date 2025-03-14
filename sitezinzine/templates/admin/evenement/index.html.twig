@@ -3,7 +3,6 @@
     Validation des évènements Radio Zinzine
 {% endblock %}
 {% block body %}
-
     <style>
     .bodyadminevenement {
         background: linear-gradient(#E4013A, #B81C61);
@@ -35,6 +34,36 @@ ul, li {
    background-color: transparent; 
 }
 
+.create {
+    margin: auto;
+    padding: 20px;
+}
+.btn-create-evenement {
+        text-decoration: none;
+        padding: 5px;
+        font-size: 1.2em;
+        color: #000000;
+        background-color: #ffffff;
+        border-radius: 26px;
+        -webkit-border-radius: 26px;
+        -moz-border-radius: 26px;
+        border: 4px solid black;
+        box-shadow: 3px 7px 13px #444444;
+        -webkit-box-shadow: 3px 7px 13px #444444;
+        -moz-box-shadow: 3px 7px 13px #444444;
+    }
+
+    .btn-create-evenement:hover {
+        padding: 5px;
+        background-color: #E40039;
+        color: #000000;
+        border-radius: 24px;
+        -webkit-border-radius: 24px;
+        -moz-border-radius: 24px;
+        box-shadow: 3px 7px 13px #777777;
+        -webkit-box-shadow: 3px 7px 13px #777777;
+        -moz-box-shadow: 3px 7px 13px #777777;
+    }
     .evenement {
         background-color: transparent;
         color: white;
@@ -212,11 +241,9 @@ ul, li {
 
     
 </style>
-  
     <div class="bodyadminevenement">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-
             <p class="create">
                 <a class="btn-create-evenement" href="{{ path('admin.evenement.create') }}">
                     Créer un nouvel évènement

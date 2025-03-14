@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+{% block title "Évènement : " ~ evenement.titre %}
+{% block body %}
+    <style>
+.bodyevenement {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    position: relative;
+    color: white;
+    
+    line-height: 1.5em;
+    }
+.top img{
+    width: 100%;
+}
+.titre {
+    text-align: center;
+    margin: 10px;
+}
+h1 {
+    font-size: 23px;
+    
+    
+}
+.texteevenement {
+    margin: 20px;
+}
+
+.texteevenement img {
+    float: left;
+    margin: 10px;
+    width: 250px;
+}
+
+.presentation {
+    margin: 15px;
+}
+.bottom img {
+    width: 100%;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+.texteevenement a img {
+    width: 60px;
+        
+}
+
+.texteevenement a {
+    padding: 14px 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+.texteevenement a:hover {
+    padding: 14px 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: 800;
+        
+}
+
+
+    
+    
+    </style>
+    <div class="bodyevenement">
+        <div class="top">
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            <div class="texteevenement">
+                <div class="titre">
+                    <h1>
+                        {{ evenement.titre }}
+                    </h1>
+                </div>
+                {% if evenement.thumbnail %}
+                    <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
+                    {% endif %}
+                    <div class="presentation">
+                        {{ evenement.presentation | raw }}
+                    </div>
+                    <p>
+                        {{ "Dernière rediffusion le " ~ evenement.dateDebut| format_date ('long', locale = 'fr') }}
+                    </p>
+                   
+                </div>
+                    <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
+                </div>
+            {% endblock %}
+            
