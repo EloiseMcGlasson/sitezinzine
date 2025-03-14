@@ -21,8 +21,8 @@ class EvenementType extends AbstractType
 
         $existingType = trim($options['data']->getType()); // Supprime les espaces invisibles
         $existingType = ucfirst(strtolower($existingType)); // Normalise la casse (1ère lettre majuscule, le reste minuscule)
-       
-        
+
+
         $choices = [
             'Emission' => 'Emission',
             'Fete' => 'Fete',
@@ -40,35 +40,35 @@ class EvenementType extends AbstractType
             'Var' => '83',
             'Vaucluse' => '84',
         ];
-        
+
         $autreTypeValue = '';
         $typeValue = $existingType;
 
-// ✅ Si le type existant n'est pas dans la liste, il est considéré comme un type personnalisé
-if (!in_array($existingType, $choices, true) && !empty($existingType)) {
-    $autreTypeValue = $existingType;
-    $typeValue = 'autre'; // Forcer la sélection de "Autre" si un type personnalisé est trouvé
-    $autreTypeValue = $options['data']?->getType() ?? ''; // Si pas de type, on initialise à vide
-}
-     
-            $builder
-            
+        // ✅ Si le type existant n'est pas dans la liste, il est considéré comme un type personnalisé
+        if (!in_array($existingType, $choices, true) && !empty($existingType)) {
+            $autreTypeValue = $existingType;
+            $typeValue = 'autre'; // Forcer la sélection de "Autre" si un type personnalisé est trouvé
+            $autreTypeValue = $options['data']?->getType() ?? ''; // Si pas de type, on initialise à vide
+        }
+
+        $builder
+
             ->add('titre', TextType::class, [
                 'label' => 'Titre',
                 'attr' => [
-                'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
+                    'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
                 ]
             ])
             ->add('organisateur', TextType::class, [
                 'label' => 'Organisateur',
                 'attr' => [
-                'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
+                    'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
                 ]
             ])
             ->add('ville', TextType::class, [
                 'label' => 'Ville',
                 'attr' => [
-                'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
+                    'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
             ->add('departement', ChoiceType::class, [
@@ -80,7 +80,7 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
             ->add('adresse', TextType::class, [
                 'label' => 'Adresse',
                 'attr' => [
-                'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
+                    'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
             ->add('dateDebut', DateTimeType::class, [
@@ -101,13 +101,13 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
             ->add('horaire', TextType::class, [
                 'label' => 'Horaires',
                 'attr' => [
-                'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
+                    'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
             ->add('prix', TextType::class, [
                 'label' => 'Prix',
                 'attr' => [
-                'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
+                    'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
             ->add('presentation', TextareaType::class, [
@@ -116,60 +116,60 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
                 'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'attr' => [
                     'class' => 'hidden-textarea', // 🔥 Cache le textarea sans display: none;
-    ],
+                ],
             ])
             ->add('contact', TextType::class, [
                 'label' => 'Contact',
                 'attr' => [
-                'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
+                    'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
                 ]
             ])
-            
+
             ->add('type', ChoiceType::class, [
                 'label' => 'Type',
                 'choices' => $choices,
                 'placeholder' => 'Sélectionnez un type d\'évènement',
                 'data' => $typeValue, // ✅ Sélectionne correctement "Autre" si besoin
-                'choice_label' => fn ($choice, $key, $value) => $key,
-                'choice_value' => fn ($choice) => strtolower($choice), // 🔥 Normalisation
+                'choice_label' => fn($choice, $key, $value) => $key,
+                'choice_value' => fn($choice) => strtolower($choice), // 🔥 Normalisation
                 'attr' => [
-                'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
+                    'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
-            ->add('autreType', TextType::class, [
-                'label' => 'Autre type',
-                'required' => false,
-                'mapped' => false, // Ne lie pas cette propriété à l'entité
-                'data' => $autreTypeValue, // ✅ Remplit l'input si un type personnalisé est déjà sélectionné
-                'attr' => ['style' => ($autreTypeValue ? 'display:block;' : 'display:none;'), 'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
-                ]], // Cache si pas nécessaire
+            ->add(
+                'autreType',
+                TextType::class, [
+                    'label' => 'Autre type',
+                    'required' => false,
+                    'mapped' => false, // Ne lie pas cette propriété à l'entité
+                    'data' => $autreTypeValue, // ✅ Remplit l'input si un type personnalisé est déjà sélectionné
+                    'attr' => ['style' => ($autreTypeValue ? 'display:block;' : 'display:none;'), 'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
+                    ]
+                ], // Cache si pas nécessaire
             )
-        
-                
+
+
             ->add('thumbnailFile', FileType::class, [
-            'required' => false,
-            'label' => 'Ajouter une image :',
+                'required' => false,
+                'label' => 'Ajouter une image :',
             ]);
 
-            if ($options['show_valid']) {
-                $builder->add('valid', CheckboxType::class, [
-                    'label' => 'Valide',
-                    'required' => false,
-                ]);
-            }
-        
-       
-            $builder->add('Sauvegarder', SubmitType::class);
-        
-            
-            
+        if ($options['show_valid']) {
+            $builder->add('valid', CheckboxType::class, [
+                'label' => 'Valide',
+                'required' => false,
+            ]);
+        }
+
+
+        $builder->add('Sauvegarder', SubmitType::class);
     }
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Evenement::class,
             'show_valid' => false, // Option par défaut
-            
+
         ]);
     }
 }

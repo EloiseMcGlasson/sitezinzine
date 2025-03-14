@@ -149,7 +149,7 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
                 'mapped' => false, // Ne lie pas cette propriété à l'entité
                 'data' => $autreTypeValue, // ✅ Remplit l'input si un type personnalisé est déjà sélectionné
                 'attr' => ['style' => ($autreTypeValue ? 'display:block;' : 'display:none;'), 'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
-                ]], // Cache si pas nécessaire
+]], // Cache si pas nécessaire
             )
         
                 

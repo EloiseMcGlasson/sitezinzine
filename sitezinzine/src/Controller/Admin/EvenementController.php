@@ -7,13 +7,16 @@ use App\Form\EvenementType;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Requirement\Requirement;
-
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[Route('/admin/evenement', name: 'admin.evenement.')]
+#[IsGranted('ROLE_USER')]
 class EvenementController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
@@ -23,7 +26,7 @@ class EvenementController extends AbstractController
         $evenement = new Evenement();
         $form = $this->createForm(EvenementType::class, $evenement, [
             'show_valid' => true, // Montrer le champ valid
-       
+
         ]);
         $form->handleRequest($request);
 
@@ -31,11 +34,11 @@ class EvenementController extends AbstractController
             $evenement->setUpdateAt(new \DateTimeImmutable());
             $em->persist($evenement);
             $em->flush();
-        $this->addFlash('success', 'L\'évènement a bien été validée');
+            $this->addFlash('success', 'L\'évènement a bien été validée');
 
             return $this->redirectToRoute('admin.evenement.index');
         }
-        
+
         return $this->render('/admin/evenement/index.html.twig', [
             'evenements' => $evenements,
             'form' => $form,
@@ -43,19 +46,23 @@ class EvenementController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em)
+    public function create(Request $request, EntityManagerInterface $em, Security $security)
 
     {
         $evenement = new Evenement();
+        $userId = $security->getUser();
         
         $form = $this->createForm(EvenementType::class, $evenement);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            $evenement->setUpdateAt(new \DateTimeImmutable());
 
-            
+            $evenement->setUpdateAt(new \DateTimeImmutable());
+            $evenement->setSoftDelete(false);
+            $evenement->setValid(false);
+            $evenement->setUser($userId);
+
+
             $em->persist($evenement);
             $em->flush();
             $this->addFlash('success', 'L\'évènement a été crée !');
@@ -67,23 +74,28 @@ class EvenementController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    public function edit(Evenement $evenement, Request $request, EntityManagerInterface $em)
+    public function edit(Evenement $evenement, Request $request, EntityManagerInterface $em, Security $security)
     {
         $form = $this->createForm(EvenementType::class, $evenement, [
             'show_valid' => true, // Montrer le champ valid
-            
+
         ]);
-      
+
         $form->handleRequest($request);
+        $userId = $security->getUser();
         
         if ($form->isSubmitted() && $form->isValid()) {
-              // ✅ Récupérer la valeur du champ "Autre type"
-        $autreType = $form->get('autreType')->getData();
 
-        // ✅ Si "Autre" est sélectionné et que le champ "Autre type" est rempli, on l'enregistre
-        if ($evenement->getType() === 'autre' && !empty($autreType)) {
-            $evenement->setType($autreType);
-        }
+            if (!$evenement->getUser()){
+                $evenement->setUser($userId);
+            }
+            // ✅ Récupérer la valeur du champ "Autre type"
+            $autreType = $form->get('autreType')->getData();
+
+            // ✅ Si "Autre" est sélectionné et que le champ "Autre type" est rempli, on l'enregistre
+            if ($evenement->getType() === 'autre' && !empty($autreType)) {
+                $evenement->setType($autreType);
+            }
             $evenement->setUpdateAt(new \DateTimeImmutable());
             $em->flush();
             $this->addFlash('success', 'L\'évènement a bien été modifié');
@@ -101,7 +113,7 @@ class EvenementController extends AbstractController
         $evenement = $evenementRepository->find($id);
         return $this->render('admin/evenement/show.html.twig', [
             'evenement' => $evenement,
-            
+
         ]);
     }
 
@@ -134,6 +146,4 @@ class EvenementController extends AbstractController
         $this->addFlash('success', 'L\'évènement a bien été dé-validé');
         return $this->redirectToRoute('admin.evenement.index');
     }
-    
 }
-

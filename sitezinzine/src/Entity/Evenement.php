@@ -102,6 +102,9 @@ class Evenement
     #[ORM\Column(nullable: true)]
     private ?bool $softDelete = null;
 
+    #[ORM\ManyToOne(inversedBy: 'evenements')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -330,6 +333,18 @@ class Evenement
     public function setSoftDelete(?bool $softDelete): static
     {
         $this->softDelete = $softDelete;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
