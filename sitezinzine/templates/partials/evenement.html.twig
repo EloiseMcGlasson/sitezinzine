@@ -42,7 +42,7 @@
     justify-content: center;
 }
 
-article {
+article.evenements {
     display: grid;
     grid-template-areas:
         "article1 article1"
@@ -178,7 +178,7 @@ article {
             </div>
     </div>
     
-    <article>
+    <article class="evenements">
         {% for evenement in evenements %}
         <div class="evenement evenement-{{ loop.index }}">
             <div class="top">
