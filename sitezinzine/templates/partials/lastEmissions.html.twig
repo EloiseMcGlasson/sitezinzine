@@ -68,7 +68,7 @@ article {
     grid-template-columns: repeat(3, minmax(250px, 1fr)); /* 3 cartes par ligne */
     grid-auto-flow: row dense; /* Force le remplissage correct des lignes */
     grid-auto-rows: auto;
-    gap: 60px;
+    gap:  60px 100px;
     padding: 20px;
     max-width: 1200px;
     margin: auto;
@@ -82,8 +82,14 @@ article {
         height: 300px;
         position: relative;
         flex-direction: row;
-        margin:50px 100px; 
+      
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
+    .carte:hover {
+    transform: translateY(-5px); /* Légère élévation */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus marquée */
+}
 
     .categorie {
         

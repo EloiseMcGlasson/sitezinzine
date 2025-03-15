@@ -61,23 +61,28 @@ class EvenementType extends AbstractType
             ])
             ->add('organisateur', TextType::class, [
                 'label' => 'Organisateur',
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'attr' => [
                     'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
                 ]
             ])
             ->add('ville', TextType::class, [
                 'label' => 'Ville',
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
+
                 'attr' => [
                     'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
             ->add('departement', ChoiceType::class, [
                 'label' => 'Département',
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'choices' => $departements,
                 'placeholder' => 'Sélectionnez un département',
                 'data' => $options['data']?->getDepartement() ?? '', // ✅ Sélectionne correctement le département
             ])
             ->add('adresse', TextType::class, [
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'label' => 'Adresse',
                 'attr' => [
                     'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
@@ -99,12 +104,14 @@ class EvenementType extends AbstractType
 
             ])
             ->add('horaire', TextType::class, [
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'label' => 'Horaires',
                 'attr' => [
                     'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]
             ])
             ->add('prix', TextType::class, [
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'label' => 'Prix',
                 'attr' => [
                     'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
@@ -119,6 +126,7 @@ class EvenementType extends AbstractType
                 ],
             ])
             ->add('contact', TextType::class, [
+                'required' => false, // ✅ Mettre `false` pour désactiver le `required`
                 'label' => 'Contact',
                 'attr' => [
                     'maxlength' => 100 // 🔥 Empêche de taper plus de 100 caractères
