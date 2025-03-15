@@ -40,7 +40,7 @@ class Evenement
     )]
     private ?string $ville = null;
 
-    #[ORM\Column(length: 2)]
+    #[ORM\Column(length: 2, nullable: true)]
     private ?string $departement = null;
 
     #[ORM\Column(length: 50, nullable: true)]

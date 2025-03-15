@@ -1,186 +1,186 @@
 <style>
 
 
-    .bodyondes {
-        background: white;
-        background-size: 100%;
-        margin: 0%;
-        padding: 0%;
-        
-        width: 100%;
-        position: relative;
-        
-    }
-
-    .bodyondes h1, h3 {
-      color: #7E4093;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-    .bodyondes h1 {
-      font-size: 36pt;
-      font-weight: 900;
-    }
-
-    .bodyondes h3 {
-      font-family: "Montserrat Alternates", sans-serif;
-      font-weight: 300;
-      font-style: normal;
-      justify-content: center;
-      text-align: center;
-      font-size: 24pt;
+  .bodyondes {
+      background: white;
+      background-size: 100%;
+      margin: 0%;
+      padding: 0%;
+      
+      width: 100%;
+      position: relative;
+      
   }
 
-    .ondestitres {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  .bodyondes h1, h3 {
+    color: #7E4093;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .bodyondes h1 {
+    font-size: 36pt;
+    font-weight: 900;
+  }
 
-    }
-    .ondestitres img {
-      width: 150px;
-      margin-right: 10px;
-      padding-bottom: 15px;
-    }
+  .bodyondes h3 {
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    justify-content: center;
+    text-align: center;
+    font-size: 24pt;
+}
 
-    .carousel {
-      background: linear-gradient(#E4013A, #B81C61);
-      background-size: 100%;
-      width: 250px;
-      height: 300px;
-      margin-bottom: 50px;
-      margin-top: 50px;
-      border:solid;
-      border-color: black;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+  .ondestitres {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  
+  }
+  .ondestitres img {
+    width: 150px;
+    margin-right: 10px;
+    padding-bottom: 15px;
+  }
 
-    .date_carousel {
-      font-family: "Montserrat Alternates", sans-serif;
-      font-size: 30px;
-      padding: 10px;
-    }
+  .carousel {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 250px;
+    height: 300px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    border:solid;
+    border-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
-    .titre_carousel {
-      font-family: "Montserrat", sans-serif;
-      font-weight: 900;
-      font-size: 25px;
+
+
+  .date_carousel {
+    font-family: "Montserrat Alternates", sans-serif;
+    font-size: 30px;
+    padding: 10px;
+  }
+
+  .titre_carousel {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: 25px;
+    padding: 10px;
+    text-wrap: balance;
+  }
+
+  .categorie_carousel {
+      font-family: "Source Code Pro", monospace;
+      font-weight: 600;
+      font-size: 16px;
+      background-color: #35BAC0;
       padding: 10px;
       text-wrap: balance;
-    }
+  }
+  .glide__arrows img {
+    width: 100px;
+    
+  }
 
-    .categorie_carousel {
-        font-family: "Source Code Pro", monospace;
-        font-weight: 600;
-        font-size: 16px;
-        background-color: #35BAC0;
-        padding: 10px;
-        text-wrap: balance;
-    }
-    .glide__arrows img {
-      width: 100px;
+  .glide__arrow--right {
+    all: none;
+    border-radius: 50%;
+  }
+
+  .glide__arrow--left {
+    all: none;
+    border-radius: 50%;
+  }
+  .glide {
+    margin: 0px 20px;
+  }
+
+  .titre_carousel a {
+  padding: 14px 16px;
+  color: black;
+  text-decoration: none;
+  font-weight: 800;
       
-    }
-
-    .glide__arrow--right {
-      all: none;
-      border-radius: 50%;
-    }
-
-    .glide__arrow--left {
-      all: none;
-      border-radius: 50%;
-    }
-    .glide {
-      margin: 0px 20px;
-    }
-
-    .titre_carousel a {
-    padding: 14px 16px;
-    color: black;
-    text-decoration: none;
-    font-weight: 800;
-        
 }
 {# .glide__arrow glide__arrow--right {
 border: transparent;
 
 } #}
 .titre_carousel a:hover {
-    padding: 14px 16px;
-    color: white;
-    text-decoration: none;
-    font-weight: 800;
-        
+  padding: 14px 16px;
+  color: white;
+  text-decoration: none;
+  font-weight: 800;
+      
 }
- 
+
 </style>
 <div class="bodyondes">
-  <div class="ondestitres">
-    <img src="{{ asset('/images/illu-ondes.gif') }}">
-      <div>
-        <h1>
-          SUR LES ONDES
-        </h1>
-        <h3>
-          La programmation d'aujourd'hui
-        </h3>
-      </div>
+<div class="ondestitres">
+  <img src="{{ asset('/images/illu-ondes.gif') }}">
+    <div>
+      <h1>
+        SUR LES ONDES
+      </h1>
+      <h3>
+        La programmation d'aujourd'hui
+      </h3>
     </div>
-      <div class="glide">
-        <div class="glide__track" data-glide-el="track">
-          <ul class="glide__slides">
-            {% for lastEmission in lastEmissions %}
-            <li class="glide__slide">
-              <div class="carousel">
-                            
-                            <div class='date_carousel'>
-                              <p>
-                                {{ 'à ' ~ lastEmission.datepub| format_datetime ('none', 'short', locale = 'fr') }}
-                              </p>
-                            </div>
-                            <div class='titre_carousel'>
-                              <p>
-                                <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
-                                {{ lastEmission.titre | upper }}
-                                </a>
-                              </p>
-                            </div>
-                            <div class='categorie_carousel'>
+  </div>
+    <div class="glide">
+      <div class="glide__track" data-glide-el="track">
+        <ul class="glide__slides">
+          {% for lastEmission in lastEmissions %}
+          <li class="glide__slide">
+            <div class="carousel">
+                          
+                          <div class='date_carousel'>
                             <p>
-                              {{ lastEmission.categorie.titre | upper }}
+                              {{ 'à ' ~ lastEmission.datepub| format_datetime ('none', 'short', locale = 'fr') }}
                             </p>
                           </div>
-                     
-                      
-              {% endfor %}
-            </li>
-          </ul>
-        </div>
-        <div class="glide__arrows" data-glide-el="controls">
-          <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="{{ asset('/images/previous.png') }}"></button>
-          <button class=" glide__arrow glide__arrow--right" data-glide-dir=">
-            "><img src="{{ asset('/images/next.png') }}">
-          </button>
-        </div>
-        </div>
+                          <div class='titre_carousel'>
+                            <p>
+                              <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
+                              {{ lastEmission.titre | upper }}
+                              </a>
+                            </p>
+                          </div>
+                          <div class='categorie_carousel'>
+                          <p>
+                            {{ lastEmission.categorie.titre | upper }}
+                          </p>
+                        </div>
+                   
+                    
+            {% endfor %}
+          </li>
+        </ul>
+      </div>
+      <div class="glide__arrows" data-glide-el="controls">
+        <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="{{ asset('/images/previous.png') }}"></button>
+        <button class=" glide__arrow glide__arrow--right" data-glide-dir=">
+          "><img src="{{ asset('/images/next.png') }}">
+        </button>
+      </div>
       </div>
     </div>
   </div>
-        <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
-        <script>
+</div>
+      <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+      <script>
 
-  const config = {
-    type: "carousel",
-    perView:6,
-    gap: 0
-  }
+const config = {
+  type: "carousel",
+  perView:6,
+  gap: 0
+}
 
-  new Glide('.glide', config ).mount()
+new Glide('.glide', config ).mount()
 </script>
-        
+      

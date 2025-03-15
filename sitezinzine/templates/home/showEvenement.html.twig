@@ -2,6 +2,12 @@
 {% block title "Évènement : " ~ evenement.titre %}
 {% block body %}
     <style>
+
+html, body {
+    height: 100%; /* Assure que la hauteur de la page occupe toute la fenêtre */
+    margin: 0;
+    padding: 0;
+}
 .bodyevenement {
     background: linear-gradient(#E4013A, #B81C61);
     background-size: 100%;
@@ -15,7 +21,7 @@
     font-style: normal;
     position: relative;
     color: white;
-    
+    min-height: 100vh;
     line-height: 1.5em;
     }
 .top img{
@@ -38,10 +44,21 @@ h1 {
     float: left;
     margin: 10px;
     width: 250px;
+    cursor: zoom-in; /* Change le curseur pour indiquer que l'image est cliquable */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Ajoute une transition fluide */
+
+}
+.texteevenement img:hover {
+    transform: scale(1.05); /* Agrandit légèrement l'image au survol */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Ajoute une ombre au survol */
 }
 
 .presentation {
     margin: 15px;
+    color: white;
+}
+.presentation p {
+    color: white;
 }
 .bottom img {
     width: 100%;
@@ -68,7 +85,48 @@ h1 {
         
 }
 
+.bottom {
+    margin-top: auto; /* Force le footer à rester en bas */
+}
 
+/* Styles pour la modale */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9); /* Fond sombre */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #E40039;
+}
     
     
     </style>
@@ -82,17 +140,45 @@ h1 {
                     </h1>
                 </div>
                 {% if evenement.thumbnail %}
-                    <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
+                    <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}" onclick="openModal(this.src)">
                     {% endif %}
                     <div class="presentation">
                         {{ evenement.presentation | raw }}
                     </div>
-                    <p>
-                        {{ "Dernière rediffusion le " ~ evenement.dateDebut| format_date ('long', locale = 'fr') }}
-                    </p>
+                   
                    
                 </div>
                     <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
                 </div>
+                <div id="imageModal" class="modal">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <img class="modal-content" id="modalImage">
+                </div>
+                <script>
+                    function openModal(imgSrc) {
+                        const modal = document.getElementById('imageModal');
+                        const modalImg = document.getElementById('modalImage');
+                        modal.style.display = 'flex';
+                        modalImg.src = imgSrc;
+                    }
+
+                    function closeModal() {
+                        const modal = document.getElementById('imageModal');
+                        modal.style.display = 'none';
+                    }
+
+                    // Fermer la modale en cliquant en dehors de l'image
+                    document.getElementById('imageModal').addEventListener('click', function (e) {
+                        if (e.target === this) {
+                            closeModal();
+                        }
+                    });
+
+                    // Fermer la modale avec la touche Échap
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape') {
+                            closeModal();
+                        }
+                    });
+                </script>
             {% endblock %}
-            

@@ -198,7 +198,18 @@ ul, li {
 .grise {
     background-color: gray !important;
 }
-
+.presentation {
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: white;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /* Responsive design amélioré */
 @media (max-width: 1200px) {
     .evenements-row {
@@ -287,9 +298,9 @@ ul, li {
                                             -
                                             {{ evenement.horaire }}
                                         </p>
-                                        <p class="presentation">
+                                        <div class="presentation">
                                             {{ evenement.presentation | raw }}
-                                        </p>
+                                        </div>
                                     </div>
                                     <div class="col3">
                                         <a class="btn btn-primary btn-sm" href="{{ path('admin.evenement.edit', {id: evenement.id}) }}">
