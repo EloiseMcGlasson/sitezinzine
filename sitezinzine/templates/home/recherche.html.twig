@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche d'émissions{% endblock %}
+
+{% block body %}
+<style>
+    .recherche {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0%;
+        padding: 0%;
+        display: flex;
+        flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        min-height: 100vh;
+        }
+    .recherche .top img{
+        width: 100%;
+    }
+    strong {
+        font-weight: 700 !important;
+    }
+    em {
+        font-style: italic !important;
+    }
+
+    .recherche h1 {
+    font-size: 23px;
+    text-align: center;
+    margin: 10px; 
+    }
+
+    .recherche h2 {
+    font-size: 20px;
+    text-align: center;
+    margin: 10px; 
+    }
+
+    .recherche .form {
+    }
+
+    .recherche .result {
+        background: transparent;
+        }
+    
+        section {
+            display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr); /* Deux colonnes égales */
+    gap: 20px; /* ✅ Espacement entre les annonces */
+    margin-bottom: 20px;
+    justify-content: center; /* ✅ Centre bien les annonces */
+        }
+        .col1 {
+        width: 150px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+    }
+
+    .col1 img {
+        width: 150px;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .col2 {
+        padding: 10px;
+    overflow: hidden; /* Cache le contenu qui dépasse */
+    word-wrap: break-word; /* Permet la césure des mots longs */
+    }
+
+    .col2 p {
+        margin: 5px 0;
+        padding-left: 15px;
+    }
+
+</style>
+<div class="recherche">
+<div class="top">
+<img src="{{ asset('/images/bottom-header.gif') }}"></div>
+
+    <h1>Recherche d'émissions</h1>
+
+        <div class="form">
+        {{ form_start (form) }}
+        {{ form_row (form.titre) }}
+        {{ form_row (form.datepub) }}
+        <button type="submit">Rechercher</button>
+    {{ form_end (form) }}
+        </div>
+        <div class="results">
+    {% if emissions is not empty %}
+        <h2>Résultats de la recherche :</h2>
+        
+            {% for emission in emissions %}
+            <section>
+                <div class="col1">
+                    {% if emission.thumbnail %}
+                        <img
+                        src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                            {# {% elseif  emission.categorie.thumbnail %}
+                            <img
+                            src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
+                                {% elseif emission.theme.thumbnail is defined %}
+                                <img
+                                src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
+                                    {% else %}
+                                    <img src="{{ asset('/images/emission-zinzine.jpg') }}"> #}
+                                    {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <div class="titre">
+                                        <a href="{{ path('emission.show', {id: emission.id }) }}">
+                                            {{ emission.titre }}
+                                        </a>
+                                    </div>
+                                   {#  <div class="cat">
+                                        <p>
+                                            {{ emission.categorie.titre }}
+                                        </p>
+                                    </div> #}
+                                    <div class="descriptif">
+                                        <p>
+                                            {{ emission.descriptif | raw }}
+                                        </p>
+                                    </div>
+                                    <p>
+                                        {{ 'Horaires de passages : ' ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
+                                    </p>
+                                </div>
+                                
+                                </section>
+            {% endfor %}
+        
+    {% elseif form.vars.submitted %}
+        <p>Aucune émission trouvée pour les critères de recherche.</p>
+    {% endif %}
+        </div>
+</div>
+{% endblock %}
