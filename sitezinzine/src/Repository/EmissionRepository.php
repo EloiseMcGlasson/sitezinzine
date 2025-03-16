@@ -133,4 +133,31 @@ class EmissionRepository extends ServiceEntityRepository
         $result = $stmt->executeQuery()->fetchAllAssociative();
         return $result;
     }
+
+     /**
+     * Recherche des émissions en fonction des critères.
+     *
+     * @param string|null $titre
+     * @param \DateTime|null $dateDiffusion
+     * @return Emission[]
+     */
+    public function findBySearch($criteria): array
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        if (!empty($criteria['titre'])) {
+            $qb->andWhere('e.titre LIKE :titre')
+               ->setParameter('titre', '%' . $criteria['titre'] . '%');
+        }
+    
+        if (!empty($criteria['datepub'])) {
+            $qb->andWhere('e.datepub = :datepub')
+               ->setParameter('datepub', $criteria['datepub']);
+        }
+    
+        return $qb->orderBy('e.datepub', 'DESC')
+                  ->getQuery()
+                  ->getResult();
+    }
+
 }

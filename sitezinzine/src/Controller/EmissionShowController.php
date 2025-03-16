@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Emission;
-use App\Form\EmissionType;
+use App\Form\EmissionSearchType;
 
 use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,6 +46,43 @@ class EmissionShowController extends AbstractController
             
         ]);
     }
+
+   /*  #[Route('/recherche-emissions', name: 'recherche_emissions')]
+    public function rechercher(Request $request, EmissionRepository $emissionRepository): Response
+    {
+        $form = $this->createForm(EmissionSearchType::class);
+        $form->handleRequest($request);
+
+        $emissions = [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $emissions = $emissionRepository->findByCriteria($data['titre'], $data['dateDiffusion']);
+        }
+
+        return $this->render('home/recherche.html.twig', [
+            'form' => $form->createView(),
+            'emissions' => $emissions,
+        ]);
+    } */
+    #[Route('/recherche', name: 'recherche')]
+    public function search(Request $request, EmissionRepository $emissionRepository): Response
+{
+    $form = $this->createForm(EmissionSearchType::class);
+    $form->handleRequest($request);
+
+    $emissions = [];
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        $criteria = $form->getData();
+        $emissions = $emissionRepository->findBySearch($criteria);
+    }
+
+    return $this->render('home/recherche.html.twig', [
+        'form' => $form->createView(),
+        'emissions' => $emissions
+    ]);
+}
 
     
     
