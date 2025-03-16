@@ -2,7 +2,10 @@
 
 namespace App\Form;
 
-
+use App\Entity\Categories;
+use App\Repository\CategoriesRepository;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Emission;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,6 +34,19 @@ class EmissionSearchType extends AbstractType
             'attr' => [
                 'class' => 'form-control'
             ]
+        ])
+        ->add('categorie', EntityType::class, [
+            'class' => Categories::class,
+            'required' => false,
+            'placeholder' => 'Sélectionnez une catégorie',// Texte par défaut
+            'data' => null, // Assure qu'aucune valeur n'est sélectionnée par défaut
+            'choice_label' => 'titre',
+            'label'=> 'Catégorie',
+            'query_builder' => function (CategoriesRepository $er): QueryBuilder {
+                return $er->createQueryBuilder('u')
+                    ->where('u.active = 1' )
+                    ->orderBy('u.titre', 'ASC');
+            }
         ]);
 }
 

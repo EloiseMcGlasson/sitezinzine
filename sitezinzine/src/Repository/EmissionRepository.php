@@ -143,21 +143,35 @@ class EmissionRepository extends ServiceEntityRepository
      */
     public function findBySearch($criteria): array
     {
-        $qb = $this->createQueryBuilder('e');
+        $qb = $this->createQueryBuilder('e')
+               ->leftJoin('e.categorie', 'c'); // Jointure avec la catégorie
 
+    // Si une catégorie est sélectionnée
+    if (!empty($criteria['categorie'])) {
+        $qb->andWhere('LOWER(c.titre) = LOWER(:categorie)')
+   ->setParameter('categorie', trim(strtolower($criteria['categorie']->getTitre())));
+        
+        // Si un titre est aussi renseigné, on filtre en plus par titre
         if (!empty($criteria['titre'])) {
-            $qb->andWhere('e.titre LIKE :titre')
-               ->setParameter('titre', '%' . $criteria['titre'] . '%');
+            $qb->andWhere('LOWER(e.titre) LIKE LOWER(:titre)')
+               ->setParameter('titre', '%' . strtolower($criteria['titre']) . '%');
         }
-    
+    } else {
+        // Si aucune catégorie n'est sélectionnée, on cherche uniquement par titre et date
+        if (!empty($criteria['titre'])) {
+            $qb->andWhere('LOWER(e.titre) LIKE LOWER(:titre)')
+               ->setParameter('titre', '%' . strtolower($criteria['titre']) . '%');
+        }
+
         if (!empty($criteria['datepub'])) {
             $qb->andWhere('e.datepub = :datepub')
                ->setParameter('datepub', $criteria['datepub']);
         }
-    
-        return $qb->orderBy('e.datepub', 'DESC')
-                  ->getQuery()
-                  ->getResult();
+    }
+
+    return $qb->orderBy('e.datepub', 'DESC')
+              ->getQuery()
+              ->getResult();
     }
 
 }
