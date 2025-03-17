@@ -142,7 +142,7 @@ class EmissionRepository extends ServiceEntityRepository
      * @param \DateTime|null $dateDiffusion
      * @return Emission[]
      */
-    public function findBySearch($criteria): array
+    public function findBySearch(array $criteria, int $page = 1): PaginationInterface
     {
         
         $qb = $this->createQueryBuilder('e')
@@ -181,9 +181,16 @@ class EmissionRepository extends ServiceEntityRepository
         ->setParameter('dateFin', $criteria['dateFin']);
  }
 
- return $qb->orderBy('e.datepub', 'DESC')
-          ->getQuery()
-          ->getResult();
+// Retourner le résultat paginé
+return $this->paginator->paginate(
+    $qb->orderBy('e.datepub', 'DESC'),
+    $page,
+    12, // Nombre d'éléments par page
+    [
+        'distinct' => true,
+        'sortFieldAllowList' => ['e.titre', 'e.datepub']
+    ]
+);
     }
 
 }

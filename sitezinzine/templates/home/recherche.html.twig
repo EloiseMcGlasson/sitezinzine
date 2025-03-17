@@ -233,6 +233,18 @@ button[type=reset]:hover {
     flex: 1;
 }
 
+.pagination {
+    background-color: transparent;
+    margin: auto;
+    padding: 10px;
+}
+
+.pagination a:hover {
+    padding: 14px 16px;
+    color: grey;
+    text-decoration: none;
+    font-weight: 800;
+}
 /* Responsive */
 @media screen and (max-width: 768px) {
     .search-row {
@@ -283,7 +295,10 @@ button[type=reset]:hover {
 <div class="results">
     {% if emissions is not empty %}
         <h2>Résultats de la recherche :</h2>
-         
+            <div class="pagination">
+            {{ knp_pagination_render(emissions) }}
+        
+        </div>
             {% for emission in emissions %}
                 <section>
                  
@@ -337,7 +352,10 @@ button[type=reset]:hover {
                                 
                                 </section>
             {% endfor %}
+            <div class="pagination">
+            {{ knp_pagination_render(emissions) }}
         
+        </div>
     {% elseif form.vars.submitted %}
         <p>Aucune émission trouvée pour les critères de recherche.</p>
     {% endif %}

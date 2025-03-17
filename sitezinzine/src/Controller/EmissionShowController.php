@@ -75,7 +75,9 @@ class EmissionShowController extends AbstractController
     
     if ($form->isSubmitted() && $form->isValid()) {
         $criteria = $form->getData();
-        $emissions = $emissionRepository->findBySearch($criteria);
+        $page = $request->query->getInt('page', 1);
+        $emissions = $emissionRepository->findBySearch($criteria, $page);
+    
     }
 
     return $this->render('home/recherche.html.twig', [
