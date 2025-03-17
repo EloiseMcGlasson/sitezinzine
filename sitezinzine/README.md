@@ -53,6 +53,14 @@ installation de glide (pour les carrousel)
  installation de phpunit
  composer require --dev phpunit/phpunit
 
+ merge d'une branche avec main
+ git checkout main
+git pull origin main
+git merge nom_de_ta_branche
+# Résoudre les conflits si nécessaire
+git commit # Si des conflits ont été résolus
+git push origin main
+
 
 
 
