@@ -147,7 +147,10 @@ class EmissionRepository extends ServiceEntityRepository
         
         $qb = $this->createQueryBuilder('e')
         ->leftJoin('e.categorie', 'c')
-        ->leftJoin('e.theme', 't');
+        ->leftJoin('e.theme', 't')
+        ->andWhere('e.url IS NOT NULL AND e.url != :emptyUrl') // Ajout de cette condition
+        ->setParameter('emptyUrl', ''); // Pour exclure aussi les URLs vides
+
 
  // Recherche par mot-clé (titre ou descriptif) - utilise toujours le même paramètre
  if (!empty($criteria['titre'])) {
