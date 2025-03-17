@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-
+use App\Entity\Theme;
 use App\Entity\Emission;
 use App\Entity\Categories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -160,6 +160,12 @@ class EmissionRepository extends ServiceEntityRepository
      $qb->andWhere('LOWER(c.titre) = LOWER(:categorie)')
         ->setParameter('categorie', trim(strtolower($criteria['categorie']->getTitre())));
  }
+
+ // Filtre par thème
+ if (!empty($criteria['theme'])) {
+    $qb->andWhere('t.id = :theme_id')
+       ->setParameter('theme_id', $criteria['theme']->getId());
+}
 
  // Recherche par plage de dates
  if (!empty($criteria['dateDebut'])) {

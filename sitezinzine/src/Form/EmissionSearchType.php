@@ -6,6 +6,8 @@ use App\Entity\Categories;
 use App\Repository\CategoriesRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Theme;
+use App\Repository\ThemeRepository;
 use App\Entity\Emission;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,6 +50,19 @@ class EmissionSearchType extends AbstractType
             'query_builder' => function (CategoriesRepository $er): QueryBuilder {
                 return $er->createQueryBuilder('u')
                     ->orderBy('u.titre', 'ASC');
+            }
+        ])
+        ->add('theme', EntityType::class, [
+            'class' => Theme::class,
+            'required' => false,
+            'placeholder' => 'Sélectionnez un thème',// Texte par défaut
+            'data' => null, // Assure qu'aucune valeur n'est sélectionnée par défaut
+            'empty_data' => null, // ✅ Permet d'éviter qu'un ID par défaut soit utilisé
+            'choice_label' => 'name',
+            'label'=> 'Thème',
+            'query_builder' => function (ThemeRepository $er): QueryBuilder {
+                return $er->createQueryBuilder('u')
+                    ->orderBy('u.name', 'ASC');
             }
         ]);
 }
