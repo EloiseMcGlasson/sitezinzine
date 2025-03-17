@@ -53,6 +53,16 @@ installation de glide (pour les carrousel)
  installation de phpunit
  composer require --dev phpunit/phpunit
 
+ 
+créer une nouvelle branche
+git checkout -b nom_de_ta_branche  # Créer et basculer sur la branche
+git push origin nom_de_ta_branche  # Pousser la branche sur le dépôt distant
+git branch                         # Vérifier la liste des branches
+git checkout main                  # Revenir sur la branche principale
+
+
+
+
  merge d'une branche avec main
  git checkout main
 git pull origin main
@@ -60,6 +70,13 @@ git merge nom_de_ta_branche
 # Résoudre les conflits si nécessaire
 git commit # Si des conflits ont été résolus
 git push origin main
+
+supprimer une branche 
+git checkout main                        # Assure-toi d'être sur une autre branche
+git branch -d nom_de_ta_branche          # Supprime la branche localement
+# ou
+git branch -D nom_de_ta_branche          # Supprime la branche localement (force)
+git push origin --delete nom_de_ta_branche # Supprime la branche sur le dépôt distant
 
 
 
