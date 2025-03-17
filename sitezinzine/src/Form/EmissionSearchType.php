@@ -25,26 +25,28 @@ class EmissionSearchType extends AbstractType
                 'placeholder' => 'Rechercher par titre'
             ]
         ])
-        ->add('datepub', DateTimeType::class, [
+       ->add('dateDebut', DateTimeType::class, [
             'required' => false,
+            'label' => 'Date de début',
             'widget' => 'single_text',
-            'label' => 'Date de diffusion',
-            'html5' => true, // Utilise le widget de date HTML5 natif
-            'input' => 'datetime',
-            'attr' => [
-                'class' => 'form-control'
-            ]
+            'html5' => true,
+        ])
+        ->add('dateFin', DateTimeType::class, [
+            'required' => false,
+            'label' => 'Date de fin',
+            'widget' => 'single_text',
+            'html5' => true,
         ])
         ->add('categorie', EntityType::class, [
             'class' => Categories::class,
             'required' => false,
             'placeholder' => 'Sélectionnez une catégorie',// Texte par défaut
             'data' => null, // Assure qu'aucune valeur n'est sélectionnée par défaut
+            'empty_data' => null, // ✅ Permet d'éviter qu'un ID par défaut soit utilisé
             'choice_label' => 'titre',
             'label'=> 'Catégorie',
             'query_builder' => function (CategoriesRepository $er): QueryBuilder {
                 return $er->createQueryBuilder('u')
-                    ->where('u.active = 1' )
                     ->orderBy('u.titre', 'ASC');
             }
         ]);

@@ -26,7 +26,8 @@ class EvenementRepository extends ServiceEntityRepository
         ->orWhere('(:today BETWEEN a.dateDebut AND a.dateFin)') // Événements en cours
         ->andWhere('a.valid = 1')
         ->setParameter('today', new \DateTimeImmutable('today'))
-        ->orderBy('a.dateDebut', 'ASC');
+        ->orderBy('a.dateDebut', 'ASC')
+        ->setMaxResults(3);
 
     return $qb->getQuery()->getResult();
 }

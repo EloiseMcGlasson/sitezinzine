@@ -29,7 +29,7 @@ class Categories
     #[Groups(['categories.index', 'emissions.index'])]
     private string $titre = '';
 
-    #[ORM\Column]
+    #[ORM\Column( nullable: true)]
     #[Groups(['categories.index'])]
     private ?int $oldid = null;
 

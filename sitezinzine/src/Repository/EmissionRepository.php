@@ -4,6 +4,7 @@ namespace App\Repository;
 
 
 use App\Entity\Emission;
+use App\Entity\Categories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -143,35 +144,37 @@ class EmissionRepository extends ServiceEntityRepository
      */
     public function findBySearch($criteria): array
     {
-        $qb = $this->createQueryBuilder('e')
-               ->leftJoin('e.categorie', 'c'); // Jointure avec la catégorie
-
-    // Si une catégorie est sélectionnée
-    if (!empty($criteria['categorie'])) {
-        $qb->andWhere('LOWER(c.titre) = LOWER(:categorie)')
-   ->setParameter('categorie', trim(strtolower($criteria['categorie']->getTitre())));
         
-        // Si un titre est aussi renseigné, on filtre en plus par titre
-        if (!empty($criteria['titre'])) {
-            $qb->andWhere('LOWER(e.titre) LIKE LOWER(:titre)')
-               ->setParameter('titre', '%' . strtolower($criteria['titre']) . '%');
-        }
-    } else {
-        // Si aucune catégorie n'est sélectionnée, on cherche uniquement par titre et date
-        if (!empty($criteria['titre'])) {
-            $qb->andWhere('LOWER(e.titre) LIKE LOWER(:titre)')
-               ->setParameter('titre', '%' . strtolower($criteria['titre']) . '%');
-        }
+        $qb = $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.theme', 't');
 
-        if (!empty($criteria['datepub'])) {
-            $qb->andWhere('e.datepub = :datepub')
-               ->setParameter('datepub', $criteria['datepub']);
-        }
-    }
+ // Recherche par mot-clé (titre ou descriptif) - utilise toujours le même paramètre
+ if (!empty($criteria['titre'])) {
+     $qb->andWhere('LOWER(e.titre) LIKE LOWER(:search) OR LOWER(e.descriptif) LIKE LOWER(:search)')
+        ->setParameter('search', '%' . strtolower($criteria['titre']) . '%');
+ }
 
-    return $qb->orderBy('e.datepub', 'DESC')
-              ->getQuery()
-              ->getResult();
+ // Filtre par catégorie si présente
+ if (!empty($criteria['categorie']) && $criteria['categorie'] instanceof Categories) {
+     $qb->andWhere('LOWER(c.titre) = LOWER(:categorie)')
+        ->setParameter('categorie', trim(strtolower($criteria['categorie']->getTitre())));
+ }
+
+ // Recherche par plage de dates
+ if (!empty($criteria['dateDebut'])) {
+     $qb->andWhere('e.datepub >= :dateDebut')
+        ->setParameter('dateDebut', $criteria['dateDebut']);
+ }
+
+ if (!empty($criteria['dateFin'])) {
+     $qb->andWhere('e.datepub <= :dateFin')
+        ->setParameter('dateFin', $criteria['dateFin']);
+ }
+
+ return $qb->orderBy('e.datepub', 'DESC')
+          ->getQuery()
+          ->getResult();
     }
 
 }

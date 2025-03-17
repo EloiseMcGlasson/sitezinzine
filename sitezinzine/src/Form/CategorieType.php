@@ -34,8 +34,11 @@ class CategorieType extends AbstractType
             ])
 
             ->add('descriptif', TextareaType::class, [
-                'empty_data' => 'Description à remplir',
-                'label' => 'Descriptif',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control tinymce',
+                    'rows' => 10
+                ]
             ])
 
             ->add('thumbnailFile', FileType::class, [
