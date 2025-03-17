@@ -22,9 +22,9 @@ class EmissionSearchType extends AbstractType
         $builder
         ->add('titre', TextType::class, [
             'required' => false,
-            'label' => 'Titre de l\'émission',
+            'label' => 'Rechercher par mot',
             'attr' => [
-                'placeholder' => 'Rechercher par titre'
+                'placeholder' => 'Rechercher par mot'
             ]
         ])
        ->add('dateDebut', DateTimeType::class, [
