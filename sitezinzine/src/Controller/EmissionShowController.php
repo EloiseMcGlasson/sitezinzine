@@ -80,7 +80,8 @@ class EmissionShowController extends AbstractController
 
     return $this->render('home/recherche.html.twig', [
         'form' => $form->createView(),
-        'emissions' => $emissions
+        'emissions' => $emissions,
+        'searchTerm' => $form->get('titre')->getData() // ✅ Récupère la valeur du champ "titre"
     ]);
 }
 
