@@ -1,0 +1,1 @@
+0 3    usrbinphp chemindetonprojetbinconsole appcleanup-annonces  varlogcleanup_annonces.log 2&1
