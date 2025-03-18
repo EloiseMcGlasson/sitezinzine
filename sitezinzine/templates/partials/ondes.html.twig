@@ -46,7 +46,7 @@
   .carousel {
     background: white; /* Changement du fond en blanc */
     width: 250px;
-    height: 300px;
+    height: 400px;
     margin-bottom: 50px;
     margin-top: 50px;
     border: 1px solid #ddd;
@@ -57,6 +57,11 @@
     transform: scale(0.95); /* Réduit légèrement toutes les slides */
 
   }
+
+  .glide__slide {
+    user-select: none; /* Empêche la sélection de texte pendant le glissement */
+    -webkit-user-drag: none; /* Empêche le drag par défaut des images */
+}
 /* Style pour la slide active */
 .glide__slide--active .carousel {
   background: linear-gradient(#7E4093, #6B3B7F);
@@ -74,7 +79,23 @@
     color: white;
 }
 
+.image_carousel {
+    width: 100%;
+    height: 200px; /* Hauteur fixe pour l'image */
+    overflow: hidden;
+}
 
+.image_carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* Effet hover sur l'image */
+.carousel:hover .image_carousel img {
+    transform: scale(1.05);
+}
   .date_carousel {
     font-family: "Montserrat Alternates", sans-serif;
     font-size: 24px;
@@ -136,7 +157,15 @@
     margin: 0;
     line-height: 1.2;
 }
+.glide__track {
+    cursor: grab;
+    position: relative;
+    z-index: 1;
+}
 
+.glide__track:active {
+    cursor: grabbing;
+}
   .glide__arrows {
     position: absolute;
     width: 100%;
@@ -144,6 +173,7 @@
     top: 0;
     left: 0;
     border: none;
+    pointer-events: none; 
 }
 
 .glide__arrow {
@@ -155,6 +185,7 @@
     z-index: 10;
     outline: none; /* Supprime le contour au focus */
     cursor: pointer;
+    pointer-events: auto;
 }
 /* Pour assurer la compatibilité avec tous les navigateurs */
 .glide__arrow:focus {
@@ -220,7 +251,9 @@
 .glide__slide--active .carousel {
     transform: scale(1.05);
 }
-    
+.top-image {
+  height: 25px;
+}
     .date_carousel {
         font-size: 20px;
     }
@@ -251,7 +284,9 @@
     height: 260px;
     transform: scale(0.95);
 }
-
+.top-image {
+  height: 20px;
+}
 .glide__slide--active .carousel {
     transform: scale(1.05);
 }
@@ -291,7 +326,18 @@
           {% for lastEmission in lastEmissions %}
           <li class="glide__slide">
             <div class="carousel">
-                          
+            <div class='image_carousel'>
+            {% if lastEmission.thumbnail %}
+                <img src="{{ vich_uploader_asset(lastEmission, 'thumbnailFile') }}" 
+                     alt="{{ lastEmission.titre }}">
+            {% elseif lastEmission.categorie.thumbnail %}
+                <img src="{{ vich_uploader_asset(lastEmission.categorie, 'thumbnailFile') }}" 
+                     alt="{{ lastEmission.categorie.titre }}">
+            {% else %}
+                <img src="{{ asset('images/default.jpg') }}" 
+                     alt="Image par défaut">
+            {% endif %}
+        </div>
                           <div class='date_carousel'>
                             <p>
                               {{ 'à ' ~ lastEmission.datepub| format_datetime ('none', 'short', locale = 'fr') }}
