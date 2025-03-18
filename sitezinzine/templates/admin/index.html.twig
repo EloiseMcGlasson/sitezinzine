@@ -4,9 +4,18 @@
 
 {% block body %}
 <div class="container mt-4">
-
-<div class="alert alert-info">
+    <div class="alert alert-info">
         Bonjour {{ user.username ?? 'utilisateur' }} !
+        <div class="mt-2">
+            Vos rôles : 
+            {% for role in user.roles %}
+                
+                    <span class="badge bg-primary">
+                        {{ role|replace({'ROLE_': ''}) |title }}
+                    </span>
+                
+            {% endfor %}
+        </div>
     </div>
 
     <h1>Tableau de bord</h1>
