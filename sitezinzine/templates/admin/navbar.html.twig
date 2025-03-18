@@ -127,13 +127,17 @@
                             Évènements
                         </a>
                     </li>
-
+                    <li>
+                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}">
+                    </li>
+                    <li>
+                        <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
+                            Utilisateurs
+                        </a>
+                    </li>
                     {# 
                     
-                    <li><a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
-                        Utilisateurs
-                    </a></li>
-                        <li>
+                    
                         
                        
                         
