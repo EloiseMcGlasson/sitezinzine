@@ -1,0 +1,28 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Administration - Radio Zinzine{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+
+<div class="alert alert-info">
+        Bonjour {{ user.username ?? 'utilisateur' }} !
+    </div>
+
+    <h1>Tableau de bord</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Émissions</h5>
+                    <p class="card-text">Gérer les émissions</p>
+                    <a href="{{ path('admin.emission.index') }}" class="btn btn-primary">Accéder</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ajoutez d'autres cartes pour d'autres sections si nécessaire -->
+    </div>
+</div>
+{% endblock %}
