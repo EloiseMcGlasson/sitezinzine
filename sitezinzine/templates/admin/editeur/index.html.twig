@@ -7,28 +7,14 @@
 {% block body %}
     <style>
    
-    .bodyadminediteur {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        height: 100vh;
-        margin: 0%;
-        padding: 0%;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        }
+  
         strong {
             font-weight: 700 !important;
         }
         em {
             font-style: italic !important;
         }
-    .top img{
-        width: 100%;
-    }
+
    
     .editeur {
         background-color: black;
@@ -133,13 +119,12 @@
     }
    
     </style>
-    <div class="bodyadminediteur">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+    <div>
+       
 
             <p class="create">
                 <a class="btn-create-editeur" href="{{ path('admin.editeur.create') }}">
-                    Créer un nouveau editeur
+                    Créer un nouvel éditeur
                 </a>
             </p>
            
@@ -181,6 +166,6 @@
                     </div>
 
                 </article>
-              
+    </div>
             {% endblock %}
             

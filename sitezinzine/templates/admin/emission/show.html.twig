@@ -2,32 +2,12 @@
 {% block title "Émission : " ~ emission.titre %}
 {% block body %}
     <style>
-    .bodyemission {
-    background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
-    width: 100%;
-    margin: 0%;
-    padding: 0%;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    position: relative;
-    color: white;
-    
-    line-height: 1.5em;
-    }
-.top img{
-    width: 100%;
-}
+  
 .titre {
     text-align: center;
     margin: 10px;
 }
-h1 {
-    font-size: 23px;  
-}
+
 .texteemission {
     margin: 20px;
 }
@@ -41,6 +21,7 @@ h1 {
     background-color: white;
         background-size: 100%;
         color: black;
+        min-height: 50vh;
 }
 .catemission img {
     float: right;
@@ -83,6 +64,12 @@ h1 {
     font-weight: 800;
         
 }
+.catemission .titre h1 {
+
+color: #E40039;
+ 
+        
+}
 .catemission a:hover {
     padding: 14px 16px;
     color: #E40039;
@@ -90,12 +77,43 @@ h1 {
     font-weight: 800;
         
 }
-    
+h1 {
+    text-align: center;
+    color: white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 36pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+h2 {
+    text-align: center;
+    color: #E40039;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 26pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+h3 {
+    text-align: center;
+    color: #E40039;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 20pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}   
+.bottom img {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
     
 </style>
-    <div class="bodyemission">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+    <div>
+      
             <div class="texteemission">
                 <div class="titre">
                     <h1>
@@ -120,7 +138,9 @@ h1 {
                                                     </a>
                     </p>
                 </div>
-                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
+                <div class="bottom">
+                <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
+            </div></div>
                     <div class="catemission">
                         <div class="titre">
                             <h1>
