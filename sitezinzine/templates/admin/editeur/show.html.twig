@@ -2,26 +2,47 @@
 {% block title "Éditeur : " ~ editeur.name %}
 {% block body %}
     <style>
-.editshow {
-    background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
-    width: 100%;
-    margin: 0%;
-    padding: 0%;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    position: relative;
-    color: white;
-}
+
 .titre {
     text-align: center;
     margin: 10px;
 }
+.bottom img {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
 h1 {
-    font-size: 23px;  
+    text-align: center;
+    color: white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 36pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+h2 {
+    text-align: center;
+    color: #E40039;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 26pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+h3 {
+    text-align: center;
+    color: #E40039;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 20pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+
+.emissionsdelaediteur {
+    background-color: white;
 }
 article{
     border: solid;
@@ -30,17 +51,7 @@ article{
     grid-template-columns: 1fr 4fr 1fr;
     margin: 0 80px;
 }
-{# .col1 {
-    width: 150px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.col1 img {
-        width: 150px;
-        margin: 10px;
-    } #}
+
     
     .col2 {
        margin: 20px;
@@ -60,9 +71,7 @@ article{
 .editdescriptif {
     margin: 15px;
 }
-.top img{
-    width: 100%;
-}
+
 .bottom img{
     width: 100%;
     margin-bottom: 0px;
@@ -98,9 +107,8 @@ article{
     }
 
 </style>
-    <div class="editshow">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+    <div>
+      
             <div class="editblock">
             
             <div class="titre">
@@ -110,12 +118,14 @@ article{
             </div>
           
             </div>
-                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+            <div class="bottom">
+            <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
+        </div></div>
                 <div class="emissionsdelaediteur">
                     <div class="titre">
-                        <h1>
+                        <h2>
                             Toutes les émissions de cet éditeur :
-                        </h1>
+                        </h2>
                     </div>
                     <div class="editemission">
                         {% for emission in editeur.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
@@ -126,9 +136,9 @@ article{
                                         {% endif %}
                                     </div>
                                     <div class="col2">
-                                        <h1>
+                                        <h2>
                                             {{ emission.titre }}
-                                        </h1>
+                                        </h2>
                                         <p>
                                             {{ emission.datepub|date('d-m-Y') }}
                                             {{ emission.descriptif | raw }}
