@@ -5,9 +5,10 @@ security:
     
     # Ajoutez la hiérarchie des rôles ici
     role_hierarchy:
-        
+
         ROLE_EDITOR: ROLE_USER
-        ROLE_ADMIN: [ROLE_EDITOR]
+        ROLE_ANNONCE: ROLE_USER
+        ROLE_ADMIN: [ROLE_EDITOR, ROLE_ANNONCE]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
     
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
@@ -24,14 +25,21 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            access_denied_handler: App\Security\AccessDeniedHandler
+
             form_login:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                default_target_path: admin.index  # Redirection après connexion réussie
+                always_use_default_target_path: true  # Force l'utilisation de cette redirection
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: app_login
+                # Options supplémentaires :
+                invalidate_session: true
+                clear_site_data: ["*"]
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

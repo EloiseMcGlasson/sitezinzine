@@ -25,12 +25,32 @@
             {% endblock %}
         {% endblock %}
     </head>
-   
+   <style>
+    .body {
+        background: linear-gradient(#E4013A, #B81C61);
+        background-size: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+    .top img {
+        width: 100%;
+    }
+    </style>
     <body>
         {% include 'admin/navbar.html.twig' %}
         <div class=" container my-4">
             {% include 'partials/flash.html.twig' %}
-
+            <div class="body">
+            <div class="top">
+                <img src="{{ asset('/images/bottom-header.gif') }}"></div>
             {% block body %}{% endblock %}
 
         </div>
