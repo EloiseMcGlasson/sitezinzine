@@ -2,20 +2,7 @@
 {% block title "Éditeur : " ~ InviteOldAnimateur.Lastname %}
 {% block body %}
     <style>
-.editshow {
-    background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
-    width: 100%;
-    margin: 0%;
-    padding: 0%;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    position: relative;
-    color: white;
-}
+
 .titre {
     text-align: center;
     margin: 10px;
@@ -30,17 +17,7 @@ article{
     grid-template-columns: 1fr 4fr 1fr;
     margin: 0 80px;
 }
-{# .col1 {
-    width: 150px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.col1 img {
-        width: 150px;
-        margin: 10px;
-    } #}
+
     
     .col2 {
        margin: 20px;
@@ -60,9 +37,7 @@ article{
 .InviteOldAnimateurdescriptif {
     margin: 15px;
 }
-.top img{
-    width: 100%;
-}
+
 .bottom img{
     width: 100%;
     margin-bottom: 0px;
@@ -96,11 +71,58 @@ article{
         text-decoration: none;
         font-weight: 800; 
     }
+    .bottom img {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+.emissionsdelaInviteOldAnimateur {
+    background-color: white;
+        background-size: 100%;
+        min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 36pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+.emissionsdelaInviteOldAnimateur h1 {
+    text-align: center;
+    color: white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 36pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+.emissionsdelaInviteOldAnimateur h2 {
+    text-align: center;
+    color: #E40039;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 26pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+.emissionsdelaInviteOldAnimateur h3 {
+    text-align: center;
+    color: #E40039;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 20pt;
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}   
 
 </style>
-    <div class="InviteOldAnimateurshow">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+    <div>
+     
             <div class="InviteOldAnimateurblock">
             
             <div class="titre">
@@ -110,12 +132,14 @@ article{
             </div>
           
             </div>
-                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+            <div class="bottom">
+            <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
+        </div></div>
                 <div class="emissionsdelaInviteOldAnimateur">
                     <div class="titre">
-                        <h1>
+                        <h2>
                             Toutes les émissions de cet éditeur :
-                        </h1>
+                        </h2>
                     </div>
                     <div class="InviteOldAnimateuremission">
                         {% for emission in InviteOldAnimateur.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
@@ -126,9 +150,9 @@ article{
                                         {% endif %}
                                     </div>
                                     <div class="col2">
-                                        <h1>
+                                        <h3>
                                             {{ emission.titre }}
-                                        </h1>
+                                        </h3>
                                         <p>
                                             {{ emission.datepub|date('d-m-Y') }}
                                             {{ emission.descriptif | raw }}
