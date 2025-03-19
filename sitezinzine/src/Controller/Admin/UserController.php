@@ -21,7 +21,6 @@ class UserController extends AbstractController
         'ROLE_EDITOR' => 'Éditeur',
         'ROLE_ADMIN' => 'Administrateur',
         'ROLE_SUPER_ADMIN' => 'Super Administrateur',
-        'ROLE_EVENEMENT' => 'Évènement',  // Nouveau rôle
         'ROLE_ANNONCE' => 'Annonce'     // Nouveau rôle
     ];
 

@@ -18,8 +18,7 @@ class UserRolesType extends AbstractType
                     'Éditeur' => 'ROLE_EDITOR',
                     'Administrateur' => 'ROLE_ADMIN',
                     'Super Administrateur' => 'ROLE_SUPER_ADMIN',
-                    'ROLE_EVENEMENT' => 'Évènement',  // Nouveau rôle
-                    'ROLE_ANNONCE' => 'Annonce'     // Nouveau rôle
+                    'Annonce' => 'Annonce'     // Nouveau rôle
                 ],
                 'multiple' => true,
                 'expanded' => true,

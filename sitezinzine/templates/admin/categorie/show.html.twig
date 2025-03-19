@@ -2,26 +2,16 @@
 {% block title "Catégorie : " ~ categorie.titre %}
 {% block body %}
     <style>
-.catshow {
-    background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
-    width: 100%;
-    margin: 0%;
-    padding: 0%;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    position: relative;
-    color: white;
-}
+
 .titre {
     text-align: center;
     margin: 10px;
 }
 h1 {
     font-size: 23px;  
+}
+.emissionsdelacategorie {
+    background-color: white;
 }
 article{
     border: solid;
@@ -60,14 +50,14 @@ article{
 .catdescriptif {
     margin: 15px;
 }
-.top img{
+
+
+
+.bottom img {
     width: 100%;
-}
-.bottom img{
-    width: 100%;
-    margin-bottom: 0px;
-    padding-bottom: 0px;
-    
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 .catemission img {
     width: 150px;
@@ -96,11 +86,28 @@ article{
         text-decoration: none;
         font-weight: 800; 
     }
+    h1 {
+        text-align: center;
+        color: white;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 900;
+        font-style: normal;
+        font-size: 36pt;
+        margin: 20px auto; /* Pour centrer verticalement aussi */
+    }
+    h2 {
+        text-align: center;
+        color: #E40039;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 900;
+        font-style: normal;
+        font-size: 26pt;
+        margin: 20px auto; /* Pour centrer verticalement aussi */
+    }
 
 </style>
-    <div class="catshow">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+    <div>
+        
             <div class="catblock">
             
             <div class="titre">
@@ -116,13 +123,16 @@ article{
                 <div class="catdescriptif">
                     {{ categorie.descriptif | raw }}
                 </div>
+                <div class="bottom">
+                <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
             </div>
-                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+        </div>
+            </div>
                 <div class="emissionsdelacategorie">
                     <div class="titre">
-                        <h1>
+                        <h2>
                             Toutes les émissions de cette catégorie :
-                        </h1>
+                        </h2>
                     </div>
                     <div class="catemission">
                         {% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
@@ -133,9 +143,9 @@ article{
                                         {% endif %}
                                     </div>
                                     <div class="col2">
-                                        <h1>
+                                        <h2>
                                             {{ emission.titre }}
-                                        </h1>
+                                        </h2>
                                         <p>
                                             {{ emission.datepub|date('d-m-Y') }}
                                             {{ emission.descriptif | raw }}

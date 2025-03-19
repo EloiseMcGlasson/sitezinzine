@@ -1,0 +1,41 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h1 class="h4 mb-0">Accès refusé</h1>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-danger" style="font-size: 48px;"></i>
+                    </div>
+                    <p class="text-center">
+                        Désolé, vous n'avez pas les droits suffisants pour accéder à cette page.
+                    </p>
+                    {% if app.user %}
+                        <p class="text-center">
+                            Vous êtes connecté en tant que : <strong>{{ app.user.username }}</strong>
+                        </p>
+                        <p class="text-center">
+                            Vos rôles actuels :
+                            {% for role in app.user.roles %}
+                                <span class="badge bg-secondary">{{ role }}</span>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                    <div class="text-center mt-4">
+                        <a href="{{ path('admin.index') }}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

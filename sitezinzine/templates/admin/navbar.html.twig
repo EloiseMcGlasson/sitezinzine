@@ -87,7 +87,7 @@
                 <div>
                     <ul >
                         <li >
-                            <a class="nav-link {{ app.current_route == 'home' ? 'active' : '' }}" href="{{ path('home') }}">
+                            <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
                                 Accueil
                             </a>
                         </li>
@@ -114,11 +114,13 @@
                                 </a>
                             </div>
                         </li>
+                        {% if is_granted('ROLE_ANNONCE') %}
                         <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
                         <li><a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
                         Annonces
                     </a></li>
+                {% endif %}
                     <li>
                     <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
 
@@ -130,18 +132,17 @@
                     <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}">
                     </li>
+                    {% if is_granted('ROLE_ADMIN') %}
                     <li>
                         <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
                             Utilisateurs
                         </a>
                     </li>
+                {% endif %}
+
                     {# 
                     
-                    
-                        
-                       
-                        
-                        <li>
+                     <li>
                             <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
                                 Thèmes
                             </a>
