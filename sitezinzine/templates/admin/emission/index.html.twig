@@ -34,16 +34,18 @@
     }
     .col3 {
         background-color: black;
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    grid-template-rows: 1fr; 
-    gap: 0px 0px; 
-    grid-template-areas: 
-      "ecoute dl"; 
-    align-items: center;
-    justify-self: center;
+        display: grid;
+        grid-template-columns: auto auto;  /* Changé pour auto auto */
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
     }
 
+    .ecoute {
+        justify-self: start;  /* Aligne à gauche */
+    }
+
+   
     .img {
         padding: 10px;
     }
@@ -53,6 +55,10 @@
         color: white;
         text-decoration: none;
         font-weight: 800;
+    }
+    .btn-action {
+        width: 100%;
+        text-align: center;
     }
 
     a:hover {
@@ -101,19 +107,6 @@
     }
 
 
-    .pagination {
-        background-color: transparent;
-        margin: auto;
-        padding: 10px;
-    }
-
-    .pagination a:hover {
-        padding: 14px 16px;
-        color: grey;
-        text-decoration: none;
-        font-weight: 800;
-    }
-
 
 </style>
     <div>
@@ -147,7 +140,7 @@
                                             <div class="col2">
                                                 <div class="titre">
                                                     <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
-                                                        {{ emission.titre }}
+                                                        {{ emission.titre }} - {% if emission.user is null %} pas de user {% else %} {{ emission.user.username }} {% endif %}
                                                     </a>
                                                 </div>
                                                 <div class="cat">
@@ -169,16 +162,23 @@
                                                     <a href="{{ emission.url }}">
                                                         <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></a>
                                                     </div>
-                                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                                        Éditer
+                                                    <div class="actions-buttons">
+                                                    {% if is_granted('ROLE_ADMIN') or emission.user == app.user %}
+                                                    <a class="btn-action" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                        Modifier
                                                     </a>
-                                                {# <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                                                {% endif %}
+                                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
                                                     <input type="hidden" name="_method" value="DELETE">
-                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                    <button type="submit" class="btn-action btn-delete">
                                                     Supprimer
                                                     </button>
-                                                </form> #}
+                                                    
+                                                </form>
+                                            {% endif %}
                                                 </div>
+                                            </div>
                                             </section>
                                         {% endfor %}
                                     </div>

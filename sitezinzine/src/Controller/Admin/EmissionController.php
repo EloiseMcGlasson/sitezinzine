@@ -34,6 +34,8 @@ class EmissionController extends AbstractController
 
         ]);
     }
+
+
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function show(Emission $emission, int $id, EmissionRepository $emissionRepository)
     {

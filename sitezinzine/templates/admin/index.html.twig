@@ -3,6 +3,8 @@
 {% block title %}Administration - Radio Zinzine{% endblock %}
 
 {% block body %}
+
+
 <div class="container mt-4">
     <div class="alert alert-info">
         Bonjour {{ user.username ?? 'utilisateur' }} !
@@ -26,11 +28,11 @@
     <div class="row mt-4">
         <div class="col-md-4">
             <div class="card">
-               {#  <div class="card-body">
+                <div class="card-body">
                     <h5 class="card-title">Émissions</h5>
                     <p class="card-text">Gérer les émissions</p>
                     <a href="{{ path('admin.emission.index') }}" class="btn btn-primary">Accéder</a>
-                </div> #}
+                </div>
             </div>
         </div>
         
