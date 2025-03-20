@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <style>
-            .body {
+            .main-content {
                 background: linear-gradient(#E4013A, #B81C61);
                 background-size: 100%;
                 width: 100%;
@@ -35,7 +35,7 @@
             .top img {
                 width: 100%;
             }
-            h1 {
+            .main-content h1 {
     text-align: center;
     color: white;
     font-family: "Montserrat Alternates", sans-serif;
@@ -44,7 +44,7 @@
     font-size: 36pt;
     margin: 20px auto; /* Pour centrer verticalement aussi */
 }
-h2 {
+.main-content h2 {
     text-align: center;
     color: #E40039;
     font-family: "Montserrat Alternates", sans-serif;
@@ -53,7 +53,7 @@ h2 {
     font-size: 26pt;
     margin: 20px auto; /* Pour centrer verticalement aussi */
 }
-h3 {
+.main-content h3 {
     text-align: center;
     color: #E40039;
     font-family: "Montserrat Alternates", sans-serif;
@@ -73,14 +73,14 @@ h3 {
     </head>
    
     <body>
-        {% include 'admin/navbar.html.twig' %}
-        <div class=" container my-4">
+    {% include 'admin/navbar.html.twig' %}
+        <div class="container my-4">
             {% include 'partials/flash.html.twig' %}
-            <div class="body">
+            <div class="main-content">
             <div class="top">
                 <img src="{{ asset('/images/bottom-header.gif') }}"></div>
             {% block body %}{% endblock %}
-
+            </div>
         </div>
     </body>
 </html>
