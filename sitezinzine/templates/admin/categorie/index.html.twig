@@ -8,12 +8,7 @@
     <style>
    
    
-        strong {
-            font-weight: 700 !important;
-        }
-        em {
-            font-style: italic !important;
-        }
+    
    
    
     .categorie {
@@ -104,22 +99,9 @@
     }
   
 
-    .btn-create-categorie {
-        text-decoration: none;
-        padding: 5px;
-        font-size: 1.2em;
-        color: #000000;
-        background-color: #ffffff;
-        border-radius: 26px;
-        -webkit-border-radius: 26px;
-        -moz-border-radius: 26px;
-        border: 4px solid black;
-        box-shadow: 3px 7px 13px #444444;
-        -webkit-box-shadow: 3px 7px 13px #444444;
-        -moz-box-shadow: 3px 7px 13px #444444;
-    }
 
-    .btn-create-categorie:hover {
+
+    .btn-create:hover {
         padding: 5px;
         background-color: #E40039;
         color: #000000;
@@ -153,7 +135,7 @@
       
 
             <p class="create">
-                <a class="btn-create-categorie" href="{{ path('admin.categorie.create') }}">
+                <a class="btn-create" href="{{ path('admin.categorie.create') }}">
                     Créer une nouvelle categorie
                 </a>
             </p>

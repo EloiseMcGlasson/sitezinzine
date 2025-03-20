@@ -4,16 +4,7 @@
 {% endblock %}
 {% block body %}
     <style>
-    
-  
-        strong {
-            font-weight: 700 !important;
-        }
-        em {
-            font-style: italic !important;
-        }
-  
-    .emissions {
+       .emissions {
         background-color: black;
         color: white;
         display: grid;
@@ -109,32 +100,6 @@
         padding: 20px;
     }
 
-    .btn-create-emission {
-        text-decoration: none;
-        padding: 5px;
-        font-size: 1.2em;
-        color: #000000;
-        background-color: #ffffff;
-        border-radius: 26px;
-        -webkit-border-radius: 26px;
-        -moz-border-radius: 26px;
-        border: 4px solid black;
-        box-shadow: 3px 7px 13px #444444;
-        -webkit-box-shadow: 3px 7px 13px #444444;
-        -moz-box-shadow: 3px 7px 13px #444444;
-    }
-
-    .btn-create-emission:hover {
-        padding: 5px;
-        background-color: #E40039;
-        color: #000000;
-        border-radius: 24px;
-        -webkit-border-radius: 24px;
-        -moz-border-radius: 24px;
-        box-shadow: 3px 7px 13px #777777;
-        -webkit-box-shadow: 3px 7px 13px #777777;
-        -moz-box-shadow: 3px 7px 13px #777777;
-    }
 
     .pagination {
         background-color: transparent;
@@ -154,7 +119,7 @@
     <div>
      
             <p class="create">
-                <a class="btn-create-emission" href="{{ path('admin.emission.create') }}">
+                <a class="btn-create" href="{{ path('admin.emission.create') }}">
                     Créer une nouvelle émission
                 </a>
             </p>
