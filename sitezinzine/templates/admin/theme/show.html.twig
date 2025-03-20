@@ -1,19 +1,30 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title "Thème : " ~ theme.name %}
-{% block body %}
-
+{% block stylesheets %}
+{{ parent() }}
 <style>
-    h1 {
-    font-size: 21px;
-    text-align: center;
-    
-        }
+   
+ 
     article{
         border-color: black;
         border: solid;
     }
-    
+    .themeemission {
+    background-color: white;
+        background-size: 100%;
+        min-height: 100vh;
+}
+.bottom img {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
     </style>
+{% endblock %}
+{% block body %}
+
+    <div>
     <h1>
         {{ theme.name }}
     </h1>
@@ -24,16 +35,19 @@
         {% endif %}
                
             </p>
-            <h1>
+            <div class="bottom">
+            <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
+        </div></div>
+    <div class="themeemission">
+            <h2>
                 Toutes les émissions de ce thème :
-            </h1>
-            <div class="themeemission">
+            </h2>
             {% for emission in theme.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
             {% if emission.url %}
             <article>
-                        <h1>
+                        <h3>
                             {{ emission.titre }} - {{ emission.categorie.titre }}
-                        </h1>
+                        </h3>
                         <p>
                             {% if emission.thumbnail %}
                             <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">

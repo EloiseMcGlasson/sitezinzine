@@ -7,29 +7,14 @@
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
    
-    .bodyadmintheme {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        
-        }
-
-        strong {
-            font-weight: 700 !important;
-        }
-        em {
-            font-style: italic !important;
-        }
-    .top img{
-        width: 100%;
+    
+    strong {
+        font-weight: 700 !important;
     }
+    em {
+        font-style: italic !important;
+    }
+  
     a {
         padding: 14px 16px;
         color: white;
@@ -59,61 +44,60 @@
         align-items: center; 
         }
 
-        .col1 {
-            background-color: black;
-           
-        }
-        .col1 img {
-            width: 150px;
-            padding: 10px;
-        }
-        .col2 {
-            background-color: black;
-            border-bottom: solid;
-        }
-        .col3 {
-            background-color: black;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        }
-
-    .btn-create-theme {
-        text-decoration: none;
-        padding: 5px;
-        font-size: 1.2em;
-        color: #000000;
-        background-color: #ffffff;
-        border-radius: 26px;
-        -webkit-border-radius: 26px;
-        -moz-border-radius: 26px;
-        border: 4px solid black;
-        box-shadow: 3px 7px 13px #444444;
-        -webkit-box-shadow: 3px 7px 13px #444444;
-        -moz-box-shadow: 3px 7px 13px #444444;
+    .col1 {
+        background-color: black;
+        
+    }
+    .col1 img {
+        width: 150px;
+        padding: 10px;
+    }
+    .col2 {
+        background-color: black;
+        border-bottom: solid;
+    }
+    .col3 {
+        background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     }
 
-    .btn-create-theme:hover {
-        padding: 5px;
-        background-color: #E40039;
-        color: #000000;
-        border-radius: 24px;
-        -webkit-border-radius: 24px;
-        -moz-border-radius: 24px;
-        box-shadow: 3px 7px 13px #777777;
-        -webkit-box-shadow: 3px 7px 13px #777777;
-        -moz-box-shadow: 3px 7px 13px #777777;
-    }
+.btn-create-theme {
+    text-decoration: none;
+    padding: 5px;
+    font-size: 1.2em;
+    color: #000000;
+    background-color: #ffffff;
+    border-radius: 26px;
+    -webkit-border-radius: 26px;
+    -moz-border-radius: 26px;
+    border: 4px solid black;
+    box-shadow: 3px 7px 13px #444444;
+    -webkit-box-shadow: 3px 7px 13px #444444;
+    -moz-box-shadow: 3px 7px 13px #444444;
+}
 
-    .imagetheme{
-        width: 300px;
-        margin: auto;
-      }
+.btn-create-theme:hover {
+    padding: 5px;
+    background-color: #E40039;
+    color: #000000;
+    border-radius: 24px;
+    -webkit-border-radius: 24px;
+    -moz-border-radius: 24px;
+    box-shadow: 3px 7px 13px #777777;
+    -webkit-box-shadow: 3px 7px 13px #777777;
+    -moz-box-shadow: 3px 7px 13px #777777;
+}
+
+.imagetheme{
+    width: 300px;
+    margin: auto;
+    }
       
 </style>
-<div class="bodyadmintheme">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+<div>
+       
 <p class="create">
     <a class="btn-create-theme" href="{{ path('admin.theme.create') }}">
         Créer un nouveau thème
