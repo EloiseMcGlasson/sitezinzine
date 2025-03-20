@@ -35,7 +35,7 @@
             .top img {
                 width: 100%;
             }
-            /* Styles généraux */
+           
             em {
                 font-style: italic !important;
             }
@@ -98,6 +98,60 @@
             -webkit-box-shadow: 3px 7px 13px #777777;
             -moz-box-shadow: 3px 7px 13px #777777;
         }
+         .btn-action {
+            text-decoration: none;
+        padding: 5px 10px;  /* Ajustement du padding horizontal */
+        font-size: 1em;     /* Réduction de la taille de police */
+        color: #000000;
+        background-color: #ffffff;
+        border-radius: 26px;
+        border: 2px solid black; /* Bordure plus fine */
+        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2); /* Ombre plus subtile */
+        margin: 5px;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        min-width: 80px;    /* Largeur minimum pour uniformité */
+        max-width: 120px;   /* Largeur maximum pour éviter le dépassement */
+        white-space: nowrap; /* Évite le retour à la ligne du texte */
+    }
+
+    .btn-action:hover {
+        background-color: #E40039;
+        color: white;
+        transform: none;    /* Suppression de l'effet de grossissement */
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-delete {
+        border-color: #E40039;
+    }
+
+    .btn-delete:hover {
+        background-color: #E40039;
+        color: white;
+    }
+
+      /* Optimisation pour les conteneurs */
+      .actions-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-end; /* Aligne les boutons à droite */
+    }
+
+    .pagination {
+        background-color: transparent;
+        margin: auto;
+        padding: 10px;
+    }
+
+    .pagination a:hover {
+        padding: 14px 16px;
+        color: grey;
+        text-decoration: none;
+        font-weight: 800;
+    }
 
 
             </style>

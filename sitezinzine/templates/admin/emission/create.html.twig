@@ -117,27 +117,29 @@ input {
     
       {{ form_end (form) }}
 </div>
-        <script type="text/javascript" language="javascript">
-    tinymce.init(
-        {
-            selector: "textarea",
-            
-            plugins: [
-                'lists', 'link',
-                
-              ],
-            menubar:false,
-            statusbar:false,
-            toolbar:"undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-            spellchecker_dialog: true,
-            spellchecker_ignore_list: ['Ephox', 'Moxiecode']
-            });
-        function ajouter()
-        {
-            tinymce.triggerSave(true, true);
-           
-        }
-        </script> 
+<script type="text/javascript">
+tinymce.init({
+    selector: "textarea",
+    plugins: [
+        'lists', 'link'
+    ],
+    menubar: false,
+    statusbar: false,
+    toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
+    setup: function (editor) {
+        editor.on('change', function () {
+            editor.save(); // Sauvegarde le contenu dans le textarea
+            tinymce.triggerSave(); // Force la mise à jour du formulaire
+        });
+    },
+    // Empêche TinyMCE de cacher complètement le textarea
+    hidden_input: false,
+    // Initialisation immédiate
+    init_instance_callback: function (editor) {
+        editor.hidden = false;
+    }
+});
+</script>
 
     {% endblock %}
     
