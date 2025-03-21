@@ -97,6 +97,7 @@
                                 <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
                                     Émissions
                                 </a>
+                            {% if is_granted('ROLE_ADMIN') %}
                                 <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
                                     Catégories
                                 </a>
@@ -109,15 +110,15 @@
                                 <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
                                     Invité/animateur
                                 </a>
+                            {% endif %}
                             </div>
                         </li>
-                        {% if is_granted('ROLE_ANNONCE') %}
+                        {% if is_granted('ROLE_EDITOR') %}
                         <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
                         <li><a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
                         Annonces
                     </a></li>
-                {% endif %}
                     <li>
                     <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
 
@@ -126,10 +127,11 @@
                             Évènements
                         </a>
                     </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
                     <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}">
                     </li>
-                    {% if is_granted('ROLE_ADMIN') %}
                     <li>
                         <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
                             Utilisateurs

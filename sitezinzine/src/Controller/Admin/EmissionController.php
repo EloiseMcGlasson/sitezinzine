@@ -49,6 +49,11 @@ class EmissionController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function edit(Emission $emission, Request $request, EntityManagerInterface $em, Security $security)
     {
+
+        // Vérifie si l'utilisateur est admin/super_admin ou le créateur
+    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_SUPER_ADMIN') && $emission->getUser() !== $security->getUser()) {
+        throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
+    }
         $formEmission = $this->createForm(EmissionType::class, $emission);
         $formEmission->handleRequest($request);
         $userId = $security->getUser();

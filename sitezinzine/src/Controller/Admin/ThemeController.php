@@ -15,7 +15,8 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Doctrine\ORM\EntityManagerInterface;
 
 #[Route("/admin/theme", name: 'admin.theme.')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted("ROLE_ADMIN")]
+#[IsGranted("ROLE_SUPER_ADMIN")]
 class ThemeController extends AbstractController
 {
     #[Route("/", name: 'index')]

@@ -7,8 +7,7 @@ security:
     role_hierarchy:
 
         ROLE_EDITOR: ROLE_USER
-        ROLE_ANNONCE: ROLE_USER
-        ROLE_ADMIN: [ROLE_EDITOR, ROLE_ANNONCE]
+        ROLE_ADMIN: [ROLE_EDITOR]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
     
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider

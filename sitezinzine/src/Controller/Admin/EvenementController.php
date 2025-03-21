@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 #[Route('/admin/evenement', name: 'admin.evenement.')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted('ROLE_EDITOR')]
 class EvenementController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]

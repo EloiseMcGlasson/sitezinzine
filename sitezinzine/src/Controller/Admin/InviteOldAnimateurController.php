@@ -15,7 +15,8 @@ use Symfony\Component\Routing\Requirement\Requirement;
 
 
 #[Route("/admin/InviteOldAnimateur", name: 'admin.InviteOldAnimateur.')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted("ROLE_ADMIN")]
+#[IsGranted("ROLE_SUPER_ADMIN")]
 class InviteOldAnimateurController extends AbstractController
 {
     #[Route('/', name: 'index')]
