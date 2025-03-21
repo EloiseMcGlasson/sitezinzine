@@ -3,48 +3,274 @@
 {% block title %}Édition de l'utilisateur {{ user.username }}{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Édition de l'utilisateur : {{ user.username }}</h2>
-                </div>
-                <div class="card-body">
-                    {{ form_start(form) }}
-                    
-                    
+<style>
+    .edit-container {
+        width: 90%;
+        max-width: 800px;
+        margin: auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-                    
-                    <div class="mb-3">
-                        {{ form_label(form.roles, 'Rôles') }}
-                        {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.roles) }}
-                    </div>
+    .edit-header {
+        background-color: black;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px 8px 0 0;
+    }
 
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ path('admin.user.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Retour
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Enregistrer
-                        </button>
-                    </div>
+    .edit-header h2 {
+        color: white;
 
-                    {{ form_end(form) }}
-                </div>
-            </div>
+        margin: 0;
+        font-size: 1.5rem;
+        font-family: "Montserrat Alternates", sans-serif;
+    }
+
+    .edit-content {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+      
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.7rem 1.5rem;
+        border: none;
+        border-radius: 26px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn-retour {
+        background-color: white;
+        color: black;
+        border: 2px solid black;
+    }
+
+    .btn-retour:hover {
+        background-color: #333;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #E40039;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background-color: #b30021;
+    }
+
+    /* Notifications toast */
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .toast {
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        width: 300px;
+    }
+
+    .toast-header {
+        background-color: #28a745;
+        color: white;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .toast-body {
+        padding: 1rem;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.2rem;
+    }
+    #user_roles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    /* Style pour chaque option de rôle */
+    .form-check {
+        display: flex;
+        align-items: center;  /* Centre verticalement */
+        justify-content: flex-start;  /* Aligne à gauche horizontalement */
+        gap: 0.8rem;  /* Augmente légèrement l'espace entre input et label */
+        margin: 0;
+        min-height: 40px;  /* Hauteur minimum pour assurer un bon centrage */
+    }
+
+    /* Style pour la case à cocher */
+    .form-check-input {
+        margin: 0;
+        cursor: pointer;
+        flex-shrink: 0;  /* Empêche la compression de l'input */
+    }
+
+    /* Style pour le label */
+    .form-check-label {
+        margin: 0;
+        cursor: pointer;
+        color: #333;
+        display: flex;  /* Permet un meilleur alignement */
+        align-items: center;  /* Centre le texte verticalement */
+        line-height: 1.2;  /* Améliore la lisibilité */
+    }
+    .roles-details {
+        padding: 2rem;
+        background-color: white;
+       
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .role-card {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border-left: 4px solid #E40039;
+        background-color: white;
+    }
+
+    .role-title {
+        color: #E40039;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        font-family: "Montserrat Alternates", sans-serif;
+    }
+
+    .role-description {
+        color: #333;
+        line-height: 1.4;
+    }
+
+    .bottom img {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+    @media (max-width: 768px) {
+        .edit-container {
+            width: 95%;
+            margin: 1rem auto;
+        }
+
+        .edit-content {
+            padding: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+        }
+    }
+    
+</style>
+<div class="edit-container">
+    <div class="edit-header">
+        <h2>Édition de l'utilisateurice : {{ user.username }}</h2>
+    </div>
+    
+    <div class="edit-content">
+        {{ form_start(form) }}
+        
+        <div class="form-group">
+            {{ form_label(form.roles, 'Rôles') }}
+            {{ form_widget(form.roles) }}
+            {{ form_errors(form.roles) }}
+        </div>
+
+        <div class="form-buttons">
+            <a href="{{ path('admin.user.index') }}" class="btn btn-retour">
+                Retour
+            </a>
+            <button type="submit" class="btn btn-save">
+                Enregistrer
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+    </div> </div><div class="bottom">
+    <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
+    </div>
+   
+<div class="roles-details">
+    <h3>Détails des rôles</h3>
+    
+    <div class="role-card">
+        <div class="role-title">Utilisateur</div>
+        <div class="role-description">
+            Peut créer et gérer ses propres émissions. Accès limité à son contenu personnel.
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-title">Éditeur</div>
+        <div class="role-description">
+            Peut créer et gérer des émissions, des annonces et des événements. Accès aux fonctionnalités de base de gestion de contenu.
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-title">Administrateur</div>
+        <div class="role-description">
+            Accès complet à la gestion des émissions, catégories, thèmes et éditeurs. Peut gérer les utilisateurs et leurs rôles.
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-title">Super Administrateur</div>
+        <div class="role-description">
+            Accès total à toutes les fonctionnalités, y compris la suppression de contenu et la gestion avancée des utilisateurs. 
+            Peut se connecter en tant qu'autre utilisateur pour le support.
         </div>
     </div>
 </div>
-
 {% if app.flashes('success') is not empty %}
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast-container">
         {% for message in app.flashes('success') %}
-            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-success text-white">
-                    <strong class="me-auto">Succès</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast show">
+                <div class="toast-header">
+                    <strong>Succès</strong>
+                    <button type="button" class="btn-close" onclick="this.closest('.toast').remove()">×</button>
                 </div>
                 <div class="toast-body">
                     {{ message }}
@@ -59,12 +285,11 @@
 {{ parent() }}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-    var toastList = toastElList.map(function(toastEl) {
-        return new bootstrap.Toast(toastEl, {
-            autohide: true,
-            delay: 3000
-        });
+    const toasts = document.querySelectorAll('.toast');
+    toasts.forEach(toast => {
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
     });
 });
 </script>

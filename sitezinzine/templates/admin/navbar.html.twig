@@ -66,7 +66,16 @@
         background-color: white;
         width: inherit;
         }
-
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 40%;
+            transform: translateX(-50%);
+            background-color: white;
+            
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    
     
 
     @media (min-width: 1200px) {
@@ -111,6 +120,7 @@
                                     Invité/animateur
                                 </a>
                             {% endif %}
+                        </div>
                             </div>
                         </li>
                         {% if is_granted('ROLE_EDITOR') %}
@@ -134,33 +144,12 @@
                     </li>
                     <li>
                         <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
-                            Utilisateurs
+                            Utilisateurices
                         </a>
                     </li>
                 {% endif %}
 
-                    {# 
-                    
-                     <li>
-                            <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
-                                Thèmes
-                            </a>
-                        </li>
-                        <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                        <li>
-                            <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
-                                Éditeurs
-                            </a>
-                        </li>
-                        <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                        <li>
-                            <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
-                                Invité/animateur
-                            </a>
-                        </li> #}
                     </ul>
-                </div>
+               
             </div>
         </nav>

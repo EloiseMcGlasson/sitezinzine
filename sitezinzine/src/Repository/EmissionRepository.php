@@ -2,7 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\Theme;
+use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Entity\Emission;
 use App\Entity\Categories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -21,7 +22,7 @@ class EmissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Emission::class);
     }
 
-    public function paginateEmissions(int $page, $value): PaginationInterface
+/*     public function paginateEmissions(int $page, $value): PaginationInterface
     {
 
         return $this->paginator->paginate(
@@ -39,7 +40,30 @@ class EmissionRepository extends ServiceEntityRepository
                 'sortFieldAllowList' => ['r.titre']
             ]
         );
+    } */
+
+
+    public function paginateEmissions(int $page, $value, ?User $user = null, Security $security): PaginationInterface
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('r', 'c')
+            ->leftJoin('r.categorie', 'c')
+            ->andWhere('r.url != :val')
+            ->setParameter('val', $value)
+            ->orderBy('r.datepub', 'DESC');
+    
+        // Vérifie si l'utilisateur a le rôle ADMIN
+        if ($user && !$security->isGranted('ROLE_ADMIN') && !$security->isGranted('ROLE_SUPER_ADMIN')) {
+            $qb->andWhere('r.user = :user')
+               ->setParameter('user', $user);
+        }
+    
+        return $this->paginator->paginate($qb, $page, 20, [
+            'distinct' => true,
+            'sortFieldAllowList' => ['r.titre']
+        ]);
     }
+    
     //    /**
     //     * @return Emission[] Returns an array of Emission objects
     //     */
