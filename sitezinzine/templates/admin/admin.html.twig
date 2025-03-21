@@ -33,6 +33,8 @@
                 min-height: 100vh;
             }
             .top img {
+                height: auto;
+                display: block;
                 width: 100%;
             }
            
@@ -49,7 +51,7 @@
                 font-family: "Montserrat Alternates", sans-serif;
                 font-weight: 900;
                 font-style: normal;
-                font-size: 36pt;
+                font-size: clamp(24px, 5vw, 36pt);
                 margin: 20px auto; /* Pour centrer verticalement aussi */
             }
             .main-content h2 {
@@ -58,7 +60,7 @@
                 font-family: "Montserrat Alternates", sans-serif;
                 font-weight: 900;
                 font-style: normal;
-                font-size: 26pt;
+                font-size: clamp(20px, 4vw, 26pt);
                 margin: 20px auto; /* Pour centrer verticalement aussi */
             }
             .main-content h3 {
@@ -67,15 +69,16 @@
                 font-family: "Montserrat Alternates", sans-serif;
                 font-weight: 900;
                 font-style: normal;
-                font-size: 20pt;
+                font-size: clamp(16px, 3vw, 20pt);
                 margin: 20px auto; /* Pour centrer verticalement aussi */
             }
 
                     /* Styles des boutons */
         .btn-create {
+            display: inline-block;
             text-decoration: none;
-            padding: 5px;
-            font-size: 1.2em;
+            padding: clamp(5px, 1vw, 10px) clamp(10px, 2vw, 20px);
+            font-size: clamp(0.9em, 2vw, 1.2em);
             color: #000000;
             background-color: #ffffff;
             border-radius: 26px;
@@ -85,6 +88,7 @@
             box-shadow: 3px 7px 13px #444444;
             -webkit-box-shadow: 3px 7px 13px #444444;
             -moz-box-shadow: 3px 7px 13px #444444;
+            transition: all 0.3s ease;
         }
 
         .btn-create:hover {
@@ -100,20 +104,20 @@
         }
          .btn-action {
             text-decoration: none;
-        padding: 5px 10px;  /* Ajustement du padding horizontal */
-        font-size: 1em;     /* Réduction de la taille de police */
-        color: #000000;
-        background-color: #ffffff;
-        border-radius: 26px;
-        border: 2px solid black; /* Bordure plus fine */
-        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2); /* Ombre plus subtile */
-        margin: 5px;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        min-width: 80px;    /* Largeur minimum pour uniformité */
-        max-width: 120px;   /* Largeur maximum pour éviter le dépassement */
-        white-space: nowrap; /* Évite le retour à la ligne du texte */
+            padding: clamp(4px, 1vw, 8px) clamp(8px, 2vw, 16px);
+            font-size: clamp(0.8em, 1.5vw, 1em);
+            color: #000000;
+            background-color: #ffffff;
+            border-radius: 26px;
+            border: 2px solid black; /* Bordure plus fine */
+            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2); /* Ombre plus subtile */
+            margin: 5px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            min-width: 60px;    /* Largeur minimum pour uniformité */
+            max-width: 120px;   /* Largeur maximum pour éviter le dépassement */
+            white-space: nowrap; /* Évite le retour à la ligne du texte */
     }
 
     .btn-action:hover {
@@ -142,8 +146,11 @@
 
     .pagination {
         background-color: transparent;
-        margin: auto;
-        padding: 10px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: clamp(5px, 1vw, 10px);
     }
 
     .pagination a:hover {
@@ -152,6 +159,44 @@
         text-decoration: none;
         font-weight: 800;
     }
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+            
+            }
+    
+            .btn-create, .btn-action {
+                display: block;
+                width: 100%;
+                max-width: none;
+                text-align: center;
+                margin: 5px 0;
+            }
+    
+            .actions-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .main-content h1 {
+                font-size: 24px;
+            }
+    
+            .main-content h2 {
+                font-size: 20px;
+            }
+    
+            .main-content h3 {
+                font-size: 16px;
+            }
+    
+            .pagination {
+                font-size: 14px;
+            }
+        }
 
 
             </style>
