@@ -13,20 +13,22 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/user', name: 'admin.user.')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted("ROLE_ADMIN")]
+#[IsGranted("ROLE_SUPER_ADMIN")]
 class UserController extends AbstractController
 {
     private const ROLES = [
         'ROLE_USER' => 'Utilisateur',
         'ROLE_EDITOR' => 'Éditeur',
         'ROLE_ADMIN' => 'Administrateur',
-        'ROLE_SUPER_ADMIN' => 'Super Administrateur',
-        'ROLE_ANNONCE' => 'Annonce'     // Nouveau rôle
+        'ROLE_SUPER_ADMIN' => 'Super Administrateur'
+       
     ];
 
     #[Route('/', name: 'index')]
     public function index(UserRepository $userRepository): Response
     {
+        
         return $this->render('admin/user/index.html.twig', [
             'users' => $userRepository->findAll(),
             'available_roles' => self::ROLES

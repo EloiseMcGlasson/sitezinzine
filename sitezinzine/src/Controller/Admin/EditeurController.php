@@ -14,7 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Requirement\Requirement;
 
 #[Route("/admin/editeur", name: 'admin.editeur.')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted("ROLE_ADMIN")]
+#[IsGranted("ROLE_SUPER_ADMIN")]
 class EditeurController extends AbstractController
 {
     #[Route('/', name: 'index')]

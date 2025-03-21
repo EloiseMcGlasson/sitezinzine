@@ -14,7 +14,8 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/admin/categorie", name: 'admin.categorie.')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted("ROLE_ADMIN")]
+#[IsGranted("ROLE_SUPER_ADMIN")]
 class CategorieController extends AbstractController
 {
     #[Route(name: 'index')]
@@ -47,6 +48,10 @@ class CategorieController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function edit(Categories $categorie, Request $request, EntityManagerInterface $em)
     {
+             // Vérifie si l'utilisateur est admin/super_admin
+    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
+    }
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
