@@ -20,7 +20,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label'=> 'Nom d\'utilisateur',
+                'label'=> 'Nom d\'utilisateurice',
                
             ])
             ->add('email', TextType::class, [
@@ -54,7 +54,10 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('Sauvegarder', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => 'S\'inscrire',
+                'attr' => ['class' => 'btn-register']
+            ])
            
         ;
     }

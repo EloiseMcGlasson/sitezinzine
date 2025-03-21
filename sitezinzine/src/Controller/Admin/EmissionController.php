@@ -20,18 +20,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EmissionController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(Request $request, EmissionRepository $emissionRepository): Response
+    public function index(Request $request, EmissionRepository $emissionRepository, Security $security): Response
     {
-    
         $page = $request->query->getInt('page', 1);
-        $limit= 25;
-        $emissions = $emissionRepository->paginateEmissions($page, '');
+        $limit = 25;
+    
+        // Récupération des émissions avec filtrage des droits
+        $emissions = $emissionRepository->paginateEmissions($page, '', $this->getUser(), $security);
+    
         $maxPage = ceil($emissions->getTotalItemCount() / $limit);
-        //dd($emissions->count());
+    
         return $this->render('admin/emission/index.html.twig', [
             'emissions' => $emissions,
-            
-
+            'maxPage' => $maxPage,
         ]);
     }
 

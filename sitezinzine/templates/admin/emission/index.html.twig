@@ -110,18 +110,22 @@
 
 </style>
     <div>
-     
-            <p class="create">
+                    <p class="create">
                 <a class="btn-create" href="{{ path('admin.emission.create') }}">
                     Créer une nouvelle émission
                 </a>
             </p>
+            {{ emissions.pageCount}}
+            {% if emissions.pageCount > 1 %}
             <div class="pagination">
                 {{ knp_pagination_render(emissions) }}
             </div>
+        {% endif %}
             <article>
                 <div class="emissions">
                     {% for emission in emissions %}
+                        
+                  
                         <section>
                             <div class="col1">
                                 {% if emission.thumbnail %}
@@ -183,8 +187,10 @@
                                         {% endfor %}
                                     </div>
                                 </article>
+                                {% if emissions.pageCount > 1 %}
                                 <div class="pagination">
                                     {{ knp_pagination_render(emissions) }}
                                 </div>
+                            {% endif %}
                             {% endblock %}
                             
