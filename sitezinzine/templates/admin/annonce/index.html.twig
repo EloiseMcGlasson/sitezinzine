@@ -32,7 +32,7 @@ ul, li {
         padding: 15px;
         transition: background-color 0.3s ease;
         min-width: 0; /* Empêche le dépassement */
-    overflow: hidden; /* Cache le contenu qui dépasse */
+        overflow: hidden; /* Cache le contenu qui dépasse */
     }
 
     section:hover {
@@ -148,6 +148,36 @@ ul, li {
     background-color: gray !important;
 }
 
+.presentation {
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: calc(1.2em * 10); /* hauteur de ligne × nombre de lignes */
+    line-height: 1.2em;
+}
+
+
+/* Pour les navigateurs qui ne supportent pas -webkit-line-clamp */
+@supports not (-webkit-line-clamp: 10) {
+    .presentation {
+        position: relative;
+        max-height: calc(1.2em * 10);
+        overflow: hidden;
+        padding-right: 1rem;
+    }
+    
+    .presentation::after {
+        content: '...';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        background: black; /* même couleur que le fond */
+        padding-left: 0.5rem;
+    }
+}
+
 /* Responsive design amélioré */
 @media (max-width: 1200px) {
     .annonces-row {
@@ -169,6 +199,20 @@ ul, li {
     
     .col3 {
         width: 100px;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+    }
+    .col3 .btn {
+        margin: 0;
+        min-width: 100px;
+    }
+
+    .col3 form {
+        margin: 0;
+        flex: 0 1 auto;
     }
 }
 
@@ -183,8 +227,18 @@ ul, li {
         grid-template-rows: auto auto auto;
     }
     
-    .col1, .col2, .col3 {
+    .col1, .col2 {
         width: 100%;
+    }
+    .col3 {
+        width: 100%;
+
+        padding: 15px 5px;
+        gap: 5px;
+    }
+    .btn-primary, .btn-danger {
+        padding: 8px 15px;
+        font-size: 12px;
     }
 }
 
