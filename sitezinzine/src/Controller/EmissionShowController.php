@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Emission;
 use App\Form\EmissionSearchType;
+use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Repository\EmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,12 +21,12 @@ use Symfony\Component\Routing\Requirement\Requirement;
 class EmissionShowController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(Request $request, EmissionRepository $emissionRepository): Response
+    public function index(Request $request, EmissionRepository $emissionRepository, Security $security): Response
     {
     
         $page = $request->query->getInt('page', 1);
         $limit= 25;
-        $emissions = $emissionRepository->paginateEmissions($page, '');
+        $emissions = $emissionRepository->paginateEmissions($page, '', $this->getUser(), $security);
         $maxPage = ceil($emissions->getTotalItemCount() / $limit);
       
         //dd($emissions->count());

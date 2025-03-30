@@ -120,43 +120,43 @@ class EmissionRepository extends ServiceEntityRepository
     public function lastEmissionsByTheme($value): array
     {
         $connection = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT *
-                FROM (
-                SELECT e.id AS emission_id,
-                    e.titre AS emission_titre,
-                    e.datepub AS emission_datepub,
-                    e.duree AS emission_duree,
-                    e.url AS emission_url,
-                    e.descriptif AS emission_descriptif,
-                    e.thumbnail AS emission_thumbnail,
-                    e.categorie_id AS emission_categorie_id,
-                    e.theme_id AS emission_theme_id,
-                    c.id AS categorie_id,
-                    c.titre AS categorie_titre,
-                    c.editeur AS categorie_editeur,
-                    c.duree AS categorie_duree,
-                    c.descriptif AS categorie_descriptif,
-                    c.thumbnail AS categorie_thumbnail,
-                    c.active AS categorie_active,
-                    t.id AS theme_id,
-                    t.name AS theme_name,
-                    t.thumbnail AS theme_thumbnail
-                FROM emission e
-                LEFT JOIN categories c ON e.categorie_id = c.id
-                LEFT JOIN theme t ON e.theme_id = t.id
-                WHERE e.url != :val
-                AND e.theme_id != 0
-                ORDER BY e.theme_id, e.datepub DESC
-                ) subquery
-                    GROUP BY emission_theme_id
-                    ORDER BY emission_theme_id DESC
-                    LIMIT 6';
-
+        $sql = '
+        WITH RankedEmissions AS (
+            SELECT 
+                e.id AS emission_id,
+                e.titre AS emission_titre,
+                e.datepub AS emission_datepub,
+                e.duree AS emission_duree,
+                e.url AS emission_url,
+                e.descriptif AS emission_descriptif,
+                e.thumbnail AS emission_thumbnail,
+                e.categorie_id AS emission_categorie_id,
+                e.theme_id AS emission_theme_id,
+                c.id AS categorie_id,
+                c.titre AS categorie_titre,
+                c.editeur AS categorie_editeur,
+                c.duree AS categorie_duree,
+                c.descriptif AS categorie_descriptif,
+                c.thumbnail AS categorie_thumbnail,
+                c.active AS categorie_active,
+                t.id AS theme_id,
+                t.name AS theme_name,
+                t.thumbnail AS theme_thumbnail,
+                ROW_NUMBER() OVER (PARTITION BY e.theme_id ORDER BY e.datepub DESC) as rn
+            FROM emission e
+            LEFT JOIN categories c ON e.categorie_id = c.id
+            LEFT JOIN theme t ON e.theme_id = t.id
+            WHERE e.url != :val AND e.theme_id != 0
+        )
+        SELECT * FROM RankedEmissions 
+        WHERE rn = 1
+        ORDER BY emission_datepub DESC
+        LIMIT 6';
+    
         $stmt = $connection->prepare($sql);
         $stmt->bindValue('val', $value);
-
-        $result = $stmt->executeQuery()->fetchAllAssociative();
-        return $result;
+    
+        return $stmt->executeQuery()->fetchAllAssociative();
     }
 
      /**
