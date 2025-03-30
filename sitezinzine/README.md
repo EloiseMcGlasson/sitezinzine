@@ -53,7 +53,17 @@ installation de glide (pour les carrousel)
  installation de phpunit
  composer require --dev phpunit/phpunit
 
- 
+ A new Symfony CLI version is available (5.11.0, currently running 5.9.1).
+
+       If you installed the Symfony CLI via a package manager, updates are going to be automatic.
+       If not, upgrade by downloading the new version at https://github.com/symfony-cli/symfony-cli/releases
+       And replace the current binary (symfony.exe) by the new one.
+
+ [OK] Web server listening
+      The Web server is using PHP CGI 8.2.12
+      https://127.0.0.1:8000
+
+
 créer une nouvelle branche
 git checkout -b nom_de_ta_branche  # Créer et basculer sur la branche
 git push origin nom_de_ta_branche  # Pousser la branche sur le dépôt distant
