@@ -27,17 +27,24 @@
         {% endblock %}
     </head>
     <body>
-        <header>
-        {% include 'partials/lecteur.html.twig' %}
-        {% include 'navbar.html.twig' %}
-        </header>
-        <div class=" container my-4">
-            {% include 'partials/flash.html.twig' %}
+     {# Lecteur en dehors de turbo-frame #}
+     <turbo-frame id="player" data-turbo-permanent>
+     {% include 'partials/lecteur.html.twig' %}
+ </turbo-frame>
 
-            {% block body %}{% endblock %}
-        </div>
+ {# Contenu principal dans turbo-frame #}
+ <turbo-frame id="main-content">
+     <header>
+         {% include 'navbar.html.twig' %}
+     </header>
+     <main>
+         {% block body %}{% endblock %}
+     </main>
+ </turbo-frame>
+
         <footer>
             {% include 'footer.html.twig' %}
         </footer>
+        
     </body>
 </html>

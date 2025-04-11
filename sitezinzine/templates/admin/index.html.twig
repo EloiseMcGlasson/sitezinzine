@@ -33,10 +33,30 @@
                     <p class="card-text">Gérer les émissions</p>
                     <a href="{{ path('admin.emission.index') }}" class="btn btn-primary">Accéder</a>
                 </div>
+
+    
+
             </div>
         </div>
-        
-        <!-- Ajoutez d'autres cartes pour d'autres sections si nécessaire -->
+   {#  <pre>{{ dump(app.user.roles) }}</pre>
+    <pre>{{ dump(app.token) }}</pre>
+    <pre>{{ dump(app.token.getRoleNames) }}</pre> #}
+
+        {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_PREVIOUS_ADMIN') %}
+        <div class="card-body">
+
+    <h5 class="card-title">changer de role</h5>
+
+    {% for u in users %}
+
+<a href="?_switch_user={{ u.username }}">Se connecter en tant que {{ u.username }}</a>
+{% endfor %}
+{% endif %}
+{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+   <p>Tu es en impersonation 🎭</p>
+   <a href="?_switch_user=_exit">Revenir à mon compte</a>
+{% endif %}
+<!-- Ajoutez d'autres cartes pour d'autres sections si nécessaire -->
     </div>
 </div>
 {% endblock %}

@@ -1,37 +1,106 @@
 <style>
     .lecteur {
         font-family: "Montserrat", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: normal;
-        font-style: normal;
         background-color: black;
-        background-size: 100%;
         color: white;
         height: 60px;
         display: flex;
-        flex-direction: row;
         justify-content: space-between;
+        align-items: center;  /* Pour centrer verticalement */
+        padding: 0 20px;     /* Espacement horizontal */
     }
     audio {
         width: 500px;
+        height: 40px; 
     }
     .gauche {
         padding: 10px;
     }
     .direct {
-        padding: 2px;
-        font-family: "Montserrat", sans-serif;
         font-size: 16px;
+        margin: 0;      
+    }
+    .sousdirect {
+        font-size: 12px;
+        margin: 0;      
     }
   
     .milieu {
-
+        flex: 1;           /* Prend l'espace disponible */
+        text-align: center;
     }
     .droite {
-       
-        font-family: "Montserrat", sans-serif;
         font-size: 16px;
+        padding: 10px;
+        font-weight: bold;  /* Pour le texte "RADIO ZINZINE" */
     }
+    .custom-audio-player {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: black;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    
+    #play-pause {
+        width: 40px;
+        height: 40px;
+        background: url("{{ asset('images/lecteur.png') }}") no-repeat center center;
+        background-size: contain;
+        border: none;
+        cursor: pointer;
+    }
+    
+    #progress-bar {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        background: gray;
+        height: 5px;
+        border-radius: 5px;
+    }
+    
+    #progress-bar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: white;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    #volume-control {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80px;
+    height: 5px;
+    background: gray;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#volume-control::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+
+    /* Responsive design */
+@media (max-width: 768px) {
+    audio {
+        width: 100%;    /* Pleine largeur sur mobile */
+        max-width: 300px;
+    }
+    
+    .droite {
+        display: none;  /* Cache le texte sur mobile */
+    }
+}
 
 </style>
 
@@ -39,16 +108,65 @@
 
 <div class='lecteur'>
 <div class="gauche">
-<p class="direct">Le direct</p>
+<p class="direct">LE DIRECT</p>
+<p class="sousdirect">Le programme du moment</p>
 
 </div>
 <div class="milieu">
-{# <audio controls="controls" autoplay="autoplay" preload="auto">
-  <source src="https://e52f-95-178-91-114.ngrok-free.app/3" type="" />
-  Votre navigateur n'est pas compatible
-</audio> #}
+<div class="custom-audio-player">
+    <audio id="audio-player" src="https://stream.radiozinzine.org:8443/3"></audio>
+    <button id="play-pause" class="play"></button>
+    <input type="range" id="progress-bar" value="0">
+    <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1">
+</div>
+
+
 </div>
 <div class="droite">
 RADIO ZINZINE, UNE RADIO LIBRE !
 </div>
 </div>
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const audio = document.getElementById("audio-player");
+    const playPauseButton = document.getElementById("play-pause");
+    const progressBar = document.getElementById("progress-bar");
+    const volumeControl = document.getElementById("volume-control");
+
+    playPauseButton.addEventListener("click", function () {
+        if (audio.paused) {
+            audio.play();
+            playPauseButton.classList.add("paused");
+        } else {
+            audio.pause();
+            playPauseButton.classList.remove("paused");
+        }
+    });
+
+    // 🟢 Met à jour la barre de progression en fonction du temps de lecture
+    audio.addEventListener("timeupdate", function () {
+        if (!isNaN(audio.duration)) {
+            progressBar.value = (audio.currentTime / audio.duration) * 100;
+        }
+    });
+
+    // 🟢 Permet à l'utilisateur de cliquer sur la barre de progression pour aller à un moment précis
+    progressBar.addEventListener("input", function () {
+        audio.currentTime = (progressBar.value / 100) * audio.duration;
+    });
+
+    // 🟢 Gestion du volume
+    volumeControl.addEventListener("input", function () {
+        audio.volume = volumeControl.value;
+    });
+
+    // 🟢 Remet la barre de progression à 0 quand l'audio se termine
+    audio.addEventListener("ended", function () {
+        progressBar.value = 0;
+        playPauseButton.classList.remove("paused");
+    });
+});
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
