@@ -89,7 +89,7 @@ git branch -D nom_de_ta_branche          # Supprime la branche localement (force
 git push origin --delete nom_de_ta_branche # Supprime la branche sur le dépôt distant
 
 
+installation de turbo symfony ux pour que le lecteur audio ne soit pas coupé lors de la navigation
 
 
-
-
+composer require symfony/ux-turbo

@@ -6,6 +6,14 @@
 /public/bundles/
 /var/
 /vendor/
+.env
+.env.local
+.env.*.local
+.env.test
+.env.prod
+*.pem
+*.key
+config/jwt/*.pem
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
