@@ -43,7 +43,7 @@ class EmissionRepository extends ServiceEntityRepository
     } */
 
 
-    public function paginateEmissions(int $page, $value, ?User $user = null, Security $security): PaginationInterface
+    public function paginateEmissionsAdmin(int $page, $value, ?User $user = null, Security $security): PaginationInterface
     {
         $qb = $this->createQueryBuilder('r')
             ->select('r', 'c')
@@ -216,5 +216,25 @@ return $this->paginator->paginate(
     ]
 );
     }
+
+        public function paginateEmissions(int $page, $value): PaginationInterface
+    {
+
+        return $this->paginator->paginate(
+
+            $this->createQueryBuilder('r')
+                ->select('r', 'c')
+                ->leftJoin('r.categorie', 'c')
+                ->andWhere('r.url != :val')
+                ->setParameter('val', $value)
+                ->orderBy('r.datepub', 'DESC'),
+            $page,
+            20,
+            [
+                'distinct' => true,
+                'sortFieldAllowList' => ['r.titre']
+            ]
+        );
+    } 
 
 }

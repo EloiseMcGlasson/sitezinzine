@@ -21,19 +21,17 @@ class CategoriesRepository extends ServiceEntityRepository
     public function paginateCategoriesWithCount(int $page, $value): PaginationInterface
     {
         
-        return $this->paginator->paginate(
-            
-            $this->createQueryBuilder('c')
-            ->select('c','c.id', 'COUNT(c.id) as total', 'c.descriptif', 'c.thumbnail', 'c.titre', 'c.active', 'r')
-            ->leftJoin('c.emissions', 'r')
-            ->groupBy('c.id')
-            ->orderBy('c.titre', 'ASC')
-            ->getQuery()
-            ->getResult(),
-            $page,
-            15
-            
-        );
+        $qb = $this->createQueryBuilder('c')
+        ->select('c', 'COUNT(r.id) AS total')
+        ->leftJoin('c.emissions', 'r')
+        ->groupBy('c.id')
+        ->orderBy('c.titre', 'ASC');
+
+    return $this->paginator->paginate(
+        $qb->getQuery(), // <-- pas de getResult() ici !
+        $page,
+        15
+    );
     }
 
 public function findAllAsc(): array

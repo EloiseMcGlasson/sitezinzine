@@ -1,9 +1,7 @@
 {% extends 'admin/admin.html.twig' %}
-
 {% block title %}
     Toutes les catégories !
 {% endblock %}
-
 {% block body %}
     <style>
    
@@ -121,73 +119,74 @@
    
     </style>
     <div>
-      
-
-            <p class="create">
-                <a class="btn-create" href="{{ path('admin.categorie.create') }}">
-                    Créer une nouvelle categorie
-                </a>
-            </p>
-            <div class="pagination">
-                {{ knp_pagination_render(categories) }}
-            </div>
-            
-            <article>
+        <p class="create">
+            <a class="btn-create" href="{{ path('admin.categorie.create') }}">
+                Créer une nouvelle categorie
+            </a>
+        </p>
+        <div class="pagination">
+            {{ knp_pagination_render(categories) }}
+        </div>
+        <article>
             <div class="categorie">
-
-                    {% for categorie in categories %}
+                {% for categorie in categories %}
+                    {% for row in categories %}
+                        {% set categorie = row[0] %}
+                        {% set total = row.total %}
 
                         {% if categorie.active %}
-                        <section>
+                            <section>
                         {% else %}
-                        
-                        <section style="background-color:gray">
+                            <section style="background-color:gray">
                         {% endif %}
-                        <div class="col1">
-                            {% if categorie.thumbnail %}
-                                <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
-                                {% endif %}
-                        </div>
-                        <div class="col2">
-                                <div class="titre">
-                                    <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
-                                        {{ categorie.titre }}
-
+                                <div class="col1">
+                                    {% if categorie.thumbnail %}
+                                        <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
+                                        {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <div class="titre">
+                                        <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
+                                                {{ categorie.titre }}
+                                        </a>
+                                    </div>
+                                        <div class="descriptif">
+                                            {{ categorie.descriptif | raw }}
+                                        </div>
+                                </div>
+                                <div class="col3">
+                                        {% if total > 1 %}
+                                            <p>
+                                                {{ total }}
+                                                émissions
+                                            </p>
+                                        {% elseif total == 1 %}
+                                            <p>
+                                                1 émission
+                                            </p>
+                                        {% else %}
+                                            <p>
+                                                Aucune émission
+                                            </p>
+                                        {% endif %}
+                                </div>
+                                <div class="col4">
+                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
+                                        Éditer
                                     </a>
+                                {# <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                    Supprimer
+                                    </button>
+                                </form> #}
                                 </div>
-                                <div class="descriptif">
-                                  
-                                        {{ categorie.descriptif | raw }}
-                                
-                                </div>
-                        </div>
-                        <div class="col3">
-                                    {% if categorie.total > 1 %}
-                                    {{ categorie.total ~ ' émissions'}}
-                                    {% else %}
-                                    {{ categorie.total ~ ' émission'}}
-                    {% endif %}
-                        </div>
-                            
-                        <div class="col4">
-
-                                <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
-                                    Éditer
-                                </a>
-                            {# <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                Supprimer
-                                </button>
-                            </form> #}
-                        </div>
-                      
                     </section>
-                         
-                        {% endfor %}
-                    </div>
+                {% endfor %}
 
-                </article>
+                {% endfor %}
+            </div>
+        </article>
                 <div class="pagination">
                     {{ knp_pagination_render(categories) }}
                 </div>
