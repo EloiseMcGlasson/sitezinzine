@@ -46,10 +46,10 @@
         <div class="card-body">
 
     <h5 class="card-title">changer de role</h5>
-
+    Se connecter en tant que 
     {% for u in users %}
 
-<a href="?_switch_user={{ u.username }}">Se connecter en tant que {{ u.username }}</a>
+<a href="?_switch_user={{ u.username }}"> / {{ u.username }}</a>
 {% endfor %}
 {% endif %}
 {% if is_granted('ROLE_PREVIOUS_ADMIN') %}

@@ -98,6 +98,9 @@ h1 {
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
             <div class="texteemission">
+            <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">
+        ← Retour
+    </a>
                 <div class="titre">
                     <h1>
                         {{ emission.titre }}
@@ -116,14 +119,21 @@ h1 {
                         <a href="{{ emission.url }}"  target="_blank">
                         <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                         </a>
+                        <div class='dl'>
+
+                                <a href="{{ emission.url }}" download target="_blank">
+                                    <img src="{{ asset('/images/telecharger.png') }}" alt="télécharger l'émission"></a>
+                            </div>
                     </p>
                 </div>
                     <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
                     <div class="catemission">
                         <div class="titre">
+                        <a href="{{ path('categorie.show', {'id': emission.categorie.id}) }}">
                             <h1>
                                 {{ emission.categorie.titre }}
                             </h1>
+                        </a>
                         </div>
                         <p>
                             {% if emission.categorie.thumbnail %}

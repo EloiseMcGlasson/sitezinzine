@@ -26,7 +26,7 @@ class EmissionController extends AbstractController
         $limit = 25;
     
         // Récupération des émissions avec filtrage des droits
-        $emissions = $emissionRepository->paginateEmissions($page, '', $this->getUser(), $security);
+        $emissions = $emissionRepository->paginateEmissionsAdmin($page, '', $this->getUser(), $security);
     
         $maxPage = ceil($emissions->getTotalItemCount() / $limit);
     

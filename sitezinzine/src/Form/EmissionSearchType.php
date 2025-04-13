@@ -8,11 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Theme;
 use App\Repository\ThemeRepository;
-use App\Entity\Emission;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EmissionSearchType extends AbstractType
@@ -27,17 +26,17 @@ class EmissionSearchType extends AbstractType
                 'placeholder' => 'Rechercher par mot'
             ]
         ])
-       ->add('dateDebut', DateTimeType::class, [
+       ->add('dateDebut', DateType::class, [
             'required' => false,
             'label' => 'Date de début',
             'widget' => 'single_text',
-            'html5' => true,
+            'html5' => false,
         ])
-        ->add('dateFin', DateTimeType::class, [
+        ->add('dateFin', DateType::class, [
             'required' => false,
             'label' => 'Date de fin',
             'widget' => 'single_text',
-            'html5' => true,
+            'html5' => false,
         ])
         ->add('categorie', EntityType::class, [
             'class' => Categories::class,
