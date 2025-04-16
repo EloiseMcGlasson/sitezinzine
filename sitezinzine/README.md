@@ -93,3 +93,6 @@ installation de turbo symfony ux pour que le lecteur audio ne soit pas coupé lo
 
 
 composer require symfony/ux-turbo
+
+commande pour envoyer les log de test dans un fichier
+docker exec -it symfony_app php bin/phpunit tests/Controller/Admin/EmissionControllerTest.php > tests.log

@@ -2,124 +2,87 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
-use Symfony\Bundle\SecurityBundle\Security;
 use App\Entity\Emission;
 use App\Entity\Categories;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
-
-/**
- * @extends ServiceEntityRepository<Emission>
- */
 class EmissionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly PaginatorInterface $paginator
+    ) {
         parent::__construct($registry, Emission::class);
     }
 
-/*     public function paginateEmissions(int $page, $value): PaginationInterface
+    /**
+     * Paginate les émissions pour l'espace admin avec contrôle d'accès.
+     */
+    public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false)
+{
+    $qb = $this->createQueryBuilder('e')
+        ->select('e', 'c')
+        ->leftJoin('e.categorie', 'c')
+        ->andWhere('e.url != :excludeUrl')
+        ->setParameter('excludeUrl', $excludeUrl)
+        ->orderBy('e.datepub', 'DESC');
+
+    if ($user && !$isAdmin) {
+        $qb->andWhere('e.user = :user')
+           ->setParameter('user', $user);
+    }
+
+    return $this->paginator->paginate($qb, $page, 20, [
+        'distinct' => true,
+        'sortFieldAllowList' => ['e.titre'],
+    ]);
+}
+
+
+    /**
+     * Paginate les émissions publiques.
+     */
+    public function paginateEmissions(int $page, string $excludeUrl): PaginationInterface
     {
+        $qb = $this->createQueryBuilder('e')
+            ->select('e', 'c')
+            ->leftJoin('e.categorie', 'c')
+            ->andWhere('e.url != :excludeUrl')
+            ->setParameter('excludeUrl', $excludeUrl)
+            ->orderBy('e.datepub', 'DESC');
 
-        return $this->paginator->paginate(
-
-            $this->createQueryBuilder('r')
-                ->select('r', 'c')
-                ->leftJoin('r.categorie', 'c')
-                ->andWhere('r.url != :val')
-                ->setParameter('val', $value)
-                ->orderBy('r.datepub', 'DESC'),
-            $page,
-            20,
-            [
-                'distinct' => true,
-                'sortFieldAllowList' => ['r.titre']
-            ]
-        );
-    } */
-
-
-    public function paginateEmissionsAdmin(int $page, $value, ?User $user = null, Security $security): PaginationInterface
-    {
-        $qb = $this->createQueryBuilder('r')
-            ->select('r', 'c')
-            ->leftJoin('r.categorie', 'c')
-            ->andWhere('r.url != :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.datepub', 'DESC');
-    
-        // Vérifie si l'utilisateur a le rôle ADMIN
-        if ($user && !$security->isGranted('ROLE_ADMIN') && !$security->isGranted('ROLE_SUPER_ADMIN')) {
-            $qb->andWhere('r.user = :user')
-               ->setParameter('user', $user);
-        }
-    
         return $this->paginator->paginate($qb, $page, 20, [
             'distinct' => true,
-            'sortFieldAllowList' => ['r.titre']
+            'sortFieldAllowList' => ['e.titre'],
         ]);
-    }
-    
-    //    /**
-    //     * @return Emission[] Returns an array of Emission objects
-    //     */
-    public function findByExampleField($value): array
-    {
-        return $this->createQueryBuilder('e')
-            ->select('e', 'c')
-            ->andWhere('e.url != :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.datepub', 'DESC')
-            ->leftJoin('e.categorie', 'c')
-            ->getQuery()
-            ->getResult();
     }
 
     /**
-     * @param integer $duree
-     * @return Emission[]
+     * Dernières émissions par date de publication.
      */
-    public function findWithDureeLowerThan(int $duree): array
+    public function lastEmissions(string $excludeUrl): array
     {
-        return $this->createQueryBuilder('r')
-            ->select('r', 'c')
-            ->where('r.duree < :duree')
-            ->orderBy('r.duree', 'ASC')
-            ->leftJoin('r.categorie', 'c')
-            ->setParameter('duree', $duree)
-            ->getQuery()
-            ->getResult();
-    }
-    //    public function findOneBySomeField($value): ?Emission
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
-
-    public function lastEmissions($value): array
-    {
-        return $this->createQueryBuilder('r')
-            ->select('r', 'c')
-            ->andWhere('r.url != :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.datepub', 'DESC')
-            ->leftJoin('r.categorie', 'c')
+        return $this->createQueryBuilder('e')
+            ->select('e', 'c')
+            ->leftJoin('e.categorie', 'c')
+            ->andWhere('e.url != :excludeUrl')
+            ->setParameter('excludeUrl', $excludeUrl)
+            ->orderBy('e.datepub', 'DESC')
             ->setMaxResults(6)
             ->getQuery()
             ->getResult();
     }
 
-    public function lastEmissionsByTheme($value): array
+    /**
+     * Dernières émissions par thème (1 par thème).
+     */
+    public function lastEmissionsByTheme(string $excludeUrl): array
     {
-        $connection = $this->getEntityManager()->getConnection();
         $sql = '
         WITH RankedEmissions AS (
             SELECT 
@@ -132,6 +95,7 @@ class EmissionRepository extends ServiceEntityRepository
                 e.thumbnail AS emission_thumbnail,
                 e.categorie_id AS emission_categorie_id,
                 e.theme_id AS emission_theme_id,
+
                 c.id AS categorie_id,
                 c.titre AS categorie_titre,
                 c.editeur AS categorie_editeur,
@@ -139,9 +103,11 @@ class EmissionRepository extends ServiceEntityRepository
                 c.descriptif AS categorie_descriptif,
                 c.thumbnail AS categorie_thumbnail,
                 c.active AS categorie_active,
+
                 t.id AS theme_id,
                 t.name AS theme_name,
                 t.thumbnail AS theme_thumbnail,
+
                 ROW_NUMBER() OVER (PARTITION BY e.theme_id ORDER BY e.datepub DESC) as rn
             FROM emission e
             LEFT JOIN categories c ON e.categorie_id = c.id
@@ -152,89 +118,87 @@ class EmissionRepository extends ServiceEntityRepository
         WHERE rn = 1
         ORDER BY emission_datepub DESC
         LIMIT 6';
-    
-        $stmt = $connection->prepare($sql);
-        $stmt->bindValue('val', $value);
-    
-        return $stmt->executeQuery()->fetchAllAssociative();
+
+    $conn = $this->getEntityManager()->getConnection();
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue('val', $excludeUrl);
+
+    return $stmt->executeQuery()->fetchAllAssociative();
     }
 
-     /**
-     * Recherche des émissions en fonction des critères.
-     *
-     * @param string|null $titre
-     * @param \DateTime|null $dateDiffusion
-     * @return Emission[]
+    /**
+     * Recherche avancée avec filtres multiples.
      */
     public function findBySearch(array $criteria, int $page = 1): PaginationInterface
     {
-        
         $qb = $this->createQueryBuilder('e')
-        ->leftJoin('e.categorie', 'c')
-        ->leftJoin('e.theme', 't')
-        ->andWhere('e.url IS NOT NULL AND e.url != :emptyUrl') // Ajout de cette condition
-        ->setParameter('emptyUrl', ''); // Pour exclure aussi les URLs vides
+            ->leftJoin('e.categorie', 'c')
+            ->leftJoin('e.theme', 't')
+            ->andWhere('e.url IS NOT NULL AND e.url != :emptyUrl')
+            ->setParameter('emptyUrl', '');
 
+        if (!empty($criteria['titre'])) {
+            $search = '%' . strtolower($criteria['titre']) . '%';
+            $qb->andWhere('LOWER(e.titre) LIKE :search OR LOWER(e.descriptif) LIKE :search')
+                ->setParameter('search', $search);
+        }
 
- // Recherche par mot-clé (titre ou descriptif) - utilise toujours le même paramètre
- if (!empty($criteria['titre'])) {
-     $qb->andWhere('LOWER(e.titre) LIKE LOWER(:search) OR LOWER(e.descriptif) LIKE LOWER(:search)')
-        ->setParameter('search', '%' . strtolower($criteria['titre']) . '%');
- }
+        if (!empty($criteria['categorie']) && $criteria['categorie'] instanceof Categories) {
+            $qb->andWhere('LOWER(c.titre) = :categorie')
+                ->setParameter('categorie', strtolower($criteria['categorie']->getTitre()));
+        }
 
- // Filtre par catégorie si présente
- if (!empty($criteria['categorie']) && $criteria['categorie'] instanceof Categories) {
-     $qb->andWhere('LOWER(c.titre) = LOWER(:categorie)')
-        ->setParameter('categorie', trim(strtolower($criteria['categorie']->getTitre())));
- }
+        if (!empty($criteria['theme'])) {
+            $qb->andWhere('t.id = :themeId')
+                ->setParameter('themeId', $criteria['theme']->getId());
+        }
 
- // Filtre par thème
- if (!empty($criteria['theme'])) {
-    $qb->andWhere('t.id = :theme_id')
-       ->setParameter('theme_id', $criteria['theme']->getId());
-}
+        if (!empty($criteria['dateDebut'])) {
+            $qb->andWhere('e.datepub >= :dateDebut')
+                ->setParameter('dateDebut', $criteria['dateDebut']);
+        }
 
- // Recherche par plage de dates
- if (!empty($criteria['dateDebut'])) {
-     $qb->andWhere('e.datepub >= :dateDebut')
-        ->setParameter('dateDebut', $criteria['dateDebut']);
- }
+        if (!empty($criteria['dateFin'])) {
+            $qb->andWhere('e.datepub <= :dateFin')
+                ->setParameter('dateFin', $criteria['dateFin']);
+        }
 
- if (!empty($criteria['dateFin'])) {
-     $qb->andWhere('e.datepub <= :dateFin')
-        ->setParameter('dateFin', $criteria['dateFin']);
- }
-
-// Retourner le résultat paginé
-return $this->paginator->paginate(
-    $qb->orderBy('e.datepub', 'DESC'),
-    $page,
-    12, // Nombre d'éléments par page
-    [
-        'distinct' => true,
-        'sortFieldAllowList' => ['e.titre', 'e.datepub']
-    ]
-);
+        return $this->paginator->paginate($qb->orderBy('e.datepub', 'DESC'), $page, 12, [
+            'distinct' => true,
+            'sortFieldAllowList' => ['e.titre', 'e.datepub'],
+        ]);
     }
 
-        public function paginateEmissions(int $page, $value): PaginationInterface
+    /**
+     * Emissions avec une durée inférieure à une valeur donnée.
+     *
+     * @param int $duree
+     * @return Emission[]
+     */
+    public function findWithDureeLowerThan(int $duree): array
     {
+        return $this->createQueryBuilder('e')
+            ->select('e', 'c')
+            ->leftJoin('e.categorie', 'c')
+            ->where('e.duree < :duree')
+            ->setParameter('duree', $duree)
+            ->orderBy('e.duree', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-        return $this->paginator->paginate(
-
-            $this->createQueryBuilder('r')
-                ->select('r', 'c')
-                ->leftJoin('r.categorie', 'c')
-                ->andWhere('r.url != :val')
-                ->setParameter('val', $value)
-                ->orderBy('r.datepub', 'DESC'),
-            $page,
-            20,
-            [
-                'distinct' => true,
-                'sortFieldAllowList' => ['r.titre']
-            ]
-        );
-    } 
-
+    /**
+     * Exemple de méthode personnalisée simple.
+     */
+    public function findByExampleField(string $value): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e', 'c')
+            ->leftJoin('e.categorie', 'c')
+            ->andWhere('e.url != :value')
+            ->setParameter('value', $value)
+            ->orderBy('e.datepub', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -51,7 +51,7 @@ class Emission
     #[ORM\Column(length: 250)]
     #[Assert\Url(message: 'This value is not a valid URL')]
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
-    private string $url;
+    private string $url ='';
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
@@ -87,7 +87,7 @@ class Emission
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['emissions.index'])]
-    private ?\DateTimeInterface $updatedat = null;
+    private ?\DateTime $updatedat = null;
 
     #[ORM\ManyToOne(inversedBy: 'emissions')]
     private ?Theme $theme = null;
@@ -245,12 +245,12 @@ class Emission
         return $this;
     }
 
-    public function getUpdatedat(): ?\DateTimeInterface
+    public function getUpdatedat(): ?\DateTime
     {
         return $this->updatedat;
     }
 
-    public function setUpdatedat(?\DateTimeInterface $updatedat): static
+    public function setUpdatedat(?\DateTime $updatedat): static
     {
         $this->updatedat = $updatedat;
 
