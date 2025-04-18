@@ -19,18 +19,14 @@ class Evenement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
-    #[Assert\Length(
-        max: 100, // 🔥 Limite à 100 caractères
-        maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères."
-    )]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 100, maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères.")]
+   
     private ?string $titre = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Assert\Length(
-        max: 100, // 🔥 Limite à 100 caractères
-        maxMessage: "L'organisateur ne doit pas dépasser {{ limit }} caractères."
-    )]
+    #[ORM\Column(nullable: true)]
+    #[Assert\Length(max: 100, maxMessage: "L'organisateur ne doit pas dépasser {{ limit }} caractères.")]
+   
     private ?string $organisateur = null;
 
     #[ORM\Column(length: 50, nullable: true)]
@@ -51,10 +47,10 @@ class Evenement
     private ?string $adresse = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateDebut = null;
+    private ?\DateTime $dateDebut = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateFin = null;
+    private ?\DateTime $dateFin = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Assert\Length(
@@ -87,7 +83,7 @@ class Evenement
     private ?bool $valid = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
+    private ?\DateTime $updateAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
@@ -170,24 +166,24 @@ class Evenement
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeImmutable
+    public function getDateDebut(): ?\DateTime
     {
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeImmutable $dateDebut): static
+    public function setDateDebut(\DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
-    public function getDateFin(): ?\DateTimeImmutable
+    public function getDateFin(): ?\DateTime
     {
         return $this->dateFin;
     }
 
-    public function setDateFin(\DateTimeImmutable $dateFin): static
+    public function setDateFin(\DateTime $dateFin): static
     {
         $this->dateFin = $dateFin;
 
@@ -266,12 +262,12 @@ class Evenement
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
+    public function getUpdateAt(): ?\DateTime
     {
         return $this->updateAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $updateAt): static
+    public function setUpdateAt(\DateTime $updateAt): static
     {
         $this->updateAt = $updateAt;
 
@@ -319,7 +315,7 @@ class Evenement
         if (null !== $thumbnailFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updateAt = new \DateTimeImmutable();
+            $this->updateAt = new \DateTime();
         }
 
         return $this;

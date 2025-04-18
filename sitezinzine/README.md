@@ -53,6 +53,10 @@ installation de glide (pour les carrousel)
  installation de phpunit
  composer require --dev phpunit/phpunit
 
+ installation pour les annotations doctrine
+ composer require doctrine/annotations
+
+
  A new Symfony CLI version is available (5.11.0, currently running 5.9.1).
 
        If you installed the Symfony CLI via a package manager, updates are going to be automatic.

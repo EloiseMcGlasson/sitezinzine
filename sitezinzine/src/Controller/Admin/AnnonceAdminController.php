@@ -31,7 +31,7 @@ class AnnonceAdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $annonce->setUpdateAt(new \DateTimeImmutable());
+            $annonce->setUpdateAt(new \DateTime());
             $em->persist($annonce);
             $em->flush();
         $this->addFlash('success', 'L\'annonce a bien été validée');
@@ -63,7 +63,7 @@ class AnnonceAdminController extends AbstractController
         if ($annonce->getType() === 'autre' && !empty($autreType)) {
             $annonce->setType($autreType);
         }
-            $annonce->setUpdateAt(new \DateTimeImmutable());
+            $annonce->setUpdateAt(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'L\'annonce a bien été modifié');
             return $this->redirectToRoute('admin.annonce.index');
