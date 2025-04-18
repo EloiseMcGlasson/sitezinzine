@@ -25,7 +25,7 @@ class Editeur
     private ?string $phone = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
+    private ?\DateTime $updateAt = null;
 
     /**
      * @var Collection<int, Emission>
@@ -79,12 +79,12 @@ class Editeur
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
+    public function getUpdateAt(): ?\DateTime
     {
         return $this->updateAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $updateAt): static
+    public function setUpdateAt(\DateTime $updateAt): static
     {
         $this->updateAt = $updateAt;
 

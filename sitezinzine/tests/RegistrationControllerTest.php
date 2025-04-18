@@ -69,7 +69,9 @@ class RegistrationControllerTest extends WebTestCase
         $messageBody = $templatedEmail->getHtmlBody();
         self::assertIsString($messageBody);
 
+        self::assertMatchesRegularExpression('#http://localhost/verify/email.+">#', $messageBody);
         preg_match('#(http://localhost/verify/email.+)">#', $messageBody, $resetLink);
+        self::assertNotEmpty($resetLink[1], 'Le lien de vérification n’a pas été trouvé.');
 
         // "Click" the link and see if the user is verified
         $this->client->request('GET', $resetLink[1]);

@@ -51,10 +51,10 @@ class Annonce
     private ?string $adresse = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateDebut = null;
+    private ?\DateTime $dateDebut = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateFin = null;
+    private ?\DateTime $dateFin = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\Length(
@@ -87,7 +87,7 @@ class Annonce
     private ?bool $valid = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
+    private ?\DateTime $updateAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
@@ -167,24 +167,24 @@ class Annonce
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeImmutable
+    public function getDateDebut(): ?\DateTime
     {
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeImmutable $dateDebut): static
+    public function setDateDebut(\DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
-    public function getDateFin(): ?\DateTimeImmutable
+    public function getDateFin(): ?\DateTime
     {
         return $this->dateFin;
     }
 
-    public function setDateFin(\DateTimeImmutable $dateFin): static
+    public function setDateFin(\DateTime $dateFin): static
     {
         $this->dateFin = $dateFin;
 
@@ -263,12 +263,12 @@ class Annonce
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
+    public function getUpdateAt(): ?\DateTime
     {
         return $this->updateAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $updateAt): static
+    public function setUpdateAt(\DateTime $updateAt): static
     {
         $this->updateAt = $updateAt;
 
@@ -316,7 +316,7 @@ class Annonce
         if (null !== $thumbnailFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updateAt = new \DateTimeImmutable();
+            $this->updateAt = new \DateTime();
         }
 
         return $this;

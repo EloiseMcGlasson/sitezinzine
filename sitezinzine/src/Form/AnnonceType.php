@@ -91,14 +91,14 @@ if (!in_array($existingType, $choices, true) && !empty($existingType)) {
                 ]
             ])
             ->add('dateDebut', DateTimeType::class, [
-                'input' => 'datetime_immutable',
+                'input' => 'datetime',
                 'label' => 'Date de début',
                 'widget' => 'single_text',
                 'html5' => false, // Désactive l'affichage natif HTML5 (évite le sélecteur datetime)
                 'format' => 'yyyy-MM-dd', // Assure le format ISO pour la compatibilité
             ])
             ->add('dateFin', DateTimeType::class, [
-                'input' => 'datetime_immutable',
+                'input' => 'datetime',
                 'label' => 'Date de fin',
                 'widget' => 'single_text',
                 'html5' => false, // Désactive l'affichage natif HTML5 (évite le sélecteur datetime)

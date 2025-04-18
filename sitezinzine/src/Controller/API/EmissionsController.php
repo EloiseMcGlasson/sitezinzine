@@ -4,7 +4,7 @@ namespace App\Controller\API;
 
 use App\Entity\Emission;
 use App\Repository\EmissionRepository;
-use DateTimeImmutable;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,8 +40,8 @@ Public function show(Emission $emission)
 Public function create(Request $request, SerializerInterface $serializer)
 {
     $emission = new Emission();
-    $emission->setDatepub(new DateTimeImmutable());
-    $emission->setUpdatedat(new DateTimeImmutable());
+    $emission->setDatepub(new DateTime());
+    $emission->setUpdatedat(new DateTime());
     dd($serializer->deserialize($request->getContent(), Emission::class, 'json', [
         AbstractNormalizer::OBJECT_TO_POPULATE => $emission,
         'groups' => ['emissions.create']
