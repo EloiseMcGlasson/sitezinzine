@@ -1,102 +1,287 @@
-# sitezinzine
+# 📘 Site Radio Zinzine — Guide d'installation & Déploiement
 
-symfony 7
-php bin/console doctrine:schema:update --force --complete => en cas de "In MetadataStorageError.php line 13:
+🔗 [Français](#-site-radio-zinzine--guide-dinstallation--déploiement) | [English](#-radio-zinzine-site---installation--deployment-guide) | [Deutsch](#-radio-zinzine-seite---installations--bereitstellungsanleitung)
 
-  The metadata storage is not up to date, please run the sync-metadata-storage command to fix this issue.  "
+## 🎹 Présentation
+Bienvenue sur le site de **Radio Zinzine**, une radio libre, militante et autogérée.
 
-php bin/console doctrine:migrations:sync-metadata-storage
+Ce site permet :
+- De présenter les **émissions** de la radio
+- De partager les **annonces** et **événements**
+- De gérer la **programmation** via [LibreTime](https://libretime.org)
+- D'offrir un **espace d'administration** pour l'équipe
 
+---
 
-install pour |slug
-composer require twig/string-extra
-composer require twig/extra-bundle
-install pour bootstrap
-composer require symfony/webpack-encore-bundle
-install pour upload fichiers
-composer require vich/uploader-bundle
+## ⚙️ Stack technique
+- PHP 8.3
+- Symfony 7
+- Twig (frontend)
+- Doctrine ORM (MySQL)
+- PHPUnit (tests)
+- Docker + Docker Compose
+- LibreTime (intégré ou interfacé)
 
-install de la sécurité
-php bin/console make:user
-php bin/console make:security
-bin/console make:security:form-login
+---
 
-install paginator
-composer require knplabs/knp-paginator-bundle
+## 🧰 Prérequis système
+Sur votre machine ou serveur distant :
+```bash
+sudo apt update && sudo apt install docker.io docker-compose -y
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+```
+> ⚠️ Vous devrez vous déconnecter/reconnecter pour activer le groupe `docker`.
 
-pour lancer le mailer:
-ouvrir un gitbash dans bin
-faire la commande : ./mailpit
-ouvrir le navigateur et aller sur l'url http://localhost:8025/
+---
 
-installation de scoop (manager de package et dependance windows => pour l'installation de symfony cli)
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+## 🐳 Déploiement via Docker (Images GHCR)
 
-installation symfony cli
-scoop install symfony-cli
-pour lancer le server => symfony server
+### 1. Connexion au registre GitHub Container Registry (GHCR)
+```bash
+echo $GHCR_TOKEN | docker login ghcr.io -u eloisemcglasson --password-stdin
+```
 
-installation de glide (pour les carrousel)
- npm install @glidejs/glide
+### 2. Récupération des images Docker
+```bash
+docker pull ghcr.io/eloisemcglasson/sitezinzine-app:latest
+docker pull ghcr.io/eloisemcglasson/symfony_db:latest
+docker pull ghcr.io/eloisemcglasson/phpmyadmin:latest
+```
 
- -tinymce pour mise en page auto des forms
+### 3. Créer un fichier `docker-compose.yml`
+```yaml
+version: '3.8'
 
- installation format_datetime pour twig
- composer require twig/intl-extra
- composer require twig/extra-bundle
- activer l'extension dans php.ini (décommenter la ligne intl)
+services:
+  app:
+    image: ghcr.io/eloisemcglasson/sitezinzine-app:latest
+    container_name: symfony_app
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - zinzine_net
+    environment:
+      DATABASE_URL: mysql://user:password@db:3306/symfony
 
- 11/09/24 maj de twig de la 3.11 à la 3.14 pour corriger une vulnerabilité du sandbox
- composer update twig/twig
+  db:
+    image: ghcr.io/eloisemcglasson/symfony_db:latest
+    container_name: symfony_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - zinzine_net
 
- installation de phpunit
- composer require --dev phpunit/phpunit
+  phpmyadmin:
+    image: ghcr.io/eloisemcglasson/phpmyadmin:latest
+    container_name: symfony_phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      UPLOAD_LIMIT: 100M
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - zinzine_net
 
- installation pour les annotations doctrine
- composer require doctrine/annotations
+volumes:
+  db_data:
 
+networks:
+  zinzine_net:
+    driver: bridge
+```
 
- A new Symfony CLI version is available (5.11.0, currently running 5.9.1).
+### 4. Lancer les conteneurs
+```bash
+docker-compose up -d
+```
 
-       If you installed the Symfony CLI via a package manager, updates are going to be automatic.
-       If not, upgrade by downloading the new version at https://github.com/symfony-cli/symfony-cli/releases
-       And replace the current binary (symfony.exe) by the new one.
+---
 
- [OK] Web server listening
-      The Web server is using PHP CGI 8.2.12
-      https://127.0.0.1:8000
+## 🥪 Installer & Préparer le site
+```bash
+docker-compose exec php composer install
+docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
+docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
+```
 
+---
 
-créer une nouvelle branche
-git checkout -b nom_de_ta_branche  # Créer et basculer sur la branche
-git push origin nom_de_ta_branche  # Pousser la branche sur le dépôt distant
-git branch                         # Vérifier la liste des branches
-git checkout main                  # Revenir sur la branche principale
+## 🌐 Accès au site
+- Site web Symfony : [http://localhost:8080](http://localhost:8080) ou `http://<IP_SERVEUR>:8080`
+- PhpMyAdmin : [http://localhost:8081](http://localhost:8081) ou `http://<IP_SERVEUR>:8081`
 
+---
 
+## 🔐 Accès admin
+Des utilisateurs de test sont définis dans `src/DataFixtures/`
+> ⚠️ Vérifier que les identifiants sont valides en fonction du contexte (dev/prod)
 
+---
 
- merge d'une branche avec main
- git checkout main
-git pull origin main
-git merge nom_de_ta_branche
-# Résoudre les conflits si nécessaire
-git commit # Si des conflits ont été résolus
-git push origin main
+## 🤪 Tests automatisés (PHPUnit)
+```bash
+docker-compose exec php ./vendor/bin/phpunit
+```
+> Les tests se trouvent dans `tests/Controller/`
 
-supprimer une branche 
-git checkout main                        # Assure-toi d'être sur une autre branche
-git branch -d nom_de_ta_branche          # Supprime la branche localement
-# ou
-git branch -D nom_de_ta_branche          # Supprime la branche localement (force)
-git push origin --delete nom_de_ta_branche # Supprime la branche sur le dépôt distant
+---
 
+## 🌍 HTTPS et nom de domaine (optionnel)
+Pour le passage en production :
+1. Associez votre nom de domaine (ex : `zinzine.fr`) à l'IP du serveur
+2. Ajoutez `nginx-proxy` + `acme-companion`
+3. Configurez chaque service avec :
+```yaml
+environment:
+  VIRTUAL_HOST: zinzine.fr
+  LETSENCRYPT_HOST: zinzine.fr
+  LETSENCRYPT_EMAIL: contact@zinzine.fr
+```
+📌 Référence : https://github.com/nginx-proxy/acme-companion
 
-installation de turbo symfony ux pour que le lecteur audio ne soit pas coupé lors de la navigation
+---
 
+## 🙌 À propos
+Ce projet est développé pour **Radio Zinzine**, une radio libre, autogérée et engagée dans la promotion du logiciel libre.
 
-composer require symfony/ux-turbo
+Pour plus d'informations : [https://www.zinzine.domaine](https://www.zinzine.domaine)
 
-commande pour envoyer les log de test dans un fichier
-docker exec -it symfony_app php bin/phpunit tests/Controller/Admin/EmissionControllerTest.php > tests.log
+Besoin d’aide ? Une documentation plus technique est disponible pour les développeurs.
+
+---
+
+# 📜 Radio Zinzine Site — Installation & Deployment Guide
+
+## 🎹 Overview
+Welcome to the **Radio Zinzine** website, a free, grassroots and self-managed radio station.
+
+This site allows you to:
+- Present **radio shows**
+- Share **announcements** and **events**
+- Manage the **schedule** using [LibreTime](https://libretime.org)
+- Provide an **admin dashboard** for the team
+
+## ⚙️ Tech Stack
+- PHP 8.3
+- Symfony 7
+- Twig (frontend)
+- Doctrine ORM (MySQL)
+- PHPUnit (tests)
+- Docker + Docker Compose
+- LibreTime integration
+
+## 🧰 Requirements
+Install Docker and Docker Compose:
+```bash
+sudo apt update && sudo apt install docker.io docker-compose -y
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+```
+
+## 🐳 Deployment (GHCR images)
+```bash
+echo $GHCR_TOKEN | docker login ghcr.io -u eloisemcglasson --password-stdin
+```
+Then pull the Docker images:
+```bash
+docker pull ghcr.io/eloisemcglasson/sitezinzine-app:latest
+docker pull ghcr.io/eloisemcglasson/symfony_db:latest
+docker pull ghcr.io/eloisemcglasson/phpmyadmin:latest
+```
+
+Start containers with `docker-compose up -d`, then:
+```bash
+docker-compose exec php composer install
+docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
+docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
+```
+
+### Access:
+- Site: `http://<SERVER_IP>:8080`
+- PhpMyAdmin: `http://<SERVER_IP>:8081`
+
+### Tests:
+```bash
+docker-compose exec php ./vendor/bin/phpunit
+```
+
+---
+
+# 📃 Radio Zinzine Seite — Installations- & Bereitstellungsanleitung
+
+## 🎹 Einführung
+Willkommen auf der Website von **Radio Zinzine**, einem freien und selbstverwalteten Radiosender.
+
+Diese Seite ermöglicht:
+- Präsentation der **Sendungen**
+- Veröffentlichung von **Ankündigungen** und **Veranstaltungen**
+- Verwaltung des **Sendeplans** mit [LibreTime](https://libretime.org)
+- Bereitstellung eines **Adminbereichs** für das Team
+
+## ⚙️ Technologiestack
+- PHP 8.3
+- Symfony 7
+- Twig
+- Doctrine ORM (MySQL)
+- PHPUnit
+- Docker + Docker Compose
+- LibreTime Integration
+
+## 🧰 Voraussetzungen
+Docker & Docker Compose installieren:
+```bash
+sudo apt update && sudo apt install docker.io docker-compose -y
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+```
+
+## 🐳 Deployment (GHCR Images)
+```bash
+echo $GHCR_TOKEN | docker login ghcr.io -u eloisemcglasson --password-stdin
+```
+Dann:
+```bash
+docker pull ghcr.io/eloisemcglasson/sitezinzine-app:latest
+docker pull ghcr.io/eloisemcglasson/symfony_db:latest
+docker pull ghcr.io/eloisemcglasson/phpmyadmin:latest
+```
+
+Container starten mit:
+```bash
+docker-compose up -d
+```
+Dann:
+```bash
+docker-compose exec php composer install
+docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
+docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
+```
+
+### Zugriff:
+- Seite: `http://<SERVER_IP>:8080`
+- PhpMyAdmin: `http://<SERVER_IP>:8081`
+
+### Tests:
+```bash
+docker-compose exec php ./vendor/bin/phpunit
+```
+
+---
+
+Fertig! Das Projekt ist bereit zur Nutzung und Weiterentwicklung. 🎉
+
