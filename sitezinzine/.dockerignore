@@ -1,0 +1,15 @@
+.git
+.env.local
+.env.test
+docker-compose.override.yml
+tests/
+*.sql
+*.sqlite
+*.bak
+.idea/
+.vscode/
+node_modules/
+vendor/
+var/
+src/DataFixtures/
+var/data/

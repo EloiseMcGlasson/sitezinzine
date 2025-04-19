@@ -7,6 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 class AnnonceAdminControllerTest extends WebTestCase
 {
@@ -102,48 +105,103 @@ public function testCanEditAnnonce(): void
     // Vérifications
     $this->assertResponseRedirects('/admin/annonce/');
     $this->client->followRedirect();
-    $this->assertSelectorExists('success');
+    $this->assertSelectorExists('.alert.alert-success', 'L\'annonce a bien été modifié');
 }
-
 
 public function testCanValidateAnnonce(): void
 {
+    // Création de l'annonce
     $annonce = $this->createTestAnnonce(false);
-
-    // Correction ici : s'assurer que le champ obligatoire est bien défini
     $annonce->setOrganisateur('Organisateur test');
-
     $this->entityManager->flush();
 
+    // Création d'un admin
+    $admin = new User();
+    $admin->setUsername('admin_' . uniqid());
+    $admin->setEmail('admin_' . uniqid() . '@example.com');
+    $admin->setPassword('fakehash');
+    $admin->setRoles(['ROLE_ADMIN']);
+
+    $this->entityManager->persist($admin);
+    $this->entityManager->flush();
+
+    // Authentification de l'utilisateur dans le firewall "main"
+    $this->client->loginUser($admin, 'main');
+
+    // Envoie de la requête
     $this->client->request('POST', '/admin/annonce/' . $annonce->getId() . '/valid');
     $this->assertResponseRedirects('/admin/annonce/');
 
+    // Vérification
     $annonceValid = $this->entityManager->getRepository(Annonce::class)->find($annonce->getId());
     $this->assertTrue($annonceValid->isValid());
 }
 
 
-    public function testCanUnvalidateAnnonce(): void
-    {
-        $annonce = $this->createTestAnnonce(true);
 
-        $this->client->request('POST', '/admin/annonce/' . $annonce->getId() . '/unvalid');
-        $this->assertResponseRedirects('/admin/annonce/');
 
-        $annonceValid = $this->entityManager->getRepository(Annonce::class)->find($annonce->getId());
-        $this->assertFalse($annonceValid->isValid());
-    }
+public function testCanUnvalidateAnnonce(): void
+{
+    // Création d'une annonce validée
+    $annonce = $this->createTestAnnonce(true); // true = validée
+    $annonce->setOrganisateur('Organisateur test');
+    $this->entityManager->flush();
 
-    public function testCanSoftDeleteAnnonce(): void
-    {
-        $annonce = $this->createTestAnnonce();
+    // Création d'un utilisateur admin
+    $admin = new User();
+    $admin->setUsername('admin_' . uniqid());
+    $admin->setEmail('admin_' . uniqid() . '@example.com');
+    $admin->setPassword('fakehash');
+    $admin->setRoles(['ROLE_ADMIN']);
 
-        $this->client->request('DELETE', '/admin/annonce/' . $annonce->getId());
-        $this->assertResponseRedirects('/admin/annonce/');
+    $this->entityManager->persist($admin);
+    $this->entityManager->flush();
 
-        $deletedAnnonce = $this->entityManager->getRepository(Annonce::class)->find($annonce->getId());
-        $this->assertTrue($deletedAnnonce->isSoftDelete());
-    }
+    // Connexion de l'utilisateur admin
+    $this->client->loginUser($admin, 'main');
+
+    // Requête pour invalider l'annonce
+    $this->client->request('POST', '/admin/annonce/' . $annonce->getId() . '/unvalid');
+
+    // Vérification redirection
+    $this->assertResponseRedirects('/admin/annonce/');
+
+    // Vérifie que l'annonce est maintenant invalide
+    $updatedAnnonce = $this->entityManager->getRepository(Annonce::class)->find($annonce->getId());
+    $this->assertFalse($updatedAnnonce->isValid());
+}
+
+public function testCanSoftDeleteAnnonce(): void
+{
+    // Création de l'annonce à supprimer
+    $annonce = $this->createTestAnnonce();
+    $annonce->setOrganisateur('Organisateur test');
+    $this->entityManager->flush();
+
+    // Création d'un admin
+    $admin = new User();
+    $admin->setUsername('admin_' . uniqid());
+    $admin->setEmail('admin_' . uniqid() . '@example.com');
+    $admin->setPassword('fakehash');
+    $admin->setRoles(['ROLE_ADMIN']);
+
+    $this->entityManager->persist($admin);
+    $this->entityManager->flush();
+
+    // Authentification de l'admin
+    $this->client->loginUser($admin, 'main');
+
+    // Suppression en mode soft delete
+    $this->client->request('DELETE', '/admin/annonce/' . $annonce->getId());
+
+    // Vérifie la redirection
+    $this->assertResponseRedirects('/admin/annonce/');
+
+    // Vérifie que l'annonce est soft-supprimée
+    $deletedAnnonce = $this->entityManager->getRepository(Annonce::class)->find($annonce->getId());
+    $this->assertTrue($deletedAnnonce->isSoftDelete());
+}
+
 
     private function createTestAnnonce(bool $valid = true): Annonce
     {

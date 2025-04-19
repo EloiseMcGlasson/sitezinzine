@@ -5,13 +5,19 @@ services:
     working_dir: /var/www/html
     ports:
       - "8080:80"
-    volumes:
-      - .:/var/www/html
-    
     depends_on:
       - db
     networks:
       - symfony_network
+    volumes:
+      - ./public/uploads:/var/www/html/public/uploads  # ⬅️ Volume pour les fichiers uploadés
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: "0"
+      APP_SECRET: "9021d87b778fec23df9779345aca92f"  # ⬅️ À remplacer par un vrai secret
+      DATABASE_URL: "mysql://user:password@symfony_db:3306/symfony?serverVersion=8.0"
+      MAILER_DSN: "doctrine://default?auto_setup=0"  # ⬅️ À adapter si tu utilises un vrai mailer
+      # Ajoute d'autres variables si besoin
 
   db:
     image: mysql:8.0
@@ -43,11 +49,10 @@ services:
       - db
     networks:
       - symfony_network
- 
+
 volumes:
   db_data:
 
 networks:
   symfony_network:
     driver: bridge
-
