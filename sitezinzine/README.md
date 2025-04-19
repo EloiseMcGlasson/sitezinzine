@@ -1,6 +1,6 @@
 # 📘 Site Radio Zinzine — Guide d'installation & Déploiement
 
-🔗 [Français](#-site-radio-zinzine--guide-dinstallation--déploiement) | [English](#-radio-zinzine-site---installation--deployment-guide) | [Deutsch](#-radio-zinzine-seite---installations--bereitstellungsanleitung)
+🔗 [Français](#-site-radio-zinzine--guide-dinstallation--déploiement) | [English](#-radio-zinzine-site-—-installation--deployment-guide) | [Deutsch](#-radio-zinzine-seite-—-installations--bereitstellungsanleitung)
 
 ## 🎹 Présentation
 Bienvenue sur le site de **Radio Zinzine**, une radio libre, militante et autogérée.
