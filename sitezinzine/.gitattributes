@@ -1,0 +1,8 @@
+# Empêche ces fichiers d’être mergés dans main
+dockerfile.dev merge=ours
+docker-compose.dev.yml merge=ours
+.env.test merge=ours
+compose_old.yaml merge=ours
+READMEold.md merge=ours
+test.log merge=ours
+.phpunit.result.cache merge=ours

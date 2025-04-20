@@ -19,9 +19,12 @@ class EvenementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $existingType = trim($options['data']->getType()); // Supprime les espaces invisibles
-        $existingType = ucfirst(strtolower($existingType)); // Normalise la casse (1ère lettre majuscule, le reste minuscule)
+        $type = $options['data']->getType();
+        $existingType = $type !== null ? trim($type) : null; // Supprime les espaces invisibles
 
+        if ($existingType !== null) {
+            $existingType = ucfirst(strtolower($existingType)); // Normalise la casse
+        }
 
         $choices = [
             'Emission' => 'Emission',
@@ -139,7 +142,7 @@ class EvenementType extends AbstractType
                 'placeholder' => 'Sélectionnez un type d\'évènement',
                 'data' => $typeValue, // ✅ Sélectionne correctement "Autre" si besoin
                 'choice_label' => fn($choice, $key, $value) => $key,
-                'choice_value' => fn($choice) => strtolower($choice), // 🔥 Normalisation
+                'choice_value' => fn ($choice) => $choice !== null ? strtolower($choice) : null,
                 'attr' => [
                     'maxlength' => 50 // 🔥 Empêche de taper plus de 50 caractères
                 ]

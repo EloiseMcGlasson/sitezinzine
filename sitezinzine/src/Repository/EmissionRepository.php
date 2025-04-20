@@ -138,14 +138,16 @@ class EmissionRepository extends ServiceEntityRepository
             ->setParameter('emptyUrl', '');
 
         if (!empty($criteria['titre'])) {
-            $search = '%' . strtolower($criteria['titre']) . '%';
+            $titre = $criteria['titre'] ?? '';
+            $search = '%' . strtolower((string) $titre) . '%';
             $qb->andWhere('LOWER(e.titre) LIKE :search OR LOWER(e.descriptif) LIKE :search')
                 ->setParameter('search', $search);
         }
 
         if (!empty($criteria['categorie']) && $criteria['categorie'] instanceof Categories) {
             $qb->andWhere('LOWER(c.titre) = :categorie')
-                ->setParameter('categorie', strtolower($criteria['categorie']->getTitre()));
+            ->setParameter('categorie', strtolower((string) ($criteria['categorie']?->getTitre() ?? '')));
+
         }
 
         if (!empty($criteria['theme'])) {

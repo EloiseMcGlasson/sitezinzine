@@ -100,3 +100,8 @@ composer require symfony/ux-turbo
 
 commande pour envoyer les log de test dans un fichier
 docker exec -it symfony_app php bin/phpunit tests/Controller/Admin/EmissionControllerTest.php > tests.log
+
+ajout de git attibutes pour ignorer les fichiers dev lors de merge avec main
+commande pour activer gitattributes
+git config --global merge.ours.driver true
+

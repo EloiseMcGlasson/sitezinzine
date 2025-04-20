@@ -290,7 +290,7 @@ class Evenement
      */ 
     public function setThumbnail(?string $thumbnail): static
     {
-        $this->thumbnail = trim($thumbnail);
+        $this->thumbnail = $thumbnail !== null ? trim($thumbnail) : null;
 
         return $this;
     }
