@@ -108,7 +108,8 @@
                     <td>{{ user.email }}</td>
                         <td>
                             {% for role in user.roles %}
-                                {{ available_roles[role] }}{% if not loop.last %}, {% endif %}
+                                {{ available_roles[role]|default(role) }}
+                                {% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </td>
                     <td>

@@ -10,7 +10,8 @@ services:
     networks:
       - symfony_network
     volumes:
-      - ./public/uploads:/var/www/html/public/uploads  # ⬅️ Volume pour les fichiers uploadés
+    - .:/var/www/html           # ⬅️ Monter tout le projet Symfony
+    - ./public/uploads:/var/www/html/public/uploads  # ⬅️ Toujours garder ça pour les uploads
     env_file:
       - .env.prod
 
