@@ -1,0 +1,37 @@
+FROM php:8.3-apache
+
+# Dépendances système + extensions PHP + Xdebug
+RUN apt-get update && apt-get install -y \
+    libicu-dev zip git unzip libzip-dev vim curl \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && docker-php-ext-install intl pdo pdo_mysql zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Configuration Xdebug (à créer si besoin)
+COPY ./docker/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+# Active mod_rewrite
+RUN a2enmod rewrite
+
+# Définir le dossier de travail
+WORKDIR /var/www/html
+
+# Copie tout le code source
+COPY . .
+
+# Installer les dépendances avec Composer (dev mode)
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    composer install
+
+# Copie config Apache personnalisée
+COPY ./docker/apache/apache.conf /etc/apache2/sites-available/000-default.conf
+
+# Utilisateur root (facilite les modifs et les tests)
+USER root
+
+ENV APP_ENV=dev
+
+ENTRYPOINT ["docker/entrypoint.sh"]
+CMD ["apache2-foreground"]

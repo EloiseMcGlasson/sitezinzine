@@ -86,6 +86,7 @@ class EmissionType extends AbstractType
         ])
         ->add('url', UrlType::class, [
             'required' => false,
+            'default_protocol' => 'http',
             'label'=> 'Url de l\'émission'
             
         ])

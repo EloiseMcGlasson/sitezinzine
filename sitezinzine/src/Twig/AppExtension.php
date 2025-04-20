@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 
 class AppExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('highlight', [$this, 'highlightText'], ['is_safe' => ['html']])
