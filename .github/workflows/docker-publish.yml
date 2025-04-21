@@ -1,40 +1,40 @@
-name: Docker Publish
+name: 🚀 Publish Docker image to GHCR on tag
 
 on:
   push:
     tags:
-      - 'v*.*.*'  # Par exemple : v1.0.0
+      - 'v*.*.*' # Déclenchement sur les tags de type v1.0.0, v1.0.1, etc.
 
 jobs:
-  build-and-push:
+  publish:
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
-      packages: write  # nécessaire pour push vers GHCR
+      packages: write # Nécessaire pour pousser sur GHCR
 
     steps:
-      - name: Checkout code
+      - name: 🔍 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to GHCR
+      - name: 🔐 Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
+      - name: 🏷️ Extract tag name
+        id: vars
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Build and push Docker image
+      - name: 🛠️ Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./dockerfile.prod
+          context: ./sitezinzine
+          file: ./sitezinzine/dockerfile.prod
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ghcr.io/eloisemcglasson/sitezinzine-app:${{ env.TAG }}
+            ghcr.io/eloisemcglasson/sitezinzine-app:latest
+
