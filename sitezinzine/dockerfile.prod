@@ -1,0 +1,60 @@
+# 🧱 STAGE 1 : build avec Composer
+FROM php:8.3-cli as composer_build
+
+RUN apt-get update && apt-get install -y \
+    libicu-dev zip git unzip libzip-dev && \
+    docker-php-ext-install intl pdo pdo_mysql zip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+COPY . .
+
+ARG APP_ENV=prod
+ENV APP_ENV=${APP_ENV}
+
+# Installation sans les dépendances de dev, et optimisée pour prod
+RUN composer install --no-dev --optimize-autoloader
+
+
+# 🏁 STAGE 2 : image de production
+FROM php:8.3-apache
+
+ARG APP_ENV=prod
+ENV APP_ENV=${APP_ENV}
+
+RUN apt-get update && apt-get install -y \
+    libicu-dev zip git unzip libzip-dev && \
+    docker-php-ext-install intl pdo pdo_mysql zip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN a2enmod rewrite
+
+# Configuration Apache
+COPY ./docker/apache/apache.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /var/www/html
+
+# Copie du code de l'app (sauf vendor, qu'on copie plus bas)
+COPY . .
+
+# Copie les vendor optimisés depuis le build
+COPY --from=composer_build /app/vendor ./vendor
+
+# ✅ Crée un utilisateur non-root pour la sécurité
+RUN addgroup --system app && adduser --system --ingroup app appuser
+
+# ✅ S'assure que les permissions sont OK AVANT de switcher d'utilisateur
+RUN mkdir -p var && chown -R www-data:www-data var && \
+    chown -R appuser:app /var/www/html
+
+# Entrypoint
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Exécute les commandes suivantes en tant appuser
+USER appuser
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["apache2-foreground"]
