@@ -11,7 +11,7 @@ jobs:
 
     permissions:
       contents: read
-      packages: write # Nécessaire pour pousser sur GHCR
+      # NOTE : même si on utilise un PAT, ce champ est requis pour éviter certains blocages
 
     steps:
       - name: 🔍 Checkout repository
@@ -22,7 +22,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}  # Remplace GITHUB_TOKEN par ton secret personnel
 
       - name: 🏷️ Extract tag name
         id: vars
@@ -37,4 +37,3 @@ jobs:
           tags: |
             ghcr.io/eloisemcglasson/sitezinzine-app:${{ env.TAG }}
             ghcr.io/eloisemcglasson/sitezinzine-app:latest
-
