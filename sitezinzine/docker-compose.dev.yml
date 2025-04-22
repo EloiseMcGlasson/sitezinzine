@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfile.dev
     container_name: symfony_app
     working_dir: /var/www/html
     ports:
@@ -10,11 +12,10 @@ services:
     networks:
       - symfony_network
     volumes:
-    - .:/var/www/html           # ⬅️ Monter tout le projet Symfony
-    - ./public/uploads:/var/www/html/public/uploads  # ⬅️ Toujours garder ça pour les uploads
+      - .:/var/www/html           # ⬅️ Monter tout le projet Symfony
+      - ./public/uploads:/var/www/html/public/uploads  # ⬅️ Toujours garder ça pour les uploads
     env_file:
       - .env.prod
-
   db:
     image: mysql:8.0
     container_name: symfony_db
@@ -27,9 +28,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - sitezinzine_db_data:/var/lib/mysql
     networks:
       - symfony_network
+
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -47,7 +49,8 @@ services:
       - symfony_network
 
 volumes:
-  db_data:
+  sitezinzine_db_data:
+    external: true
 
 networks:
   symfony_network:
