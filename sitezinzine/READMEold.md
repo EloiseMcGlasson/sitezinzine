@@ -105,3 +105,46 @@ ajout de git attibutes pour ignorer les fichiers dev lors de merge avec main
 commande pour activer gitattributes
 git config --global merge.ours.driver true
 
+✅ Étapes PowerShell valides pour sauvegarder la bdd
+
+manuel
+# 1. Créer un timestamp pour nommer la sauvegarde
+$timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+
+# 2. Sauvegarder la base dans un fichier SQL
+docker exec symfony_db sh -c "exec mysqldump -u root -p'root' symfony" > "backup-$timestamp.sql"
+
+# 3. Compresser le fichier en ZIP
+Compress-Archive -Path "backup-$timestamp.sql" -DestinationPath "backup-$timestamp.zip"
+
+# 4. (Facultatif) Supprimer le fichier SQL pour ne garder que le ZIP
+Remove-Item "backup-$timestamp.sql"
+
+automatique
+# 5. Lancer le script PowerShell pour sauver la bdd
+& "C:\Users\mcgla\xampp\htdocs\siteZinzine\backup-db.ps1"
+
+
+
+🔁 Restauration de la base de données MySQL (dans Docker) PowerShell
+
+# 1. Décompresser le fichier .zip
+Si ton backup est dans un fichier comme backup-20250422-2010.zip, exécute :
+
+Expand-Archive -Path "backup-20250422-2010.zip" -DestinationPath .
+Cela extrait un fichier .sql (par exemple backup-20250422-2010.sql) dans le dossier courant.
+
+# 2. Restaurer le dump .sql dans la base
+Exécute la commande suivante pour importer dans la base symfony :
+
+docker exec -i symfony_db sh -c "exec mysql -u root -p'root' symfony" < "backup-20250422-2010.sql"
+✅ Cela injecte le contenu du fichier .sql directement dans ta base MySQL.
+
+# 3. (Optionnel) Supprimer le fichier .sql après usage
+Tu peux le supprimer pour gagner de la place :
+
+Remove-Item "backup-20250422-2010.sql"
+
+automatique
+# 4. Lancer le script PowerShell pour sauver la bdd
+& "C:\Users\mcgla\xampp\htdocs\siteZinzine\restore-db.ps1"

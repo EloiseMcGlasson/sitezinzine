@@ -156,6 +156,8 @@ environment:
 
 ---
 
+⚠️ Ne jamais exécuter docker compose down -v sauf si vous êtes prêt à perdre la base de données.
+
 ## 🙌 À propos
 Ce projet est développé pour **Radio Zinzine**, une radio libre, autogérée et engagée dans la promotion du logiciel libre.
 
