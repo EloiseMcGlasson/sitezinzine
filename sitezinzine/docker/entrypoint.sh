@@ -13,11 +13,16 @@ until php bin/console doctrine:query:sql "SELECT 1" > /dev/null 2>&1; do
   sleep 1
 done
 
-log "📦 Lancement des migrations..."
-php bin/console doctrine:migrations:migrate --no-interaction || {
-  echo "❌ Erreur lors des migrations"
-  exit 1
-}
+if [ "$RUN_MIGRATIONS" != "0" ]; then
+  log "📦 Lancement des migrations..."
+  php bin/console doctrine:migrations:migrate --no-interaction || {
+    echo "❌ Erreur lors des migrations"
+    exit 1
+  }
+else
+  log "🚫 Migrations désactivées (RUN_MIGRATIONS=0)"
+fi
+
 
 log "🧹 Nettoyage du cache..."
 if ! php bin/console cache:clear --env=${APP_ENV}; then

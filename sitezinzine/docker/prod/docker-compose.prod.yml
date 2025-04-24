@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: ../..  # ← On part de docker/prod vers la racine du projet
+      dockerfile: docker/prod/dockerfile.prod
+    container_name: sitezinzine_app_prod
+    restart: unless-stopped
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: mysql://user:password@db:3306/symfony?serverVersion=8.0
+      RUN_MIGRATIONS: "false"  # 👈 ajoute ceci pour conditionner les migrations
+    depends_on:
+      - db
+    volumes:
+      - ./public/uploads/images:/var/www/html/public/uploads/images
+      - ./public/uploads/emissionsMp3:/var/www/html/public/uploads/emissionsMp3
+    ports:
+      - "8080:80"
+    networks:
+      - symfony_network
+
+  db:
+    image: mysql:8.0
+    container_name: symfony_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - symfony_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: symfony_phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      UPLOAD_LIMIT: 100M
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - symfony_network
+
+volumes:
+  db_data:
+
+networks:
+  symfony_network:
+    driver: bridge
