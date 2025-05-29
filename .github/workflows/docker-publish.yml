@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./sitezinzine
-          file: ./sitezinzine/dockerfile.prod
+          file: ./sitezinzine/docker/prod/dockerfile.prod
           push: true
           tags: |
             ghcr.io/eloisemcglasson/sitezinzine-app:${{ env.TAG }}
