@@ -31,7 +31,7 @@ class EvenementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $evenement->setUpdateAt(new \DateTimeImmutable());
+            $evenement->setUpdateAt(new \DateTime());
             $em->persist($evenement);
             $em->flush();
             $this->addFlash('success', 'L\'évènement a bien été validée');
@@ -57,7 +57,7 @@ class EvenementController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $evenement->setUpdateAt(new \DateTimeImmutable());
+            $evenement->setUpdateAt(new \DateTime());
             $evenement->setSoftDelete(false);
             $evenement->setValid(false);
             $evenement->setUser($userId);
@@ -96,7 +96,7 @@ class EvenementController extends AbstractController
             if ($evenement->getType() === 'autre' && !empty($autreType)) {
                 $evenement->setType($autreType);
             }
-            $evenement->setUpdateAt(new \DateTimeImmutable());
+            $evenement->setUpdateAt(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'L\'évènement a bien été modifié');
             return $this->redirectToRoute('admin.evenement.index');
