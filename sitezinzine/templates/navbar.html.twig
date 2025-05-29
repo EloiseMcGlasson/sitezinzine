@@ -89,9 +89,10 @@
             <li>
                 <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
                 <li>
-                    <a "{{ app.current_route == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
-                        Radio Zinzine
-                    </a>
+                  <a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
+    Radio Zinzine
+</a>
+
                 </li>
                 <li>
                     <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
