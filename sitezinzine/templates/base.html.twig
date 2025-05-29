@@ -12,7 +12,6 @@
                 Welcome!
             {% endblock %}
         </title>
-       
         {% block stylesheets %}
             <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
@@ -20,7 +19,6 @@
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
             <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         {% endblock %}
-
         {% block javascripts %}
             {% block importmap %}
                 {{ importmap('app') }}
@@ -28,24 +26,28 @@
         {% endblock %}
     </head>
     <body>
-     {# Lecteur en dehors de turbo-frame #}
-     <turbo-frame id="player" data-turbo-permanent>
-     {% include 'partials/lecteur.html.twig' %}
- </turbo-frame>
-
- {# Contenu principal dans turbo-frame #}
- <turbo-frame id="main-content">
-     <header>
-         {% include 'navbar.html.twig' %}
-     </header>
-     <main>
-         {% block body %}{% endblock %}
-     </main>
- </turbo-frame>
-
+        {# Lecteur en dehors de turbo-frame #}
+        <turbo-frame id="player" data-turbo-permanent>
+            {% include 'partials/lecteur.html.twig' %}
+        </turbo-frame>
+        {# Contenu principal dans turbo-frame #}
+        <turbo-frame id="main-content">
+            <header>
+                {% include 'navbar.html.twig' %}
+            </header>
+            <main>
+                {% block body %}{% endblock %}
+            </main>
+        </turbo-frame>
         <footer>
             {% include 'footer.html.twig' %}
         </footer>
-        
+
+ 
+
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+
+
+
     </body>
 </html>

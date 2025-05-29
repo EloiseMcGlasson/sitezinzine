@@ -8,6 +8,33 @@
 import './styles/reset.css';
 import './styles/app.css';
 
+import Turbo from '@hotwired/turbo';
+
+;
+
+// On attend que Turbo ait fini de charger la page
+document.addEventListener('turbo:load', () => {
+  // Initialiser Glide sur tous les éléments .glide présents
+  document.querySelectorAll('.glide').forEach(el => {
+    // Attention à ne pas monter plusieurs fois le même slider, à gérer si besoin
+    new Glide(el, {
+      type: "carousel",
+      perView: 4,
+      gap: 20,
+      animationDuration: 800,
+      autoplay: false,
+      hoverpause: true,
+      bound: true,
+      breakpoints: {
+        1024: { perView: 3 },
+        768: { perView: 2 },
+        480: { perView: 1 }
+      }
+    }).mount();
+  });
+});
+
+
 
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

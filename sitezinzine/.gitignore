@@ -9,6 +9,8 @@
 *.pem
 *.key
 config/jwt/*.pem
+docker/xdebug.ini
+###< symfony/framework-bundle ###
 
 ### PHPUnit
 /phpunit.xml
@@ -27,3 +29,7 @@ docker-compose.dev.yml
 compose_old.yaml
 test.log
 READMEold.md
+###< symfony/asset-mapper ###
+
+sitezinzine/deploy_sitezinzine.ps1
+sitezinzine/quick_deploy.ps1
