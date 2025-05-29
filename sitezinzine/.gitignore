@@ -31,3 +31,6 @@ docker/xdebug.ini
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+sitezinzine/deploy_sitezinzine.ps1
+sitezinzine/quick_deploy.ps1

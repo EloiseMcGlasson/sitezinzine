@@ -5,19 +5,22 @@ services:
       dockerfile: dockerfile.dev
     container_name: symfony_app
     working_dir: /var/www/html
+    platform: linux/amd64
     ports:
-      - "8080:80"
+      - "8080:80"  # redirige vers 8080 pour éviter le conflit avec Nginx
     depends_on:
       - db
     networks:
       - symfony_network
     volumes:
-      - .:/var/www/html           # ⬅️ Monter tout le projet Symfony
-      - ./public/uploads:/var/www/html/public/uploads  # ⬅️ Toujours garder ça pour les uploads
+      - .:/var/www/html
+      - ./public/uploads:/var/www/html/public/uploads
     env_file:
-      - .env.prod
+      - .env
+
   db:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: symfony_db
     restart: always
     environment:
@@ -32,13 +35,13 @@ services:
     networks:
       - symfony_network
 
-
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
     container_name: symfony_phpmyadmin
     restart: always
     ports:
-      - "8081:80"
+      - "8081:80"  # on évite le port 80 ici aussi
     environment:
       PMA_HOST: db
       UPLOAD_LIMIT: 100M
@@ -55,5 +58,3 @@ volumes:
 networks:
   symfony_network:
     driver: bridge
-
-

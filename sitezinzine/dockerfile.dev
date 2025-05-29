@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configuration Xdebug (à créer si besoin)
-COPY ./docker/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY ./docker/xdebug.ini.dist /usr/local/etc/php/conf.d/xdebug.ini
 
 # Active mod_rewrite
 RUN a2enmod rewrite

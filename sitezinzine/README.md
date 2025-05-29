@@ -14,7 +14,7 @@ Ce site permet :
 ---
 
 ## ⚙️ Stack technique
-- PHP 8.3
+- PHP 8.3git add
 - Symfony 7
 - Twig (frontend)
 - Doctrine ORM (MySQL)
