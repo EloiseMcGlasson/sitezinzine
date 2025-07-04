@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
 #[Route('/admin/user', name: 'admin.user.')]
 #[IsGranted("ROLE_ADMIN")]
 #[IsGranted("ROLE_SUPER_ADMIN")]
@@ -52,4 +53,19 @@ class UserController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+#[Route('/{id}', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+public function delete(Request $request, User $user, EntityManagerInterface $em): Response
+{
+    if ($this->isCsrfTokenValid('delete-user-' . $user->getId(), $request->request->get('_token'))) {
+        $em->remove($user);
+        $em->flush();
+
+        $this->addFlash('success', 'L\'utilisateur a bien été supprimé.');
+    } else {
+        $this->addFlash('error', 'Jeton CSRF invalide. Suppression annulée.');
+    }
+
+    return $this->redirectToRoute('admin.user.index');
+}
 }

@@ -118,7 +118,8 @@
             <div class="alert" role="alert">{{ flash_error }}</div>
         {% endfor %}
 
-        {{ form_start(registrationForm) }}
+        {{ form_start(registrationForm, {'attr': {'data-turbo': 'false'}}) }}
+
             <div class="form-group">
                 {{ form_label(registrationForm.username, 'Nom d\'utilisateurice', {'label_attr': {'class': 'form-label'}}) }}
                 {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
