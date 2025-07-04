@@ -273,7 +273,11 @@ button[type=reset]:hover {
     <h1>Recherche d'émissions</h1>
 
         <div class="form">
-            {{ form_start (form) }}
+           {{ form_start(form, {
+    'attr': {
+        'data-turbo-frame': 'recherche_resultats'
+    }
+}) }}
             <div class="search-row">
         <div>{{ form_row (form.titre) }}</div>
         <div>{{ form_row (form.categorie) }}</div>
@@ -292,6 +296,7 @@ button[type=reset]:hover {
         
     <img class="imgbottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
 </div>
+<turbo-frame id="recherche_resultats">
 <div class="results">
     {% if emissions is not empty %}
         <h2>Résultats de la recherche :</h2>
@@ -360,6 +365,7 @@ button[type=reset]:hover {
         <p>Aucune émission trouvée pour les critères de recherche.</p>
     {% endif %}
         </div>
+        </turbo-frame>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
