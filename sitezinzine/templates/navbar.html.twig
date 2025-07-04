@@ -121,8 +121,8 @@
                             FAIRE UN DON
                         </button>
                         </a>
-                        <a "{{ app.current_route == 'recherche' ? 'active' : '' }}" href="{{ path('emission.recherche') }}">
-                        <img src="{{ asset('/images/ico-recherche.gif') }}"></nav>
+                        <a href="{{ path('emission.recherche') }}"
+                           data-turbo-action="advance"
+                           class="{{ app.current_route == 'recherche' ? 'active' : '' }}">
+                            <img src="{{ asset('/images/ico-recherche.gif') }}">
                         </a>
-                   
-            
