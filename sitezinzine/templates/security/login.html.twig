@@ -125,7 +125,7 @@
     </div>
     
     <div class="form">
-        <form method="post">
+        <form method="post" data-turbo="false">
             {% if error %}
                 <div class="alert">
                     {{ error.messageKey|trans(error.messageData, 'security') }}
