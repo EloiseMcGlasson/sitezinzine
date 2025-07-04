@@ -7,3 +7,7 @@
 ## [1.0.15] - 2025-07-04
 ### Correction
 - Correction du conflit entre turbo (fixation du lecteur en header) et la page recherche.
+
+## [1.0.16] - 2025-07-04
+### Correction
+- Correction du conflit entre turbo (fixation du lecteur en header) et la page recherche.
