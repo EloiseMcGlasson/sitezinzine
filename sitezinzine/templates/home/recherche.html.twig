@@ -273,11 +273,7 @@ button[type=reset]:hover {
     <h1>Recherche d'émissions</h1>
 
         <div class="form">
-           {{ form_start(form, {
-    'attr': {
-        'data-turbo-frame': 'recherche_resultats'
-    }
-}) }}
+            {{ form_start (form) }}
             <div class="search-row">
         <div>{{ form_row (form.titre) }}</div>
         <div>{{ form_row (form.categorie) }}</div>
@@ -296,7 +292,6 @@ button[type=reset]:hover {
         
     <img class="imgbottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
 </div>
-<turbo-frame id="recherche_resultats">
 <div class="results">
     {% if emissions is not empty %}
         <h2>Résultats de la recherche :</h2>
@@ -364,11 +359,9 @@ button[type=reset]:hover {
     {% elseif form.vars.submitted %}
         <p>Aucune émission trouvée pour les critères de recherche.</p>
     {% endif %}
-        </div>
-        </turbo-frame>
-
+</div>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("turbo:load", function() {
     flatpickr("#emission_search_dateDebut", {
         dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
         altInput: true, // Affiche un format plus lisible
@@ -377,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function() {
         allowInput: true, // Permet d'écrire la date à la main
     });
 });
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("turbo:load", function() {
     flatpickr("#emission_search_dateFin", {
       dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
       altInput: true, // Affiche un format plus lisible
@@ -400,7 +393,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         
         // Rediriger vers la page de recherche sans paramètres
-        window.location.href = '{{ path('emission.recherche') }}';
+        // 👉 Utilise Turbo pour ne pas recharger toute la page (et couper la musique)
+            Turbo.visit('{{ path('emission.recherche') }}');
     }
     
 </script>

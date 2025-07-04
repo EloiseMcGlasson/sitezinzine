@@ -31,14 +31,14 @@
             {% include 'partials/lecteur.html.twig' %}
         </turbo-frame>
         {# Contenu principal dans turbo-frame #}
-        <turbo-frame id="main-content">
+        
             <header>
                 {% include 'navbar.html.twig' %}
             </header>
             <main>
                 {% block body %}{% endblock %}
             </main>
-        </turbo-frame>
+      
         <footer>
             {% include 'footer.html.twig' %}
         </footer>
