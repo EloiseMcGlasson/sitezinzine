@@ -2,10 +2,7 @@
 {% block title 'Éditer l\'émission ' ~ emission.titre %}
 
 {% block body %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
+
 
 <style>
 
@@ -99,7 +96,7 @@ input[type=text], select {
   }
 
  </style>
-    <script src="{{ asset('js\tinymce.min.js') }}" type="text/javascript"></script> 
+   
     <div>
      
     <h1>{{ "Modifier " ~ emission.titre }}</h1>
@@ -120,25 +117,6 @@ input[type=text], select {
 
     {{ form_end (formEmission) }}
 
-    <script type="text/javascript" language="javascript">
-    tinymce.init(
-        {
-            selector: "textarea",
-            
-            plugins: [
-                'lists', 'link', 'preview'
-               
-              ],
-            menubar:false,
-            statusbar:false,
-            toolbar:"undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link"
-         
-            });
-        
-        {
-            tinymce.triggerSave(true, true);
-           
-        }
-        </script>
+    
 
 {% endblock %}

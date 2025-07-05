@@ -2,11 +2,7 @@
 {% block title 'Éditer l\'annonce ' ~ annonce.titre %}
 
 {% block body %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
 
 
 <style>
@@ -289,28 +285,6 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 
-
-<script type="text/javascript" language="javascript">
-document.addEventListener("DOMContentLoaded", function() {
-    tinymce.init({
-        selector: "textarea",
-        plugins: ['lists', 'link', 'preview'],
-        menubar: false,
-        statusbar: false,
-        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-        
-        setup: function(editor) {
-            editor.on('init', function() {
-                // ✅ Corrige l'alerte en ajoutant un event listener passif
-                document.addEventListener('touchstart', function() {}, { passive: true });
-            });
-        }
-    });
-
-    // 🔥 Force la sauvegarde du contenu TinyMCE
-    tinymce.triggerSave(true, true);
-});
-</script>
 
 
 {% endblock %}

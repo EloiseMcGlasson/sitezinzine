@@ -1,14 +1,7 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title 'Créer une émission' %}
-{% block body %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
+{% block body %}   
     <style>
-
-
-  
 
   .tox-checklist > li:not(.tox-checklist--hidden) {
   list-style: none;
@@ -117,29 +110,7 @@ input {
     
       {{ form_end (form) }}
 </div>
-<script type="text/javascript">
-tinymce.init({
-    selector: "textarea",
-    plugins: [
-        'lists', 'link'
-    ],
-    menubar: false,
-    statusbar: false,
-    toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-    setup: function (editor) {
-        editor.on('change', function () {
-            editor.save(); // Sauvegarde le contenu dans le textarea
-            tinymce.triggerSave(); // Force la mise à jour du formulaire
-        });
-    },
-    // Empêche TinyMCE de cacher complètement le textarea
-    hidden_input: false,
-    // Initialisation immédiate
-    init_instance_callback: function (editor) {
-        editor.hidden = false;
-    }
-});
-</script>
+
 
     {% endblock %}
     

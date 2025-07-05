@@ -2,10 +2,7 @@
 {% block title 'Éditer la catégorie' ~ categorie.titre %}
 
 {% block body %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
+
 
 <style>
     img.catedit {
@@ -123,25 +120,6 @@ input[type=text], select {
 
 
     {{ form(form) }}
-    <script type="text/javascript" language="javascript">
-    tinymce.init(
-        {
-            selector: "textarea",
-           
-            plugins: [
-                'lists', 'link', 'preview'
-                
-              ],
-            menubar:false,
-            statusbar:false,
-            toolbar:"undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-            
-            });
-        
-        {
-            tinymce.triggerSave(true, true);
-           
-        }
-        </script>
+    
 </div>
 {% endblock %}

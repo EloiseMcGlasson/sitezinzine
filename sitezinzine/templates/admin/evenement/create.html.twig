@@ -1,10 +1,7 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title 'Créer un évènement' %}
 {% block body %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
+
   <style>
 
 
@@ -135,25 +132,7 @@ input {
 
 
     <script type="text/javascript" language="javascript">
-    tinymce.init(
-        {
-            selector: "textarea",
-            
-            plugins: [
-                'lists', 'link',
-                
-              ],
-            menubar:false,
-            statusbar:false,
-            toolbar:"undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-            spellchecker_dialog: true,
-            spellchecker_ignore_list: ['Ephox', 'Moxiecode']
-            });
-        function ajouter()
-        {
-            tinymce.triggerSave(true, true);
-           
-        }
+    
 
         document.addEventListener("DOMContentLoaded", function() {
           let typeSelect = document.getElementById("evenement_type"); // Sélection du menu déroulant
