@@ -1,6 +1,8 @@
 # Changelog
 
 ## [1.0.17] - 2025-07-05
+### Ajout
+- Ajout du changelog en dynamique sur le tableau de bord du coté admin.
 ### Correction
 - Factorisation de tinymce dans admin.html.twig.
 - Correction centrage menu déroulant navbar admin + problème de conflit css avec pagination.

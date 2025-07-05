@@ -1,155 +1,130 @@
 <style>
-   
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        background-color: white;
-        overflow: hidden;
-    }
-
-    li {
-        text-align: center;
-        display: inline;
-        vertical-align: middle;
-    }
-        
-    li a {
-            padding: 14px 16px;
-            color: #1C1C1A;
-            text-decoration: none;
-            font-weight: 800;
-    }
-    li a:hover, .dropbtn:hover {
-            padding: 14px 16px;
-            color: #E40039;
-            text-decoration: none;
-            font-weight: 800;
-    }
-
     nav {
         width: 100%;
         display: flex;
-        text-align: center;
+        justify-content: center;
         align-items: center;
         font-family: "Montserrat Alternates", sans-serif;
         font-size: 1.6em;
-        justify-content: center;
+        background-color: white;
     }
 
+    nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
 
+    nav li {
+        position: relative;
+    }
 
-    button.dropbtn {
-        background-color: white;
-        font-family: "Montserrat Alternates", sans-serif;
-        color: #1C1C1A;
+    nav a, nav .dropbtn {
         padding: 14px 16px;
-        font-size: 1.1em;
+        color: #1C1C1A;
+        text-decoration: none;
         font-weight: 800;
+        background: none;
         border: none;
         cursor: pointer;
+        font-family: inherit;
+        font-size: 1em;
     }
 
-    div.dropdown div.dropdown-content{
-    display: none;
+    nav a:hover, nav .dropbtn:hover {
+        color: #E40039;
     }
 
-    .dropdown {
-       
-        display: inline-block;
-    }
+    
 
-    div.dropdown:hover div.dropdown-content{
-        display: flex;
-        flex-direction: column;
+    nav .dropdown-content {
+        display: none;
         position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
         background-color: white;
-        width: inherit;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            left: 40%;
-            transform: translateX(-50%);
-            background-color: white;
-            
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    
-    
-
-    @media (min-width: 1200px) {
-       
+        min-width: 220px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        flex-direction: column;
+        text-align: left;
     }
-    
-    </style>
 
+    nav .dropdown-content a {
+        padding: 10px 16px;
+        display: block;
+        color: #1C1C1A;
+        font-weight: normal;
+    }
+
+    nav .dropdown-content a:hover {
+        background-color: #f0f0f0;
+    }
+
+    nav .dropdown:hover .dropdown-content {
+        display: flex;
+    }
+</style>
 <nav>
-    <img src="{{ asset('/images/logo.gif') }}">
-            <div >
-                
-                   
-                
-                <div>
-                    <ul >
-                        <li >
-                            <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
-                                Accueil
-                            </a>
-                        </li>
-                        <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                        <li>
-                        <div class="dropdown">
-                            <button class="dropbtn">Gestion des émissions</button>
-                            <div class="dropdown-content">
-                                <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
-                                    Émissions
-                                </a>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
-                                    Catégories
-                                </a>
-                                <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
-                                    Thèmes
-                                </a>
-                                <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
-                                    Éditeurs
-                                </a>
-                                <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
-                                    Invité/animateur
-                                </a>
-                            {% endif %}
-                        </div>
-                            </div>
-                        </li>
-                        {% if is_granted('ROLE_EDITOR') %}
-                        <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                        <li><a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
-                        Annonces
-                    </a></li>
-                    <li>
-                    <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+    <img src="{{ asset('/images/logo.gif') }}" alt="Logo">
+    <ul>
+        <li>
+            <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
+                Accueil
+            </a>
+        </li>
 
-                    <li>
-                        <a class="nav-link {{ app.current_route starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
-                            Évènements
-                        </a>
-                    </li>
-                {% endif %}
+        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+
+        <li class="dropdown">
+            <button class="dropbtn">Gestion des émissions</button>
+            <div class="dropdown-content">
+                <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
+                    Émissions
+                </a>
                 {% if is_granted('ROLE_ADMIN') %}
-                    <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}">
-                    </li>
-                    <li>
-                        <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
-                            Utilisateurices
-                        </a>
-                    </li>
+                    <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
+                        Catégories
+                    </a>
+                    <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
+                        Thèmes
+                    </a>
+                    <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
+                        Éditeurs
+                    </a>
+                    <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
+                        Invité/animateur
+                    </a>
                 {% endif %}
-
-                    </ul>
-               
             </div>
-        </nav>
+        </li>
+
+        {% if is_granted('ROLE_EDITOR') %}
+            <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+            <li>
+                <a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
+                    Annonces
+                </a>
+            </li>
+            <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+            <li>
+                <a class="nav-link {{ app.current_route starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
+                    Évènements
+                </a>
+            </li>
+        {% endif %}
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+            <li>
+                <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
+                    Utilisateurices
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
