@@ -24,7 +24,15 @@
     .top img {
         width: 100%;
     }
-
+    h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2em;
+            margin-top: 20px;
+            font-family: "Montserrat Alternates", sans-serif;
+            font-weight: 800;
+            font-style: bold;
+        }
     .annonce {
         background-color: transparent;
         color: white;
@@ -82,25 +90,12 @@
         padding: 10px;
     overflow: hidden; /* Cache le contenu qui dépasse */
     word-wrap: break-word; /* Permet la césure des mots longs */
+    margin: 15px;
     }
 
     .col2 p {
         margin: 5px 0;
         padding-left: 15px;
-    }
-
-    .col3 {
-        width: 150px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-    }
-
-  
-
-    .col3 form {
-        display: inline;
     }
 
  
@@ -112,6 +107,7 @@
         text-overflow: ellipsis;
         line-height: 1.5;
         margin-top: 15px !important;
+        
         color: #cecece;
     }
     em {
@@ -153,9 +149,6 @@
         max-width: 100px;
     }
     
-    .col3 {
-        width: 100px;
-    }
 }
 
 @media (max-width: 768px) {
@@ -169,10 +162,21 @@
         grid-template-rows: auto auto auto;
     }
     
-    .col1, .col2, .col3 {
+    .col1, .col2 {
         width: 100%;
     }
 }
+h1 {
+        text-align: center;
+        color: #ffffff;
+        font-size: 2em;
+        margin-top: 20px;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+   
 .create {
         margin: auto;
         padding: 20px;
@@ -211,10 +215,12 @@
     <div class="bodyadminannonce">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+        <h1>Les annonces des auditeurices</h1>
             <p class="create">
-                <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
-                    Créer une nouvelle annonce
-                </a>
+            <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
+            Créer une nouvelle annonce
+        </a>
+            </p>
             <article>
                 <div class="annonce">
                     {% for annonce in annonces %}
@@ -229,33 +235,33 @@
                                         {% endif %}
                                     </div>
                                     <div class="col2">
-                                        <p class="type">
+                                        <div class="type">
                                             {{ annonce.type }}
-                                        </p>
-                                        <p class="titre">
+                                        </div>
+                                        <div class="titre">
                                             <a href="{{ path('annonce.show', {id: annonce.id }) }}">
                                                 {{ annonce.titre }}
                                             </a>
-                                        </p>
-                                        <p class="orga">
+                                        </div>
+                                        <div class="orga">
                                             {{ annonce.organisateur }}
-                                        </p>
-                                        <p class="ville">
+                                        </div>
+                                        <div class="ville">
                                             {{ annonce.ville }}
-                                        </p>
-                                        <p class="departement">
+                                        </div>
+                                        <div class="departement">
                                             {{ annonce.departement }}
-                                        </p>
-                                        <p class="debutFin">
+                                        </div>
+                                        <div class="debutFin">
                                             {{ annonce.dateDebut|date('d/m/Y') }}
                                             -
                                             {{ annonce.dateFin|date('d/m/Y') }}
                                             -
                                             {{ annonce.horaire }}
-                                        </p>
-                                        <p class="presentation">
+                                        </div>
+                                        <div class="presentation">
                                             {{ annonce.presentation | raw }}
-                                        </p>
+                                        </div>
                                     </div>
                                     
                                         

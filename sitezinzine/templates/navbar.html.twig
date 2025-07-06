@@ -67,6 +67,9 @@
         padding-top: 10px;
     }
 
+a.active {
+    color: #E40039 !important; /* forcer si besoin */
+}
 
 
 
@@ -77,52 +80,51 @@
 </style>
 <nav>
     <img src="{{ asset('/images/logo.gif') }}">
-    <a href="https://www.radiozinzineaix.org/" target="_blank">
-    <img class="aix" src="{{ asset('/images/zinzine-aix.png') }}">
-    </a>
-        <ul>
-            <li>
-                <a "{{ app.current_route == 'home' ? 'active' : '' }}" href="{{ path('home') }}">
-                    Accueil
-                </a>
-            </li>
-            <li>
-                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+        <a href="https://www.radiozinzineaix.org/" target="_blank">
+            <img class="aix" src="{{ asset('/images/zinzine-aix.png') }}"></a>
+            <ul>
                 <li>
-                  <a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
-    Radio Zinzine
-</a>
-
+                    DEMO
+                </li>
+                <li>
+                    <a class="{{ app.request.attributes.get('_route') == 'home' ? 'active' : '' }}" href="{{ path('home') }}">
+                        Accueil
+                    </a>
                 </li>
                 <li>
                     <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
                     <li>
-                        <a "{{ app.current_route == 'emission' ? 'active' : '' }}" href="{{ path('emission.index') }}">
-                            Émissions
+                        <a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
+                            Radio Zinzine
                         </a>
                     </li>
                     <li>
                         <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
                         <li>
-                            <a "{{ app.current_route == 'infos' ? 'active' : '' }}" href="{{ path('infos') }}">
-                                Infos du soir
+                            <a class="{{ app.request.attributes.get('_route') starts with 'emission.' ? 'active' : '' }}" href="{{ path('emission.index') }}">
+                                Émissions
                             </a>
                         </li>
                         <li>
                             <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
                             <li>
-                                <a "{{ app.current_route == 'programme' ? 'active' : '' }}" href="{{ path('programme') }}">
-                                    Programme
+                                <a class="{{ app.request.attributes.get('_route') == 'infos' ? 'active' : '' }}" href="{{ path('infos') }}">
+                                    Infos du soir
                                 </a>
                             </li>
-                        </ul>
-                        <a href="https://www.helloasso.com/associations/association-radio-zinzine/formulaires/1" target="_blank">
-                        <button class="button-nav-don">
-                            FAIRE UN DON
-                        </button>
-                        </a>
-                        <a href="{{ path('emission.recherche') }}"
-                           data-turbo-action="advance"
-                           class="{{ app.current_route == 'recherche' ? 'active' : '' }}">
-                            <img src="{{ asset('/images/ico-recherche.gif') }}">
-                        </a>
+                            <li>
+                                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                                <li>
+                                    <a class="{{ app.request.attributes.get('_route') == 'programme' ? 'active' : '' }}" href="{{ path('programme') }}">
+                                        Programme
+                                    </a>
+                                </li>
+                            </ul>
+                            <a href="https://www.helloasso.com/associations/association-radio-zinzine/formulaires/1" target="_blank">
+                                <button class="button-nav-don">
+                                    FAIRE UN DON
+                                </button>
+                            </a>
+                            <a href="{{ path('emission.recherche') }}" data-turbo-action="advance" class="{{ app.current_route == 'recherche' ? 'active' : '' }}">
+                                <img src="{{ asset('/images/ico-recherche.gif') }}"></a>
+                                
