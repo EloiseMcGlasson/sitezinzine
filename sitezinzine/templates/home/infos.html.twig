@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Les infos Radio Zinzine{% endblock %}
 
 {% block body %}
 <style>
@@ -8,26 +8,135 @@
     background: linear-gradient(#E4013A, #B81C61);
     background-size: 100%;
     width: 100%;
-    margin: 0%;
-    padding: 0%;
-   display: flex;
-   flex-direction: column;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
     font-family: "Montserrat Alternates", sans-serif;
     font-weight: 500;
     font-style: normal;
     font-size: 24px;
     position: relative;
-min-height: 100vh;
-    }
-    .top img{
-        width: 100%;
+    min-height: 100vh;
+    color: white;
+    padding-bottom: 40px;
+}
+
+.top img {
+    width: 100%;
+}
+h1 {
+    text-align: center;
+    margin: 30px 20px 10px 20px;
+    font-size: 36px;
+    color: #ffffff;
+}
+.infos {
+    padding: 20px;
+    text-align: center;
+}
+
+.infos h2 {
+    margin-top: 30px;
+    font-size: 28px;
+    color: #fff;
+    text-align: center;
+}
+
+.audio-player {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    width: 80%; /* Réduit la largeur */
+    max-width: 700px; /* Limite la largeur maximum */
+    text-align: center; /* Centre le contenu */
+}
+
+audio {
+    width: 100%;
+    max-width: 600px; /* Largeur optimale du lecteur */
+    outline: none;
+    border-radius: 5px;
+    display: block;
+    margin: 10px auto; /* Centrer le lecteur audio */
+}
+
+.download-button {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #E4013A;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.download-button:hover {
+    background-color: #ffe6ec;
+}
+
+
+/* Responsive */
+@media (max-width: 600px) {
+    .bodyinfos {
+        font-size: 18px;
     }
 
+    .infos h2 {
+        font-size: 24px;
+    }
+
+    .audio-player p {
+        font-size: 18px;
+    }
+}
 </style>
 
 <div class="bodyinfos">
-<div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-"hello infos du soir"
+    <div class="top">
+        <img src="{{ asset('/images/bottom-header.gif') }}">
+    </div>
+
+    <h1>Les infos du soir</h1>
+
+    <div class="infos">
+    <h2>Retrouvez les dernières infos du soir de Radio Zinzine, diffusées en direct à 19h00.</h2>
+        <p>Utilisez les lecteurs ci-dessous ou téléchargez les fichiers :</p>
+
+        <div class="audio-player">
+            <p><strong>Dimanche 06 juillet 2025 :</strong></p>
+            <audio controls>
+                <source src="https://radiozinzine.org/emissions/INS/2025/INSd25-07-06t19'30'00-SPX_IranHistoire.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas la lecture audio.
+            </audio>
+            <a class="download-button" href="https://radiozinzine.org/emissions/INS/2025/INSd25-07-06t19'30'00-SPX_IranHistoire.mp3" download>⬇️ Télécharger</a>
+        </div>
+
+        <div class="audio-player">
+            <p><strong>Samedi 05 juillet 2025 :</strong></p>
+            <audio controls>
+                <source src="https://radiozinzine.org/emissions/INS/2025/INSd25-07-05t19'00'00-PetitAgendaCulturel-Juillet.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas la lecture audio.
+            </audio>
+            <a class="download-button" href="https://radiozinzine.org/emissions/INS/2025/INSd25-07-05t19'00'00-PetitAgendaCulturel-Juillet.mp3" download>⬇️ Télécharger</a>
+        </div>
+
+        <div class="audio-player">
+            <p><strong>Vendredi 04 juillet 2025 :</strong></p>
+            <audio controls>
+                <source src="https://radiozinzine.org/emissions/INS/2025/INSd25-07-04t19'01'20-Genie.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas la lecture audio.
+            </audio>
+            <a class="download-button" href="https://radiozinzine.org/emissions/INS/2025/INSd25-07-04t19'01'20-Genie.mp3" download>⬇️ Télécharger</a>
+        </div>
+
+        <p>Les infos sont mises à jour régulièrement pour vous tenir informé·e des événements récents.</p>
+    </div>
 </div>
 {% endblock %}
