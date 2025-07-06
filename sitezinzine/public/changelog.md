@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.20] - 2025-07-07
+### Ajout
+- Ouverture du site en démo aux zinzinien·nes.
+- Ajout du contenu provisoire pour la page infos.
+- Ajout du widget grille hebdomadaire de libretime dans la partie programme (mais c'est moche ...). 
+
+
 ## [1.0.19] - 2025-07-06 bis
 ### Ajout
 - Ajout du bouton télécharger sur la liste des émission en bas de page home/show.html.twig.

@@ -1,33 +1,69 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    Hello HomeController!
+    Programme de la semaine - Radio Zinzine
 {% endblock %}
 {% block body %}
     <style>
-    .bodyprogramme {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-       display: flex;
-       flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        font-size: 24px;
-        position: relative;
+.bodyprogramme {
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 24px;
+    position: relative;
     min-height: 100vh;
-        }
-        .top img{
-        width: 100%;
+    color: white;
+}
+
+.top img {
+    width: 100%;
+}
+
+/* Conteneur de l'iframe */
+.iframe-container {
+    position: relative;
+    width: 80%; /* 80% de la largeur de la page */
+    max-width: 900px;
+    margin: 20px auto; /* Centrer */
+    padding-top: 45%; /* Pour le ratio 16:9 (hauteur/largeur = 9/16) */
+    background-color: #000; /* Fond noir pour l'iframe */
+}
+
+/* L'iframe proprement dite */
+iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;  /* L'iframe occupe toute la largeur du conteneur */
+    height: 100%; /* Hauteur proportionnelle */
+    border: none;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 600px) {
+    .iframe-container {
+        width: 90%; /* Sur petits écrans, on passe à 90% de la largeur */
+        padding-top: 56.25%; /* Ratio ajusté pour petits écrans */
     }
+}
+
+
     
     </style>
-    <div class="bodyprogramme">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            "hello programme"
-        </div>
+   <div class="bodyprogramme">
+    <div class="top">
+        <img src="{{ asset('/images/bottom-header.gif') }}">
+    </div>
+    <div class="iframe-container">
+        <iframe scrolling="no" frameborder="0" src="https://schedule.radiozinzine.org/embed/weekly-program"></iframe>
+    </div>
+</div>
+
     {% endblock %}
     
