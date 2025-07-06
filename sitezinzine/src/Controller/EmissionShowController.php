@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Emission;
+use App\Entity\Theme;
 use App\Form\EmissionSearchType;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -40,11 +41,11 @@ class EmissionShowController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function show(Emission $emission): Response
     {
-
+            $theme = $emission->getTheme();
         
         return $this->render('/home/show.html.twig', [
             'emission' => $emission,
-            
+            'theme' => $theme
         ]);
     }
 
