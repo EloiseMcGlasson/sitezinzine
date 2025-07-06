@@ -17,58 +17,122 @@
         font-style: normal;
         font-size: 18px;
         position: relative;
-min-height: 100vh;
+        min-height: 100vh;
     }
-    .top img{
+    .bodydon .top img{
         width: 100%;
     }
-    .bodydon img {
-        width: 500px;
+    
+
+    .zinzine-message {
+    background-color: #fdfdfd;
+    color: #1C1C1A;
+    font-family: 'Montserrat', sans-serif;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    line-height: 1.7;
+}
+
+.zinzine-message h1 {
+    font-size: 1.8em;
+    color: #E40039;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.zinzine-image {
+    display: block;
+    margin: 1rem auto 2rem auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.zinzine-paragraphs p {
+    margin-bottom: 1.2rem;
+    text-align: justify;
+}
+
+.zinzine-paragraphs strong {
+    color: #B81C61;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .zinzine-message {
+        padding: 1rem;
     }
+
+    .zinzine-message h1 {
+        font-size: 1.4em;
+    }
+}
+
 </style>
     <div class="bodydon">
         <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            <h1>
-                Chères auditrices, chers auditeurs,
-            </h1>
-            <img src="{{ asset('/images/panneau.jpeg') }}">
-            <p>
-                La fin d’année est souvent l’occasion de jeter un œil dans le rétroviseur depuis la colline de la Zinzine.
-            </p>
-            <p>
-                Une histoire d'esprits libres toujours, bénévoles, indépendants, de partenaires de longue date…
-            </p>
-            <p>
-                Même si on ne s’habitue pas à ne plus entendre certains de nos complices ayant rendu l’antenne trop tôt.
-            </p>
-            <p>
-                Cette année, de nouvelles personnes se sont impliquées en tout point, technique, administratif, de nouvelles émissions sont nées:
-            </p>
-            <p>
-                Le bout du monde du coin de la rue, Requin Sequin, Afrodélique, pour ne citer qu’elles. Nous restons et resterons fidèles à toutes sortes d’initiatives s’inscrivant à contre-courant du productivisme destructeur.
-                Nous sommes résolument une radio qui a la bougeotte, qui ne veut rien lâcher de son sens de la solidarité, de son ancrage en Provence et en militance!
-            </p>
-            <p>
-                Mais on ne va pas y aller par quatre chemins, nous restons une radio indépendante et engagée, ce qui a un coût tant politique que financier.
-            </p>
-            <p>
-                Politique, car l’air du temps se polarise, partout les esprits libres sont attaqués, les militant·es traîné·es devant les tribunaux, des journalistes réprimé·es.
-            </p>
-            <p>
-                Chercher à expliquer devient suspect. On est sommé de prendre position dans le sens du pouvoir, même le patron de l'AFP s'en plaint.
-                    Les «grands» médias se font petit à petit accaparer par quelques PDGs aux positions pour certaines nauséabondes ; le confusionnisme essaime aussi, se faisant le terreau de la peur, de la haine et des discriminations.
-                    Plus que jamais nous sentons l’impérieuse nécessité de continuer à défendre notre liberté médiatique.
-                Nous nous retrouvons dans l'appel des premiers « États généraux de la presse indépendante » qui proposent de « stopper les offensives multiples lancées par les puissances politiques et économiques contre un journalisme indépendant, d’intérêt public » et reconstruire une relation de confiance avec le public, que les liens de dépendance médiatique ont échaudé.
-            </p>
-            <p>
-                Et financièrement, comme vous, nous avons subi les augmentations tarifaires des services énergie, téléphone, transports, etc. (sans que la subvention du Fonds de soutien radiophonique augmente). Cette année, en partie grâce à votre aide les travaux de réfection et de remplacement de nos émetteurs ont eu lieu. Nous avançons sur notre chantier de chauffage et de rénovation du studio. Malheureusement ce bâtiment, si bucolique soit-il, est une véritable passoire énergétique et nos bas de laine n’y suffisent plus. Nous devons y renouveler l’ensemble des huisseries et en isoler les murs. Sans oublier ce site internet que nous souhaiterions plus attractif, nécessite une refondation coûteuse si nous ne voulons pas en perdre les archives, ce pourquoi vous trouverez joint un sondage Nous chiffrons l’ensemble de ces projets à 17.000 euros.
-            </p>
-            <p>
-                Alors nous espérons que vous nous renouvellerez votre confiance cette année encore en participant selon vos moyens à faire tourner votre/notre bonne vieille radio. Car si nous restons attaché·es à a la bande FM, diffuser nos émissions plus largement participe aussi de tisser du lien entre celles et ceux qui partout se soulèvent contre l’artificialisation et la bétonisation des sols comme des esprits.
-            </p>
-            <p>
-                Merci par avance pour votre engagement à nos côtés, vos réponses, vos retours que l’on espère généreux, critiques et enthousiastes!
-            </div>
+            <div class="zinzine-message">
+    <h1>Chères auditrices, chers auditeurs,</h1>
+
+    <img src="{{ asset('/images/panneau.jpeg') }}" alt="Panneau Radio Zinzine" class="zinzine-image">
+
+    <div class="zinzine-paragraphs">
+        <p>La fin d’année est souvent l’occasion de jeter un œil dans le rétroviseur depuis la colline de la Zinzine.</p>
+
+        <p>Une histoire d'esprits libres toujours, bénévoles, indépendants, de partenaires de longue date…</p>
+
+        <p>Même si on ne s’habitue pas à ne plus entendre certains de nos complices ayant rendu l’antenne trop tôt.</p>
+
+        <p>Cette année, de nouvelles personnes se sont impliquées en tout point, technique, administratif, de nouvelles émissions sont nées :</p>
+
+        <p>
+            <strong>Le bout du monde du coin de la rue</strong>, <strong>Requin Sequin</strong>, <strong>Afrodélique</strong>, pour ne citer qu’elles.
+            Nous restons et resterons fidèles à toutes sortes d’initiatives s’inscrivant à contre-courant du productivisme destructeur.
+            Nous sommes résolument une radio qui a la bougeotte, qui ne veut rien lâcher de son sens de la solidarité, de son ancrage en Provence et en militance !
+        </p>
+
+        <p>Mais on ne va pas y aller par quatre chemins, nous restons une radio indépendante et engagée, ce qui a un coût tant politique que financier.</p>
+
+        <p>
+            <strong>Politique</strong>, car l’air du temps se polarise, partout les esprits libres sont attaqués, les militant·es traîné·es devant les tribunaux, des journalistes réprimé·es.
+            Chercher à expliquer devient suspect. On est sommé de prendre position dans le sens du pouvoir, même le patron de l'AFP s'en plaint.
+            Les « grands » médias se font petit à petit accaparer par quelques PDGs aux positions pour certaines nauséabondes ; le confusionnisme essaime aussi, se faisant le terreau de la peur, de la haine et des discriminations.
+            Plus que jamais nous sentons l’impérieuse nécessité de continuer à défendre notre liberté médiatique.
+        </p>
+
+        <p>
+            Nous nous retrouvons dans l'appel des premiers « États généraux de la presse indépendante » qui proposent de « stopper les offensives multiples lancées par les puissances politiques et économiques contre un journalisme indépendant, d’intérêt public » et reconstruire une relation de confiance avec le public, que les liens de dépendance médiatique ont échaudé.
+        </p>
+
+        <p>
+            <strong>Et financièrement</strong>, comme vous, nous avons subi les augmentations tarifaires des services énergie, téléphone, transports, etc.
+            (sans que la subvention du Fonds de soutien radiophonique augmente).
+            Cette année, en partie grâce à votre aide, les travaux de réfection et de remplacement de nos émetteurs ont eu lieu.
+            Nous avançons sur notre chantier de chauffage et de rénovation du studio.
+            Malheureusement, ce bâtiment, si bucolique soit-il, est une véritable passoire énergétique et nos bas de laine n’y suffisent plus.
+        </p>
+
+        <p>
+            Nous devons y renouveler l’ensemble des huisseries et en isoler les murs. Sans oublier ce site internet que nous souhaiterions plus attractif,
+            nécessite une refondation coûteuse si nous ne voulons pas en perdre les archives. Ce pourquoi vous trouverez joint un sondage.
+            Nous chiffrons l’ensemble de ces projets à <strong>17.000 euros</strong>.
+        </p>
+
+        <p>
+            Alors nous espérons que vous nous renouvellerez votre confiance cette année encore en participant selon vos moyens à faire tourner votre/notre bonne vieille radio.
+            Car si nous restons attaché·es à la bande FM, diffuser nos émissions plus largement participe aussi de tisser du lien entre celles et ceux
+            qui partout se soulèvent contre l’artificialisation et la bétonisation des sols comme des esprits.
+        </p>
+
+        <p><strong>Merci par avance</strong> pour votre engagement à nos côtés, vos réponses, vos retours que l’on espère généreux, critiques et enthousiastes !</p>
+    </div>
+</div>
+
         {% endblock %}
         
