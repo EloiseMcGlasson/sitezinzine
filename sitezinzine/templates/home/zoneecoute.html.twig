@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Radio Zinzine{% endblock %}
+{% block title %}Zone d'écoute Radio Zinzine{% endblock %}
 
 {% block body %}
 <style>
@@ -22,39 +22,94 @@ min-height: 100vh;
     .top img{
         width: 100%;
     }
+h1 {
+    font-size: 36px; 
+    color: white; 
+    text-align: center;
+    margin-top: 20px;
+}
+
+.frequences-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    color: #1C1C1A;
+    font-family: "Montserrat", sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    line-height: 1.6;
+}
+
+.frequences-container h2 {
+    color: #E40039;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.frequences-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem 1.5rem;
+}
+
+.frequences-list li {
+    background-color: #f4f4f4;
+    border-left: 5px solid #E40039;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+}
+
+.dab-info p {
+    margin-bottom: 1rem;
+}
+
+.dab-info em {
+    color: #B81C61;
+    font-style: italic;
+}
+
+.carte-info {
+    margin-top: 2rem;
+    color: #666;
+    font-size: 0.95rem;
+}
+
 </style>
 
 <div class="bodyzoneecoute">
 <div class="top">
             <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+<h1>Zone d'écoute (en attente de klaus)</h1>
+<div class="frequences-container">
+    <h2>Légende</h2>
 
-Légende
+    <ul class="frequences-list">
+        <li><strong>100.7</strong> – Forcalquier</li>
+        <li><strong>87.9</strong> – Embrun Guillestre</li>
+        <li><strong>95.6</strong> – Digne</li>
+        <li><strong>103</strong> – Sisteron</li>
+        <li><strong>101.4</strong> – Briançon</li>
+        <li><strong>88.1</strong> – Aix</li>
+        <li><strong>106.3</strong> – Gap</li>
+        <li><strong>105</strong> – Manosque</li>
+        <li><strong>92.7</strong> – Apt</li>
+    </ul>
 
-    100.7 Forcalquier
+    <div class="dab-info">
+        <p>Depuis juin 2014, Radio Zinzine diffuse tout son programme sur la zone <strong>Marseille - Aix-en-Provence - Aubagne</strong> en <strong>DAB+</strong>.</p>
+        <p>Vous pouvez nous écouter confortablement sur le <strong>canal 8C (199.36MHz)</strong>.</p>
+        <p>Si vous avez l'intention d'acheter une nouvelle voiture ou un nouveau récepteur radio, vérifiez bien qu'il est compatible <strong>DAB+</strong>.</p>
+        <p><em>On vous souhaite une bonne écoute.</em></p>
+        <p class="carte-info"><strong>PS :</strong> La carte sera bientôt mise à jour.
+        <img src="{{ asset('/images/carte.gif') }}" alt="Carte des fréquences"></p>
+    </div>
+</div>
 
-    87.9 Embrun Guillestre
-
-    95.6 Digne
-
-    103 Sisteron
-
-    101.4 Briançon
-
-    88.1 Aix
-
-    106.3 Gap
-
-    105 Manosque
-
-    92.7 Apt
-
-Depuis juin 2014 Radio Zinzine diffuse tout son programme  sur la zone Marseille - Aix-en-Provence - Aubagne en DAB+.
-
-Vous pouvez nous écouter confortablement sur le canal 8C (199.36MHz) Si vous avez l'intention d'acheter une nouvelle voiture ou un nouveau récépteur radio, vérifiez bien qu'il est compatible DAB+.
-
-On vous souhaite un bon écoute.
-
-PS: La carte sera bientôt mise à jour.
 
 </div>
 {% endblock %}
