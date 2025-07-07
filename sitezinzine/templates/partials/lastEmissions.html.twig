@@ -297,22 +297,22 @@ article {
                     </div>
             </div>
                 <article>
-                    
-                    {% for lastEmissionByTheme in lastEmissionsByTheme %}
-                        {% if lastEmissionByTheme.emission_thumbnail %}
-                    
-                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/emissions/' ~ lastEmissionByTheme.emission_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmissionByTheme.categorie_thumbnail %}
-                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/categories/' ~ lastEmissionByTheme.categorie_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmissionByTheme.theme_thumbnail | default ('') %}
-                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/theme/' ~ lastEmissionByTheme.theme_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
+
+                    {% for lastEmissionByGroupTheme in lastEmissionsByTheme %}
+                        {% if lastEmissionByGroupTheme.emission_thumbnail %}
+
+                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/emissions/' ~ lastEmissionByGroupTheme.emission_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
+                        {% elseif lastEmissionByGroupTheme.categorie_thumbnail %}
+                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/categories/' ~ lastEmissionByGroupTheme.categorie_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
+                        {% elseif lastEmissionByGroupTheme.theme_thumbnail | default ('') %}
+                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
                          {% else %}
                          <div class='carte' style="background-image: url('{{ asset('/uploads/images/emissions/emission-zinzine.org') }}');background-size: cover;background-repeat: no-repeat;">
                         {% endif %}
-                    <a href="{{ path('emission.show', {id: lastEmissionByTheme.emission_id }) }}">
+                    <a href="{{ path('emission.show', {id: lastEmissionByGroupTheme.emission_id }) }}">
                     <div class="theme">
                     <p>
-                    {{ lastEmissionByTheme.theme_name | default ('') | upper }}
+                    {{ lastEmissionByGroupTheme.theme_group | default ('') | upper }}
                     </p>
                 
                     </div>
@@ -320,23 +320,23 @@ article {
                         
                                 <div class='categorie'>
                                     <p>
-                                        
-                                        {{ lastEmissionByTheme.categorie_titre | upper }}
+
+                                        {{ lastEmissionByGroupTheme.categorie_titre | upper }}
                                     </p>
                                 </div>
                                 <div class='titre'>
                                     <p>
-                                        {{ lastEmissionByTheme.emission_titre }}
+                                        {{ lastEmissionByGroupTheme.emission_titre }}
                                     </p>
                                 </div>
                                 <div class='date'>
                                     <p>
-                                        {{ "Le " ~ lastEmissionByTheme.emission_datepub| format_datetime ('medium', 'short', locale = 'fr') }}
+                                        {{ "Le " ~ lastEmissionByGroupTheme.emission_datepub| format_datetime ('medium', 'short', locale = 'fr') }}
                                     </p>
                                 </div>
                                 <div class='ecoute'>
                                     <p>
-                                        <a href="{{ lastEmissionByTheme.emission_url }}">
+                                        <a href="{{ lastEmissionByGroupTheme.emission_url }}">
                                         <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
                                         </a>
                                     </p>

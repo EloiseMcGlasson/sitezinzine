@@ -78,13 +78,35 @@ class EmissionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getThemeGroups(): array
+{
+    return [
+        'culture musique litterature' => [1, 7, 8],
+        'histoire politique' => [2, 9],
+        'agriculture foret' => [3, 10],
+        'alimentation santé' => [4, 11],
+        'ecologie' => [5],
+        'societe migrations' => [6, 12],
+    ];
+}
+
     /**
      * Dernières émissions par thème (1 par thème).
      */
-    public function lastEmissionsByTheme(string $excludeUrl): array
-    {
-        $sql = '
-        WITH RankedEmissions AS (
+   public function lastEmissionsByGroupTheme(string $excludeUrl): array
+{
+    $themeGroups = $this->getThemeGroups();
+
+    // Construction dynamique du bloc CASE
+    $cases = [];
+    foreach ($themeGroups as $label => $ids) {
+        $idList = implode(', ', $ids);
+        $cases[] = "WHEN e.theme_id IN ($idList) THEN '$label'";
+    }
+    $caseSql = implode("\n", $cases);
+
+    $sql = "
+        WITH GroupedEmissions AS (
             SELECT 
                 e.id AS emission_id,
                 e.titre AS emission_titre,
@@ -108,23 +130,40 @@ class EmissionRepository extends ServiceEntityRepository
                 t.name AS theme_name,
                 t.thumbnail AS theme_thumbnail,
 
-                ROW_NUMBER() OVER (PARTITION BY e.theme_id ORDER BY e.datepub DESC) as rn
+                CASE
+                    $caseSql
+                    ELSE 'autre'
+                END AS theme_group,
+
+                ROW_NUMBER() OVER (
+                    PARTITION BY 
+                        CASE
+                            $caseSql
+                            ELSE 'autre'
+                        END
+                    ORDER BY e.datepub DESC
+                ) AS rn
+
             FROM emission e
             LEFT JOIN categories c ON e.categorie_id = c.id
             LEFT JOIN theme t ON e.theme_id = t.id
             WHERE e.url != :val AND e.theme_id != 0
         )
-        SELECT * FROM RankedEmissions 
+
+        SELECT * FROM GroupedEmissions
         WHERE rn = 1
         ORDER BY emission_datepub DESC
-        LIMIT 6';
+        LIMIT 6
+    ";
 
     $conn = $this->getEntityManager()->getConnection();
     $stmt = $conn->prepare($sql);
     $stmt->bindValue('val', $excludeUrl);
-
     return $stmt->executeQuery()->fetchAllAssociative();
-    }
+}
+
+
+
 
     /**
      * Recherche avancée avec filtres multiples.

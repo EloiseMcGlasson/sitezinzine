@@ -19,16 +19,15 @@ class HomeController extends AbstractController
     function index(EmissionRepository $emissionRepository, EvenementRepository $evenement): Response
     {
         $lastEmissions = $emissionRepository->lastEmissions('');
-        $lastEmissionsByTheme = $emissionRepository->lastEmissionsByTheme('');
+        $lastEmissionsByGroupTheme = $emissionRepository->lastEmissionsByGroupTheme('');
         $evenement = $evenement->findUpcomingEvenements();
+        
 
         return $this->render('home/index.html.twig', [
 
             'lastEmissions' => $lastEmissions,
-            'lastEmissionsByTheme' => $lastEmissionsByTheme,
+            'lastEmissionsByTheme' => $lastEmissionsByGroupTheme,
             'evenements' => $evenement
-
-
         ]);
     }
 
