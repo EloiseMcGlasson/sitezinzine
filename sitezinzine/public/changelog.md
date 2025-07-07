@@ -1,8 +1,16 @@
 # Changelog
 
+## [1.0.21] - 2025-07-??
+### Correction
+- Correction du formulaire de création de thème (problème d'updateAt et de dateimmutable).
+- Correction de la gestion de l'affichage des descriptions d'émission sur la page emission home/show.html.twig qui pouvaient dépasser du cadre et déformer la page.
+- Modification de la base de donnée pour que chaque émission n'ai qu'un seul thème.
+
+
+
 ## [1.0.20] - 2025-07-07
-### Ajout
 - Ouverture du site en démo aux zinzinien·nes.
+### Ajout
 - Ajout du contenu provisoire pour la page infos.
 - Ajout du widget grille hebdomadaire de libretime dans la partie programme (mais c'est moche ...). 
 

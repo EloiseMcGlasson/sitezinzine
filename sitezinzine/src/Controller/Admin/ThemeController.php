@@ -44,7 +44,7 @@ class ThemeController extends AbstractController
         $form = $this->createForm(ThemeType::class, $theme);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $theme->setUpdatedAt(new \DateTimeImmutable());
+            $theme->setUpdatedAt(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'Le thème a bien été modifié');
             return $this->redirectToRoute('admin.theme.index');
@@ -62,7 +62,9 @@ class ThemeController extends AbstractController
         $form = $this->createForm(ThemeType::class, $theme);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            
+            $now = new \DateTime();
+            $theme
+                ->setUpdatedAt($now);
             $em->persist($theme);
             $em->flush();
             $this->addFlash('success', 'Le thème a été crée !');

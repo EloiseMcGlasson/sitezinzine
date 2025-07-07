@@ -141,7 +141,11 @@ h1 {
 .emission-content .description {
     font-size: 1em;
     color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
+
 
 .emission-link {
     margin-left: auto;
@@ -348,8 +352,16 @@ a {
                                             <div class="theme">
                                                 <div class="themeemission">
                                                     <h2>
-                                                        Toutes les émissions de ce thème :
+                                                        Envie de plus ?
                                                     </h2>
+
+                                                    <div class="theme-list">
+                                                        <h3>
+                                                            Thème :
+                                                        </h3>
+                                                    </div>
+
+                                                    
                                                     {% for emission in theme.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
                                                         {% if emission.url %}
                                                             <article class="emission-row">
