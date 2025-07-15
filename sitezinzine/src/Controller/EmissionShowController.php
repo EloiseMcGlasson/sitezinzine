@@ -8,6 +8,7 @@ use App\Form\EmissionSearchType;
 use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Repository\EmissionRepository;
+use App\Repository\ThemeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -38,16 +39,41 @@ class EmissionShowController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    public function show(Emission $emission): Response
-    {
-            $theme = $emission->getTheme();
-        
-        return $this->render('/home/show.html.twig', [
-            'emission' => $emission,
-            'theme' => $theme
-        ]);
+#[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+public function show(
+    Emission $emission,
+    EmissionRepository $emissionRepository,
+    ThemeRepository $themeRepository
+): Response {
+    $theme = $emission->getTheme();
+    $themeGroups = $emissionRepository->getThemeGroups();
+    $currentThemeId = $theme->getId();
+
+    // Trouve la clé du groupe qui contient ce thème
+    $groupKey = null;
+    foreach ($themeGroups as $key => $ids) {
+        if (in_array($currentThemeId, $ids)) {
+            $groupKey = $key;
+            break;
+        }
     }
+
+    $relatedThemeIds = $themeGroups[$groupKey] ?? [];
+
+    // Pour les boutons
+    $themesInGroup = $themeRepository->findBy(['id' => $relatedThemeIds]);
+
+    // Pour la liste d’émissions liées
+    $relatedEmissions = $emissionRepository->findEmissionsByThemeGroup($relatedThemeIds);
+
+    return $this->render('/home/show.html.twig', [
+        'emission' => $emission,
+        'theme' => $theme,
+        'themesInGroup' => $themesInGroup,
+        'relatedEmissions' => $relatedEmissions,
+    ]);
+}
+
 
    /*  #[Route('/recherche-emissions', name: 'recherche_emissions')]
     public function rechercher(Request $request, EmissionRepository $emissionRepository): Response
