@@ -90,6 +90,17 @@ class EmissionRepository extends ServiceEntityRepository
     ];
 }
 
+public function findEmissionsByThemeGroup(array $themeIds): array
+{
+    return $this->createQueryBuilder('e')
+        ->andWhere('e.theme IN (:themeIds)')
+        ->setParameter('themeIds', $themeIds)
+        ->orderBy('e.datepub', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
+
     /**
      * Dernières émissions par thème (1 par thème).
      */

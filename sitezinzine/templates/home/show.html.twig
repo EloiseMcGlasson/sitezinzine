@@ -216,11 +216,90 @@ a {
             
     }
 
-@media (max-width: 768px) {
+    .theme-buttons {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
 
+.theme-button {
+    background-color: #E40039;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.theme-button:hover {
+    background-color: #c70030;
+}
+#theme-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.theme-card-button {
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 180px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: none;
+    position: relative;
+    transition: transform 0.2s ease-in-out;
+}
+
+.theme-card-button:hover {
+    transform: scale(1.03);
+}
+
+.theme-card-background {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.theme-card-overlay {
+    background-color: rgba(0, 0, 0, 0.6); /* semi-transparent noir */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.theme-card-button.active .theme-card-overlay {
+    background-color: #E40039;
+    color: white;
+    font-weight: bold;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+
+
+
+@media (max-width: 768px) {
     h1 {
-            font-size: 20px;
-        }
+        font-size: 20px;
+    }
+
     .texteemission img,
     .catemission img {
         float: none;
@@ -232,6 +311,7 @@ a {
     .texteemission, .catemission {
         text-align: center;
     }
+
     .emission-row {
         flex-direction: column;
         align-items: flex-start;
@@ -329,7 +409,6 @@ a {
                                                 </tr>
                                             </tbody>
                                         </table>
-                             
                                     </div>
                                     <div class="catemission">
                                         <div class="titre">
@@ -354,60 +433,115 @@ a {
                                                     <h2>
                                                         Envie de plus ?
                                                     </h2>
-
                                                     <div class="theme-list">
                                                         <h3>
-                                                            Thème :
+                                                            Thèmes :
                                                         </h3>
-                                                    </div>
+                                                        <div id="theme-filter-buttons">
+    {% for theme in themesInGroup %}
+        {% set backgroundImage = theme.thumbnail
+            ? vich_uploader_asset(theme, 'thumbnailFile', 'App\\Entity\\Theme')
+            : asset('/uploads/images/emissions/emission-zinzine.org') 
+        %}
+        <button class="theme-card-button" data-theme-id="{{ theme.id }}">
+            <div class="theme-card-background" style="background-image: url('{{ backgroundImage }}');">
+                <div class="theme-card-overlay">
+                    {{ theme.name }}
+                </div>
+            </div>
+        </button>
+    {% endfor %}
+</div>
 
-                                                    
-                                                    {% for emission in theme.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+                                                    </div>
+                                                    <div id="emission-list" data-controller="theme-filter">
+                                                    </div>
+                                                    {% for emission in relatedEmissions | sort((a, b) => b.datepub <=> a.datepub) %}
                                                         {% if emission.url %}
-                                                            <article class="emission-row">
+                                                            <article class="emission-row" data-theme-id="{{ emission.theme.id }}">
                                                                 <div class="emission-image">
                                                                     {% if emission.thumbnail %}
-                    <img
-                    src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                        {% elseif  emission.categorie.thumbnail %}
-                        <img
-                        src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
-                            {% elseif  emission.theme.thumbnail is defined %}
-                            <img
-                            src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
-                                {% else %}
-                                <img src="{{ asset('/images/emission-zinzine.jpg') }}">
-                                {% endif %}
+                                                                        <img
+                                                                        src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                                                            {% elseif  emission.categorie.thumbnail %}
+                                                                            <img
+                                                                            src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
+                                                                                {% elseif  emission.theme.thumbnail is defined %}
+                                                                                <img
+                                                                                src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
+                                                                                    {% else %}
+                                                                                    <img src="{{ asset('/images/emission-zinzine.jpg') }}">
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <div class="emission-content">
+                                                                                    <h3>
+                                                                                        <a href="{{ path('emission.show', {id: emission.id }) }}">
+                                                                                            {{ emission.titre }}
+                                                                                        </a>
+                                                                                        -
+                                                                                        {{ emission.categorie.titre }} - {{ emission.theme.name }}
+                                                                                    </h3>
+                                                                                    <p class="date">
+                                                                                        {{ emission.datepub|date('d-m-Y') }}
+                                                                                    </p>
+                                                                                    <p class="description">
+                                                                                        {{ emission.descriptif | raw }}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="emission-link">
+                                                                                    <a href="{{ emission.url }}" class="listen-link">
+                                                                                        🎧 Écouter
+                                                                                    </a>
+                                                                                    <br>
+                                                                                        <a href="{{ emission.url }}" download target="_blank">
+                                                                                            ⬇ Télécharger
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </article>
+                                                                            {% endif %}
+                                                                        {% endfor %}
                                                                     </div>
-                                                                    <div class="emission-content">
-                                                                        <h3>
-                                                                           <a href="{{ path('emission.show', {id: emission.id }) }}">
-                                    {{ emission.titre }}
-                                </a>
-                                                                            -
-                                                                            {{ emission.categorie.titre }}
-                                                                        </h3>
-                                                                        <p class="date">
-                                                                            {{ emission.datepub|date('d-m-Y') }}
-                                                                        </p>
-                                                                        <p class="description">
-                                                                            {{ emission.descriptif | raw }}
-                                                                        </p>
-                                                                    </div>
-                                                                    <div class="emission-link">
-                                                                        <a href="{{ emission.url }}" class="listen-link">
-                                                                            🎧 Écouter
-                                                                        </a>
-                                                                            <br>
-                                                            <a href="{{ emission.url }}"  download target="_blank">
-                                                                ⬇ Télécharger
-                                                            </a>
-                                                                    </div>
-                                                                </article>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endblock %}
-                                        
+                                                                </div>
+                                                            </div>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.theme-card-button');
+        const emissions = document.querySelectorAll('.emission-row');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const themeId = button.dataset.themeId;
+
+                // Toggle l'état actif du bouton
+                button.classList.toggle('active');
+
+                // Récupère tous les boutons actifs
+                const activeThemeIds = Array.from(buttons)
+                    .filter(btn => btn.classList.contains('active'))
+                    .map(btn => btn.dataset.themeId);
+
+                // Si aucun bouton n'est actif → on affiche tout
+                if (activeThemeIds.length === 0) {
+                    emissions.forEach(emission => {
+                        emission.style.display = 'flex';
+                    });
+                } else {
+                    // Sinon on affiche seulement ceux correspondant à au moins un theme actif
+                    emissions.forEach(emission => {
+                        if (activeThemeIds.includes(emission.dataset.themeId)) {
+                            emission.style.display = 'flex';
+                        } else {
+                            emission.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+
+                                                        {% endblock %}
+                                                        
