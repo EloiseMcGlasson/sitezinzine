@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.22] - 2025-07-15
+### Correction
+- Correction du js de la page home/show.html.twig qui avait besoin d'un refresh pour fonctionner (pb de turbo:load)
+
+
 ## [1.0.21] - 2025-07-15
 ### Ajout
 - Ajout de la logique de groupe de thème pour le partial lastemissionbytheme qui devient lastEmissionsByGroupTheme.
@@ -8,7 +13,6 @@
 - Correction du formulaire de création de thème (problème d'updateAt et de dateimmutable).
 - Correction de la gestion de l'affichage des descriptions d'émission sur la page emission home/show.html.twig qui pouvaient dépasser du cadre et déformer la page.
 - Modification de la base de donnée pour que chaque émission n'ai qu'un seul thème.
-
 
 
 ## [1.0.20] - 2025-07-07
