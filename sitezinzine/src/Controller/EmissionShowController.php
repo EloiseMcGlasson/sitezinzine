@@ -75,24 +75,6 @@ public function show(
 }
 
 
-   /*  #[Route('/recherche-emissions', name: 'recherche_emissions')]
-    public function rechercher(Request $request, EmissionRepository $emissionRepository): Response
-    {
-        $form = $this->createForm(EmissionSearchType::class);
-        $form->handleRequest($request);
-
-        $emissions = [];
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $emissions = $emissionRepository->findByCriteria($data['titre'], $data['dateDiffusion']);
-        }
-
-        return $this->render('home/recherche.html.twig', [
-            'form' => $form->createView(),
-            'emissions' => $emissions,
-        ]);
-    } */
     #[Route('/recherche', name: 'recherche')]
     public function search(Request $request, EmissionRepository $emissionRepository): Response
 {

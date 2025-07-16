@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.23] - 2025-07-??
+### Serveur
+- Modification des droits du dossier uploads pour permettre le chargement des images.
+### Correction
+- Correction des groupes de thèmes selon la nouvelle proposition.
+
+
 ## [1.0.22] - 2025-07-15
 ### Correction
 - Correction du js de la page home/show.html.twig qui avait besoin d'un refresh pour fonctionner (pb de turbo:load)
@@ -22,7 +29,7 @@
 - Ajout du widget grille hebdomadaire de libretime dans la partie programme (mais c'est moche ...). 
 
 
-## [1.0.19] - 2025-07-06 bis
+## [1.0.19] - 2025-07-06
 ### Ajout
 - Ajout du bouton télécharger sur la liste des émission en bas de page home/show.html.twig.
 - Ajout du tableau infos diverses, horaire de passage, liens, dans la partie émission de la page home/show.html.twig.
