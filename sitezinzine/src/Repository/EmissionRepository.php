@@ -83,10 +83,10 @@ class EmissionRepository extends ServiceEntityRepository
     return [
         'culture musique litterature' => [1, 7, 8],
         'histoire politique' => [2, 9],
-        'agriculture foret' => [3, 10],
+        'agriculture foret ecologie' => [3, 10, 5],
         'alimentation santé' => [4, 11],
-        'ecologie' => [5],
-        'societe migrations' => [6, 12],
+        'feminisme societe' => [14, 6],
+        'international migrations' => [13, 12],
     ];
 }
 
