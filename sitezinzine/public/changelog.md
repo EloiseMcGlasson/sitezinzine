@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.23] - 2025-07-??
+## [1.0.23] - 2025-07-16
 ### Serveur
 - Modification des droits du dossier uploads pour permettre le chargement des images.
 ### Correction
