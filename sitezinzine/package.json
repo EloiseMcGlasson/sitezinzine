@@ -1,5 +1,25 @@
 {
   "dependencies": {
-    "@glidejs/glide": "^3.6.2"
+    "@glidejs/glide": "^3.6.2",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/stimulus-webpack-helpers": "^1.0.1",
+    "@hotwired/turbo": "^8.0.13",
+    "tinymce": "^7.9.1"
+  },
+  "scripts": {
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@symfony/stimulus-bridge": "^4.0.1",
+    "@symfony/webpack-encore": "^5.1.0",
+    "babel-loader": "^10.0.0",
+    "core-js": "^3.44.0",
+    "regenerator-runtime": "^0.14.1",
+    "webpack": "^5.100.2",
+    "webpack-cli": "^5.1.4"
   }
 }

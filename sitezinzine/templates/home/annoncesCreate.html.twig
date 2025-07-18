@@ -28,16 +28,16 @@
         font-weight: 500;
         font-style: normal;
         }
-    .top img{
+    .anedit .top img{
         width: 100%;
     }
 
-    .tox-checklist > li:not(.tox-checklist--hidden) {
+    .anedit .tox-checklist > li:not(.tox-checklist--hidden) {
     list-style: none;
     margin: 0.25em 0;
     position: relative;
     }
-    .tox-checklist > li:not(.tox-checklist--hidden)::before {
+    .anedit .tox-checklist > li:not(.tox-checklist--hidden)::before {
     content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-unchecked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2215%22%20height%3D%2215%22%20x%3D%22.5%22%20y%3D%22.5%22%20fill-rule%3D%22nonzero%22%20stroke%3D%22%234C4C4C%22%20rx%3D%222%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
     cursor: pointer;
     height: 1em;
@@ -46,11 +46,11 @@
     position: absolute;
     width: 1em;
     }
-    .tox-checklist li:not(.tox-checklist--hidden).tox-checklist--checked::before {
+    .anedit .tox-checklist li:not(.tox-checklist--hidden).tox-checklist--checked::before {
     content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-checked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%234099FF%22%20fill-rule%3D%22nonzero%22%20rx%3D%222%22%2F%3E%3Cpath%20id%3D%22Path%22%20fill%3D%22%23FFF%22%20fill-rule%3D%22nonzero%22%20d%3D%22M11.5703186%2C3.14417309%20C11.8516238%2C2.73724603%2012.4164781%2C2.62829933%2012.83558%2C2.89774797%20C13.260121%2C3.17069355%2013.3759736%2C3.72932262%2013.0909105%2C4.14168582%20L7.7580587%2C11.8560195%20C7.43776896%2C12.3193404%206.76483983%2C12.3852142%206.35607322%2C11.9948725%20L3.02491697%2C8.8138662%20C2.66090143%2C8.46625845%202.65798871%2C7.89594698%203.01850234%2C7.54483354%20C3.373942%2C7.19866177%203.94940006%2C7.19592841%204.30829608%2C7.5386474%20L6.85276923%2C9.9684299%20L11.5703186%2C3.14417309%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
     }
-    
-input[type=text], select {
+
+    .anedit input[type=text], .anedit select {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -59,8 +59,8 @@ input[type=text], select {
     border-radius: 4px;
     box-sizing: border-box;
   }
-  
-  input[type=submit] {
+
+  .anedit input[type=submit] {
     width: 100%;
     background-color: #4CAF50;
     color: white;
@@ -70,36 +70,36 @@ input[type=text], select {
     border-radius: 4px;
     cursor: pointer;
   }
-  
-  input[type=submit]:hover {
+
+  .anedit input[type=submit]:hover {
     background-color: #45a049;
   }
-  
-  form {
+
+  .anedit form {
     padding: 50px;
   }
-  div.mb-3 {
+  .anedit div.mb-3 {
     margin: 15px;
   }
-  label {
+  .anedit label {
     margin-bottom: 15px;
   }
   
-  #mceu_14 {
+  .anedit #mceu_14 {
     margin: 15px 0;
   }
-  
-  textarea {
+
+  .anedit textarea {
     width: auto;
   }
-  .form-label { color:white;
+  .anedit .form-label { color:white;
   font-family: "Montserrat Alternates", sans-serif;
   font-weight: normal;
   font-style: normal;
   
   font-size: 16pt;
   }
-  input {
+  .anedit input {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -120,7 +120,7 @@ input[type=text], select {
     margin: 20px;
   }
 
-  .form-check {
+  .anedit .form-check {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -136,7 +136,7 @@ input[type=text], select {
   align-items: center;
     text-align: center;
   }
-  .ligne1, .ligne3, .ligne4, .ligne6, .ligne7 {
+  .anedit .ligne1, .anedit .ligne3, .anedit .ligne4, .anedit .ligne6, .anedit .ligne7 {
     display: flex;
     flex-direction: row;
     justify-content: space-between; /* 🔥 Espacement maximal entre les champs */
@@ -145,12 +145,12 @@ input[type=text], select {
     
 }
 
-.ligne1 > div, .ligne3 > div, .ligne4 > div, .ligne6 > div, .ligne7 > div {
+.anedit .ligne1 > div, .anedit .ligne3 > div, .anedit .ligne4 > div, .anedit .ligne6 > div, .anedit .ligne7 > div {
     flex: 1; /* 🔥 Étire chaque champ pour qu'ils occupent un espace équitable */
     min-width: 200px; /* 🔥 Empêche que les champs deviennent trop petits */
 }
 
-.error-message {
+.anedit .error-message {
     color: white !important; /* 🔥 Force la couleur blanche */
     font-size: 0.9em;
     font-weight: bold;
@@ -162,7 +162,7 @@ input[type=text], select {
 }
 
 
-.hidden-textarea {
+.anedit .hidden-textarea {
     position: absolute;
     left: -9999px; /* 🔥 Déplace le champ hors écran au lieu de le cacher */
     visibility: hidden; /* 🔥 Assure qu'il n'est pas visible */
@@ -182,35 +182,35 @@ input[type=text], select {
   
 
 
-    {{ form_start (form) }}
+    {{ form_start(form) }}
     <div class="ligne1">
-    {{ form_row (form.titre) }}
-    {{ form_row (form.organisateur) }}
-    {{ form_row (form.type, { 'attr': {'id': 'annonce_type'} }) }}
+    {{ form_row(form.titre) }}
+    {{ form_row(form.organisateur) }}
+    {{ form_row(form.type, { 'attr': {'id': 'annonce_type'} }) }}
   <div id="autre-type-wrapper"{% if form.autreType.vars.data %}style="display: block;"{% else %}style="display: none;"{% endif %}>
-      {{ form_row (form.autreType, { 'attr': {'id': 'annonce_autreType'} }) }}
+      {{ form_row(form.autreType, { 'attr': {'id': 'annonce_autreType'} }) }}
   </div>
     </div>
    
 <div class="ligne3">
-    {{ form_row (form.ville) }}
-    {{ form_row (form.departement) }}
-    {{ form_row (form.adresse) }}
+    {{ form_row(form.ville) }}
+    {{ form_row(form.departement) }}
+    {{ form_row(form.adresse) }}
     </div>
     <div class="ligne4">
-    {{ form_row (form.dateDebut) }}
-    {{ form_row (form.dateFin) }}
-    {{ form_row (form.horaire) }}
-    {{ form_row (form.prix) }}
+    {{ form_row(form.dateDebut) }}
+    {{ form_row(form.dateFin) }}
+    {{ form_row(form.horaire) }}
+    {{ form_row(form.prix) }}
     </div>
-    
-    <div class="ligne6">  
-    {{ form_row (form.presentation) }}
+
+    <div class="ligne6" data-controller="tinymce">
+    {{ form_row(form.presentation) }}
     </div>
     <div class="ligne7">
-    {{ form_row (form.contact) }}
+    {{ form_row(form.contact) }}
     </div>
-    {{ form_end (form) }}
+    {{ form_end(form) }}
 </div>
 
 <script defer>

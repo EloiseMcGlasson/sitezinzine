@@ -56,6 +56,7 @@ input[type=text], select {
   }
   div.mb-3 {
     margin: 15px;
+    width: 100%;
   }
   label {
     margin-bottom: 15px;
@@ -90,10 +91,15 @@ input[type=text], select {
     width: 300px;
     margin: auto;
   }
-  .ligne1 {
-    display: flex;
-    flex-direction: row;
-  }
+ .ligne1, .ligne2, .ligne4 {
+  display: flex;
+  flex-direction: row;
+}
+.ligne3 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
 
  </style>
    
@@ -109,11 +115,25 @@ input[type=text], select {
       <div class="ligne1">
         {{ form_row (formEmission.categorie) }}
         {{ form_row (formEmission.theme) }}
+        {# TODO rajouter un if pour préremplir la durée de l'émission avec celle de la catégorie #}
         {{ form_row (formEmission.duree) }}
-        {{ form_row (formEmission.ref) }}
         {{ form_row (formEmission.editeur) }}
 
       </div>
+      <div class="ligne2">
+      {{ form_row (formEmission.titre) }}
+      {{ form_row (formEmission.keyword) }}
+      {{ form_row (formEmission.ref) }}
+      {{ form_row (formEmission.InviteOldAnimateurs) }}
+      </div>
+      <div class="ligne3" data-controller="tinymce">
+      {{ form_row (formEmission.descriptif) }}
+      </div>
+      <div class="ligne4">
+      {{ form_row (formEmission.thumbnailFile) }}
+      {{ form_row (formEmission.thumbnailFileMp3) }}
+      {{ form_row (formEmission.url) }}
+    </div>
 
     {{ form_end (formEmission) }}
 
