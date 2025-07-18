@@ -81,12 +81,12 @@ class EmissionRepository extends ServiceEntityRepository
     public function getThemeGroups(): array
 {
     return [
-        'culture musique litterature' => [1, 7, 8],
-        'histoire politique' => [2, 9],
-        'agriculture foret ecologie' => [3, 10, 5],
-        'alimentation santé' => [4, 11],
-        'feminisme societe' => [14, 6],
-        'international migrations' => [13, 12],
+        'culture / musique / litterature' => [1, 7, 8],
+        'histoire / politique' => [2, 9],
+        'agriculture / foret / ecologie' => [3, 10, 5],
+        'alimentation / santé' => [4, 11],
+        'feminisme / societe' => [14, 6],
+        'international / migrations' => [13, 12],
     ];
 }
 

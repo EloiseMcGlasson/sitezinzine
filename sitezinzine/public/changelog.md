@@ -1,6 +1,17 @@
 # Changelog
 
-## [1.0.23] - 2025-07-??
+## [1.0.24] - 2025-07-??
+### Ajout
+- Ajout du bouton pause sur le lecteur et le js nécessaire pour que ça fonctionne.
+- Ajout d'un lien vers le site publique sur le logo radio zinzine de la navbar côté admin.
+### Correction
+- Correction des groupes de thèmes (rajout de /).
+- Correction de l'édition des évènements qui ne préremplissait pas le champ titre du formulaire.
+- correction des formulaires utilisant tinymce avec un controller stimulus afin d'éviter le rechargement de la page à cause de turbo.
+- Correction des filtres dynamiques des thèmes sur la page home/show.
+
+
+## [1.0.23] - 2025-07-16
 ### Serveur
 - Modification des droits du dossier uploads pour permettre le chargement des images.
 ### Correction
@@ -40,6 +51,7 @@
 - Correction de la gestion de l'affichage des images sur la page emission home/show.html.twig.
 - Correction des bloc title des pages aides à l'écoute, zone d'écoute et contact.
 
+
 ## [1.0.18] - 2025-07-06
 ### Ajout
 - Ajout de titre de pages coté admin.
@@ -59,13 +71,16 @@
 - Correction centrage menu déroulant navbar admin + problème de conflit css avec pagination.
 - Correction du rappel des données de catégorie et thème dans le formulaire émission create et edit.
 
+
 ## [1.0.16] - 2025-07-04
 ### Correction
 - Correction du conflit entre turbo (fixation du lecteur en header) et la page recherche problème de chargement du js(suite et fin !).
 
+
 ## [1.0.15] - 2025-07-04
 ### Correction
 - Correction du conflit entre turbo (fixation du lecteur en header) et la page recherche.
+
 
 ## [1.0.14] - 2025-07-04
 ### Correction

@@ -1,11 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
-
-/*
-* The following line makes this controller "lazy": it won't be downloaded until needed
-* See https://github.com/symfony/stimulus-bridge#lazy-controllers
-*/
-/* stimulusFetch: 'lazy' */
-
+import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
     static values = {
@@ -15,6 +8,7 @@ export default class extends Controller {
 
     connect() {
         this.audio = this.element.querySelector('#audio-player');
+        this.playPauseButton = this.element.querySelector('#play-pause-button');
         
         // Restaurer l'état si existant
         const wasPlaying = localStorage.getItem('audioWasPlaying') === 'true';
@@ -26,6 +20,9 @@ export default class extends Controller {
                 this.audio.play();
             }
         }
+
+        // Modifier l'état du bouton en fonction
+        this._updatePlayPauseButton();
 
         // Écouter les événements de navigation
         document.documentElement.addEventListener('turbo:load', this._handleTurboLoad);
@@ -50,6 +47,27 @@ export default class extends Controller {
         if (this.audio && localStorage.getItem('audioWasPlaying') === 'true') {
             this.audio.volume = parseFloat(localStorage.getItem('audioVolume') || 1);
             this.audio.play();
+        }
+    }
+
+    // Contrôle du bouton play/pause
+    togglePlayPause() {
+        if (this.audio.paused) {
+            this.audio.play();
+        } else {
+            this.audio.pause();
+        }
+
+        // Mise à jour de l'état du bouton
+        this._updatePlayPauseButton();
+    }
+
+    // Mise à jour du bouton play/pause
+    _updatePlayPauseButton() {
+        if (this.audio.paused) {
+            this.playPauseButton.innerText = 'Lecture'; // ou tu peux mettre une icône "play"
+        } else {
+            this.playPauseButton.innerText = 'Pause'; // ou une icône "pause"
         }
     }
 }

@@ -1,86 +1,77 @@
 <style>
-    .lecteur {
-        font-family: "Montserrat", sans-serif;
-        background-color: black;
-        color: white;
-        height: 60px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;  /* Pour centrer verticalement */
-        padding: 0 20px;     /* Espacement horizontal */
-    }
-    audio {
-        width: 500px;
-        height: 40px; 
-    }
-    .gauche {
-        padding: 10px;
-    }
-    .direct {
-        font-size: 16px;
-        margin: 0;      
-    }
-    .sousdirect {
-        font-size: 12px;
-        margin: 0;      
-    }
-  
-    .milieu {
-        flex: 1;           /* Prend l'espace disponible */
-        text-align: center;
-    }
-    .droite {
-        font-size: 16px;
-        padding: 10px;
-        font-weight: bold;  /* Pour le texte "RADIO ZINZINE" */
-    }
-    .custom-audio-player {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: black;
-        padding: 10px;
-        border-radius: 10px;
-    }
-    
-    #play-pause {
-        width: 40px;
-        height: 40px;
-        background: url("{{ asset('images/lecteur.png') }}") no-repeat center center;
-        background-size: contain;
-        border: none;
-        cursor: pointer;
-    }
-    
-    #progress-bar {
-        flex: 1;
-        -webkit-appearance: none;
-        appearance: none;
-        background: gray;
-        height: 5px;
-        border-radius: 5px;
-    }
-    
-    #progress-bar::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
-        background: white;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-    
-    #volume-control {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 80px;
-    height: 5px;
-    background: gray;
-    border-radius: 5px;
-    cursor: pointer;
+  .lecteur {
+    font-family: "Montserrat", sans-serif;
+    background-color: black;
+    color: white;
+    height: 60px;  /* Fixer une hauteur spécifique */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;  /* Centrer verticalement */
+    padding: 0 20px;     /* Espacement horizontal */
+    box-sizing: border-box; /* S'assurer que padding et bordure sont inclus dans la hauteur */
+    overflow: hidden; /* Éviter que les éléments débordent */
 }
 
-#volume-control::-webkit-slider-thumb {
+.lecteur audio {
+    width: 100%;  /* Utiliser toute la largeur du conteneur, ajusté selon l'écran */
+    height: 40px;  /* Hauteur fixe pour l'audio */
+    max-width: 500px;  /* Taille maximale du lecteur */
+    margin: 0 auto;  /* Centrer l'audio dans le conteneur */
+    display: block; /* S'assurer que l'audio se comporte comme un élément de bloc */
+}
+
+.lecteur .gauche {
+    padding: 10px;
+}
+
+.lecteur .direct, .lecteur .sousdirect {
+    margin: 0;
+    padding: 0;
+}
+
+.lecteur .milieu {
+    flex: 1;           /* Prend l'espace disponible */
+    text-align: center;
+}
+
+.lecteur .droite {
+    font-size: 16px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.lecteur .custom-audio-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: black;
+    
+    border-radius: 10px;
+    width: 100%;
+}
+
+.lecteur #play-pause {
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;  /* Empêcher le bouton de rétrécir */
+}
+
+.lecteur #progress-bar, .lecteur #volume-control {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    background: gray;
+    height: 5px;
+    border-radius: 5px;
+}
+
+.lecteur #progress-bar::-webkit-slider-thumb, .lecteur #volume-control::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 12px;
     height: 12px;
@@ -89,18 +80,17 @@
     cursor: pointer;
 }
 
-
-    /* Responsive design */
+/* Responsive design */
 @media (max-width: 768px) {
-    audio {
+    .lecteur audio {
         width: 100%;    /* Pleine largeur sur mobile */
         max-width: 300px;
     }
-    
-    .droite {
+    .lecteur .droite {
         display: none;  /* Cache le texte sur mobile */
     }
 }
+
 
 </style>
 
@@ -136,38 +126,70 @@ RADIO ZINZINE, UNE RADIO LIBRE !
     const progressBar = document.getElementById("progress-bar");
     const volumeControl = document.getElementById("volume-control");
 
-    playPauseButton.addEventListener("click", function () {
+    // Définir les chemins vers les images
+    const playIcon = "{{ asset('images/lecteur.png') }}";
+    const pauseIcon = "{{ asset('images/bouton-pause.png') }}";
+
+    // Initialiser avec l'icône play
+    playPauseButton.style.backgroundImage = `url('${playIcon}')`;
+
+    // Fonction pour changer l'icône play/pause
+    function togglePlayPause() {
         if (audio.paused) {
             audio.play();
-            playPauseButton.classList.add("paused");
+            playPauseButton.style.backgroundImage = `url('${pauseIcon}')`;
         } else {
             audio.pause();
-            playPauseButton.classList.remove("paused");
+            playPauseButton.style.backgroundImage = `url('${playIcon}')`;
         }
-    });
+    }
 
-    // 🟢 Met à jour la barre de progression en fonction du temps de lecture
+    // Ajout de l'événement click pour play/pause
+    playPauseButton.addEventListener("click", togglePlayPause);
+
+    // Synchronisation de la barre de progression avec l'audio
     audio.addEventListener("timeupdate", function () {
         if (!isNaN(audio.duration)) {
             progressBar.value = (audio.currentTime / audio.duration) * 100;
         }
     });
 
-    // 🟢 Permet à l'utilisateur de cliquer sur la barre de progression pour aller à un moment précis
+    // Gestion de la progression par le slider
     progressBar.addEventListener("input", function () {
         audio.currentTime = (progressBar.value / 100) * audio.duration;
     });
 
-    // 🟢 Gestion du volume
+    // Contrôle du volume avec la barre de volume
     volumeControl.addEventListener("input", function () {
         audio.volume = volumeControl.value;
     });
 
-    // 🟢 Remet la barre de progression à 0 quand l'audio se termine
+    // Réinitialisation à la fin de la lecture
     audio.addEventListener("ended", function () {
         progressBar.value = 0;
-        playPauseButton.classList.remove("paused");
+        playPauseButton.style.backgroundImage = `url('${playIcon}')`;
     });
+
+    // Sauvegarde du statut de lecture/pause et du volume dans localStorage
+    audio.addEventListener("play", function () {
+        localStorage.setItem('audioWasPlaying', 'true');
+    });
+
+    audio.addEventListener("pause", function () {
+        localStorage.setItem('audioWasPlaying', 'false');
+    });
+
+    // Récupération du statut du volume et de la lecture lors du rechargement
+    const savedVolume = parseFloat(localStorage.getItem('audioVolume') || 1);
+    audio.volume = savedVolume;
+    volumeControl.value = savedVolume;
+
+    // Récupérer l'état de lecture
+    if (localStorage.getItem('audioWasPlaying') === 'true') {
+        audio.play();
+        playPauseButton.style.backgroundImage = `url('${pauseIcon}')`;
+    }
+
 });
 
 </script>

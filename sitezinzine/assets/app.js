@@ -8,9 +8,22 @@
 import './styles/reset.css';
 import './styles/app.css';
 
-import Turbo from '@hotwired/turbo';
+import { Application } from '@hotwired/stimulus';
+import { definitionsFromContext } from '@hotwired/stimulus-webpack-helpers';
 
-;
+const application = Application.start();
+const context = require.context('./controllers', true, /\.js$/);
+application.load(definitionsFromContext(context));
+
+import '@hotwired/turbo';
+import './controllers';
+
+// (glidejs, animations, autres comportements ici…)
+
+console.log('Stimulus loaded successfully 🎉');
+
+
+
 
 // On attend que Turbo ait fini de charger la page
 document.addEventListener('turbo:load', () => {
