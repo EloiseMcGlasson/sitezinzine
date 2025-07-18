@@ -51,6 +51,7 @@ form {
 }
 div.mb-3 {
   margin: 15px;
+  width: 100%;
 }
 label {
   margin-bottom: 15px;
@@ -80,15 +81,16 @@ input {
   box-sizing: border-box;
 }
 
-.ligne1 {
+.ligne1, .ligne2, .ligne4 {
   display: flex;
   flex-direction: row;
+}
+.ligne3 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 
-.ligne2 {
-  display: flex;
-  flex-direction: row;
-}
 </style>
 
 <div>
@@ -102,15 +104,23 @@ input {
         {{ form_row (form.theme) }}
         {# TODO rajouter un if pour préremplir la durée de l'émission avec celle de la catégorie #}
         {{ form_row (form.duree) }}
-        {{ form_row (form.ref) }}
         {{ form_row (form.editeur) }}
-        {{ form_row (form.InviteOldAnimateurs) }}
         
       </div>
-    
-      {{ form_end (form) }}
-</div>
-
-
+      <div class="ligne2">
+      {{ form_row (form.titre) }}
+      {{ form_row (form.keyword) }}
+      {{ form_row (form.ref) }}
+      {{ form_row (form.InviteOldAnimateurs) }}
+      </div>
+      <div class="ligne3" data-controller="tinymce">
+      {{ form_row (form.descriptif) }}
+      </div>
+      <div class="ligne4">
+      {{ form_row (form.thumbnailFile) }}
+      {{ form_row (form.thumbnailFileMp3) }}
+      {{ form_row (form.url) }}
+    </div>
+    {{ form_end (form) }}
     {% endblock %}
     

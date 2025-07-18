@@ -70,7 +70,8 @@
     }
 </style>
 <nav>
-    <img src="{{ asset('/images/logo.gif') }}" alt="Logo">
+    <a href="https://eloisemcglasson.ovh/" target="_blank">
+    <img src="{{ asset('/images/logo.gif') }}" alt="Logo"></a>
     <ul>
         <li>
             <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
