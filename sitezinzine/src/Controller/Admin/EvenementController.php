@@ -78,8 +78,9 @@ class EvenementController extends AbstractController
     {
         $form = $this->createForm(EvenementType::class, $evenement, [
             'show_valid' => true, // Montrer le champ valid
-
+            
         ]);
+       
 
         $form->handleRequest($request);
         $userId = $security->getUser();

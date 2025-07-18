@@ -148,3 +148,40 @@ Remove-Item "backup-20250422-2010.sql"
 automatique
 # 4. Lancer le script PowerShell pour sauver la bdd
 & "C:\Users\mcgla\xampp\htdocs\siteZinzine\restore-db.ps1"
+
+installation de stimulus pour gérer le js avec turbo
+composer require symfony/stimulus-bundle
+
+instalation de yarn
+npm install -g yarn
+yarn add @hotwired/stimulus
+yarn add stimulus-webpack-helpers
+
+installation complète babel + stimulus
+yarn add @babel/core @babel/preset-env babel-loader --dev
+yarn add @symfony/stimulus-bridge --dev
+yarn add core-js regenerator-runtime --dev
+yarn add webpack webpack-cli --dev
+yarn add @hotwired/turbo
+
+
+dans le container
+apt-get update
+apt-get install -y gnupg
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+apt-get update
+curl -sL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
+
+apt-get install -y yarn
+yarn install
+yarn add @hotwired/stimulus
+yarn add @hotwired/turbo
+yarn add @symfony/webpack-encore --dev
+yarn add webpack-cli@^5.1.4 --dev
+
+yarn add @babel/core @babel/preset-env babel-loader --dev
+yarn install
+
+

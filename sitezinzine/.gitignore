@@ -33,3 +33,10 @@ READMEold.md
 
 sitezinzine/deploy_sitezinzine.ps1
 sitezinzine/quick_deploy.ps1
+
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###

@@ -19,6 +19,7 @@ class Evenement
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
     #[Assert\NotBlank]
     #[Assert\Length(max: 100, maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères.")]
    
