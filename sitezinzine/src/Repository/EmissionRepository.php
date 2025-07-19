@@ -29,6 +29,7 @@ class EmissionRepository extends ServiceEntityRepository
         ->select('e', 'c')
         ->leftJoin('e.categorie', 'c')
         ->andWhere('e.url != :excludeUrl')
+        ->andWhere('c.id != 0')
         ->setParameter('excludeUrl', $excludeUrl)
         ->orderBy('e.datepub', 'DESC');
 
@@ -53,6 +54,7 @@ class EmissionRepository extends ServiceEntityRepository
             ->select('e', 'c')
             ->leftJoin('e.categorie', 'c')
             ->andWhere('e.url != :excludeUrl')
+            ->andWhere('c.id != 0')
             ->setParameter('excludeUrl', $excludeUrl)
             ->orderBy('e.datepub', 'DESC');
 
@@ -72,6 +74,7 @@ class EmissionRepository extends ServiceEntityRepository
             ->leftJoin('e.categorie', 'c')
             ->andWhere('e.url != :excludeUrl')
             ->setParameter('excludeUrl', $excludeUrl)
+            ->andWhere('c.id != 0')
             ->orderBy('e.datepub', 'DESC')
             ->setMaxResults(6)
             ->getQuery()
@@ -94,6 +97,7 @@ public function findEmissionsByThemeGroup(array $themeIds): array
 {
     return $this->createQueryBuilder('e')
         ->andWhere('e.theme IN (:themeIds)')
+        
         ->setParameter('themeIds', $themeIds)
         ->orderBy('e.datepub', 'DESC')
         ->getQuery()
@@ -162,7 +166,7 @@ public function findEmissionsByThemeGroup(array $themeIds): array
         )
 
         SELECT * FROM GroupedEmissions
-        WHERE rn = 1
+        WHERE rn = 1 AND theme_group != 'autre'
         ORDER BY emission_datepub DESC
         LIMIT 6
     ";
@@ -185,6 +189,7 @@ public function findEmissionsByThemeGroup(array $themeIds): array
             ->leftJoin('e.categorie', 'c')
             ->leftJoin('e.theme', 't')
             ->andWhere('e.url IS NOT NULL AND e.url != :emptyUrl')
+            ->andWhere('c.id != 0')
             ->setParameter('emptyUrl', '');
 
         if (!empty($criteria['titre'])) {

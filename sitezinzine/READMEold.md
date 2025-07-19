@@ -124,6 +124,14 @@ automatique
 # 5. Lancer le script PowerShell pour sauver la bdd
 & "C:\Users\mcgla\xampp\htdocs\siteZinzine\backup-db.ps1"
 
+exemple (dans powershell)
+PS C:\Users\mcgla\xampp\htdocs\siteZinzine> .\backup-db.ps1
+CrÃ©ation du dump de la base de donnÃ©es...
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+Compression en cours...
+Sauvegarde terminÃ©e : C:\Users\mcgla\xampp\htdocs\siteZinzine\backup-20250718-125013.zip
+Suppression de l'ancien fichier de sauvegarde : backup-20250422-011513.zip
+PS C:\Users\mcgla\xampp\htdocs\siteZinzine>
 
 
 🔁 Restauration de la base de données MySQL (dans Docker) PowerShell
