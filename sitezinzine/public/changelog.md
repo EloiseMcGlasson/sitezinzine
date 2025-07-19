@@ -1,13 +1,22 @@
 # Changelog
 
-## [1.0.24] - 2025-07-??
+## [1.0.25] - 2025-07-19
+### Base de données
+- Récupération de la base de données réelle pour tests de script d'adaptation.
+### Correction
+- Correction du glide.js avec stimulus pour que le chargement du carrousel soit plus fluide.
+- correction du coupage automatique des titre d'émission sur l'affichage de lastemission et carrousel.
+
+
+## [1.0.24] - 2025-07-18
 ### Ajout
 - Ajout du bouton pause sur le lecteur et le js nécessaire pour que ça fonctionne.
 - Ajout d'un lien vers le site publique sur le logo radio zinzine de la navbar côté admin.
+- Ajout de Node.js.
 ### Correction
 - Correction des groupes de thèmes (rajout de /).
 - Correction de l'édition des évènements qui ne préremplissait pas le champ titre du formulaire.
-- correction des formulaires utilisant tinymce avec un controller stimulus afin d'éviter le rechargement de la page à cause de turbo.
+- Correction des formulaires utilisant tinymce avec un controller stimulus afin d'éviter le rechargement de la page à cause de turbo.
 - Correction des filtres dynamiques des thèmes sur la page home/show.
 
 
