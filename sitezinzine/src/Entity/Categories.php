@@ -25,7 +25,7 @@ class Categories
     #[Groups(['categories.index'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 35)]
+    #[ORM\Column(length: 50)]
     #[Groups(['categories.index', 'emissions.index'])]
     private string $titre = '';
 

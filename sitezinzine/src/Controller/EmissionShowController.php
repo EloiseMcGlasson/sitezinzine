@@ -47,6 +47,9 @@ public function show(
 ): Response {
     $theme = $emission->getTheme();
     $themeGroups = $emissionRepository->getThemeGroups();
+    if (!$theme) {
+        throw $this->createNotFoundException('Le thème de cette émission n\'existe pas.');
+    }
     $currentThemeId = $theme->getId();
 
     // Trouve la clé du groupe qui contient ce thème

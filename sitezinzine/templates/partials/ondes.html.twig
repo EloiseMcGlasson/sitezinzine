@@ -27,20 +27,20 @@
     font-style: normal;
     font-size: 24pt;
   }
-  
-  .ondestitres {
+
+  .bodyondes .ondestitres {
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
-  .ondestitres img {
+
+  .bodyondes .ondestitres img {
     width: 150px;
     margin-right: 10px;
     padding-bottom: 15px;
   }
-  
-  .carousel {
+
+  .bodyondes .carousel {
     background: white;
     width: 250px;
     height: 400px;
@@ -53,83 +53,95 @@
     transform: scale(0.95);
   }
   
-  .glide__slide {
+  .bodyondes .glide__slide {
     user-select: none;
     -webkit-user-drag: none;
   }
-  
-  .glide__slide--active .carousel {
+
+  .bodyondes .glide__slide--active .carousel {
     background: linear-gradient(#7E4093, #6B3B7F);
     transform: scale(1.05);
     box-shadow: 0 15px 30px rgba(126, 64, 147, 0.3);
     z-index: 2;
   }
-  
-  .glide__slide--active .titre_carousel a,
-  .glide__slide--active .date_carousel p,
-  .glide__slide--active .categorie_carousel p {
+
+  .bodyondes .glide__slide--active .titre_carousel a,
+  .bodyondes .glide__slide--active .date_carousel p,
+  .bodyondes .glide__slide--active .categorie_carousel p {
     color: white;
   }
-  
-  .image_carousel {
+
+  .bodyondes .image_carousel {
     width: 100%;
     height: 200px;
     overflow: hidden;
   }
-  
-  .image_carousel img {
+
+  .bodyondes .image_carousel img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
   }
-  
-  .carousel:hover .image_carousel img {
+
+  .bodyondes .carousel:hover .image_carousel img {
     transform: scale(1.05);
   }
-  
-  .date_carousel,
-  .titre_carousel,
-  .categorie_carousel {
+
+  .bodyondes .date_carousel,
+  .bodyondes .titre_carousel,
+  .bodyondes .categorie_carousel {
     padding: 10px 15px;
   }
-  
-  .date_carousel {
+
+  .bodyondes .date_carousel {
     font-family: "Montserrat Alternates", sans-serif;
     font-size: 24px;
     color: #333;
     margin-top: auto;
   }
-  
-  .titre_carousel {
+
+  .bodyondes .titre_carousel {
     font-family: "Montserrat", sans-serif;
     font-weight: 900;
     font-size: 20px;
     text-wrap: balance;
     text-align: left;
   }
-  
-  .titre_carousel p,
-  .date_carousel p,
-  .categorie_carousel p {
+
+
+.bodyondes .titre_carousel a {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+color: black;
+    text-decoration: none;
+    font-weight: 800;
+    text-align: left;
+    padding: 0 16px;
+  word-break: break-word;         /* 👈 casse les mots longs */
+  overflow-wrap: anywhere;        /* 👈 autorise les sauts à n'importe quel endroit */
+  line-height: 1.5;
+  max-height: calc(1.5em * 2);
+  transition: color 0.3s ease; /* transition douce pour la couleur */
+}
+
+
+  .bodyondes .date_carousel p,
+  .bodyondes .categorie_carousel p {
     margin: 0;
     line-height: 1.2;
   }
   
-  .titre_carousel a {
-    display: block;
-    color: black;
-    text-decoration: none;
-    font-weight: 800;
-    text-align: left;
-    padding: 14px 16px;
-  }
-  
-  .titre_carousel a:hover {
+
+
+  .bodyondes .titre_carousel a:hover {
     color: #E4013A;
   }
-  
-  .categorie_carousel {
+
+  .bodyondes .categorie_carousel {
     font-family: "Source Code Pro", monospace;
     font-weight: 600;
     font-size: 16px;
@@ -139,18 +151,18 @@
     align-items: center;
     justify-content: center;
   }
-  
-  .glide__track {
+
+  .bodyondes .glide__track {
     cursor: grab;
     position: relative;
     z-index: 1;
   }
-  
-  .glide__track:active {
+
+  .bodyondes .glide__track:active {
     cursor: grabbing;
   }
-  
-  .glide__arrows {
+
+  .bodyondes .glide__arrows {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -158,8 +170,8 @@
     left: 0;
     pointer-events: none;
   }
-  
-  .glide__arrow {
+
+  .bodyondes .glide__arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -169,33 +181,33 @@
     cursor: pointer;
     pointer-events: auto;
   }
-  
-  .glide__arrow:focus,
-  .glide__arrow::-moz-focus-inner {
+
+  .bodyondes .glide__arrow:focus,
+  .bodyondes .glide__arrow::-moz-focus-inner {
     outline: none;
     border: 0;
   }
-  
-  .glide__arrow--left {
+
+  .bodyondes .glide__arrow--left {
     left: -110px;
   }
-  
-  .glide__arrow--right {
+
+  .bodyondes .glide__arrow--right {
     right: -80px;
   }
-  
-  .glide__arrow:hover {
+
+  .bodyondes .glide__arrow:hover {
     transform: translateY(-50%) scale(1.1);
   }
-  
-  .glide__arrows img,
-  .glide__arrow img {
+
+  .bodyondes .glide__arrows img,
+  .bodyondes .glide__arrow img {
     width: 80px;
     height: auto;
     pointer-events: none;
   }
-  
-  .glide {
+
+  .bodyondes .glide {
     position: relative;
     margin: 0 auto;
     padding: 0;
@@ -204,63 +216,63 @@
   
   /* Responsive */
   @media screen and (max-width: 1200px) {
-    .carousel {
+    .bodyondes .carousel {
       width: 220px;
       height: 280px;
     }
-  
-    .top-image {
+
+    .bodyondes .top-image {
       height: 25px;
     }
   
-    .date_carousel {
+    .bodyondes .date_carousel {
       font-size: 20px;
     }
-  
-    .titre_carousel {
+
+    .bodyondes .titre_carousel {
       font-size: 18px;
     }
-  
-    .glide {
+
+    .bodyondes .glide {
       margin: 0 80px;
     }
-  
-    .glide__arrow--left {
+
+    .bodyondes .glide__arrow--left {
       left: -70px;
     }
-  
-    .glide__arrow--right {
+
+    .bodyondes .glide__arrow--right {
       right: -70px;
     }
-  
-    .glide__arrows img {
+
+    .bodyondes .glide__arrows img {
       width: 60px;
     }
   }
   
   @media screen and (max-width: 768px) {
-    .carousel {
+    .bodyondes .carousel {
       width: 200px;
       height: 260px;
     }
-  
-    .top-image {
+
+    .bodyondes .top-image {
       height: 20px;
     }
-  
-    .glide {
+
+    .bodyondes .glide {
       margin: 0 50px;
     }
-  
-    .glide__arrow--left {
+
+    .bodyondes .glide__arrow--left {
       left: -40px;
     }
-  
-    .glide__arrow--right {
+
+    .bodyondes .glide__arrow--right {
       right: -40px;
     }
-  
-    .glide__arrows img {
+
+    .bodyondes .glide__arrows img {
       width: 40px;
     }
   }
@@ -278,7 +290,7 @@
       </h3>
     </div>
   </div>
-    <div class="glide">
+    <div class="glide" data-controller="carousel">
       <div class="glide__track" data-glide-el="track">
         <ul class="glide__slides">
           {% for lastEmission in lastEmissions %}
