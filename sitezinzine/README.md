@@ -155,6 +155,59 @@ environment:
 📌 Référence : https://github.com/nginx-proxy/acme-companion
 
 ---
+## sauvegarder la base de données
+le fichier est à mettre dans /home/eloise/bin/backup-db.sh
+
+#!/bin/bash
+
+# --- Configuration ---
+TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+BACKUP_DIR="/var/backups/mysql"
+SQL_FILE="$BACKUP_DIR/backup-$TIMESTAMP.sql"
+ZIP_FILE="$BACKUP_DIR/backup-$TIMESTAMP.zip"
+DB_CONTAINER="sitezinzine_app_prod-db"  # nom exact du service dans docker ps
+MYSQL_USER="root"
+MYSQL_PASSWORD="root"
+MYSQL_DATABASE="symfony"
+MAX_BACKUPS=5
+
+# --- Création du dossier de backup s'il n'existe pas ---
+mkdir -p "$BACKUP_DIR"
+
+# --- Dump SQL ---
+echo "⏳ Création du dump..."
+docker exec "$DB_CONTAINER" sh -c "exec mysqldump -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE" > "$SQL_FILE"
+
+if [ -f "$SQL_FILE" ]; then
+    # --- Compression ---
+    echo "📦 Compression en .zip..."
+    zip -j "$ZIP_FILE" "$SQL_FILE"
+    rm "$SQL_FILE"
+    echo "✅ Sauvegarde créée : $ZIP_FILE"
+else
+    echo "❌ Erreur : le dump n'a pas été créé."
+    exit 1
+fi
+
+# --- Nettoyage anciens backups ---
+BACKUPS=($(ls -t $BACKUP_DIR/backup-*.zip))
+NUM_BACKUPS=${#BACKUPS[@]}
+
+if [ "$NUM_BACKUPS" -gt "$MAX_BACKUPS" ]; then
+    echo "🧹 Suppression des anciens dumps..."
+    for ((i=MAX_BACKUPS; i<NUM_BACKUPS; i++)); do
+        echo "🗑️ Suppression : ${BACKUPS[$i]}"
+        rm -f "${BACKUPS[$i]}"
+    done
+fi
+
+rendre executable
+chmod +x backup-db.sh
+
+créer un cron pour l'executer en automatique une fois par jour à 2h.
+crontab -e
+
+0 2 * * * /home/eloise/bin/backup-db.sh >> /var/log/backup-db.log 2>&1
 
 ⚠️ Ne jamais exécuter docker compose down -v sauf si vous êtes prêt à perdre la base de données.
 

@@ -46,7 +46,9 @@
             {% if emission.url %}
             <article>
                         <h3>
-                            {{ emission.titre }} - {{ emission.categorie.titre }}
+                            {{ emission.titre }} - {% if emission.categorie %}{{ emission.categorie.titre }}{% endif %}
+                                
+                            
                         </h3>
                         <p>
                             {% if emission.thumbnail %}

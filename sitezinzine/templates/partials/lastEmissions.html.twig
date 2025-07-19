@@ -25,7 +25,7 @@
 }
   
 /* Grid adaptable */
-article {
+.bodylast article {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
@@ -33,7 +33,7 @@ article {
 }
 
 /* Cartes */
-.carte {
+.bodylast .carte {
     background-color: black;
     width: 100%;
     max-width: 350px;
@@ -46,12 +46,12 @@ article {
 }
 
 /* Texte et éléments internes */
-.categorie, .titre, .date {
+.bodylast .categorie, .bodylast .titre, .bodylast .date {
     margin: 10px;
     text-align: center;
 }
 
-.theme {
+.bodylast .theme {
     background-color: #7E4095;
     padding: 8px;
     color: white;
@@ -59,11 +59,11 @@ article {
 }
 
 /* Icône d'écoute */
-.ecoute img {
+.bodylast .ecoute img {
     width: 30px;
 }
 
-article {
+.bodylast article {
     display: grid;
     grid-template-columns: repeat(3, minmax(250px, 1fr)); /* 3 cartes par ligne */
     grid-auto-flow: row dense; /* Force le remplissage correct des lignes */
@@ -74,7 +74,7 @@ article {
     margin: auto;
 }
 
-    .carte {
+    .bodylast .carte {
         
         display: block;
         background-color: black;
@@ -86,12 +86,12 @@ article {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .carte:hover {
+    .bodylast .carte:hover {
     transform: translateY(-5px); /* Légère élévation */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus marquée */
 }
 
-    .categorie {
+    .bodylast .categorie {
         
         background-color: #35BAC0;
         font-family: "Source Code Pro", monospace;
@@ -107,7 +107,7 @@ article {
         text-align: center;
     }
 
-    .titre {
+  .bodylast .titre {
         font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
         font-weight: 800;
@@ -122,8 +122,15 @@ article {
         -webkit-text-stroke-color: black;
       
     }
+    .bodylast .titre p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;      /* 👉 Limite à 2 lignes */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;    /* 👉 Affiche "…" si le texte déborde */
+        }
 
-    .date {
+    .bodylast .date {
         font-family: "Montserrat Alternates", sans-serif;
         font-weight: 400;
         font-style: normal;
@@ -133,7 +140,7 @@ article {
     }
 
 
-    .ecoute {
+    .bodylast .ecoute {
         position: absolute;
         bottom: 0;
         right: 0;
@@ -141,37 +148,37 @@ article {
         margin-bottom: 5px;
     }
 
-    .ecoute img {
+    .bodylast .ecoute img {
         width: 40px;
     }
 
-    .bottom img{
+    .bodylast .bottom img{
         width: 100%;
         margin-bottom: 0px;
         padding-bottom: 0px;
         
     }
 
-    .top img{
+    .bodylast .top img{
         width: 100%;
     }
-    .titrelast {
+    .bodylast .titrelast {
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    .titrelast img {
+    .bodylast .titrelast img {
         all: unset;
         width: 150px;
         margin-right: 10px;
         padding-bottom: 15px;
     }
 
-    a {
+    .bodylast a {
         text-decoration: none;
     }
-    .shadow {
+    .bodylast .shadow {
         width: 70px;
         position: absolute;
         bottom: 0;
@@ -179,7 +186,7 @@ article {
         box-shadow: -8px 6px 20px 2px #000000;
     }
 
-    .theme {
+    .bodylast .theme {
         background-color: #7E4095;
         font-family: "Source Code Pro", monospace;
         text-align: center;
@@ -191,7 +198,7 @@ article {
         -webkit-text-stroke-color: black;
     }
 
-    .transparent {
+    .bodylast .transparent {
         all: unset;
         width: 350px;
         height: 150px;
@@ -217,11 +224,11 @@ article {
     display: flex;
     flex-direction: column;
 }
-.top img{
+.bodylast .top img{
     width: 100%;
 }
     /* Grid adaptable */
-article {
+.bodylast article {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 50px;
@@ -230,7 +237,7 @@ article {
 }
 
 /* Cartes */
-.carte {
+.bodylast .carte {
     display: flex;
     flex-direction: column;
     background-color: black;
@@ -245,12 +252,12 @@ article {
 }
 
 /* Texte et éléments internes */
-.categorie, .titre, .date {
+.bodylast .categorie, .bodylast .titre, .bodylast .date {
     margin: 10px;
     text-align: center;
 }
 
-.theme {
+.bodylast .theme {
     background-color: #7E4095;
     padding: 10px;
     color: white;
@@ -260,18 +267,18 @@ article {
 }
 
 /* Icône d'écoute */
-.ecoute {
+.bodylast .ecoute {
     position: absolute;
     bottom: 10px;
     right: 10px;
 }
 
-.ecoute img {
+.bodylast .ecoute img {
     width: 40px;
     transition: transform 0.3s;
 }
 
-.ecoute img:hover {
+.bodylast .ecoute img:hover {
     transform: scale(1.1);
 }
 
