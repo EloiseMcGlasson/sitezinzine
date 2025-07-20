@@ -11,5 +11,14 @@
             }
         }
     },
-    "entrypoints": []
+    "entrypoints": [
+        {
+            "name": "tinymce",
+            "path": "./assets/controllers/tinymce_controller.js"
+        },
+        {
+            "name": "theme-filter",
+            "path": "./assets/controllers/theme_filter_controller.js"
+        }
+    ]
 }

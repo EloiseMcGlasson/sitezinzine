@@ -4,6 +4,8 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
     "@hotwired/turbo": "^8.0.13",
+    "flatpickr": "^4.6.13",
+    "stimulus": "^3.2.2",
     "tinymce": "^7.9.1"
   },
   "scripts": {
@@ -17,6 +19,7 @@
     "@symfony/stimulus-bridge": "^4.0.1",
     "@symfony/webpack-encore": "^5.1.0",
     "babel-loader": "^10.0.0",
+    "copy-webpack-plugin": "^13.0.0",
     "core-js": "^3.44.0",
     "regenerator-runtime": "^0.14.1",
     "webpack": "^5.100.2",

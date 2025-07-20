@@ -192,4 +192,10 @@ yarn add webpack-cli@^5.1.4 --dev
 yarn add @babel/core @babel/preset-env babel-loader --dev
 yarn install
 
+installation de tinymce en local
+yarn add tinymce
+
+régler le soucis de tinymce forcer l'installation de stimulus
+npm install webpack-cli@5.1.4
+npm install stimulus@3
 
