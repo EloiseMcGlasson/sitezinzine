@@ -202,12 +202,10 @@
         {% endblock %}
      {% block javascripts %}
     <!-- Charger le CDN de TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/co0gdyi5frjqu39k0dgalcvnbd75oljcirpr2mr7dfgfpull/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+   <script src="{{ asset('build/app.js') }}"></script>  <!-- Assure-toi que ce chemin est correct -->
 
-    <!-- Charger le fichier d'initialisation externe -->
-    <script src="{{ asset('js/tinymce-init.js') }}"></script>
-
-
+{{ encore_entry_script_tags('app') }}
+            {{ encore_entry_link_tags('app') }}
             {% block importmap %} 
                 {{ importmap('app') }}
             {% endblock %}

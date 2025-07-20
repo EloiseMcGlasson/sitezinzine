@@ -116,8 +116,16 @@ input {
     {{ form_row (form.adresse) }}
     </div>
     <div class="ligne4">
-    {{ form_row (form.dateDebut) }}
-    {{ form_row (form.dateFin) }}
+     {{ form_row(form.dateDebut, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
+    {{ form_row(form.dateFin, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
     {{ form_row (form.horaire) }}
     {{ form_row (form.prix) }}
     </div>
@@ -171,24 +179,7 @@ input {
       });
       
 
-        document.addEventListener("DOMContentLoaded", function() {
-    flatpickr("#evenement_dateDebut", {
-        dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
-        altInput: true, // Affiche un format plus lisible
-        altFormat: "d/m/Y", // Affichage visuel en format français
-        locale: "fr", // 🔥 Met Flatpickr en français !
-        allowInput: true, // Permet d'écrire la date à la main
-    });
-});
-document.addEventListener("DOMContentLoaded", function() {
-    flatpickr("#evenement_dateFin", {
-      dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
-      altInput: true, // Affiche un format plus lisible
-      altFormat: "d/m/Y", // Affichage visuel en format français
-      locale: "fr", // 🔥 Met Flatpickr en français !
-      allowInput: true, // Permet d'écrire la date à la main
-    });
-    });
+        
         </script>
   {% endblock %}
   

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.27] - 2025-07-20
+### Ajout
+- Ajout des alt sur les images de la navbar coté auditeurices.
+- Ajout des controllers tinymce et flatpickr.
+- Ajout d'une favicon.ico.
+### Correction
+- Correction du partial vague qui soulignait les liens.
+- Correction de l'implémentation de tinymce, conflit stimulus et webpack helper.
+- Corrections des fichiers docker en conséquence.
+
+
 ## [1.0.26] - 2025-07-20
 ### Ajout
 - Ajout d'un bouton supprimer pour les émissions de la catégorie archive (visible uniquement pour superadmin).

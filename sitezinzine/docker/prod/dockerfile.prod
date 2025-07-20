@@ -1,4 +1,4 @@
-# 🧱 STAGE 1 : build avec Composer
+# 🧱 STAGE 1 : Composer (PHP) dependencies
 FROM php:8.3-cli AS composer_build
 
 RUN apt-get update && apt-get install -y \
@@ -9,66 +9,64 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-COPY . .
 
-ARG APP_ENV=prod
-ENV APP_ENV=${APP_ENV}
-
+# ⏱️ Étape cache-friendly
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
 
+# Ensuite seulement, copie le reste de ton code
+COPY . .
 
-# 🎨 STAGE 2 : compilation des assets (Stimulus, Webpack Encore)
+
+# 🎨 STAGE 2 : Frontend (Yarn, Webpack Encore)
 FROM node:18 AS frontend_build
 
 WORKDIR /app
 
-# Copie des fichiers nécessaires au build
+# ⏱️ Étape cache-friendly
 COPY package.json yarn.lock webpack.config.js ./
-COPY assets ./assets
-
-# Installe les dépendances front
 RUN yarn install --frozen-lockfile
 
-# Compile les assets (production = minifié)
+# Puis copie les fichiers assets
+COPY assets ./assets
+
+# 🌍 Production build
+ENV NODE_ENV=production
 RUN yarn build
 
 
-
-# 🏁 STAGE 3 : image finale de production
+# 🏁 STAGE 3 : Image finale
 FROM php:8.3-apache
 
 ARG APP_ENV=prod
 ENV APP_ENV=${APP_ENV}
 
-# Installation des extensions nécessaires
 RUN apt-get update && apt-get install -y \
     libicu-dev zip git unzip libzip-dev && \
     docker-php-ext-install intl pdo pdo_mysql zip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Active mod_rewrite pour Symfony
-RUN a2enmod rewrite
-
 # Apache config
+RUN a2enmod rewrite
 COPY ./docker/prod/apache/apache.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
-# Code Symfony
+# ⬇️ Copie du code Symfony (sauf vendor et build)
 COPY . .
 
-# Vendors PHP depuis le container de build
+# ⬇️ Copie des dépendances PHP
 COPY --from=composer_build /app/vendor ./vendor
 
-# Assets Webpack compilés
+# ⬇️ Copie des assets Webpack compilés
 COPY --from=frontend_build /app/public/build ./public/build
 
-# Fix permissions et utilisateur non-root
+# 🔒 Permissions
 RUN addgroup --system app && adduser --system --ingroup app appuser && \
     mkdir -p var && chown -R www-data:www-data var && \
     chown -R appuser:app /var/www/html
 
-# Entrypoint personnalisé (si besoin de migrations, etc)
+# 🔁 Entrypoint
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
@@ -76,4 +74,3 @@ USER appuser
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["apache2-foreground"]
-

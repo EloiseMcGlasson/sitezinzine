@@ -4,10 +4,7 @@
 
 {% block body %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/plugins/checklist/plugin.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
 
@@ -173,7 +170,6 @@
 
   
 </style>
-{# <script src="{{ asset('js\\tinymce.min.js') }}" type="text/javascript"></script> #}
 <div class="anedit">
 <div class="top">
 <img src="{{ asset('/images/bottom-header.gif') }}"></div>
@@ -198,8 +194,16 @@
     {{ form_row(form.adresse) }}
     </div>
     <div class="ligne4">
-    {{ form_row(form.dateDebut) }}
-    {{ form_row(form.dateFin) }}
+    {{ form_row(form.dateDebut, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
+    {{ form_row(form.dateFin, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
     {{ form_row(form.horaire) }}
     {{ form_row(form.prix) }}
     </div>
@@ -247,25 +251,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Écouter les changements sur le select
     typeSelect.addEventListener("change", toggleAutreType);    
-});
-
-document.addEventListener("DOMContentLoaded", function() {
-    flatpickr("#annonce_dateDebut", {
-        dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
-        altInput: true, // Affiche un format plus lisible
-        altFormat: "d/m/Y", // Affichage visuel en format français
-        locale: "fr", // 🔥 Met Flatpickr en français !
-        allowInput: true, // Permet d'écrire la date à la main
-    });
-});
-document.addEventListener("DOMContentLoaded", function() {
-    flatpickr("#annonce_dateFin", {
-      dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
-      altInput: true, // Affiche un format plus lisible
-      altFormat: "d/m/Y", // Affichage visuel en format français
-      locale: "fr", // 🔥 Met Flatpickr en français !
-      allowInput: true, // Permet d'écrire la date à la main
-    });
 });
 
 
@@ -319,93 +304,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    console.log("✅ Script de limitation de caractères avec message d'erreur activé !");
+
 });
 </script>
 
-<script type="text/javascript" language="javascript">
-document.addEventListener("DOMContentLoaded", function() {
-    tinymce.init({
-        selector: "textarea",
-        plugins: ['lists', 'link', 'preview'],
-        menubar: false,
-        statusbar: false,
-        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
-
-        setup: function(editor) {
-            editor.on('init', function() {
-                document.addEventListener('touchstart', function() {}, { passive: true });
-            });
-
-            // 🔥 Synchronise TinyMCE avec le textarea à chaque modification
-            editor.on('change keyup', function() {
-                tinymce.triggerSave(); 
-            });
-        }
-    });
-});
-</script>
-
-
-
-{# <script defer>
-document.addEventListener("DOMContentLoaded", function() {
-    let form = document.querySelector("form");
-    let tinyMCEField = document.getElementById("annonce_presentation");
-
-    if (form && tinyMCEField) {
-        form.addEventListener("submit", function(event) {
-            tinymce.triggerSave(); // 🔥 Force la sauvegarde TinyMCE
-
-            // ✅ Vérifie si le champ est vide après la synchro
-            if (tinyMCEField.value.trim() === "") {
-                alert("🚨 Le champ 'Présentation' est obligatoire !");
-                tinyMCEField.classList.remove("hidden-textarea"); // 🔥 Rendre visible temporairement
-                setTimeout(() => tinyMCEField.focus(), 50); // 🔥 Force le focus après un court délai
-                event.preventDefault(); // ⛔ Bloque la soumission
-                return false;
-            }
-        });
-    }
-});
-</script>
- #}
- {# <script defer>
-document.addEventListener("DOMContentLoaded", function() {
-    let form = document.querySelector("form");
-    let tinyMCEField = document.getElementById("annonce_presentation");
-
-    if (form && tinyMCEField) {
-        let editorWrapper = tinyMCEField.closest(".mb-3"); // Récupère le div parent
-        let errorMessage = document.createElement("div");
-        errorMessage.className = "error-message";
-        errorMessage.style.color = "white";
-        errorMessage.style.fontSize = "0.9em";
-        errorMessage.style.fontWeight = "bold";
-        errorMessage.style.marginTop = "5px";
-        errorMessage.textContent = ""; // Par défaut, aucun message
-
-        // ✅ Ajoute le message d'erreur sous TinyMCE
-        if (editorWrapper) {
-            editorWrapper.appendChild(errorMessage);
-        }
-
-        form.addEventListener("submit", function(event) {
-            tinymce.triggerSave(); // 🔥 Force la sauvegarde de TinyMCE dans le textarea
-
-            // ✅ Vérifie si le champ est vide après la sauvegarde
-            if (tinyMCEField.value.trim() === "") {
-                errorMessage.textContent = "🚨 Le champ 'Présentation' est obligatoire !";
-                event.preventDefault(); // ⛔ Bloque la soumission du formulaire
-                return false;
-            } else {
-                errorMessage.textContent = ""; // ✅ Efface le message si le champ est rempli
-            }
-        });
-    }
-});
-</script> #}
-
- 
 
 {% endblock %}
