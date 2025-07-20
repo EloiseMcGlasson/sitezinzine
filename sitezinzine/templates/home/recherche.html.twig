@@ -3,7 +3,7 @@
 {% block title %}Recherche d'émissions{% endblock %}
 
 {% block body %}
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
 
 <style>
     .recherche {
@@ -280,8 +280,16 @@ button[type=reset]:hover {
         <div>{{ form_row (form.theme) }}</div>
     </div>
             <div class="date-range">
-            {{ form_row (form.dateDebut) }}
-            {{ form_row (form.dateFin) }}
+            {{ form_row(form.dateDebut, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
+    {{ form_row(form.dateFin, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
         </div>
         <div class="button-group">
     <button type="submit">Rechercher</button>
@@ -361,26 +369,7 @@ button[type=reset]:hover {
     {% endif %}
 </div>
 <script>
-document.addEventListener("turbo:load", function() {
-    flatpickr("#emission_search_dateDebut", {
-        dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
-        altInput: true, // Affiche un format plus lisible
-        altFormat: "d/m/Y", // Affichage visuel en format français
-        locale: "fr", // 🔥 Met Flatpickr en français !
-        allowInput: true, // Permet d'écrire la date à la main
-    });
-});
-document.addEventListener("turbo:load", function() {
-    flatpickr("#emission_search_dateFin", {
-      dateFormat: "Y-m-d", // Format YYYY-MM-DD (stocké proprement)
-      altInput: true, // Affiche un format plus lisible
-      altFormat: "d/m/Y", // Affichage visuel en format français
-      locale: "fr", // 🔥 Met Flatpickr en français !
-      allowInput: true, // Permet d'écrire la date à la main
-    });
-});
-
-
+    // Fonction pour réinitialiser le formulaire et rediriger vers la page de recherche
     function resetForm() {
         // Réinitialiser les champs du formulaire
         document.querySelector('form').reset();

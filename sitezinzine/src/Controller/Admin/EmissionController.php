@@ -57,7 +57,7 @@ public function index(Request $request, EmissionRepository $repository, Security
         $emission = new Emission();
         $form = $this->createForm(EmissionType::class, $emission);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $now = new \DateTime();
             $emission

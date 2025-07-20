@@ -46,21 +46,25 @@
     
     }
     .button-nav-don {
-        all : unset;
-        font-family: "Montserrat", sans-serif;
-        font-size: 13px;
-        background-color: #e4013A;
-        border: none;
-        border-radius: 5px;
-        color: white;
-        box-shadow: 0px 3px 5px black;
-        padding: 10px;
-        cursor:pointer;
-    }
+    display: inline-block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    background-color: #e4013A;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 0px 3px 5px black;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none; /* ❌ enlève le soulignement */
+    text-align: center;
+}
 
-    .button-nav-don:hover {
-        background-color: #B81C61;
-    }
+.button-nav-don:hover {
+    background-color: #B81C61;
+    text-decoration: none;
+}
+
 
     a img.aix {
         width: 110px;
@@ -79,9 +83,9 @@ a.active {
 
 </style>
 <nav>
-    <img src="{{ asset('/images/logo.gif') }}">
+    <img src="{{ asset('/images/logo.gif') }}" alt="Logo de Radio Zinzine">
         <a href="https://www.radiozinzineaix.org/" target="_blank">
-            <img class="aix" src="{{ asset('/images/zinzine-aix.png') }}"></a>
+            <img class="aix" src="{{ asset('/images/zinzine-aix.png') }}" alt="Logo de Radio Zinzine Aix"></a>
             <ul>
                 <li>
                     DEMO
@@ -120,11 +124,8 @@ a.active {
                                     </a>
                                 </li>
                             </ul>
-                            <a href="https://www.helloasso.com/associations/association-radio-zinzine/formulaires/1" target="_blank">
-                                <button class="button-nav-don">
-                                    FAIRE UN DON
-                                </button>
+                            <a href="https://www.helloasso.com/associations/association-radio-zinzine/formulaires/1" target="_blank" class="button-nav-don">
+                                FAIRE UN DON
                             </a>
                             <a href="{{ path('emission.recherche') }}" data-turbo-action="advance" class="{{ app.current_route == 'recherche' ? 'active' : '' }}">
-                                <img src="{{ asset('/images/ico-recherche.gif') }}"></a>
-                                
+                                <img src="{{ asset('/images/ico-recherche.gif') }}" alt="Icône de recherche"></a>
