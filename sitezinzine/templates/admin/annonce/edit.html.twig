@@ -159,8 +159,16 @@ input[type=text], select {
     {{ form_row (form.adresse) }}
     </div>
     <div class="ligne4">
-    {{ form_row (form.dateDebut) }}
-    {{ form_row (form.dateFin) }}
+    {{ form_row(form.dateDebut, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
+    {{ form_row(form.dateFin, {
+    attr: {
+      'data-controller': 'flatpickr'
+    }
+}) }}
     {{ form_row (form.horaire) }}
     {{ form_row (form.prix) }}
     </div>

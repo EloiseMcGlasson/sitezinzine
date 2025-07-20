@@ -9,23 +9,23 @@
         color: black;
         display: flex;
         flex-direction: column;
-        
     }
-    .blocks {
+    .vagues a {
+    text-decoration: none;
+}
+.vagues a:hover {
+    text-decoration: none;
+}
+
+
+    .vagues .blocks {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         margin: 50px;
-        
     }
 
-
-    
-
-  
-    
-
-    .blocdon, .blocannonces, .blocaide {
+    .vagues .blocdon, .vagues .blocannonces, .vagues .blocaide {
         width: 250px;
         background-color: white;
         border: solid 2px gray;
@@ -37,13 +37,13 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
-    .blocdon:hover, .blocannonces:hover, .blocaide:hover {
+    .vagues .blocdon:hover, .vagues .blocannonces:hover, .vagues .blocaide:hover {
         transform: translateY(-5px); /* Légère élévation */
         box-shadow: rgba(50, 50, 93, 0.35) 0px 20px 40px -5px, rgba(0, 0, 0, 0.4) 0px 10px 20px -8px;
         border-color: #E40039; /* Changement de couleur de bordure */
     }
 
-    .blocdon h1, .blocannonces h1, .blocaide h1 {
+    .vagues .blocdon h1, .vagues .blocannonces h1, .vagues .blocaide h1 {
         font-family: "Montserrat", sans-serif;
         font-weight: 900;
         font-size: 22px;
@@ -51,7 +51,7 @@
         margin-bottom: 5px;
     }
 
-    .blocdon h2, .blocannonces h2, .blocaide h2 {
+    .vagues .blocdon h2, .vagues .blocannonces h2, .vagues .blocaide h2 {
         font-family: "Montserrat Alternates", sans-serif;
         font-weight: 400;
         font-style: italic;
@@ -59,17 +59,12 @@
         color: gray;
     }
 
-    
-
-   
-    .bottomvagues img{
-        width: 100%;
-        
+    .vagues .bottomvagues img{
+        width: 100%;        
         margin-bottom: 0px;
         padding-bottom: 0px;
-        
-        
     }
+
 </style>
 <div class='vagues'>
     <div class="blocks">

@@ -11,7 +11,8 @@ use App\Repository\ThemeRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EmissionSearchType extends AbstractType
@@ -26,18 +27,26 @@ class EmissionSearchType extends AbstractType
                 'placeholder' => 'Rechercher par mot'
             ]
         ])
-       ->add('dateDebut', DateType::class, [
-            'required' => false,
-            'label' => 'Date de début',
-            'widget' => 'single_text',
-            'html5' => false,
-        ])
-        ->add('dateFin', DateType::class, [
-            'required' => false,
-            'label' => 'Date de fin',
-            'widget' => 'single_text',
-            'html5' => false,
-        ])
+       ->add('dateDebut', DateTimeType::class, [
+        'input' => 'datetime',
+        'label' => 'Date de début',
+        'widget' => 'single_text',
+        'html5' => false,
+        'format' => 'yyyy-MM-dd',
+        'attr' => [
+            'data-controller' => 'flatpickr',
+        ],
+    ])
+    ->add('dateFin', DateTimeType::class, [
+        'input' => 'datetime',
+        'label' => 'Date de fin',
+        'widget' => 'single_text',
+        'html5' => false,
+        'format' => 'yyyy-MM-dd',
+        'attr' => [
+            'data-controller' => 'flatpickr',
+        ],
+    ])
         ->add('categorie', EntityType::class, [
             'class' => Categories::class,
             'required' => false,
