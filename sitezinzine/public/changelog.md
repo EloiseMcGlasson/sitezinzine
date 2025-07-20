@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.26] - 2025-07-20
+### Ajout
+- Ajout d'un bouton supprimer pour les émissions de la catégorie archive (visible uniquement pour superadmin).
+- Ajout d'une nouvelle règle de nommage des fichiers uploadés afin d'éviter les bugs de charactères spéciaux (vitch).
+### Correction
+- Correction de la redirection de page quand on validait un changement sur une émission ou une catégorie, maintenant on se retrouve sur la page précédent le formulaire et pas sur la première page de la liste.
+- Correction de l'affichage des images en background cartes de lastemission contenant un charactère spécial.
+- Factorisation du code de la page categorie.show pour éviter des doublons.
+- Correction du css de la page admin.emission.show, le blanc de la partie catégorie ne descendait pas jusqu'en bas.
+
 ## [1.0.25] - 2025-07-19
 ### Base de données
 - Récupération de la base de données réelle pour tests de script d'adaptation.
