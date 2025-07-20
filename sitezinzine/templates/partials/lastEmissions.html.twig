@@ -37,12 +37,12 @@
     background-color: black;
     width: 100%;
     max-width: 350px;
-    height: auto;
+    height: 300px; /* Définir une hauteur fixe pour forcer l'affichage de l'image */
     margin: auto;
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* Peut être conservé ou ajusté selon tes besoins */
 }
 
 /* Texte et éléments internes */
@@ -290,8 +290,7 @@
 <div class='bodylast'>
     <div>
         <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}">
-        </div>
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
             <div class="titrelast">
                 <img src="{{ asset('/images/illu-radio-libre.gif') }}">
                     <div>
@@ -302,59 +301,51 @@
                             À réécouter
                         </h3>
                     </div>
-            </div>
-                <article>
-
-                    {% for lastEmissionByGroupTheme in lastEmissionsByTheme %}
-                        {% if lastEmissionByGroupTheme.emission_thumbnail %}
-
-                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/emissions/' ~ lastEmissionByGroupTheme.emission_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmissionByGroupTheme.categorie_thumbnail %}
-                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/categories/' ~ lastEmissionByGroupTheme.categorie_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
-                        {% elseif lastEmissionByGroupTheme.theme_thumbnail | default ('') %}
-                            <div class='carte' style="background-image: url('{{ asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail) }}');background-size: cover;background-repeat: no-repeat;">
-                         {% else %}
-                         <div class='carte' style="background-image: url('{{ asset('/uploads/images/emissions/emission-zinzine.org') }}');background-size: cover;background-repeat: no-repeat;">
-                        {% endif %}
-                    <a href="{{ path('emission.show', {id: lastEmissionByGroupTheme.emission_id }) }}">
-                    <div class="theme">
-                    <p>
-                    {{ lastEmissionByGroupTheme.theme_group | default ('') | upper }}
-                    </p>
-                
-                    </div>
-                    <div class="transparent">
-                        
-                                <div class='categorie'>
-                                    <p>
-
-                                        {{ lastEmissionByGroupTheme.categorie_titre | upper }}
-                                    </p>
-                                </div>
-                                <div class='titre'>
-                                    <p>
-                                        {{ lastEmissionByGroupTheme.emission_titre }}
-                                    </p>
-                                </div>
-                                <div class='date'>
-                                    <p>
-                                        {{ "Le " ~ lastEmissionByGroupTheme.emission_datepub| format_datetime ('medium', 'short', locale = 'fr') }}
-                                    </p>
-                                </div>
-                                <div class='ecoute'>
-                                    <p>
-                                        <a href="{{ lastEmissionByGroupTheme.emission_url }}">
-                                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
-                                        </a>
-                                    </p>
-                                </div>
-                            </a>
-                        <div class="shadow"></div>
-                    </div>
                 </div>
-                    {% endfor %}
-                </article>
-    </div>
-                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
-</div>
+                <article>
+                    {% for lastEmissionByGroupTheme in lastEmissionsByTheme %}
+                        {% set bgImage = '' %}
+                        {% if lastEmissionByGroupTheme.emission_thumbnail is not empty %}
+                            {% set bgImage = asset('/uploads/images/emissions/' ~ lastEmissionByGroupTheme.emission_thumbnail|url_encode) %}
+                        {% elseif lastEmissionByGroupTheme.categorie_thumbnail is not empty %}
+                            {% set bgImage = asset('/uploads/images/categories/' ~ lastEmissionByGroupTheme.categorie_thumbnail|url_encode) %}
+                        {% elseif lastEmissionByGroupTheme.theme_thumbnail is not empty %}
+                            {% set bgImage = asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail|url_encode) %}
+                        {% else %}
+                            {% set bgImage = asset('/uploads/images/emissions/emission-zinzine.org') %}
+                        {% endif %}
+                        <div class="carte" style="background-image: url('{{ bgImage }}'); background-size: cover; background-repeat: no-repeat;">
+                            <div class="theme">
+                                <p>
+                                    {{ lastEmissionByGroupTheme.theme_group | default('') | upper }}
+                                </p>
+                            </div>
+                            <a href="{{ path('emission.show', {id: lastEmissionByGroupTheme.emission_id}) }}" style="text-decoration: none;">
+                                <div class="transparent">
+                                    <div class="categorie">
+                                        <p>
+                                            {{ lastEmissionByGroupTheme.categorie_titre | upper }}
+                                        </p>
+                                    </div>
+                                    <div class="titre">
+                                        <p>
+                                            {{ lastEmissionByGroupTheme.emission_titre }}
+                                        </p>
+                                    </div>
+                                    <div class="date">
+                                        <p>
+                                            Le
+                                            {{ lastEmissionByGroupTheme.emission_datepub | format_datetime('medium', 'short', locale='fr') }}
+                                        </p>
+                                    </div>
+                                    <div class="ecoute">
+                                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></div>
+                                    </div>
+                                </a>
+                                <div class="shadow"></div>
+                            </div>
+                        {% endfor %}
+                    </article>
+                </div>
+                <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
                 

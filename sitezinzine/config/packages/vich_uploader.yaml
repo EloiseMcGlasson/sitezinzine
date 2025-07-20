@@ -6,35 +6,35 @@ vich_uploader:
             uri_prefix: /uploads/images/emissions
             upload_destination: '%kernel.project_dir%/public/uploads/images/emissions'
             namer:
-                service: Vich\UploaderBundle\Naming\PropertyNamer
+                service: App\Service\SafeFilenameNamer
                 options: { property: 'titre' }
         categories:
             uri_prefix: /uploads/images/categories
             upload_destination: '%kernel.project_dir%/public/uploads/images/categories'
             namer:
-                service: Vich\UploaderBundle\Naming\PropertyNamer
+                service: App\Service\SafeFilenameNamer
                 options: { property: 'titre' }
         themes:
             uri_prefix: /uploads/images/theme
             upload_destination: '%kernel.project_dir%/public/uploads/images/theme'
             namer:
-                service: Vich\UploaderBundle\Naming\PropertyNamer
+                service: App\Service\SafeFilenameNamer
                 options: { property: 'name'} 
         annonces:
             uri_prefix: /uploads/images/annonce
             upload_destination: '%kernel.project_dir%/public/uploads/images/annonce'
             namer:
-                service: Vich\UploaderBundle\Naming\PropertyNamer
+                service: App\Service\SafeFilenameNamer
                 options: { property: 'titre'}     
         emissionsMp3:
             uri_prefix: /uploads/emissionsMp3
             upload_destination: '%kernel.project_dir%/public/uploads/emissionsMp3'
             namer:
-                service: Vich\UploaderBundle\Naming\PropertyNamer
+                service: App\Service\SafeFilenameNamer
                 options: { property: 'titre' }
         evenements:
             uri_prefix: /uploads/images/evenement
             upload_destination: '%kernel.project_dir%/public/uploads/images/evenement'
             namer:
-                service: Vich\UploaderBundle\Naming\PropertyNamer
+                service: App\Service\SafeFilenameNamer
                 options: { property: 'titre'}
