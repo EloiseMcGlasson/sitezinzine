@@ -88,76 +88,74 @@ article{
 
 </style>
     <div>
-        
-            <div class="catblock">
-            
-            <div class="titre">
-                <h1>
-                    {{ categorie.titre }}
-                </h1>
-            </div>
-            <div class="catimg">
-                {% if categorie.thumbnail %}
-                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+    <div class="catblock">
+        <div class="titre">
+            <h1>{{ categorie.titre }}</h1>
+        </div>
+        <div class="catimg">
+            {% if categorie.thumbnail %}
+                <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+            {% endif %}
+        </div>
+        <div class="catdescriptif">
+            {{ categorie.descriptif | raw }}
+        </div>
+        <div class="bottom">
+            <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
+        </div>
+    </div>
+</div>
+
+<div class="emissionsdelacategorie">
+    <div class="titre">
+        <h2>Toutes les émissions de cette catégorie :</h2>
+    </div>
+    <div class="catemission">
+        {% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+            <article>
+                <div class="col1">
+                    {% if emission.thumbnail %}
+                        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
                     {% endif %}
                 </div>
-                <div class="catdescriptif">
-                    {{ categorie.descriptif | raw }}
+                <div class="col2">
+                    <h2>{{ emission.titre }}</h2>
+                    <p>{{ emission.datepub|date('d-m-Y') }} {{ emission.descriptif | raw }}</p>
                 </div>
-                <div class="bottom">
-                <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
-            </div>
-        </div>
-            </div>
-                <div class="emissionsdelacategorie">
-                    <div class="titre">
-                        <h2>
-                            Toutes les émissions de cette catégorie :
-                        </h2>
-                    </div>
-                    <div class="catemission">
-                        {% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
-                            <article>
-                                <div class="col1">
-                                    {% if emission.thumbnail %}
-                                        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col2">
-                                        <h2>
-                                            {{ emission.titre }}
-                                        </h2>
-                                        <p>
-                                            {{ emission.datepub|date('d-m-Y') }}
-                                            {{ emission.descriptif | raw }}
-                                        </p>
-                                    </div>
-                                    <div class="col3">
-                                        {% if emission.url %}
-                                        <div class='ecoute'>
-                                                <a href="{{ emission.url }}">
-                                                <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
-                                                </a>
-                                        </div>
-                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                                    Éditer
-                                                </a>
-                                       
-                                        {% else %}
-                                            <p>
-                                                <div class='ecoute'>
-                                                Pas de fichier audio disponible
-                                                </div>
-                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                                    Éditer
-                                                </a>
-                                            </a>
-                                        </p>
-                                    </div>
-                                {% endif %}
-                            </article>
-                        {% endfor %}
-                    </div>
+                <div class="col3">
+                    {% if emission.url %}
+                        <div class='ecoute'>
+                            <a href="{{ emission.url }}">
+                                <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
+                            </a>
+                        </div>
+                    {% else %}
+                        <p>
+                            <div class='ecoute'>Pas de fichier audio disponible</div>
+                        </p>
+                    {% endif %}
+
+                    {# Lien d'édition #}
+                    <a class="btn btn-primary btn-sm"
+                        href="{{ path('admin.emission.edit', {
+                            id: emission.id,
+                            returnTo: app.request.uri
+                        }) }}">
+                        Éditer
+                    </a>
+
+                    {# Suppression (si condition remplie) #}
+                    {% if is_granted('ROLE_SUPER_ADMIN') and categorie.id == 211 %}
+                        <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn-action btn-delete">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </div>
-            {% endblock %}
+            </article>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
             
