@@ -1,4 +1,4 @@
-# 🧱 STAGE 1 : Composer (PHP) dependencies
+# 🧱 STAGE 1 : build avec Composer
 FROM php:8.3-cli AS composer_build
 
 RUN apt-get update && apt-get install -y \
@@ -9,64 +9,68 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-
-# ⏱️ Étape cache-friendly
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
-
-# Ensuite seulement, copie le reste de ton code
 COPY . .
 
+ARG APP_ENV=prod
+ENV APP_ENV=${APP_ENV}
 
-# 🎨 STAGE 2 : Frontend (Yarn, Webpack Encore)
+RUN composer install --no-dev --optimize-autoloader
+
+
+# 🎨 STAGE 2 : compilation des assets (Stimulus, Webpack Encore)
 FROM node:18 AS frontend_build
 
 WORKDIR /app
 
-# ⏱️ Étape cache-friendly
+# Copie des fichiers nécessaires au build
 COPY package.json yarn.lock webpack.config.js ./
-RUN yarn install --frozen-lockfile
-
-# Puis copie les fichiers assets
 COPY assets ./assets
 
-# 🌍 Production build
+# Installe les dépendances front
+RUN yarn install --frozen-lockfile
+
+# Compile les assets (production = minifié)
 ENV NODE_ENV=production
 RUN yarn build
 
 
-# 🏁 STAGE 3 : Image finale
+
+# 🏁 STAGE 3 : image finale de production
 FROM php:8.3-apache
 
 ARG APP_ENV=prod
 ENV APP_ENV=${APP_ENV}
 
+# Installation des extensions nécessaires
 RUN apt-get update && apt-get install -y \
     libicu-dev zip git unzip libzip-dev && \
     docker-php-ext-install intl pdo pdo_mysql zip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Apache config
+# Active mod_rewrite pour Symfony
 RUN a2enmod rewrite
+
+# Apache config
 COPY ./docker/prod/apache/apache.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
-# ⬇️ Copie du code Symfony (sauf vendor et build)
+# Code Symfony
 COPY . .
 
-# ⬇️ Copie des dépendances PHP
+# Vendors PHP depuis le container de build
 COPY --from=composer_build /app/vendor ./vendor
 
-# ⬇️ Copie des assets Webpack compilés
+# Assets Webpack compilés
 COPY --from=frontend_build /app/public/build ./public/build
+COPY --from=frontend_build /app/public/build/manifest.json ./public/build/manifest.json
 
-# 🔒 Permissions
+# Fix permissions et utilisateur non-root
 RUN addgroup --system app && adduser --system --ingroup app appuser && \
     mkdir -p var && chown -R www-data:www-data var && \
     chown -R appuser:app /var/www/html
 
-# 🔁 Entrypoint
+# Entrypoint personnalisé (si besoin de migrations, etc)
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
@@ -74,3 +78,4 @@ USER appuser
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["apache2-foreground"]
+
