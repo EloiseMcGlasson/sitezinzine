@@ -1,0 +1,13 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Edit Diffusion{% endblock %}
+
+{% block body %}
+    <h1>Edit Diffusion</h1>
+
+    {{ include('admin/diffusion/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('admin.diffusion.index') }}">back to list</a>
+
+    {{ include('admin/diffusion/_delete_form.html.twig') }}
+{% endblock %}

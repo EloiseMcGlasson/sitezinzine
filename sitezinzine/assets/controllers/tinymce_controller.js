@@ -41,6 +41,8 @@ export default class extends Controller {
     // Initialisation de TinyMCE sur le textarea sélectionné
    tinymce.init({
   target: textarea,
+  language: 'fr_FR',
+  language_url: 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/langs/fr_FR.js',
   plugins: ['lists', 'link', 'preview'],
   toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link",
   menubar: false,
