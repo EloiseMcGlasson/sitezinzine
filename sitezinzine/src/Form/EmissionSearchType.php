@@ -29,6 +29,7 @@ class EmissionSearchType extends AbstractType
         ])
        ->add('dateDebut', DateTimeType::class, [
         'input' => 'datetime',
+        'required' => false,
         'label' => 'Date de début',
         'widget' => 'single_text',
         'html5' => false,
@@ -39,6 +40,7 @@ class EmissionSearchType extends AbstractType
     ])
     ->add('dateFin', DateTimeType::class, [
         'input' => 'datetime',
+        'required' => false,
         'label' => 'Date de fin',
         'widget' => 'single_text',
         'html5' => false,

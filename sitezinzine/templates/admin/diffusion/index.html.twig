@@ -1,0 +1,37 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Diffusion index{% endblock %}
+
+{% block body %}
+    <h1>Diffusion index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>HoraireDiffusion</th>
+                <th>NombreDiffusion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for diffusion in diffusions %}
+            <tr>
+                <td>{{ diffusion.id }}</td>
+                <td>{{ diffusion.horaireDiffusion ? diffusion.horaireDiffusion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ diffusion.nombreDiffusion }}</td>
+                <td>
+                    <a href="{{ path('admin.diffusion.show', {'id': diffusion.id}) }}">show</a>
+                    <a href="{{ path('admin.diffusion.edit', {'id': diffusion.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin.diffusion.create') }}">Create new</a>
+{% endblock %}

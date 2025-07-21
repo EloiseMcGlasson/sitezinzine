@@ -51,32 +51,40 @@ public function index(Request $request, EmissionRepository $repository, Security
         ]);
     }
 
-    #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em, Security $security): Response
-    {
-        $emission = new Emission();
-        $form = $this->createForm(EmissionType::class, $emission);
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $now = new \DateTime();
-            $emission
-                ->setDatepub($now)
-                ->setUpdatedat($now)
-                ->setUser($security->getUser());
+   #[Route('/create', name: 'create')]
+public function create(Request $request, EntityManagerInterface $em, Security $security): Response
+{
+    $emission = new Emission();
+    $form = $this->createForm(EmissionType::class, $emission);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        $now = new \DateTime();
+        $user = $security->getUser();
 
-            $em->persist($emission);
-            $em->flush();
-
-            $this->addFlash('success', 'L\'émission a été créée !');
-
-            return $this->redirectToRoute('admin.emission.index');
+        // Si ref est vide, on met le username du user connecté
+        if (empty($emission->getRef()) && $user) {
+            $emission->setRef($user->getUserIdentifier());
         }
 
-        return $this->render('admin/emission/create.html.twig', [
-            'form' => $form,
-        ]);
+        $emission
+            ->setDatepub($now)
+            ->setUpdatedat($now)
+            ->setUser($user);
+
+        $em->persist($emission);
+        $em->flush();
+
+        $this->addFlash('success', 'L\'émission a été créée !');
+
+        return $this->redirectToRoute('admin.emission.index');
     }
+
+    return $this->render('admin/emission/create.html.twig', [
+        'form' => $form,
+    ]);
+}
+
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
 public function edit(

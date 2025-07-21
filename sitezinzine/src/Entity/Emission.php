@@ -37,8 +37,8 @@ class Emission
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datepub = null;
 
+    #[ORM\Column(length: 250, nullable: false)]
     #[Groups(['emissions.index', 'emissions.create'])]
-    #[ORM\Column(length: 250)]
     private ?string $ref = null;
 
     #[ORM\Column]
@@ -48,10 +48,10 @@ class Emission
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
     private ?int $duree = null;
 
-    #[ORM\Column(length: 250)]
-    #[Assert\Url(message: 'This value is not a valid URL')]
+    #[ORM\Column(length: 250, nullable: true)]
+    //#[Assert\Url(message: 'This value is not a valid URL')]
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
-    private string $url ='';
+    private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['emissions.index', 'emissions.create', 'emissions.lastemissions'])]
@@ -105,11 +105,19 @@ class Emission
     #[ORM\ManyToMany(targetEntity: InviteOldAnimateur::class, inversedBy: 'emissions')]
     private Collection $InviteOldAnimateurs;
 
+    /**
+     * @var Collection<int, Diffusion>
+     */
+    #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true, cascade: ['persist'])]
+    private Collection $diffusions;
+
+
 
 
     public function __construct()
     {
         $this->InviteOldAnimateurs = new ArrayCollection();
+        $this->diffusions = new ArrayCollection();
     }
 
 
@@ -333,7 +341,7 @@ class Emission
 
     /**
      * Get the value of thumbnailFileMp3
-     */ 
+     */
     public function getThumbnailFileMp3()
     {
         return $this->thumbnailFileMp3;
@@ -343,10 +351,41 @@ class Emission
      * Set the value of thumbnailFileMp3
      *
      * @return  self
-     */ 
+     */
     public function setThumbnailFileMp3($thumbnailFileMp3): static
     {
         $this->thumbnailFileMp3 = $thumbnailFileMp3;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Diffusion>
+     */
+    public function getDiffusions(): Collection
+    {
+        return $this->diffusions;
+    }
+
+    public function addDiffusion(Diffusion $diffusion): static
+    {
+        if (!$this->diffusions->contains($diffusion)) {
+            $this->diffusions->add($diffusion);
+            $diffusion->setEmission($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDiffusion(Diffusion $diffusion): static
+    {
+        if ($this->diffusions->removeElement($diffusion)) {
+            // set the owning side to null (unless already changed)
+            if ($diffusion->getEmission() === $this) {
+                $diffusion->setEmission(null);
+            }
+        }
 
         return $this;
     }
