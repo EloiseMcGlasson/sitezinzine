@@ -312,7 +312,7 @@
                         {% elseif lastEmissionByGroupTheme.theme_thumbnail is not empty %}
                             {% set bgImage = asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail|url_encode) %}
                         {% else %}
-                            {% set bgImage = asset('/uploads/images/emissions/emission-zinzine.org') %}
+                            {% set bgImage = asset('/uploads/images/emissions/emission-zinzine.jpg') %}
                         {% endif %}
                         <div class="carte" style="background-image: url('{{ bgImage }}'); background-size: cover; background-repeat: no-repeat;">
                             <div class="theme">
@@ -335,7 +335,8 @@
                                     <div class="date">
                                         <p>
                                             Le
-                                            {{ lastEmissionByGroupTheme.emission_datepub | format_datetime('medium', 'short', locale='fr') }}
+                                            {{ lastEmissionByGroupTheme.last_diffusion | format_datetime('medium', 'short', locale='fr') }}
+
                                         </p>
                                     </div>
                                     <div class="ecoute">

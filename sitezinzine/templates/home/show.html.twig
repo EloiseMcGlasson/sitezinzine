@@ -484,7 +484,12 @@ a {
               </a> - {{ emission.categorie.titre }} - {{ emission.theme.name }}
             </h3>
             <p class="date">
-              {{ emission.datepub|date('d-m-Y') }}
+             {% for diffusion in emission.diffusions %}
+    {{ diffusion.horaireDiffusion|date('d/m/Y H:i') }}<br>
+{% else %}
+    Aucune diffusion.
+{% endfor %}
+
             </p>
             <p class="description">
               {{ emission.descriptif | raw }}

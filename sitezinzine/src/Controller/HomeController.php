@@ -15,21 +15,38 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route("/", name: "home")]
-    function index(EmissionRepository $emissionRepository, EvenementRepository $evenement): Response
-    {
-        $lastEmissions = $emissionRepository->lastEmissions('');
-        $lastEmissionsByGroupTheme = $emissionRepository->lastEmissionsByGroupTheme('');
-        $evenement = $evenement->findUpcomingEvenements();
-        
+#[Route("/", name: "home")]
+public function index(EmissionRepository $emissionRepository, EvenementRepository $evenementRepository): Response
+{
+    $date = new \DateTime('2025-06-25');
 
-        return $this->render('home/index.html.twig', [
+    $emissions = $emissionRepository->findEmissionsByDate($date);
 
-            'lastEmissions' => $lastEmissions,
-            'lastEmissionsByTheme' => $lastEmissionsByGroupTheme,
-            'evenements' => $evenement
-        ]);
+    // On prépare une structure : une liste de couples [emission, diffusion]
+    $lastEmissions = [];
+
+    foreach ($emissions as $emission) {
+        foreach ($emission->getDiffusions() as $diffusion) {
+            if ($diffusion->getHoraireDiffusion()->format('Y-m-d') === $date->format('Y-m-d')) {
+                $lastEmissions[] = [
+                    'emission' => $emission,
+                    'diffusion' => $diffusion->getHoraireDiffusion(),
+                ];
+            }
+        }
     }
+
+    return $this->render('home/index.html.twig', [
+        'lastEmissions' => $lastEmissions,
+        'lastEmissionsByTheme' => $emissionRepository->lastEmissionsByGroupTheme(''),
+        'evenements' => $evenementRepository->findUpcomingEvenements(),
+    ]);
+}
+
+
+
+
+
 
     #[Route('/{id}', name: 'showEvenement', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function showEvenement(Evenement $evenement): Response
