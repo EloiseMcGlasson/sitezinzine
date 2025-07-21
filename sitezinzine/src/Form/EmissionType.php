@@ -77,7 +77,8 @@ class EmissionType extends AbstractType
             'label'=> 'Mot(s) clé(s)'
         ])
         ->add('ref', TextType::class, [
-            'label'=> 'Créateur/trice'
+            'label'=> 'Créateur/trice',
+            'required' => false,
         ])
         ->add('duree', IntegerType::class, [
             'label'=> 'Durée'

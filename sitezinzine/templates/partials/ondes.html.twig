@@ -292,44 +292,50 @@ color: black;
   </div>
     <div class="glide" data-controller="carousel">
       <div class="glide__track" data-glide-el="track">
-        <ul class="glide__slides">
-          {% for lastEmission in lastEmissions %}
-          <li class="glide__slide">
-            <div class="carousel">
-            <div class='image_carousel'>
-            {% if lastEmission.thumbnail %}
-                <img src="{{ vich_uploader_asset(lastEmission, 'thumbnailFile') }}" 
-                     alt="{{ lastEmission.titre }}">
-            {% elseif lastEmission.categorie.thumbnail %}
-                <img src="{{ vich_uploader_asset(lastEmission.categorie, 'thumbnailFile') }}" 
-                     alt="{{ lastEmission.categorie.titre }}">
-            {% else %}
-                <img src="{{ asset('images/default.jpg') }}" 
-                     alt="Image par défaut">
-            {% endif %}
-        </div>
-                          <div class='date_carousel'>
-                            <p>
-                              {{ 'à ' ~ lastEmission.datepub| format_datetime ('none', 'short', locale = 'fr') }}
-                            </p>
-                          </div>
-                          <div class='titre_carousel'>
-                            <p>
-                              <a href="{{ path('emission.show', {id: lastEmission.id }) }}">
-                              {{ lastEmission.titre | upper }}
-                              </a>
-                            </p>
-                          </div>
-                          <div class='categorie_carousel'>
-                          <p>
-                            {{ lastEmission.categorie.titre | upper }}
-                          </p>
-                        </div>
-                   
-                    
-            {% endfor %}
-          </li>
-        </ul>
+       <ul class="glide__slides">
+  {% for row in lastEmissions %}
+  {% set emission = row.emission %}
+  {% set diffusion = row.diffusion %}
+  <li class="glide__slide">
+    <div class="carousel">
+      <div class='image_carousel'>
+        {% set imagePathEmission = vich_uploader_asset(emission, 'thumbnailFile') %}
+        {% set imagePathCategorie = vich_uploader_asset(emission.categorie, 'thumbnailFile') %}
+
+        {% if imagePathEmission %}
+            <img src="{{ imagePathEmission }}" alt="{{ emission.titre }}">
+        {% elseif imagePathCategorie %}
+            <img src="{{ imagePathCategorie }}" alt="{{ emission.categorie.titre }}">
+        {% else %}
+            <img src="{{ asset('uploads/images/emission-zinzine.jpg') }}" alt="Image par défaut">
+        {% endif %}
+      </div>
+
+      <div class='date_carousel'>
+        <p>
+          {{ 'à ' ~ diffusion | format_datetime('none', 'short', locale='fr') }}
+        </p>
+      </div>
+
+      <div class='titre_carousel'>
+        <p>
+          <a href="{{ path('emission.show', { id: emission.id }) }}">
+            {{ emission.titre | upper }}
+          </a>
+        </p>
+      </div>
+
+      <div class='categorie_carousel'>
+        <p>
+          {{ emission.categorie.titre | upper }}
+        </p>
+      </div>
+    </div>
+  </li>
+{% endfor %}
+
+</ul>
+
       </div>
       <div class="glide__arrows" data-glide-el="controls">
         <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="{{ asset('/images/previous.png') }}"></button>

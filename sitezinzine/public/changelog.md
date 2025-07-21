@@ -1,6 +1,14 @@
 # Changelog
 
-## [1.0.27] - 2025-07-20
+## [1.0.29] - 2025-07-21
+### Ajout
+- Ajout de la gestion de l'affichage de categorie.show si elle n'a pas d'émission.
+- Ajout de la diffusion : Entity, Controller, Form, Repository, et les templates.
+### Correction
+- Correction des templates affectés par l'affichage de la diffusion.
+
+
+## [1.0.28] - 2025-07-20
 ### Ajout
 - Ajout des alt sur les images de la navbar coté auditeurices.
 - Ajout des controllers tinymce et flatpickr.

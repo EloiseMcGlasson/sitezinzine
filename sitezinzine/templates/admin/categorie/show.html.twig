@@ -10,6 +10,7 @@
 
 .emissionsdelacategorie {
     background-color: white;
+    min-height: 100vh;
 }
 article{
     border: solid;
@@ -111,6 +112,9 @@ article{
         <h2>Toutes les émissions de cette catégorie :</h2>
     </div>
     <div class="catemission">
+    {% if categorie.emissions is empty %}
+        <p>Aucune émission disponible dans cette catégorie.</p>
+    {% endif %}
         {% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
             <article>
                 <div class="col1">
