@@ -127,9 +127,8 @@
         {% endif %}
             <article>
                 <div class="emissions">
-                   {% for row in emissions %}
-    {% set emission = row[0] %}
-    {% set lastDiffusion = row.lastDiffusion %}
+                   {% for emission in emissions %}
+    {% set lastDiffusion = emission.lastDiffusion %}
 
     <section>
         <div class="col1">
