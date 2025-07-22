@@ -137,70 +137,88 @@
     </style>
 
     <div class="bodyemissions">
-        <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            <div class="pagination">
-                {{ knp_pagination_render(emissions) }}
-            
-            </div>
-           
-                <div class="emissions">
-                    {% for emission in emissions %}
-                    <section>
-                        <div class="col1">
-                            {% if emission.thumbnail %}
-                                <img
-                                src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                    {% elseif  emission.categorie.thumbnail %}
-                                    <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
-                                    {% elseif  emission.theme.thumbnail is defined %}
-                                        <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
-                                   {% else %}
-                                <img src="{{ asset('/images/emission-zinzine.jpg') }}">
-                                    {% endif %}
-                        </div>
-                        <div class="col2">
-                            <div class="titre">
-                                <a href="{{ path('emission.show', {id: emission.id }) }}">
-                                    {{ emission.titre }}
-                                </a>
-                            </div>
+    <div class="top">
+        <img src="{{ asset('/images/bottom-header.gif') }}" alt="Bannière résultats">
+    </div>
 
-                            <div class="cat">
-                                <p>
-                                    {{ emission.categorie.titre }}
-                                </p>
-                            </div>
-                            <div class="descriptif">
-                                <p>
+    <div class="pagination">
+        {{ knp_pagination_render(emissions) }}
+    </div>
 
-                                    {{ emission.descriptif | raw }}
-                                </p>
-                            </div>
-                            <div class="date">
-                                {{ 'Horaires de passages : ' ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
-                            </div>
+    <div class="emissions">
+        {% for emissionData in emissions %}
+            {% set emission = emissionData[0] %}
+            {% set lastDiffusion = emissionData.lastDiffusion %}
 
-                        </div>
-                        <div class="col3">
-                            <div class='ecoute'>
+            <section>
+                <div class="col1">
+                    {% set imageUrl = null %}
+                    
+                    {% if emission.thumbnail %}
+                        {% set imageUrl = vich_uploader_asset(emission, 'thumbnailFile') %}
+                    {% elseif emission.categorie.thumbnail is defined and emission.categorie.thumbnail %}
+                        {% set imageUrl = vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') %}
+                    {% elseif emission.theme is defined and emission.theme.thumbnail is defined and emission.theme.thumbnail %}
+                        {% set imageUrl = vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') %}
+                    {% else %}
+                        {% set imageUrl = asset('/images/emission-zinzine.jpg') %}
+                    {% endif %}
 
-                                <a href="{{ emission.url }}" target="_blank">
-                                    <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></a>
-                            </div>
-                            <div class='dl'>
-
-                                <a href="{{ emission.url }}" download target="_blank">
-                                    <img src="{{ asset('/images/telecharger.png') }}" alt="télécharger l'émission"></a>
-                            </div>
-                        </div>
-                    </section>
-                    {% endfor %}
-
+                    <img src="{{ imageUrl }}" alt="Illustration de {{ emission.titre }}">
                 </div>
-                    <div class="pagination">
-                        {{ knp_pagination_render(emissions) }}
+
+                <div class="col2">
+                    <div class="titre">
+                        <a href="{{ path('emission.show', {id: emission.id }) }}">
+                            {{ emission.titre }}
+                        </a>
                     </div>
-            
-                        {% endblock %}
-                        
+
+                    <div class="cat">
+                        <p>
+                            {{ emission.categorie.titre }}
+                            {% if emission.theme.name is defined %}
+                                - {{ emission.theme.name }}
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="descriptif">
+                        <p>{{ emission.descriptif | raw }}</p>
+                    </div>
+
+                    {% if lastDiffusion %}
+                        <div class="date">
+                            Dernière diffusion :
+                            {{ lastDiffusion|format_datetime('medium', 'short', locale='fr') }}
+                        </div>
+                    {% else %}
+                        <div class="date">
+                            Date de publication :
+                            {{ emission.datepub|format_datetime('medium', 'short', locale='fr') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col3">
+                    <div class="ecoute">
+                        <a href="{{ emission.url }}" target="_blank">
+                            <img src="{{ asset('/images/lecteur.png') }}" alt="Écoutez l'émission">
+                        </a>
+                    </div>
+                    <div class="dl">
+                        <a href="{{ emission.url }}" download target="_blank">
+                            <img src="{{ asset('/images/telecharger.png') }}" alt="Télécharger l'émission">
+                        </a>
+                    </div>
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {{ knp_pagination_render(emissions) }}
+    </div>
+</div>
+
+{% endblock %}

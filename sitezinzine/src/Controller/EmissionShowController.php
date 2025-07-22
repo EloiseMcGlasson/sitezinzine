@@ -90,6 +90,13 @@ public function show(
         $criteria = $form->getData();
         $page = $request->query->getInt('page', 1);
         $emissions = $emissionRepository->findBySearch($criteria, $page);
+        foreach ($emissions as $emission) {
+    $lastDate = $emissionRepository->findLastDiffusionDate($emission->getId());
+    if ($lastDate) {
+        $emission->setLastDiffusion($lastDate);
+    }
+}
+
     
     }
 
