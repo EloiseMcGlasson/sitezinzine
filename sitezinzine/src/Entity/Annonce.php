@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
 #[Vich\Uploadable()]
-
 class Annonce
 {
     #[ORM\Id]
