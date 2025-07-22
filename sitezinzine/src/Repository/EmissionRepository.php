@@ -9,13 +9,17 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use Doctrine\ORM\Query\Expr;
-
-use Symfony\Bundle\SecurityBundle\Security;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
 
 
+/**
+ * @extends ServiceEntityRepository<Emission>
+ * This repository is used to manage Emission entities.
+ * It provides methods to paginate emissions, filter by user, and perform advanced searches.
+ * It also includes methods for grouping emissions by themes and categories.
+ * The repository uses the PaginatorInterface for pagination and supports complex queries with joins.
+ * It is designed to work with the Emission entity and its related entities such as Categories and User.
+ * The repository methods are used in various parts of the application, including the admin interface and public
+ */
 class EmissionRepository extends ServiceEntityRepository
 {
     public function __construct(
@@ -27,17 +31,23 @@ class EmissionRepository extends ServiceEntityRepository
 
     /**
      * Paginate les émissions pour l'espace admin avec contrôle d'accès.
+     * Cette méthode est utilisée pour afficher les émissions dans l'espace admin.
+     * Elle exclut les émissions sans diffusion et celles dont l'URL correspond à excludeUrl
+     * ainsi que celles dont la catégorie a un ID de 0.
+     * @param int $page Le numéro de la page à paginer.
+     * @param string $excludeUrl L'URL à exclure des résultats.
+     * @param User|null $user L'utilisateur pour lequel on filtre les émissions (null pour toutes les émissions).
+     * @param bool $isAdmin Indique si l'utilisateur est un administrateur (true pour toutes les émissions, false pour celles de l'utilisateur).
+     * @return PaginationInterface La pagination des émissions.
      */
-    public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false)
+ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false)
 {
     $qb = $this->createQueryBuilder('e')
-        ->select('e', 'c', 'MAX(d.horaireDiffusion) AS lastDiffusion')
+        ->select('e', 'c', '(SELECT MAX(d2.horaireDiffusion) FROM App\Entity\Diffusion d2 WHERE d2.emission = e) AS HIDDEN lastDiffusion')
         ->leftJoin('e.categorie', 'c')
-        ->leftJoin('App\Entity\Diffusion', 'd', 'WITH', 'd.emission = e')
         ->andWhere('e.url != :excludeUrl')
         ->andWhere('c.id != 0')
         ->setParameter('excludeUrl', $excludeUrl)
-        ->groupBy('e.id')
         ->orderBy('lastDiffusion', 'DESC');
 
     if ($user && !$isAdmin) {
@@ -53,32 +63,57 @@ class EmissionRepository extends ServiceEntityRepository
 
 
 
+
+
     /**
      * Paginate les émissions publiques.
+     * Cette méthode est utilisée pour afficher les émissions sur le site public.
+     * Elle exclut les émissions sans diffusion et celles dont l'URL correspond à excludeUrl
+     * ainsi que celles dont la catégorie a un ID de 0.
+     * @param int $page Le numéro de la page à paginer.
+     * @param string $excludeUrl L'URL à exclure des résultats.
      */
-   public function paginateEmissions(int $page, string $excludeUrl): PaginationInterface
+ public function paginateEmissions(int $page, string $excludeUrl): PaginationInterface
 {
     $qb = $this->createQueryBuilder('e')
-        ->select('e', 'c', 'MAX(d.horaire_diffusion) AS HIDDEN lastDiffusion')
+        ->select('e', 'c', 'MAX(d.horaireDiffusion) AS lastDiffusion')
         ->leftJoin('e.categorie', 'c')
-        ->leftJoin('App\Entity\Diffusion', 'd', 'WITH', 'd.emission = e')
+        ->innerJoin('e.diffusions', 'd') // INNER JOIN pour exclure les émissions sans diffusion
         ->andWhere('e.url != :excludeUrl')
         ->andWhere('c.id != 0')
-        ->andWhere('d.horaire_diffusion IS NOT NULL') // ⛔ Exclut les émissions sans diffusion
         ->setParameter('excludeUrl', $excludeUrl)
         ->groupBy('e.id')
         ->orderBy('lastDiffusion', 'DESC');
 
-    return $this->paginator->paginate($qb, $page, 20, [
+    $pagination = $this->paginator->paginate($qb, $page, 20, [
         'distinct' => true,
-        'sortFieldAllowList' => ['e.titre'],
+        'sortFieldAllowList' => ['lastDiffusion'],
     ]);
+
+    // Convertir lastDiffusion en DateTime pour chaque émission
+    foreach ($pagination->getItems() as $item) {
+        if (is_array($item) && isset($item[0], $item['lastDiffusion'])) {
+            $emission = $item[0];
+            $dateString = $item['lastDiffusion'];
+            $date = $dateString ? new \DateTime($dateString) : null;
+            $emission->setLastDiffusion($date);
+        }
+    }
+
+    return $pagination;
 }
+
+
+
 
 
 
     /**
      * Émissions devant être diffusées dans les prochaines 24h pour le carrousel de la partial onde. à réactiver quand déploiement final
+     * Cette méthode est utilisée pour afficher les émissions à venir dans les 24 heures.
+     * Elle exclut les émissions dont l'URL correspond à excludeUrl et celles dont la catégorie a un ID de 0.
+     * @param string $excludeUrl L'URL à exclure des résultats.
+     * @return Emission[] Un tableau d'entités Emission correspondant aux émissions à venir.
      */
    /* public function upcomingEmissions(string $excludeUrl): array
 {
@@ -103,9 +138,10 @@ class EmissionRepository extends ServiceEntityRepository
 } */
 
         /**
-     * fonction de remplacement pour les émissions du jour, sur une date donnée spécifique.
+     * fonction de remplacement pour upcomingEmissions, donne les émissions du jour, sur une date donnée spécifique.
      * @param \DateTimeImmutable $specificDate La date spécifique pour laquelle on veut les émissions.
      * @param string $excludeUrl L'URL à exclure des résultats. 
+     * @return Emission[] Un tableau d'entités Emission correspondant aux émissions du jour.
      */
 public function findEmissionsByDate(\DateTime $date): array
 {
@@ -132,7 +168,13 @@ public function findEmissionsByDate(\DateTime $date): array
 
 
 
-
+/**
+     * Retourne les groupes de thèmes prédéfinis.
+     * Cette méthode est utilisée pour regrouper les thèmes en catégories logiques.
+     * utilisée dans la méthode lastEmissionsByGroupTheme
+     *
+     * @return array Un tableau associatif où les clés sont les noms des groupes de thèmes et les valeurs sont des tableaux d'IDs de thèmes.
+     */
 
     public function getThemeGroups(): array
 {
@@ -146,31 +188,74 @@ public function findEmissionsByDate(\DateTime $date): array
     ];
 }
 
+    /**
+     * Recherche les émissions par groupe de thèmes.
+     * Cette méthode utilise une requête SQL complexe pour regrouper les émissions par thème et retourner les dernières diffusions de chaque groupe.
+     * utilisée dans la page home/show.html.twig
+     *
+     * @param array $themeIds Les IDs des thèmes à rechercher.
+     * @return Emission[] Un tableau d'entités Emission correspondant aux thèmes spécifiés.
+     */
 public function findEmissionsByThemeGroup(array $themeIds): array
 {
-    return $this->createQueryBuilder('e')
-        ->leftJoin('e.diffusions', 'd') // Joindre la table des diffusions
-        ->andWhere('e.theme IN (:themeIds)')
+    $now = new \DateTimeImmutable();
+
+    $qb = $this->createQueryBuilder('e')
+        ->select('e', 'c', 't')
+        ->addSelect('
+            (SELECT MAX(d1.horaireDiffusion)
+             FROM App\Entity\Diffusion d1
+             WHERE d1.emission = e.id
+               AND d1.horaireDiffusion <= :now
+            ) AS lastDiffusion
+        ')
+        ->addSelect('
+            (SELECT MIN(d2.horaireDiffusion)
+             FROM App\Entity\Diffusion d2
+             WHERE d2.emission = e.id
+               AND d2.horaireDiffusion > :now
+            ) AS nextDiffusion
+        ')
+        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.theme', 't')
+        ->where('e.theme IN (:themeIds)')
         ->setParameter('themeIds', $themeIds)
+        ->setParameter('now', $now)
+        ->orderBy('lastDiffusion', 'DESC');
 
-        // Filtrer uniquement par la dernière diffusion
-        ->andWhere('d.horaireDiffusion = (
-            SELECT MAX(d2.horaireDiffusion)
-            FROM App\Entity\Diffusion d2
-            WHERE d2.emission = e.id
-        )')
+    $results = $qb->getQuery()->getResult();
 
-        // Trier par date de diffusion
-        ->orderBy('d.horaireDiffusion', 'DESC')
+    // Injecter les dates dans chaque émission
+    foreach ($results as $key => $row) {
+        // $row[0] est l’entité Emission
+        $emission = is_array($row) ? $row[0] : $row;
 
-        ->getQuery()
-        ->getResult();
+        if (is_array($row)) {
+            $last = $row['lastDiffusion'] ?? null;
+            $next = $row['nextDiffusion'] ?? null;
+        } else {
+            $last = null;
+            $next = null;
+        }
+
+        $emission->setLastDiffusion($last ? new \DateTime($last) : null);
+        $emission->setNextDiffusion($next ? new \DateTime($next) : null);
+
+        $results[$key] = $emission;
+    }
+
+    return $results;
 }
+
 
 
 
     /**
      * Dernières émissions par thème (1 par thème).
+     * Cette méthode utilise une requête SQL complexe pour regrouper les émissions par thème et retourner la dernière diffusion de chaque groupe.
+     * utilisée dans la page partial/lastemissions.html.twig
+     * @param string $excludeUrl L'URL à exclure des résultats. permet d'exclure les émissions n'ayant pas de fichier audio.
+     * @return array Un tableau associatif contenant les dernières émissions par thème, avec les informations
      */
    public function lastEmissionsByGroupTheme(string $excludeUrl): array
 {
@@ -260,47 +345,57 @@ LIMIT 6
 
 public function findBySearch(array $criteria, int $page = 1): PaginationInterface
 {
-    $subQb = $this->createQueryBuilder('e2')
-        ->select('e2.id')
-        ->leftJoin('e2.diffusions', 'd2')
-        ->groupBy('e2.id');
-
-    $havingConditions = [];
     $params = [];
 
-    if (!empty($criteria['dateDebut'])) {
-        $havingConditions[] = 'MAX(d2.horaireDiffusion) >= :dateDebut';
-        $params['dateDebut'] = $criteria['dateDebut'];
+    // Sous-requête pour filtrer par date de diffusion si nécessaire
+    if (!empty($criteria['dateDebut']) || !empty($criteria['dateFin'])) {
+        $subQb = $this->createQueryBuilder('e2')
+            ->select('e2.id')
+            ->leftJoin('e2.diffusions', 'd2')
+            ->groupBy('e2.id');
+
+        $havingConditions = [];
+
+        if (!empty($criteria['dateDebut'])) {
+            $havingConditions[] = 'MAX(d2.horaireDiffusion) >= :dateDebut';
+            $params['dateDebut'] = $criteria['dateDebut'];
+        }
+
+        if (!empty($criteria['dateFin'])) {
+            $havingConditions[] = 'MAX(d2.horaireDiffusion) <= :dateFin';
+            $params['dateFin'] = $criteria['dateFin'];
+        }
+
+        if (!empty($havingConditions)) {
+            $subQb->having(implode(' AND ', $havingConditions));
+        }
+
+        $ids = array_column(
+            $subQb->getQuery()
+                  ->setParameters($params)
+                  ->getScalarResult(),
+            'id'
+        );
+
+        if (empty($ids)) {
+            return $this->paginator->paginate([], $page, 12);
+        }
     }
 
-    if (!empty($criteria['dateFin'])) {
-        $havingConditions[] = 'MAX(d2.horaireDiffusion) <= :dateFin';
-        $params['dateFin'] = $criteria['dateFin'];
-    }
-
-    if (!empty($havingConditions)) {
-        $subQb->having(implode(' AND ', $havingConditions));
-    }
-
-    $ids = array_column(
-        $subQb->getQuery()
-              ->setParameters($params)
-              ->getScalarResult(),
-        'id'
-    );
-
-    if (empty($ids)) {
-        return $this->paginator->paginate([], $page, 12);
-    }
-
+    // Requête principale
     $qb = $this->createQueryBuilder('e')
+        ->addSelect('MAX(d.horaireDiffusion) AS HIDDEN lastDiff')
+        ->leftJoin('e.diffusions', 'd')
         ->leftJoin('e.categorie', 'c')
         ->leftJoin('e.theme', 't')
         ->andWhere('e.url IS NOT NULL AND e.url != :emptyUrl')
         ->andWhere('c.id != 0')
-        ->andWhere('e.id IN (:ids)')
-        ->setParameter('ids', $ids)
         ->setParameter('emptyUrl', '');
+
+    if (isset($ids)) {
+        $qb->andWhere('e.id IN (:ids)')
+           ->setParameter('ids', $ids);
+    }
 
     if (!empty($criteria['titre'])) {
         $search = '%' . strtolower((string) $criteria['titre']) . '%';
@@ -318,16 +413,46 @@ public function findBySearch(array $criteria, int $page = 1): PaginationInterfac
            ->setParameter('themeId', $criteria['theme']->getId());
     }
 
-    return $this->paginator->paginate(
-        $qb->orderBy('e.titre', 'ASC'),
+    $pagination = $this->paginator->paginate(
+        $qb->groupBy('e.id')
+           ->orderBy('lastDiff', 'DESC'),
         $page,
         12,
         [
-            'distinct' => true,
-            'sortFieldAllowList' => ['e.titre'],
+            'distinct' => false,
         ]
     );
+
+    // Injecter la date de dernière diffusion dans l’objet Emission
+    foreach ($pagination as $item) {
+        if (is_array($item) && isset($item[0], $item['lastDiff'])) {
+            /** @var \App\Entity\Emission $emission */
+            $emission = $item[0];
+            $emission->setLastDiffusion(new \DateTime($item['lastDiff']));
+        }
+    }
+
+    return $pagination;
 }
+
+
+public function findLastDiffusionDate(int $emissionId): ?\DateTimeInterface
+{
+    $lastDateString = $this->createQueryBuilder('e')
+        ->select('MAX(d.horaireDiffusion) AS lastDate')
+        ->leftJoin('e.diffusions', 'd')
+        ->andWhere('e.id = :id')
+        ->setParameter('id', $emissionId)
+        ->getQuery()
+        ->getSingleScalarResult();
+
+    if ($lastDateString === null) {
+        return null;
+    }
+
+    return new \DateTime($lastDateString);
+}
+
 
 
 
