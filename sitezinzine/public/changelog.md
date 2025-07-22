@@ -1,11 +1,23 @@
 # Changelog
 
+## [1.0.30] - 2025-07-22
+### Correction
+- Correction de la recherche (bug de date obligatoire) et classement par date de diffusion decroissante avec affichage de la date de diffusion.
+- Optimisation de certaine requêtes car la table diffusion est très lourde et ça ralentissait beaucoup le site (à vérifer).
+- Correction de la requête qui empêchait d'aller dans le menu émission du site publique.
+- Début de refonte de la page home/show.html.twig selon le modèle de Fernande (à suivre).
+- Modification de la base de donnée entity emission et diffusion pour optimisation.
+
+
 ## [1.0.29] - 2025-07-21
 ### Ajout
 - Ajout de la gestion de l'affichage de categorie.show si elle n'a pas d'émission.
 - Ajout de la diffusion : Entity, Controller, Form, Repository, et les templates.
+- Ajout de la table et des données de diffusion (migration ).
 ### Correction
 - Correction des templates affectés par l'affichage de la diffusion.
+- Correction des formulaires create et edit (url null, si ref vide user_id).
+- Correction du formulaire de recherche qui forçait à mettre des dates.
 
 
 ## [1.0.28] - 2025-07-20
