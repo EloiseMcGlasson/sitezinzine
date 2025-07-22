@@ -40,7 +40,7 @@ class EmissionRepository extends ServiceEntityRepository
      * @param bool $isAdmin Indique si l'utilisateur est un administrateur (true pour toutes les émissions, false pour celles de l'utilisateur).
      * @return PaginationInterface La pagination des émissions.
      */
- public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false)
+public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false)
 {
     $qb = $this->createQueryBuilder('e')
         ->select('e', 'c', '(SELECT MAX(d2.horaireDiffusion) FROM App\Entity\Diffusion d2 WHERE d2.emission = e) AS HIDDEN lastDiffusion')
@@ -55,11 +55,29 @@ class EmissionRepository extends ServiceEntityRepository
            ->setParameter('user', $user);
     }
 
-    return $this->paginator->paginate($qb, $page, 20, [
+    /** @var PaginationInterface $pagination */
+    $pagination = $this->paginator->paginate($qb, $page, 20, [
         'distinct' => true,
         'sortFieldAllowList' => ['e.titre'],
     ]);
+
+    // Hydrate manuellement la propriété lastDiffusion
+    foreach ($pagination as $row) {
+        // Pour chaque $row (qui est un Emission)
+        $lastDiffusion = $this->createQueryBuilder('e2')
+            ->select('MAX(d.horaireDiffusion)')
+            ->leftJoin('e2.diffusions', 'd')
+            ->andWhere('e2.id = :id')
+            ->setParameter('id', $row->getId())
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $row->setLastDiffusion($lastDiffusion ? new \DateTime($lastDiffusion) : null);
+    }
+
+    return $pagination;
 }
+
 
 
 
