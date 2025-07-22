@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.33] - 2025-07-22
+### Correction
+- Hotfix affichage des émissions coté admin.
+
+## [1.0.32] - 2025-07-22
+### Correction
+- bug de migration de base de donnée changement des annotations entity diffusion.
+
+
 ## [1.0.30] - 2025-07-22
 ### Correction
 - Correction de la recherche (bug de date obligatoire) et classement par date de diffusion decroissante avec affichage de la date de diffusion.
