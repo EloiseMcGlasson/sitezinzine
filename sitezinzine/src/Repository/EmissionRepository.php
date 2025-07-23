@@ -45,7 +45,7 @@ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $use
     $qb = $this->createQueryBuilder('e')
         ->select('e', 'c', '(SELECT MAX(d2.horaireDiffusion) FROM App\Entity\Diffusion d2 WHERE d2.emission = e) AS HIDDEN lastDiffusion')
         ->leftJoin('e.categorie', 'c')
-        ->andWhere('e.url != :excludeUrl')
+        ->andWhere('(e.url != :excludeUrl OR (e.url IS NULL AND e.user IS NOT NULL))')
         ->andWhere('c.id != 0')
         ->setParameter('excludeUrl', $excludeUrl)
         ->orderBy('lastDiffusion', 'DESC');

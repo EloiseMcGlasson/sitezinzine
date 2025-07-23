@@ -35,14 +35,21 @@
         color: #E40039;
         
     }
-    
-    .titreevenement {
+
+    .bodyEvenement .titreevenement {
         display: flex;
         align-items: center;
         justify-content: center;
     }
+.bodyEvenement .titreevenement img {
+                   all: unset;
+        width: 150px;
+        margin:0 60px;
+        padding-bottom: 15px;
+            }
     
-    article.evenements {
+    
+    .bodyEvenement article.evenements {
         display: grid;
         grid-template-areas:
             "article1 article1"
@@ -53,48 +60,48 @@
         margin: auto;
         max-width: 1400px;
     }
-    
-    
-    .evenement:nth-child(1) {
+
+
+    .bodyEvenement .evenement:nth-child(1) {
         grid-area: article1;
         
     }
-    
-    .evenement:nth-child(2) {
+
+    .bodyEvenement .evenement:nth-child(2) {
         grid-area: article2;
     }
-    
-    .evenement:nth-child(3) {
+
+    .bodyEvenement .evenement:nth-child(3) {
         grid-area: article3;
     }
-    
-        .evenement {
-            display: flex;
-            flex-direction: row;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
+
+    .bodyEvenement .evenement {
+        display: flex;
+        flex-direction: row;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
     
-        .evenement:hover {
+        .bodyEvenement .evenement:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
-    
-        .evenement .top {
+
+        .bodyEvenement .evenement .top {
             flex: 1;
             max-width: 40%; /* L'image occupe 40% de la largeur */
         }
-    
-        .evenement .top img {
+
+        .bodyEvenement .evenement .top img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-    
-        .evenement .bottom {
+
+        .bodyEvenement .evenement .bottom {
             position: relative; 
             flex: 2;
             padding: 20px;
@@ -102,7 +109,7 @@
             flex-direction: column;
             gap: 10px;
         }
-        .evenement .bottom img {
+        .bodyEvenement .evenement .bottom img {
     position: absolute;
     bottom: 10px;
     right: 10px;
@@ -111,22 +118,22 @@
     
     
 }
-    
-        .evenement .date {
+
+        .bodyEvenement .evenement .date {
             font-family: "Montserrat Alternates", sans-serif;
             font-weight: 600;
             font-size: 14px;
             color: #E4013A;
         }
-    
-        .evenement .titre {
+
+        .bodyEvenement .evenement .titre {
             font-family: "Montserrat Alternates", sans-serif;
             font-weight: 800;
             font-size: 18px;
             color: #333;
         }
-    
-        .evenement .presentation {
+
+        .bodyEvenement .evenement .presentation {
             font-family: "Montserrat Alternates", sans-serif;
             font-weight: 400;
             font-size: 14px;
@@ -140,16 +147,16 @@
         }
     
         @media screen and (max-width: 768px) {
-            .titreevenement {
+            .bodyEvenement .titreevenement {
                 flex-direction: column;
                 text-align: center;
             }
-    
-            .titreevenement img {
+
+            .bodyEvenement .titreevenement img {
                 margin: 0 0 20px 0;
             }
     
-            article {
+            .bodyEvenement article {
                 grid-template-areas:
                     "article1"
                     "article2"
@@ -157,19 +164,19 @@
                 grid-template-columns: 1fr;
             }
     
-            .evenement {
+            .bodyEvenement .evenement {
                 flex-direction: column;
             }
-    
-            .evenement .top {
+
+            .bodyEvenement .evenement .top {
                 max-width: 100%;
             }
-    
-            .evenement .top img {
+
+            .bodyEvenement .evenement .top img {
                 height: 200px;
             }
-    
-            .evenement .bottom {
+
+            .bodyEvenement .evenement .bottom {
                 padding: 15px;
             }
         }
