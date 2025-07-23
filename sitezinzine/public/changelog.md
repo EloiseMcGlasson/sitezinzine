@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.36] - 2025-07-??
+### Correction
+- Correction de la logique d'affichage des émissions côté admin, maintenant une émission qui n'a pas de fichier son, mais qui a un user s'affiche(j'espère !).
+
+
+
+
 ## [1.0.35] - 2025-07-23
 ### Ajout
 - Ajout du responsive pour le lecteur.
