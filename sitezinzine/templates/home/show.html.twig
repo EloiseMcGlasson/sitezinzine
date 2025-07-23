@@ -32,9 +32,19 @@ h1 {
     font-size: 23px;  
 }
 .catemission img {
-    float: right;
-    margin: 10px;
+   float: left;
+    margin: 10px 20px 10px 10px;
     width: 250px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8%;
+}
+.catemission {
+  
+    border: 2px solid #E40039;
+    overflow: hidden; /* ✅ englobe le contenu flottant */
+    border-radius: 8px; /* optionnel pour un meilleur rendu */
 }
 .descriptif {
     margin: 15px;
@@ -267,14 +277,24 @@ h1 {
 }
 
 .table-infos th {
-    background-color: #E40039;
-    color: white;
+    background-color: #f9f9f9;
+    color: black;
     padding: 1rem;
     text-align: left;
     font-weight: bold;
     vertical-align: top;
+    border-bottom: 2px solid #E40039; 
+    
+    }
+    .table-infos thead {
+       
+        border-color: #E40039;
+        border: 2px solid #E40039;
+    }
+    .table-infos tbody {
+    padding-top: 0.5rem; /* n'a aucun effet car tbody est un display: table-row-group */
 }
-.table-infos {
+    .table-infos {
     width: 100%;
     border-collapse: collapse;
     background-color: #f9f9f9;
@@ -328,15 +348,16 @@ a:hover, .table-infos a:hover {
     }
 
     
-    .catemission img {
+   .catemission img {
         float: none;
         display: block;
         margin: 0 auto 20px auto;
         width: 90%;
     }
 
-     .catemission {
+    .catemission {
         text-align: center;
+        overflow: visible; /* ou hidden si image déborde encore */
     }
 
     .emission-row {
