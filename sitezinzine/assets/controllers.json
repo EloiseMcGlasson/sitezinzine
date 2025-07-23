@@ -19,6 +19,22 @@
         {
             "name": "theme-filter",
             "path": "./assets/controllers/theme_filter_controller.js"
+        },
+        {
+            "name": "descriptif",
+            "path": "./assets/controllers/descriptif_controller.js"
+        },
+        {
+            "name": "flatpickr",
+            "path": "./assets/controllers/flatpickr_controller.js"
+        },
+        {
+            "name": "carousel",
+            "path": "./assets/controllers/carousel_controller.js"
+        },
+        {
+            "name": "description-toggle",
+            "path": "./assets/controllers/description_toggle_controller.js"
         }
     ]
 }

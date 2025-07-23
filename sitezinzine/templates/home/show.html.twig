@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
-{% block title %} "Émission : " ~ {{ emission.titre }} {% endblock %}
+{% block title %}
+    "Émission : " ~
+    {{ emission.titre }}
+{% endblock %}
 {% block body %}
     <style>
 .bodyemission {
     background: linear-gradient(#E4013A, #B81C61);
     background-size: 100%;
     width: 100%;
-    margin: 0%;
-    padding: 0%;
+    margin: 0, auto;
+    padding: 0, auto;
     display: flex;
     flex-direction: column;
     font-family: "Montserrat Alternates", sans-serif;
@@ -28,16 +31,6 @@
 h1 {
     font-size: 23px;  
 }
-.texteemission {
-    margin: 20px;
-}
-
-.texteemission img {
-    float: left;
-    margin: 10px;
-    width: 250px;
-}
-
 .catemission img {
     float: right;
     margin: 10px;
@@ -51,40 +44,7 @@ h1 {
     margin-bottom: 0px;
     padding-bottom: 0px;
 }
-.texteemission a img {
-    width: 60px;
-        
-}
-
-.texteemission a {
-    padding: 14px 16px;
-    color: white;
-    text-decoration: none;
-    font-weight: 800;
-        
-}
-.texteemission a:hover {
-    padding: 14px 16px;
-    color: black;
-    text-decoration: none;
-    font-weight: 800;
-        
-}
-
-.catemission a {
-    padding: 14px 16px;
-    color: white;
-    text-decoration: none;
-    font-weight: 800;
-        
-}
-.catemission a:hover {
-    padding: 14px 16px;
-    color: black;
-    text-decoration: none;
-    font-weight: 800;
-}
-    .theme {
+   .theme {
         
         text-align: center;
         background: white;
@@ -152,78 +112,7 @@ h1 {
     display: flex;
     align-items: center;
 }
-
-.listen-link {
-    background-color: #E40039;
-    color: #fff;
-    padding: 0.6rem 1rem;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.listen-link:hover {
-    background-color: #c70030;
-}
-
-.table-infos {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    background: white;
-    color: #1C1C1A;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.table-infos th, .table-infos td {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-    vertical-align: top;
-}
-
-.table-infos th {
-    background-color: #E40039;
-    color: white;
-    font-weight: bold;
-}
-
-.table-infos a {
-    color: #E40039;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.table-infos a:hover {
-    text-decoration: underline;
-}
-
-a {
-        padding: 14px 16px;
-        color:  #E40039;
-        text-decoration: none;
-        font-weight: 800;
-            
-    }
-    a:hover {
-        padding: 14px 16px;
-        color:black;
-        text-decoration: none;
-        font-weight: 800;
-            
-    }
-
-    .theme-buttons {
-    margin-top: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.theme-button {
+ .listen-link {
     background-color: #E40039;
     color: white;
     border: none;
@@ -234,9 +123,10 @@ a {
     transition: background-color 0.3s ease;
 }
 
-.theme-button:hover {
+.listen-link:hover {
     background-color: #c70030;
 }
+
 #theme-filter-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -342,17 +232,38 @@ a {
     font-size: 1rem;
     line-height: 1.6;
 }
+.description-wrapper {
+  position: relative;
+  margin-top: 0.5em;
+}
+
+.description-toggle-btn {
+  background: none;
+  color: #E40039;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5em;
+}
+
+.description-wrapper .description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4.5em;
+  transition: max-height 0.3s ease;
+}
+
+.description-wrapper .description.expanded {
+  -webkit-line-clamp: unset;
+  max-height: 1000px;
+}
+
 
 .bloc-infos {
     margin-top: 2rem;
-}
-
-.table-infos {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 .table-infos th {
@@ -360,27 +271,43 @@ a {
     color: white;
     padding: 1rem;
     text-align: left;
+    font-weight: bold;
+    vertical-align: top;
+}
+.table-infos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .table-infos td {
+    text-align: left;
+    border-bottom: 1px solid #eee;
     padding: 1rem;
     border-top: 1px solid #eee;
 }
 
-.table-infos a {
+a, .table-infos a {
     color: #E40039;
     font-weight: bold;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-.table-infos a:hover {
-    text-decoration: underline;
+a:hover, .table-infos a:hover {
+    color: black;
+}
+#emission-list .date 
+{
+   display: flex;
+  justify-content: space-between;
+  align-items: center; /* optionnel, pour aligner verticalement */
 }
 
 /* Responsive */
-
-
-
 
 @media (max-width: 768px) {
 
@@ -400,7 +327,7 @@ a {
         font-size: 20px;
     }
 
-    .texteemission img,
+    
     .catemission img {
         float: none;
         display: block;
@@ -408,7 +335,7 @@ a {
         width: 90%;
     }
 
-    .texteemission, .catemission {
+     .catemission {
         text-align: center;
     }
 
@@ -438,77 +365,99 @@ a {
     </style>
     <div class="bodyemission">
         <div class="top">
-            <img src="{{ asset('/images/bottom-header.gif') }}">
-        </div>
-
-        <div class="fiche-emission">
-            <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">← Retour</a>
-
-            <div class="bloc-haut">
-                <div class="bloc-image">
-                    {% if emission.thumbnail %}
-                        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                    {% elseif emission.categorie.thumbnail %}
-                        <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
-                    {% elseif emission.theme.thumbnail is defined %}
-                        <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
-                    {% else %}
-                        <img src="{{ asset('/images/emission-zinzine.jpg') }}" alt="Image par défaut">
-                    {% endif %}
-                </div>
-
-                <div class="bloc-texte">
-                    <h1>{{ emission.titre }}</h1>
-                    <div class="descriptif">
-                        {{ emission.descriptif | raw }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="bloc-infos">
-                <table class="table-infos">
-                    <thead>
-                        <tr>
-                            <th>Infos diverses</th>
-                            <th>Horaire de passage</th>
-                            <th>Liens</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <strong>Thème :</strong> {{ emission.theme.name }}<br>
-                                <strong>Référent·es :</strong> {{ emission.ref }}
-                            </td>
-                            <td>{{ emission.datepub|format_datetime('long', 'none', locale='fr') }}</td>
-                            <td>
-                                {% if emission.url %}
-                                    <a href="{{ emission.url }}" target="_blank">🎧 Écouter</a><br>
-                                    <a href="{{ emission.url }}" download target="_blank">⬇ Télécharger</a>
-                                {% else %}
-                                    Aucun lien disponible
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="catemission">
-            <div class="titre">
-                <a href="{{ path('categorie.show', {'id': emission.categorie.id}) }}">
-                    <h1>{{ emission.categorie.titre }}</h1>
+            <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+            <div class="fiche-emission">
+                <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">
+                    ← Retour
                 </a>
-            </div>
-            {% if emission.categorie.thumbnail %}
-                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
-            {% endif %}
-            <div class="descriptif">
-                {{ emission.categorie.descriptif | raw }}
-            </div>
-        </div>
-
+                <div class="bloc-haut">
+                    <div class="bloc-image">
+                        {% if emission.thumbnail %}
+                            <img
+                            src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                {% elseif emission.categorie.thumbnail %}
+                                <img
+                                src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
+                                    {% elseif emission.theme.thumbnail is defined %}
+                                    <img
+                                    src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
+                                        {% else %}
+                                        <img src="{{ asset('/images/emission-zinzine.jpg') }}" alt="Image par défaut">
+                                        {% endif %}
+                                    </div>
+                                    <div class="bloc-texte">
+                                        <h1>
+                                            {{ emission.titre }}
+                                        </h1>
+                                        <div class="descriptif">
+                                            {{ emission.descriptif | raw }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bloc-infos">
+                                    <table class="table-infos">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Infos diverses
+                                                </th>
+                                                <th>
+                                                    Horaire de passage
+                                                </th>
+                                                <th>
+                                                    Liens
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        Thème :
+                                                    </strong>
+                                                    {{ emission.theme.name }}
+                                                    <br>
+                                                        <strong>
+                                                            Référent·es :
+                                                        </strong>
+                                                        {{ emission.ref }}
+                                                    </td>
+                                                    <td>
+                                                        {{ emission.datepub|format_datetime('long', 'none', locale='fr') }}
+                                                    </td>
+                                                    <td>
+                                                        {% if emission.url %}
+                                                            <a href="{{ emission.url }}" target="_blank">
+                                                                🎧 Écouter
+                                                            </a>
+                                                            <br>
+                                                                <a href="{{ emission.url }}" download target="_blank">
+                                                                    ⬇ Télécharger
+                                                                </a>
+                                                            {% else %}
+                                                                Aucun lien disponible
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="catemission">
+                                            <div class="titre">
+                                                <a href="{{ path('categorie.show', {'id': emission.categorie.id}) }}">
+                                                    <h1>
+                                                        {{ emission.categorie.titre }}
+                                                    </h1>
+                                                </a>
+                                            </div>
+                                            {% if emission.categorie.thumbnail %}
+                                                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.categorie.titre }}">
+                                                {% endif %}
+                                                <div class="descriptif">
+                                                    {{ emission.categorie.descriptif | raw }}
+                                                </div>
+                                            </div>
+                                        </div>
                                         <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
                                             <div class="theme">
                                                 <div class="themeemission">
@@ -562,23 +511,31 @@ a {
                                                                                                     -
                                                                                                     {{ emission.theme.name }}
                                                                                                 </h3>
-                                                                                                <p class="date">
+                                                                                                <div class="date">
+
+<div>
                                                                                                     {% if emission.lastDiffusion %}
                                                                                                         Dernière diffusion :
                                                                                                         {{ emission.lastDiffusion|date('d/m/Y H:i') }}
-                                                                                                        <br>
+                                                                                                        
                                                                                                         {% else %}
                                                                                                             Aucune diffusion enregistrée.
-                                                                                                            <br>
                                                                                                             {% endif %}
+</div><div>
                                                                                                             {% if emission.nextDiffusion %}
                                                                                                                 Prochaine diffusion :
                                                                                                                 {{ emission.nextDiffusion|date('d/m/Y H:i') }}
                                                                                                             {% endif %}
-                                                                                                        </p>
-                                                                                                        <p class="description">
-                                                                                                            {{ emission.descriptif | raw }}
-                                                                                                        </p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div data-controller="description-toggle" class="description-wrapper">
+                                                                                                            <p data-description-toggle-target="content" class="description">
+                                                                                                                {{ emission.descriptif | raw }}
+                                                                                                            </p>
+                                                                                                            <button data-action="click->description-toggle#toggle" data-description-toggle-target="button" class="description-toggle-btn" hidden>
+                                                                                                                Lire la suite
+                                                                                                            </button>
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                     <div class="emission-link">
                                                                                                         <a href="{{ emission.url }}" class="listen-link">

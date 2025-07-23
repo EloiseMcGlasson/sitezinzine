@@ -34,17 +34,17 @@
     
 
     nav {
-        width: 100%;
-        display: flex;
-        
-        text-align: center;
-        align-items: center;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-size: 21pt;
-        justify-content: space-between;
-      
-    
-    }
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-size: 21pt;
+    padding: 0 20px; /* 👈 espace intérieur à gauche et à droite */
+    box-sizing: border-box; /* ✅ important pour ne pas faire dépasser */
+}
+
+
     .button-nav-don {
     display: inline-block;
     font-family: "Montserrat", sans-serif;
@@ -75,57 +75,104 @@ a.active {
     color: #E40039 !important; /* forcer si besoin */
 }
 
+/* Général : cacher le menu mobile par défaut */
+.nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
 
+.burger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 10px;
+}
 
-    @media (min-width: 1200px) {
+.burger span {
+    height: 3px;
+    width: 25px;
+    background: #E40039;
+    margin: 4px 0;
+    border-radius: 2px;
+    transition: 0.3s;
+}
 
+@media (max-width: 900px) {
+    nav {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 10px 16px;
     }
 
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: white;
+        margin-top: 10px;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-menu li {
+        display: block;
+        margin: 8px 0;
+    }
+
+    .burger {
+        display: flex;
+    }
+
+    .button-nav-don,
+    .aix,
+    .search-icon {
+        margin-top: 10px;
+    }
+
+    .search-icon img {
+        width: 32px;
+    }
+}
+
+    
 </style>
 <nav>
-    <img src="{{ asset('/images/logo.gif') }}" alt="Logo de Radio Zinzine">
-        <a href="https://www.radiozinzineaix.org/" target="_blank">
-            <img class="aix" src="{{ asset('/images/zinzine-aix.png') }}" alt="Logo de Radio Zinzine Aix"></a>
-            <ul>
-                <li>
-                    DEMO
-                </li>
-                <li>
-                    <a class="{{ app.request.attributes.get('_route') == 'home' ? 'active' : '' }}" href="{{ path('home') }}">
-                        Accueil
-                    </a>
-                </li>
-                <li>
-                    <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                    <li>
-                        <a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
-                            Radio Zinzine
-                        </a>
-                    </li>
-                    <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                        <li>
-                            <a class="{{ app.request.attributes.get('_route') starts with 'emission.' ? 'active' : '' }}" href="{{ path('emission.index') }}">
-                                Émissions
-                            </a>
-                        </li>
-                        <li>
-                            <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                            <li>
-                                <a class="{{ app.request.attributes.get('_route') == 'infos' ? 'active' : '' }}" href="{{ path('infos') }}">
-                                    Infos du soir
-                                </a>
-                            </li>
-                            <li>
-                                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-                                <li>
-                                    <a class="{{ app.request.attributes.get('_route') == 'programme' ? 'active' : '' }}" href="{{ path('programme') }}">
-                                        Programme
-                                    </a>
-                                </li>
-                            </ul>
-                            <a href="https://www.helloasso.com/associations/association-radio-zinzine/formulaires/1" target="_blank" class="button-nav-don">
-                                FAIRE UN DON
-                            </a>
-                            <a href="{{ path('emission.recherche') }}" data-turbo-action="advance" class="{{ app.current_route == 'recherche' ? 'active' : '' }}">
-                                <img src="{{ asset('/images/ico-recherche.gif') }}" alt="Icône de recherche"></a>
+    <img src="{{ asset('/images/logo.gif') }}" alt="Logo de Radio Zinzine" style="height: 60px;">
+    <a href="https://www.radiozinzineaix.org/" target="_blank">
+                <img class="aix" src="{{ asset('/images/zinzine-aix.png') }}" alt="Logo de Radio Zinzine Aix"></a>
+    
+    <div class="burger" onclick="document.querySelector('.nav-menu').classList.toggle('active')">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <ul class="nav-menu">
+        <li>DEMO</li>
+        <li><a class="{{ app.request.attributes.get('_route') == 'home' ? 'active' : '' }}" href="{{ path('home') }}">Accueil</a></li>
+        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+        <li><a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">Radio Zinzine</a></li>
+        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+        <li><a class="{{ app.request.attributes.get('_route') starts with 'emission.' ? 'active' : '' }}" href="{{ path('emission.index') }}">Émissions</a></li>
+        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+        <li><a class="{{ app.request.attributes.get('_route') == 'infos' ? 'active' : '' }}" href="{{ path('infos') }}">Infos du soir</a></li>
+        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+        <li><a class="{{ app.request.attributes.get('_route') == 'programme' ? 'active' : '' }}" href="{{ path('programme') }}">Programme</a></li>
+    </ul>
+
+    <div class="search-icon">
+        <a href="https://www.helloasso.com/associations/association-radio-zinzine/formulaires/1" target="_blank" class="button-nav-don">
+            FAIRE UN DON
+        </a>
+        <a href="{{ path('emission.recherche') }}" class="{{ app.current_route == 'recherche' ? 'active' : '' }}">
+            <img src="{{ asset('/images/ico-recherche.gif') }}" alt="Icône de recherche">
+        </a>
+    </div>
+</nav>
+
