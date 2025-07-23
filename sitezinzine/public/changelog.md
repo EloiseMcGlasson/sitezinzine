@@ -1,12 +1,14 @@
 # Changelog
 
-## [1.0.34] - 2025-07-22
+## [1.0.34] - 2025-07-23
+### Ajout
+- Ajout d'un début de responsive sur la navbar publique (en attente de retour des graphistes).
 ### Correction
 - Correction de la logique d'affichage des émissions côté admin, maintenant une émission qui n'a pas de fichier son, mais qui a un user s'affiche.
 - Correction de la navbar publique (espacement avec le bord sur les icone de zinzine et la loupe de recherche).
-- Ajout d'un début de responsive sur la navbar publique (en attente de retour des graphistes).
 - Uniformisation des tailles sur les balise h1 et h3 de la page d'accueil, décalage des images à gauche du titre.
-- Réduction à 3 lignes des descriptifs dans les listes d'émissions (home/emission, admin/emission).
+- Réduction à 3 lignes des descriptifs dans les listes d'émissions (home/emission, admin/emission, home/show).
+- Fin de refonte du home/show selon la maquette de Fernande.
 
 
 ## [1.0.33] - 2025-07-22
