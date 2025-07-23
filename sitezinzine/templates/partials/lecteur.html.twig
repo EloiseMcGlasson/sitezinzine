@@ -82,14 +82,64 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .lecteur audio {
-        width: 100%;    /* Pleine largeur sur mobile */
-        max-width: 300px;
-    }
-    .lecteur .droite {
-        display: none;  /* Cache le texte sur mobile */
-    }
+  .lecteur {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .lecteur .gauche,
+  .lecteur .droite {
+    padding: 0;
+  }
+
+  .lecteur .direct,
+  .lecteur .sousdirect {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .lecteur .droite {
+    display: none; /* Cache le slogan sur mobile pour gagner de la place */
+  }
+
+  .lecteur .milieu {
+    width: 100%;
+  }
+
+  .custom-audio-player {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .custom-audio-player button#play-pause {
+    align-self: center;
+    width: 50px;
+    height: 50px;
+  }
+
+  .custom-audio-player input[type="range"] {
+    width: 100%;
+  }
 }
+
+@media (max-width: 480px) {
+  .lecteur {
+    padding: 10px 5px;
+  }
+
+  .lecteur .direct {
+    font-size: 13px;
+  }
+
+  .lecteur .sousdirect {
+    font-size: 12px;
+  }
+}
+
 
 
 </style>
@@ -104,7 +154,7 @@
 </div>
 <div class="milieu">
 <div class="custom-audio-player">
-    <audio id="audio-player" src="https://stream.radiozinzine.org:8443/3"></audio>
+    <audio id="audio-player" src="https://stream.radiozinzine.org:8443/3" preload="metadata"></audio>
     <button id="play-pause" class="play"></button>
     <input type="range" id="progress-bar" value="0">
     <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1">
@@ -120,77 +170,77 @@ RADIO ZINZINE, UNE RADIO LIBRE !
 
 <script>
    
-   document.addEventListener("DOMContentLoaded", function () {
-    const audio = document.getElementById("audio-player");
-    const playPauseButton = document.getElementById("play-pause");
-    const progressBar = document.getElementById("progress-bar");
-    const volumeControl = document.getElementById("volume-control");
+    document.addEventListener("DOMContentLoaded", function () {
+        const audio = document.getElementById("audio-player");
+        const playPauseButton = document.getElementById("play-pause");
+        const progressBar = document.getElementById("progress-bar");
+        const volumeControl = document.getElementById("volume-control");
 
-    // Définir les chemins vers les images
-    const playIcon = "{{ asset('images/lecteur.png') }}";
-    const pauseIcon = "{{ asset('images/bouton-pause.png') }}";
+        // Définir les chemins vers les images
+        const playIcon = "{{ asset('images/lecteur.png') }}";
+        const pauseIcon = "{{ asset('images/bouton-pause.png') }}";
 
-    // Initialiser avec l'icône play
-    playPauseButton.style.backgroundImage = `url('${playIcon}')`;
+        // Initialiser avec l'icône play
+        playPauseButton.style.backgroundImage = `url('${playIcon}')`;
 
-    // Fonction pour changer l'icône play/pause
-    function togglePlayPause() {
-        if (audio.paused) {
+        // Fonction pour changer l'icône play/pause
+        function togglePlayPause() {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.style.backgroundImage = `url('${pauseIcon}')`;
+            } else {
+                audio.pause();
+                playPauseButton.style.backgroundImage = `url('${playIcon}')`;
+            }
+        }
+
+        // Ajout de l'événement click pour play/pause
+        playPauseButton.addEventListener("click", togglePlayPause);
+
+        // Synchronisation de la barre de progression avec l'audio
+        audio.addEventListener("timeupdate", function () {
+            if (!isNaN(audio.duration)) {
+                progressBar.value = (audio.currentTime / audio.duration) * 100;
+            }
+        });
+
+        // Gestion de la progression par le slider
+        progressBar.addEventListener("input", function () {
+            audio.currentTime = (progressBar.value / 100) * audio.duration;
+        });
+
+        // Contrôle du volume avec la barre de volume
+        volumeControl.addEventListener("input", function () {
+            audio.volume = volumeControl.value;
+        });
+
+        // Réinitialisation à la fin de la lecture
+        audio.addEventListener("ended", function () {
+            progressBar.value = 0;
+            playPauseButton.style.backgroundImage = `url('${playIcon}')`;
+        });
+
+        // Sauvegarde du statut de lecture/pause et du volume dans localStorage
+        audio.addEventListener("play", function () {
+            localStorage.setItem('audioWasPlaying', 'true');
+        });
+
+        audio.addEventListener("pause", function () {
+            localStorage.setItem('audioWasPlaying', 'false');
+        });
+
+        // Récupération du statut du volume et de la lecture lors du rechargement
+        const savedVolume = parseFloat(localStorage.getItem('audioVolume') || 1);
+        audio.volume = savedVolume;
+        volumeControl.value = savedVolume;
+
+        // Récupérer l'état de lecture
+        if (localStorage.getItem('audioWasPlaying') === 'true') {
             audio.play();
             playPauseButton.style.backgroundImage = `url('${pauseIcon}')`;
-        } else {
-            audio.pause();
-            playPauseButton.style.backgroundImage = `url('${playIcon}')`;
         }
-    }
 
-    // Ajout de l'événement click pour play/pause
-    playPauseButton.addEventListener("click", togglePlayPause);
-
-    // Synchronisation de la barre de progression avec l'audio
-    audio.addEventListener("timeupdate", function () {
-        if (!isNaN(audio.duration)) {
-            progressBar.value = (audio.currentTime / audio.duration) * 100;
-        }
     });
-
-    // Gestion de la progression par le slider
-    progressBar.addEventListener("input", function () {
-        audio.currentTime = (progressBar.value / 100) * audio.duration;
-    });
-
-    // Contrôle du volume avec la barre de volume
-    volumeControl.addEventListener("input", function () {
-        audio.volume = volumeControl.value;
-    });
-
-    // Réinitialisation à la fin de la lecture
-    audio.addEventListener("ended", function () {
-        progressBar.value = 0;
-        playPauseButton.style.backgroundImage = `url('${playIcon}')`;
-    });
-
-    // Sauvegarde du statut de lecture/pause et du volume dans localStorage
-    audio.addEventListener("play", function () {
-        localStorage.setItem('audioWasPlaying', 'true');
-    });
-
-    audio.addEventListener("pause", function () {
-        localStorage.setItem('audioWasPlaying', 'false');
-    });
-
-    // Récupération du statut du volume et de la lecture lors du rechargement
-    const savedVolume = parseFloat(localStorage.getItem('audioVolume') || 1);
-    audio.volume = savedVolume;
-    volumeControl.value = savedVolume;
-
-    // Récupérer l'état de lecture
-    if (localStorage.getItem('audioWasPlaying') === 'true') {
-        audio.play();
-        playPauseButton.style.backgroundImage = `url('${pauseIcon}')`;
-    }
-
-});
 
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

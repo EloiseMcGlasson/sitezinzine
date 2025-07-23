@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.35] - 2025-07-23
+### Ajout
+- Ajout du responsive pour le lecteur.
+### Correction
+- Correction des noms de groupe de thèmes.
+- Correction côté admin de l'affichage des émissions n'ayant pas d'url mais ayant un user.
+- Déplacement du menu invité ancien·nes animateur·ices dans le groupe admin droit user.
+
+
 ## [1.0.34] - 2025-07-23
 ### Ajout
 - Ajout d'un début de responsive sur la navbar publique (en attente de retour des graphistes).

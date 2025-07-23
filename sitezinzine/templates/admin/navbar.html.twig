@@ -87,6 +87,9 @@
                 <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
                     Émissions
                 </a>
+                <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
+                    Invité/animateur
+                </a>
                 {% if is_granted('ROLE_ADMIN') %}
                     <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
                         Catégories
@@ -96,9 +99,6 @@
                     </a>
                     <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
                         Éditeurs
-                    </a>
-                    <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
-                        Invité/animateur
                     </a>
                 {% endif %}
             </div>

@@ -45,7 +45,7 @@ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $use
     $qb = $this->createQueryBuilder('e')
         ->select('e', 'c', '(SELECT MAX(d2.horaireDiffusion) FROM App\Entity\Diffusion d2 WHERE d2.emission = e) AS HIDDEN lastDiffusion')
         ->leftJoin('e.categorie', 'c')
-        ->andWhere('(e.url != :excludeUrl OR (e.url IS NULL AND e.user IS NOT NULL))')
+        ->andWhere('((e.url != :excludeUrl AND e.user IS NOT NULL) OR e.url != :excludeUrl)')
         ->andWhere('c.id != 0')
         ->setParameter('excludeUrl', $excludeUrl)
         ->orderBy('lastDiffusion', 'DESC');
@@ -197,12 +197,12 @@ public function findEmissionsByDate(\DateTime $date): array
     public function getThemeGroups(): array
 {
     return [
-        'culture / musique / litterature' => [1, 7, 8],
-        'histoire / politique' => [2, 9],
-        'agriculture / foret / ecologie' => [3, 10, 5],
-        'alimentation / santé' => [4, 11],
-        'feminisme / societe' => [14, 6],
-        'international / migrations' => [13, 12],
+        'musique/littérature/ciné...' => [1, 7, 8],
+        'histoire/politique' => [2, 9],
+        'agriculture/forêt/écologie' => [3, 10, 5],
+        'alimentation/santé' => [4, 11],
+        'féminisme/société' => [14, 6],
+        'international/migrations' => [13, 12],
     ];
 }
 
