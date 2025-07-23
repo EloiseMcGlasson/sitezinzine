@@ -5,12 +5,12 @@
 {% endblock %}
 {% block body %}
     <style>
+/* ========== GÉNÉRAL ========== */
+
 .bodyemission {
     background: linear-gradient(#E4013A, #B81C61);
     background-size: 100%;
     width: 100%;
-    margin: 0, auto;
-    padding: 0, auto;
     display: flex;
     flex-direction: column;
     font-family: "Montserrat Alternates", sans-serif;
@@ -18,179 +18,41 @@
     font-style: normal;
     position: relative;
     color: white;
-    
     line-height: 1.5em;
-    }
-.top img{
-    width: 100%;
+    margin: 0 auto;
+    padding: 0;
 }
+
+a,
+.table-infos a {
+    color: #E40039;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+.table-infos a:hover {
+    color: black;
+}
+
+h1 {
+    font-size: 23px;
+}
+
 .titre {
     text-align: center;
     margin: 10px;
 }
-h1 {
-    font-size: 23px;  
-}
-.catemission img {
-   float: left;
-    margin: 10px 20px 10px 10px;
-    width: 250px;
-    max-width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 8%;
-}
-.catemission {
-  
-    border: 2px solid #E40039;
-    overflow: hidden; /* ✅ englobe le contenu flottant */
-    border-radius: 8px; /* optionnel pour un meilleur rendu */
-}
-.descriptif {
-    margin: 15px;
-}
+
+.top img,
 .bottom img {
     width: 100%;
-    margin-bottom: 0px;
-    padding-bottom: 0px;
-}
-   .theme {
-        
-        text-align: center;
-        background: white;
-        color: black;
-    }
-
-    .themeemission {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1rem;
-    width: 80%;
-    margin: 0 auto;
+    display: block;
 }
 
-.emission-row {
-    display: flex;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    align-items: center;
-    gap: 1rem;
-    color: #1C1C1A;
-}
+/* ========== FICHE ÉMISSION ========== */
 
-.emission-image img {
-    width: 120px;
-    height: auto;
-    border-radius: 4px;
-    object-fit: cover;
-}
-
-.emission-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    text-align: left;
-    
-}
-
-.emission-content h3 {
-    margin: 0;
-    font-size: 1.2em;
-    color: #1C1C1A;
-}
-
-.emission-content .date {
-    font-size: 0.9em;
-    color: #888;
-}
-
-.emission-content .description {
-    font-size: 1em;
-    color: #333;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-
-.emission-link {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
- .listen-link {
-    background-color: #E40039;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.4rem 0.8rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.listen-link:hover {
-    background-color: #c70030;
-}
-
-#theme-filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    margin: 1rem 0;
-}
-
-.theme-card-button {
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    width: 180px;
-    height: 120px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: none;
-    position: relative;
-    transition: transform 0.2s ease-in-out;
-}
-
-.theme-card-button:hover {
-    transform: scale(1.03);
-}
-
-.theme-card-background {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.theme-card-overlay {
-    background-color: rgba(0, 0, 0, 0.6); /* semi-transparent noir */
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-}
-
-.theme-card-button.active .theme-card-overlay {
-    background-color: #E40039;
-    color: white;
-    font-weight: bold;
-    opacity: 1;
-    transition: all 0.3s ease;
-}
 .fiche-emission {
     max-width: 900px;
     margin: 2rem auto;
@@ -200,18 +62,6 @@ h1 {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     padding: 1.5rem;
     font-family: "Montserrat Alternates", sans-serif;
-}
-
-.btn-back {
-    display: inline-block;
-    margin-bottom: 1rem;
-    color: #E40039;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.btn-back:hover {
-    text-decoration: underline;
 }
 
 .bloc-haut {
@@ -241,39 +91,38 @@ h1 {
 .descriptif {
     font-size: 1rem;
     line-height: 1.6;
-}
-.description-wrapper {
-  position: relative;
-  margin-top: 0.5em;
+    margin: 15px;
 }
 
-.description-toggle-btn {
-  background: none;
-  color: #E40039;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  margin-top: 0.5em;
+.btn-back {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #E40039;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-.description-wrapper .description {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 4.5em;
-  transition: max-height 0.3s ease;
+.btn-back:hover {
+    text-decoration: underline;
 }
 
-.description-wrapper .description.expanded {
-  -webkit-line-clamp: unset;
-  max-height: 1000px;
-}
-
+/* ========== BLOC INFOS (TABLEAU) ========== */
 
 .bloc-infos {
     margin-top: 2rem;
+}
+
+.table-infos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.table-infos thead {
+    border: 2px solid #E40039;
 }
 
 .table-infos th {
@@ -283,55 +132,202 @@ h1 {
     text-align: left;
     font-weight: bold;
     vertical-align: top;
-    border-bottom: 2px solid #E40039; 
-    
-    }
-    .table-infos thead {
-       
-        border-color: #E40039;
-        border: 2px solid #E40039;
-    }
-    .table-infos tbody {
-    padding-top: 0.5rem; /* n'a aucun effet car tbody est un display: table-row-group */
-}
-    .table-infos {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-bottom: 2px solid #E40039;
 }
 
 .table-infos td {
     text-align: left;
-    border-bottom: 1px solid #eee;
     padding: 1rem;
     border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
 
-a, .table-infos a {
-    color: #E40039;
-    font-weight: bold;
-    text-decoration: none;
-    transition: color 0.3s ease;
+/* ========== CATEGORIE ========== */
+
+.catemission {
+    border: 2px solid #E40039;
+    overflow: hidden;
+    border-radius: 8px;
 }
 
-a:hover, .table-infos a:hover {
+.catemission img {
+    float: left;
+    margin: 10px 20px 10px 10px;
+    width: 250px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8%;
+}
+
+/* ========== ÉMISSION LIÉES / THEMES ========== */
+
+.theme {
+    text-align: center;
+    background: white;
     color: black;
 }
-#emission-list .date 
-{
-   display: flex;
-  justify-content: space-between;
-  align-items: center; /* optionnel, pour aligner verticalement */
+
+.themeemission {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    width: 80%;
+    margin: 0 auto;
 }
 
-/* Responsive */
+.theme-card-button {
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 180px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: none;
+    position: relative;
+    transition: transform 0.2s ease-in-out;
+}
+
+.theme-card-button:hover {
+    transform: scale(1.03);
+}
+
+.theme-card-background {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+}
+
+.theme-card-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.theme-card-button.active .theme-card-overlay {
+    background-color: #E40039;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+/* ========== LISTE ÉMISSIONS LIÉES ========== */
+
+.emission-row {
+    display: flex;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    gap: 1rem;
+    color: #1C1C1A;
+}
+
+.emission-image img {
+    width: 120px;
+    height: auto;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.emission-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: left;
+}
+
+.emission-content h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #1C1C1A;
+}
+
+.emission-content .date {
+    font-size: 0.9em;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.emission-content .description {
+    font-size: 1em;
+    color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.emission-link {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.listen-link {
+    background-color: #E40039;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.listen-link:hover {
+    background-color: #c70030;
+}
+
+/* ========== DESCRIPTION TOGGLE ========== */
+
+.description-wrapper {
+    position: relative;
+    margin-top: 0.5em;
+}
+
+.description-toggle-btn {
+    background: none;
+    color: #E40039;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    margin-top: 0.5em;
+}
+
+.description-wrapper .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.5em;
+    transition: max-height 0.3s ease;
+}
+
+.description-wrapper .description.expanded {
+    -webkit-line-clamp: unset;
+    max-height: 1000px;
+}
+
+/* ========== RESPONSIVE ========== */
 
 @media (max-width: 768px) {
-
- .bloc-haut {
+    .bloc-haut {
         flex-direction: column;
         align-items: center;
     }
@@ -343,12 +339,12 @@ a:hover, .table-infos a:hover {
     .bloc-texte {
         text-align: center;
     }
+
     h1 {
         font-size: 20px;
     }
 
-    
-   .catemission img {
+    .catemission img {
         float: none;
         display: block;
         margin: 0 auto 20px auto;
@@ -357,7 +353,7 @@ a:hover, .table-infos a:hover {
 
     .catemission {
         text-align: center;
-        overflow: visible; /* ou hidden si image déborde encore */
+        overflow: visible;
     }
 
     .emission-row {
@@ -382,7 +378,6 @@ a:hover, .table-infos a:hover {
     }
 }
 
-    
     </style>
     <div class="bodyemission">
         <div class="top">
