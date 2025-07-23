@@ -11,7 +11,6 @@ export default class extends Controller {
     requestAnimationFrame(() => {
       const content = this.contentTarget;
       const isTruncated = content.scrollHeight > content.clientHeight + 1;
-console.log("🔎 scrollHeight:", content.scrollHeight, "clientHeight:", content.clientHeight);
 
       if (isTruncated) {
         this.buttonTarget.hidden = false;
