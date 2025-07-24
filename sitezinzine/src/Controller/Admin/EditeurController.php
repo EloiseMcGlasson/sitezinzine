@@ -43,7 +43,7 @@ class EditeurController extends AbstractController
         $form = $this->createForm(EditeurType::class, $editeur);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $editeur->setUpdateAt(new \DateTimeImmutable());
+            $editeur->setUpdateAt(new \DateTime());
             $em->flush();
             $this->addFlash('success', 'L\'éditeur a bien été modifié');
             return $this->redirectToRoute('admin.editeur.index');
@@ -61,7 +61,7 @@ class EditeurController extends AbstractController
         $form = $this->createForm(EditeurType::class, $editeur);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $editeur->setUpdateAt(new \DateTimeImmutable());
+            $editeur->setUpdateAt(new \DateTime());
             $em->persist($editeur);
             $em->flush();
             $this->addFlash('success', 'L\'éditeur a été crée !');
