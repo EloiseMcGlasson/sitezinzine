@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Form\EmissionSearchType;
 
 #[Route('/admin/emission', name: 'admin.emission.')]
 #[IsGranted('ROLE_USER')]
@@ -156,4 +157,33 @@ public function edit(
 
         return $this->redirectToRoute('admin.emission.index');
     }
+
+     #[Route('/rechercheadmin', name: 'rechercheadmin')]
+    public function search(Request $request, EmissionRepository $emissionRepository): Response
+{
+    $form = $this->createForm(EmissionSearchType::class);
+    $form->handleRequest($request);
+
+    $emissions = [];
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        $criteria = $form->getData();
+        $page = $request->query->getInt('page', 1);
+        $emissions = $emissionRepository->findBySearchAdmin($criteria, $page);
+        foreach ($emissions as $emission) {
+    $lastDate = $emissionRepository->findLastDiffusionDate($emission->getId());
+    if ($lastDate) {
+        $emission->setLastDiffusion($lastDate);
+    }
+}
+
+    
+    }
+
+    return $this->render('admin/recherche.html.twig', [
+        'form' => $form->createView(),
+        'emissions' => $emissions,
+        'searchTerm' => $form->get('titre')->getData() // ✅ Récupère la valeur du champ "titre"
+    ]);
+}
 }
