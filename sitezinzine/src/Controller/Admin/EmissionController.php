@@ -95,55 +95,55 @@ public function edit(
     Security $security,
     SessionInterface $session
 ): Response {
-    // Vérifie si l'utilisateur est admin/super_admin ou si c'est l'auteur de l'émission
+    $user = $security->getUser();
+
+    // Vérifie si l'utilisateur est admin/super_admin ou l'auteur de l'émission
     if (
         !$this->isGranted('ROLE_ADMIN') &&
         !$this->isGranted('ROLE_SUPER_ADMIN') &&
-        $emission->getUser() !== $security->getUser()
+        $emission->getUser() !== $user
     ) {
         throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
     }
 
-    // Récupère l'URL de redirection précédente via `?returnTo=...` s'il existe
+    // Récupère l'URL de redirection précédente via `?returnTo=...`
     $returnTo = $request->query->get('returnTo');
     if ($returnTo) {
-        $session->set('return_to_url', $returnTo);  // Enregistrer dans la session
+        $session->set('return_to_url', $returnTo);
     }
 
-    // Création et gestion du formulaire
-    $form = $this->createForm(EmissionType::class, $emission);
+    // Création et gestion du formulaire (envoie le username au form)
+    $form = $this->createForm(EmissionType::class, $emission, [
+        'current_user_identifier' => $user?->getUserIdentifier(),
+    ]);
     $form->handleRequest($request);
 
-    // Vérifie si le formulaire a été soumis et est valide
     if ($form->isSubmitted() && $form->isValid()) {
         if (!$emission->getUser()) {
-            $emission->setUser($security->getUser());
+            $emission->setUser($user);
         }
 
         $emission->setUpdatedat(new \DateTime());
         $em->flush();
 
-        // Message flash pour indiquer la réussite
         $this->addFlash('success', 'L\'émission a bien été modifiée.');
 
-        // Si un lien de retour a été enregistré dans la session, redirige là
         if ($session->has('return_to_url')) {
             $url = $session->get('return_to_url');
-            $session->remove('return_to_url'); // nettoyage
+            $session->remove('return_to_url');
             return $this->redirect($url);
         }
 
-        // Sinon, redirige vers la liste des émissions, avec la page précédente
         $previousPage = $session->get('previous_page_emission', 1);
         return $this->redirectToRoute('admin.emission.index', ['page' => $previousPage]);
     }
 
-    // Rendu du formulaire
     return $this->render('admin/emission/edit.html.twig', [
         'emission' => $emission,
         'formEmission' => $form->createView(),
     ]);
 }
+
 
 
 
