@@ -355,7 +355,95 @@ LIMIT 6
 }
 
 
+public function findBySearchAdmin(array $criteria, int $page = 1): PaginationInterface
+{
+    $params = [];
 
+    // Sous-requête pour filtrer par date de diffusion si nécessaire
+    if (!empty($criteria['dateDebut']) || !empty($criteria['dateFin'])) {
+        $subQb = $this->createQueryBuilder('e2')
+            ->select('e2.id')
+            ->leftJoin('e2.diffusions', 'd2')
+            ->groupBy('e2.id');
+
+        $havingConditions = [];
+
+        if (!empty($criteria['dateDebut'])) {
+            $havingConditions[] = 'MAX(d2.horaireDiffusion) >= :dateDebut';
+            $params['dateDebut'] = $criteria['dateDebut'];
+        }
+
+        if (!empty($criteria['dateFin'])) {
+            $havingConditions[] = 'MAX(d2.horaireDiffusion) <= :dateFin';
+            $params['dateFin'] = $criteria['dateFin'];
+        }
+
+        if (!empty($havingConditions)) {
+            $subQb->having(implode(' AND ', $havingConditions));
+        }
+
+        $ids = array_column(
+            $subQb->getQuery()
+                  ->setParameters($params)
+                  ->getScalarResult(),
+            'id'
+        );
+
+        if (empty($ids)) {
+            return $this->paginator->paginate([], $page, 12);
+        }
+    }
+
+    // Requête principale
+    $qb = $this->createQueryBuilder('e')
+        ->addSelect('MAX(d.horaireDiffusion) AS HIDDEN lastDiff')
+        ->leftJoin('e.diffusions', 'd')
+        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.theme', 't')
+        ->andWhere('c.id != 0');
+
+    if (isset($ids)) {
+        $qb->andWhere('e.id IN (:ids)')
+           ->setParameter('ids', $ids);
+    }
+
+    if (!empty($criteria['titre'])) {
+        $search = '%' . strtolower((string) $criteria['titre']) . '%';
+        $qb->andWhere('LOWER(e.titre) LIKE :search OR LOWER(e.descriptif) LIKE :search')
+           ->setParameter('search', $search);
+    }
+
+    if (!empty($criteria['categorie']) && $criteria['categorie'] instanceof Categories) {
+        $qb->andWhere('LOWER(c.titre) = :categorie')
+           ->setParameter('categorie', strtolower($criteria['categorie']->getTitre()));
+    }
+
+    if (!empty($criteria['theme'])) {
+        $qb->andWhere('t.id = :themeId')
+           ->setParameter('themeId', $criteria['theme']->getId());
+    }
+
+    $pagination = $this->paginator->paginate(
+        $qb->groupBy('e.id')
+           ->orderBy('lastDiff', 'DESC'),
+        $page,
+        12,
+        [
+            'distinct' => false,
+        ]
+    );
+
+    // Injecter la date de dernière diffusion dans l’objet Emission
+    foreach ($pagination as $item) {
+        if (is_array($item) && isset($item[0], $item['lastDiff'])) {
+            /** @var \App\Entity\Emission $emission */
+            $emission = $item[0];
+            $emission->setLastDiffusion(new \DateTime($item['lastDiff']));
+        }
+    }
+
+    return $pagination;
+}
 
     /**
      * Recherche avancée avec filtres multiples.

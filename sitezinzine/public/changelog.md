@@ -1,10 +1,11 @@
 # Changelog
 
-## [1.0.36] - 2025-07-??
+## [1.0.36] - 2025-07-24
+### Ajout
+- Ajout de la recherche côté admin, selectionne aussi les émissions sans fichier audio.
 ### Correction
 - Correction de la logique d'affichage des émissions côté admin, maintenant une émission qui n'a pas de fichier son, mais qui a un user s'affiche(j'espère !).
-
-
+- Correction de la couleur de la bordure de la catégorie sur la page home/show (du rouge vers le noir).
 
 
 ## [1.0.35] - 2025-07-23
@@ -29,7 +30,7 @@
 
 ## [1.0.33] - 2025-07-22
 ### Correction
-- Hotfix affichage des émissions coté admin.
+- Hotfix affichage des émissions côté admin.
 
 ## [1.0.32] - 2025-07-22
 ### Correction
@@ -58,7 +59,7 @@
 
 ## [1.0.28] - 2025-07-20
 ### Ajout
-- Ajout des alt sur les images de la navbar coté auditeurices.
+- Ajout des alt sur les images de la navbar côté auditeurices.
 - Ajout des controllers tinymce et flatpickr.
 - Ajout d'une favicon.ico.
 ### Correction
@@ -140,18 +141,18 @@
 
 ## [1.0.18] - 2025-07-06
 ### Ajout
-- Ajout de titre de pages coté admin.
+- Ajout de titre de pages côté admin.
 ### Correction
 - Correction du css de la page Mentions légales.
 - Correction de la page home/show.html.twig et du controller EmissionShowController.php pour coller à la vision de Nick. Transfert de la catégorie dans le haut de la page pour laisser la place à la liste des émissions ayant un lien, sur le même thème, du plus récent au plus ancien avec le css associé et le responsive. En prévision du changement de gestion des thèmes et leurs affichages.
-- Correction du menu de navigation coté auditeurs qui ne mettait plus en avant le menu dans lequel on était (page active, menu en rouge).
+- Correction du menu de navigation côté auditeurs qui ne mettait plus en avant le menu dans lequel on était (page active, menu en rouge).
 - Correction alignement de la colonne 2 des annonces (à revoir ne prend pas toute la place disponible).
-- Correction des block title coté admin.
+- Correction des block title côté admin.
 
 
 ## [1.0.17] - 2025-07-05
 ### Ajout
-- Ajout du changelog en dynamique sur le tableau de bord du coté admin.
+- Ajout du changelog en dynamique sur le tableau de bord du côté admin.
 ### Correction
 - Factorisation de tinymce dans admin.html.twig.
 - Correction centrage menu déroulant navbar admin + problème de conflit css avec pagination.
