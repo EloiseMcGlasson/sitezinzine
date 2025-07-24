@@ -3,7 +3,6 @@
     Validation des annonces auditeur
 {% endblock %}
 {% block body %}
-
     <style>
 
 
@@ -244,83 +243,84 @@ ul, li {
 
     
 </style>
-  
     <div>
-        <h1>Liste des annonces</h1>
-            <article>
-                <div class="annonce">
-                    {% for annonce in annonces %}
-                        {% if loop.index == 0 or loop.index % 2 == 1 %}
-                            {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
-                            <div class="annonces-row">
-                            {% endif %}
-                            <section {% if not annonce.valid %} style="background-color:gray" {% endif %}>
-                                <div class="col1">
-                                    {% if annonce.thumbnail %}
-                                        <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col2">
-                                        <p class="type">
-                                            {{ annonce.type }}
-                                        </p>
-                                        <p class="titre">
-                                            <a href="{{ path('admin.annonce.show', {id: annonce.id }) }}">
-                                                {{ annonce.titre }}
-                                            </a>
-                                        </p>
-                                        <p class="orga">
-                                            {{ annonce.organisateur }}
-                                        </p>
-                                        <p class="ville">
-                                            {{ annonce.ville }}
-                                        </p>
-                                        <p class="departement">
-                                            {{ annonce.departement }}
-                                        </p>
-                                        <p class="debutFin">
-                                            {{ annonce.dateDebut|date('d/m/Y') }}
-                                            -
-                                            {{ annonce.dateFin|date('d/m/Y') }}
-                                            -
-                                            {{ annonce.horaire }}
-                                        </p>
-                                        <p class="presentation">
-                                            {{ annonce.presentation | raw }}
-                                        </p>
-                                    </div>
-                                    <div class="col3">
-                                        <a class="btn btn-primary btn-sm" href="{{ path('admin.annonce.edit', {id: annonce.id}) }}">
-                                            Éditer
+        <h1>
+            Liste des annonces
+        </h1>
+        <article>
+            <div class="annonce">
+                {% for annonce in annonces %}
+                    {% if loop.index == 0 or loop.index % 2 == 1 %}
+                        {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
+                        <div class="annonces-row">
+                        {% endif %}
+                        <section {% if not annonce.valid %} style="background-color:gray" {% endif %}>
+                            <div class="col1">
+                                {% if annonce.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
+                                    {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <p class="type">
+                                        {{ annonce.type }}
+                                    </p>
+                                    <p class="titre">
+                                        <a href="{{ path('admin.annonce.show', {id: annonce.id }) }}">
+                                            {{ annonce.titre }}
                                         </a>
-                                        {% if annonce.valid %}
-                                            <form action="{{ path('admin.annonce.unvalid', {id: annonce.id}) }}" method="post">
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    Dévalider
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <form action="{{ path('admin.annonce.valid', {id: annonce.id}) }}" method="post">
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    Valider
-                                                </button>
-                                            </form>
-                                        {% endif %}
-                                        <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    Supprimer
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </section>
-                                    {% if loop.index0 % 2 == 1 or loop.last %}
-                                    {# ✅ Ferme la ligne après 2 annonces ou si c'est la DERNIÈRE annonce seule #}
+                                    </p>
+                                    <p class="orga">
+                                        {{ annonce.organisateur }}
+                                    </p>
+                                    <p class="ville">
+                                        {{ annonce.ville }}
+                                    </p>
+                                    <p class="departement">
+                                        {{ annonce.departement }}
+                                    </p>
+                                    <p class="debutFin">
+                                        {{ annonce.dateDebut|date('d/m/Y') }}
+                                        -
+                                        {{ annonce.dateFin|date('d/m/Y') }}
+                                        -
+                                        {{ annonce.horaire }}
+                                    </p>
+                                    <p class="presentation">
+                                        {{ annonce.presentation | raw }}
+                                    </p>
+                                </div>
+                                <div class="col3">
+                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.annonce.edit', {id: annonce.id}) }}" data-controller="return" data-return-url-value="{{ path('admin.annonce.edit', { id: annonce.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                        Éditer
+                                    </a>
+                                    {% if annonce.valid %}
+                                        <form action="{{ path('admin.annonce.unvalid', {id: annonce.id}) }}" method="post">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                Dévalider
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form action="{{ path('admin.annonce.valid', {id: annonce.id}) }}" method="post">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                Valider
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                Supprimer
+                                            </button>
+                                        </form>
                                     </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </article>
-                </div>
-            {% endblock %}
-            
+                                </section>
+                                {% if loop.index0 % 2 == 1 or loop.last %}
+                                {# ✅ Ferme la ligne après 2 annonces ou si c'est la DERNIÈRE annonce seule #}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </article>
+            </div>
+        {% endblock %}
+        

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.38] - 2025-07-??
+
+
+
+## [1.0.37] - 2025-07-24
+### Correction
+- Correction du formulaire d'édition d'émission, si pas d'animateur·ice référent·e indiqué, prend le nom de la personne qui édite l'émission, si le descriptif est vide, met "descriptif à remplir".
+- Correction de la redirection des pages après validation de formulaire edit.
+
+
 ## [1.0.36] - 2025-07-24
 ### Ajout
 - Ajout de la recherche côté admin, selectionne aussi les émissions sans fichier audio.

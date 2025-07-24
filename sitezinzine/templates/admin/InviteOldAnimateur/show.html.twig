@@ -82,68 +82,64 @@ article{
 
 </style>
     <div>
-     
-            <div class="InviteOldAnimateurblock">
-            
+        <div class="InviteOldAnimateurblock">
             <div class="titre">
                 <h1>
-                    {{ InviteOldAnimateur.Lastname }} {{ InviteOldAnimateur.Firstname }}
+                    {{ InviteOldAnimateur.Lastname }}
+                    {{ InviteOldAnimateur.Firstname }}
                 </h1>
             </div>
-          
+        </div>
+        <div class="bottom">
+            <img src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+        </div>
+        <div class="emissionsdelaInviteOldAnimateur">
+            <div class="titre">
+                <h2>
+                    Toutes les émissions de cet éditeur :
+                </h2>
             </div>
-            <div class="bottom">
-            <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
-        </div></div>
-                <div class="emissionsdelaInviteOldAnimateur">
-                    <div class="titre">
-                        <h2>
-                            Toutes les émissions de cet éditeur :
-                        </h2>
-                    </div>
-                    <div class="InviteOldAnimateuremission">
-                        {% for emission in InviteOldAnimateur.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
-                            <article>
-                                <div class="col1">
-                                    {% if emission.thumbnail %}
-                                        <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col2">
-                                        <h3>
-                                            {{ emission.titre }}
-                                        </h3>
-                                        <p>
-                                            {{ emission.datepub|date('d-m-Y') }}
-                                            {{ emission.descriptif | raw }}
-                                        </p>
-                                    </div>
-                                    <div class="col3">
-                                        {% if emission.url %}
-                                        <div class='ecoute'>
-                                                <a href="{{ emission.url }}">
-                                                <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
-                                                </a>
-                                        </div>
-                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                                    Éditer
-                                                </a>
-                                       
-                                        {% else %}
-                                            <p>
-                                                <div class='ecoute'>
-                                                Pas de fichier audio disponible
-                                                </div>
-                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                                    Éditer
-                                                </a>
-                                            </a>
-                                        </p>
-                                    </div>
+            <div class="InviteOldAnimateuremission">
+                {% for emission in InviteOldAnimateur.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+                    <article>
+                        <div class="col1">
+                            {% if emission.thumbnail %}
+                                <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
                                 {% endif %}
-                            </article>
-                        {% endfor %}
-                    </div>
+                            </div>
+                            <div class="col2">
+                                <h3>
+                                    {{ emission.titre }}
+                                </h3>
+                                <p>
+                                    {{ emission.datepub|date('d-m-Y') }}
+                                    {{ emission.descriptif | raw }}
+                                </p>
+                            </div>
+                            <div class="col3">
+                                {% if emission.url %}
+                                    <div class='ecoute'>
+                                        <a href="{{ emission.url }}">
+                                            <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></a>
+                                        </div>
+                                        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                            Éditer
+                                        </a>
+                                    {% else %}
+                                        <p>
+                                            <div class='ecoute'>
+                                                Pas de fichier audio disponible
+                                            </div>
+                                            <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                                Éditer
+                                            </a>
+                                        </a>
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
                 </div>
-            {% endblock %}
-            
+            </div>
+        {% endblock %}
+        
