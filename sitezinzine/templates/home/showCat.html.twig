@@ -107,32 +107,29 @@ article{
 
 </style>
     <div>
-        
-            <div class="catblock">
+        <div class="catblock">
             <div class="top">
-        <img src="{{ asset('/images/bottom-header.gif') }}"></div>
-            <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">
-        ← Retour
-    </a>
-            
-            <div class="titre">
-                <h1>
-                    {{ categorie.titre }}
-                </h1>
-            </div>
-            <div class="catimg">
-                {% if categorie.thumbnail %}
-                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
-                    {% endif %}
+                <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+                <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">
+                    ← Retour
+                </a>
+                <div class="titre">
+                    <h1>
+                        {{ categorie.titre }}
+                    </h1>
                 </div>
-                <div class="catdescriptif">
-                    {{ categorie.descriptif | raw }}
+                <div class="catimg">
+                    {% if categorie.thumbnail %}
+                        <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
+                        {% endif %}
+                    </div>
+                    <div class="catdescriptif">
+                        {{ categorie.descriptif | raw }}
+                    </div>
+                    <div class="bottom">
+                        <img src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+                    </div>
                 </div>
-                <div class="bottom">
-                <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
-            </div>
-        </div>
-            </div>
                 <div class="emissionsdelacategorie">
                     <div class="titre">
                         <h2>
@@ -148,11 +145,11 @@ article{
                                         {% endif %}
                                     </div>
                                     <div class="col2">
-                                    <a href="{{ path('emission.show', {id: emission.id }) }}">
-                                        <h2>
-                                            {{ emission.titre }}
-                                        </h2>
-                                    </a>
+                                        <a href="{{ path('emission.show', {id: emission.id }) }}">
+                                            <h2>
+                                                {{ emission.titre }}
+                                            </h2>
+                                        </a>
                                         <p>
                                             {{ emission.datepub|date('d-m-Y') }}
                                             {{ emission.descriptif | raw }}
@@ -160,21 +157,19 @@ article{
                                     </div>
                                     <div class="col3">
                                         {% if emission.url %}
-                                        <div class='ecoute'>
+                                            <div class='ecoute'>
                                                 <a href="{{ emission.url }}">
-                                                <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
-                                                </a>
-                                        </div>
-                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                    <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></a>
+                                                </div>
+                                                <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
                                                     Éditer
                                                 </a>
-                                       
-                                        {% else %}
-                                            <p>
-                                                <div class='ecoute'>
-                                                Pas de fichier audio disponible
-                                                </div>
-                                            </p>
+                                            {% else %}
+                                                <p>
+                                                    <div class='ecoute'>
+                                                        Pas de fichier audio disponible
+                                                    </div>
+                                                </p>
                                             </a>
                                         </p>
                                     </div>

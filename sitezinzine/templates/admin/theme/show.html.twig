@@ -1,8 +1,8 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title "Thème : " ~ theme.name %}
 {% block stylesheets %}
-{{ parent() }}
-<style>
+    {{ parent() }}
+    <style>
    
  
     article{
@@ -23,57 +23,51 @@
     </style>
 {% endblock %}
 {% block body %}
-
     <div>
-    <h1>
-        {{ theme.name }}
-    </h1>
-    
-    <p>
-        {% if theme.thumbnail %}
-        <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
-        {% endif %}
-               
+        <h1>
+            {{ theme.name }}
+        </h1>
+        <p>
+            {% if theme.thumbnail %}
+                <img src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
+                {% endif %}
             </p>
             <div class="bottom">
-            <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
-        </div></div>
-    <div class="themeemission">
-            <h2>
-                Toutes les émissions de ce thème :
-            </h2>
-            {% for emission in theme.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
-            {% if emission.url %}
-            <article>
-                        <h3>
-                            {{ emission.titre }} - {% if emission.categorie %}{{ emission.categorie.titre }}{% endif %}
-                                
-                            
-                        </h3>
-                        <p>
-                            {% if emission.thumbnail %}
-                            <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                        {% endif %}
-                            </p>
-                        <p>
-                            {{ emission.datepub|date('d-m-Y') }}
-                            {{ emission.descriptif | raw }}
-                        </p>
-                        <p>
-                        
-                            <a href="{{ emission.url }}">
-                                Écoutez l'émission
-                            </a>
-                            <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                <img src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+            </div>
+            <div class="themeemission">
+                <h2>
+                    Toutes les émissions de ce thème :
+                </h2>
+                {% for emission in theme.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
+                    {% if emission.url %}
+                        <article>
+                            <h3>
+                                {{ emission.titre }}
+                                -
+                                {% if emission.categorie %}
+                                    {{ emission.categorie.titre }}
+                                {% endif %}
+                            </h3>
+                            <p>
+                                {% if emission.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                    {% endif %}
+                                </p>
+                                <p>
+                                    {{ emission.datepub|date('d-m-Y') }}
+                                    {{ emission.descriptif | raw }}
+                                </p>
+                                <p>
+                                    <a href="{{ emission.url }}">
+                                        Écoutez l'émission
+                                    </a>
+                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
                                         Éditer
                                     </a>
-                        </p>
-            </article>
-            {% endif %}
-                         {% endfor %}
-            
-        
-        
-        
-    {% endblock %}
-    
+                                </p>
+                            </article>
+                        {% endif %}
+                    {% endfor %}
+                {% endblock %}
+                

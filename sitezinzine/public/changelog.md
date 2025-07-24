@@ -2,7 +2,8 @@
 
 ## [1.0.36] - 2025-07-??
 ### Correction
-- Correction du formulaire d'édition d'émission, si pas d'animateur·ice référent·e indiqué, prend le nom de la personne qui édite l'émission, si le descriptif est vide, met "descriptif à remplir". 
+- Correction du formulaire d'édition d'émission, si pas d'animateur·ice référent·e indiqué, prend le nom de la personne qui édite l'émission, si le descriptif est vide, met "descriptif à remplir".
+- Correction de la redirection des pages après validation de formulaire edit.
 
 
 
