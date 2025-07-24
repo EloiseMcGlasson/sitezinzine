@@ -202,87 +202,88 @@ ul, li {
     
 </style>
     <div>
-       
-            <p class="create">
-                <a class="btn-create" href="{{ path('admin.evenement.create') }}">
-                    Créer un nouvel évènement
-                </a>
-            </p>
-            <h1>Liste des événements</h1>
-            <article>
-                <div class="evenement">
-                    {% for evenement in evenements %}
-                        {% if loop.index == 0 or loop.index % 2 == 1 %}
-                            {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
-                            <div class="evenements-row">
-                            {% endif %}
-                            <section {% if not evenement.valid %} style="background-color:gray" {% endif %}>
-                                <div class="col1">
-                                    {% if evenement.thumbnail %}
-                                        <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col2">
-                                        <p class="type">
-                                            {{ evenement.type }}
-                                        </p>
-                                        <p class="titre">
-                                            <a href="{{ path('admin.evenement.show', {id: evenement.id }) }}">
-                                                {{ evenement.titre }}
-                                            </a>
-                                        </p>
-                                        <p class="orga">
-                                            {{ evenement.organisateur }}
-                                        </p>
-                                        <p class="ville">
-                                            {{ evenement.ville }}
-                                        </p>
-                                        <p class="departement">
-                                            {{ evenement.departement }}
-                                        </p>
-                                        <p class="debutFin">
-                                            {{ evenement.dateDebut|date('d/m/Y') }}
-                                            -
-                                            {{ evenement.dateFin|date('d/m/Y') }}
-                                            -
-                                            {{ evenement.horaire }}
-                                        </p>
-                                        <div class="presentation">
-                                            {{ evenement.presentation | raw }}
-                                        </div>
-                                    </div>
-                                    <div class="col3">
-                                        <a class="btn btn-primary btn-sm" href="{{ path('admin.evenement.edit', {id: evenement.id}) }}">
-                                            Éditer
+        <p class="create">
+            <a class="btn-create" href="{{ path('admin.evenement.create') }}">
+                Créer un nouvel évènement
+            </a>
+        </p>
+        <h1>
+            Liste des événements
+        </h1>
+        <article>
+            <div class="evenement">
+                {% for evenement in evenements %}
+                    {% if loop.index == 0 or loop.index % 2 == 1 %}
+                        {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
+                        <div class="evenements-row">
+                        {% endif %}
+                        <section {% if not evenement.valid %} style="background-color:gray" {% endif %}>
+                            <div class="col1">
+                                {% if evenement.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
+                                    {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <p class="type">
+                                        {{ evenement.type }}
+                                    </p>
+                                    <p class="titre">
+                                        <a href="{{ path('admin.evenement.show', {id: evenement.id }) }}">
+                                            {{ evenement.titre }}
                                         </a>
-                                        {% if evenement.valid %}
-                                            <form action="{{ path('admin.evenement.unvalid', {id: evenement.id}) }}" method="post">
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    Dévalider
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <form action="{{ path('admin.evenement.valid', {id: evenement.id}) }}" method="post">
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    Valider
-                                                </button>
-                                            </form>
-                                        {% endif %}
-                                        <form action="{{ path('admin.evenement.softDelete', {id: evenement.id}) }}" method="post">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    Supprimer
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </section>
-                                    {% if loop.index0 % 2 == 1 or loop.last %}
-                                    {# ✅ Ferme la ligne après 2 evenements ou si c'est la DERNIÈRE evenement seule #}
+                                    </p>
+                                    <p class="orga">
+                                        {{ evenement.organisateur }}
+                                    </p>
+                                    <p class="ville">
+                                        {{ evenement.ville }}
+                                    </p>
+                                    <p class="departement">
+                                        {{ evenement.departement }}
+                                    </p>
+                                    <p class="debutFin">
+                                        {{ evenement.dateDebut|date('d/m/Y') }}
+                                        -
+                                        {{ evenement.dateFin|date('d/m/Y') }}
+                                        -
+                                        {{ evenement.horaire }}
+                                    </p>
+                                    <div class="presentation">
+                                        {{ evenement.presentation | raw }}
                                     </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </article>
-                </div>
-            {% endblock %}
-            
+                                </div>
+                                <div class="col3">
+                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.evenement.edit', {id: evenement.id}) }}" data-controller="return" data-return-url-value="{{ path('admin.evenement.edit', { id: evenement.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                        Éditer
+                                    </a>
+                                    {% if evenement.valid %}
+                                        <form action="{{ path('admin.evenement.unvalid', {id: evenement.id}) }}" method="post">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                Dévalider
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form action="{{ path('admin.evenement.valid', {id: evenement.id}) }}" method="post">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                Valider
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    <form action="{{ path('admin.evenement.softDelete', {id: evenement.id}) }}" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </section>
+                                {% if loop.index0 % 2 == 1 or loop.last %}
+                                {# ✅ Ferme la ligne après 2 evenements ou si c'est la DERNIÈRE evenement seule #}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </article>
+            </div>
+        {% endblock %}
+        

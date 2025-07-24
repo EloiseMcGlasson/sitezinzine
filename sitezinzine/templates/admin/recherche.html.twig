@@ -1,11 +1,9 @@
 {% extends 'admin/admin.html.twig' %}
-
-{% block title %}Recherche d'émissions{% endblock %}
-
+{% block title %}
+    Recherche d'émissions
+{% endblock %}
 {% block body %}
-
-
-<style>
+    <style>
     .recherche {
         background: linear-gradient(#E4013A, #B81C61);
         background-size: 100%;
@@ -317,100 +315,98 @@ button[type=reset]:hover {
     }
 }
 </style>
-<div class="recherche">
-   
-
-    <h1>Recherche d'émissions</h1>
-
+    <div class="recherche">
+        <h1>
+            Recherche d'émissions
+        </h1>
         <div class="form">
             {{ form_start (form) }}
             <div class="search-row">
-        <div>{{ form_row (form.titre) }}</div>
-        <div>{{ form_row (form.categorie) }}</div>
-        <div>{{ form_row (form.theme) }}</div>
-    </div>
+                <div>
+                    {{ form_row (form.titre) }}
+                </div>
+                <div>
+                    {{ form_row (form.categorie) }}
+                </div>
+                <div>
+                    {{ form_row (form.theme) }}
+                </div>
+            </div>
             <div class="date-range">
-            {{ form_row(form.dateDebut, {
+                {{ form_row(form.dateDebut, {
     attr: {
       'data-controller': 'flatpickr'
     }
 }) }}
-    {{ form_row(form.dateFin, {
+                {{ form_row(form.dateFin, {
     attr: {
       'data-controller': 'flatpickr'
     }
 }) }}
-        </div>
-        <div class="button-group">
-    <button type="submit">Rechercher</button>
-    <button type="reset" onclick="resetForm()">Réinitialiser</button>
-</div>
+            </div>
+            <div class="button-group">
+                <button type="submit">
+                    Rechercher
+                </button>
+                <button type="reset" onclick="resetForm()">
+                    Réinitialiser
+                </button>
+            </div>
             {{ form_end (form) }}
         </div>
-        
-    <img class="imgbottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
-</div>
-<div class="results">
-    {% if emissions is not empty %}
-        <h2>Résultats de la recherche :</h2>
-            <div class="pagination">
-            {{ knp_pagination_render(emissions) }}
-        
-        </div>
-    {% for emission in emissions %}
-<section>
-
-    <div class="col1">
-        {% set hasImage = false %}
-
-        {% if emission.thumbnail is defined and emission.thumbnail is not empty %}
-            {% set hasImage = true %}
-            <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" 
-                 alt="Photo de {{ emission.titre }}">
-        {% endif %}
-
-        {% if not hasImage and emission.categorie is defined and emission.categorie.thumbnail is defined and emission.categorie.thumbnail is not empty %}
-            {% set hasImage = true %}
-            <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" 
-                 alt="Photo de {{ emission.titre }}">
-        {% endif %}
-
-        {% if not hasImage and emission.theme is defined and emission.theme.thumbnail is defined and emission.theme.thumbnail is not empty %}
-            {% set hasImage = true %}
-            <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" 
-                 alt="Photo de {{ emission.titre }}">
-        {% endif %}
-
-        {% if not hasImage %}
-            <img src="{{ asset('/images/emission-zinzine.jpg') }}" 
-                 alt="Image par défaut pour {{ emission.titre }}">
-        {% endif %}
-    </div>
-
-    <div class="col2">
-        <div class="titre">
-            <a href="{{ path('emission.show', {id: emission.id }) }}">
-                {{ emission.titre|highlight(searchTerm) }}
-            </a>
-        </div>
-        <div class="cat">
-            <p>
-                {{ emission.categorie.titre }} 
-                {% if emission.theme.name is defined %} 
-                    {{ " - " ~ emission.theme.name }} 
-                {% endif %}
-            </p>
-        </div>
-        <div class="descriptif">
-            <p>
-                {{ emission.descriptif|highlight(searchTerm|default(''))|raw }}
-            </p>
-        </div>
-        <p>
-            {{ 'Dernière diffusion : ' ~ (emission.lastDiffusion ? emission.lastDiffusion|format_datetime('medium', 'short', locale = 'fr') : 'Aucune') }}
-        </p>
-    </div>
-      <div class="col3">
+        <img class="imgbottom" src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+        <div class="results">
+            {% if emissions is not empty %}
+                <h2>
+                    Résultats de la recherche :
+                </h2>
+                <div class="pagination">
+                    {{ knp_pagination_render(emissions) }}
+                </div>
+                {% for emission in emissions %}
+                    <section>
+                        <div class="col1">
+                            {% set hasImage = false %}
+                            {% if emission.thumbnail is defined and emission.thumbnail is not empty %}
+                                {% set hasImage = true %}
+                                <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                {% endif %}
+                                {% if not hasImage and emission.categorie is defined and emission.categorie.thumbnail is defined and emission.categorie.thumbnail is not empty %}
+                                    {% set hasImage = true %}
+                                    <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
+                                    {% endif %}
+                                    {% if not hasImage and emission.theme is defined and emission.theme.thumbnail is defined and emission.theme.thumbnail is not empty %}
+                                        {% set hasImage = true %}
+                                        <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
+                                        {% endif %}
+                                        {% if not hasImage %}
+                                            <img src="{{ asset('/images/emission-zinzine.jpg') }}" alt="Image par défaut pour {{ emission.titre }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="col2">
+                                            <div class="titre">
+                                                <a href="{{ path('emission.show', {id: emission.id }) }}">
+                                                    {{ emission.titre|highlight(searchTerm) }}
+                                                </a>
+                                            </div>
+                                            <div class="cat">
+                                                <p>
+                                                    {{ emission.categorie.titre }}
+                                                    {% if emission.theme.name is defined %}
+                                                        {{ " - " ~ emission.theme.name }}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            <div class="descriptif">
+                                                <p>
+                                                    {{ emission.descriptif|highlight(searchTerm|default(''))|raw }}
+                                                </p>
+                                            </div>
+                                            <p>
+                                                {{ 'Dernière diffusion : ' ~ (emission.lastDiffusion ? emission.lastDiffusion|format_datetime('medium', 'short', locale = 'fr') : 'Aucune') }}
+                                            </p>
+                                        </div>
+                                        <div class="col3">
                                             <div class='ecoute'>
                                                 {% if emission.url %}
                                                     <a href="{{ emission.url }}">
@@ -421,7 +417,13 @@ button[type=reset]:hover {
                                                 </div>
                                                 <div class="actions-buttons">
                                                     {% if is_granted('ROLE_ADMIN') or emission.user == app.user %}
-                                                        <a class="btn-action" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                        <a class="btn-action"
+                                                            href="{{ path('admin.emission.edit', { id: emission.id }) }}"
+                                                            data-controller="return"
+                                                            data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}"
+                                                            data-action="click->return#redirectWithReturnTo"
+                                                            class="btn btn-primary"
+                                                        >
                                                             Modifier
                                                         </a>
                                                     {% endif %}
@@ -435,19 +437,18 @@ button[type=reset]:hover {
                                                         {% endif %}
                                                     </div>
                                                 </div>
-
-</section>
-{% endfor %}
-
-            <div class="pagination">
-            {{ knp_pagination_render(emissions) }}
-        
-        </div>
-    {% elseif form.vars.submitted %}
-        <p>Aucune émission trouvée pour les critères de recherche.</p>
-    {% endif %}
-</div>
-<script>
+                                            </section>
+                                        {% endfor %}
+                                        <div class="pagination">
+                                            {{ knp_pagination_render(emissions) }}
+                                        </div>
+                                    {% elseif form.vars.submitted %}
+                                        <p>
+                                            Aucune émission trouvée pour les critères de recherche.
+                                        </p>
+                                    {% endif %}
+                                </div>
+                                <script>
     // Fonction pour réinitialiser le formulaire et rediriger vers la page de recherche
     function resetForm() {
         // Réinitialiser les champs du formulaire
@@ -466,4 +467,5 @@ button[type=reset]:hover {
     }
     
 </script>
-{% endblock %}
+                            {% endblock %}
+                            

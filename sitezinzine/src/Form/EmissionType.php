@@ -34,7 +34,7 @@ class EmissionType extends AbstractType
 
             ->add('categorie', EntityType::class, [
                 'class' => Categories::class,
-                'placeholder' => 'Sélectionnez une catégorie', // Texte par défaut
+                'placeholder' => 'Sélectionnez une catégorie  (obligatoire)', // Texte par défaut
                 'choice_label' => 'titre',
                 'label' => 'Catégorie',
                 'query_builder' => function (CategoriesRepository $er): QueryBuilder {
@@ -45,7 +45,7 @@ class EmissionType extends AbstractType
             ])
             ->add('theme', EntityType::class, [
                 'class' => Theme::class,
-                'placeholder' => 'Sélectionnez un thème', // Texte par défaut
+                'placeholder' => 'Sélectionnez un thème  (obligatoire)', // Texte par défaut
                 'choice_label' => 'name',
                 'label' => 'Thème'
             ])
@@ -72,7 +72,7 @@ class EmissionType extends AbstractType
             ])
 
             ->add('titre', TextType::class, [
-                'label' => 'Titre de l\'émission*',
+                'label' => 'Titre de l\'émission  (obligatoire)',
                 //restreindre le nb de char à 45 attention ne pas changer la bdd car on perd les titre trop long qui sont coupés
             ])
             ->add('keyword', TextType::class, [
@@ -80,11 +80,11 @@ class EmissionType extends AbstractType
                 'label' => 'Mot(s) clé(s)'
             ])
             ->add('ref', TextType::class, [
-                'label' => 'Créateur/trice',
+                'label' => 'Créateur/trice  (obligatoire)',
                 'required' => false,
             ])
             ->add('duree', IntegerType::class, [
-                'label' => 'Durée*'
+                'label' => 'Durée (obligatoire)'
             ])
             ->add('url', UrlType::class, [
                 'required' => false,
@@ -95,7 +95,7 @@ class EmissionType extends AbstractType
             ])
             ->add('descriptif', TextareaType::class, [
                 'empty_data' => 'Description à remplir',
-                'label' => 'Descriptif*',
+                'label' => 'Descriptif (obligatoire)',
                 'required' => false,
                 
             ])

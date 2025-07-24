@@ -35,6 +35,10 @@
         {
             "name": "description-toggle",
             "path": "./assets/controllers/description_toggle_controller.js"
+        },
+        {
+            "name": "return",
+            "path": "./assets/controllers/return_controller.js"
         }
     ]
 }

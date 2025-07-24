@@ -213,7 +213,7 @@
                                                 </div>
                                                 <div class="actions-buttons">
                                                     {% if is_granted('ROLE_ADMIN') or emission.user == app.user %}
-                                                        <a class="btn-action" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
+                                                        <a class="btn-action" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
                                                             Modifier
                                                         </a>
                                                     {% endif %}

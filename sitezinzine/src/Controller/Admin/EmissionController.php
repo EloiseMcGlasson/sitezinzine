@@ -16,31 +16,35 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Form\EmissionSearchType;
+use App\Controller\Traits\ReturnToTrait;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/admin/emission', name: 'admin.emission.')]
 #[IsGranted('ROLE_USER')]
 class EmissionController extends AbstractController
 {
+    use ReturnToTrait;
+
     #[Route('/', name: 'index')]
-public function index(Request $request, EmissionRepository $repository, Security $security, SessionInterface $session): Response
-{
-    $page = $request->query->getInt('page', 1);
-    $limit = 25;
+    public function index(Request $request, EmissionRepository $repository, Security $security, SessionInterface $session): Response
+    {
+        $page = $request->query->getInt('page', 1);
+        $limit = 25;
 
-    // Stockage de la page courante dans la session
-    $session->set('previous_page_emission', $page);
+        // Stockage de la page courante dans la session
+        $session->set('previous_page_emission', $page);
 
-    $user = $security->getUser();
-    $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SUPER_ADMIN');
+        $user = $security->getUser();
+        $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SUPER_ADMIN');
 
-    $emissions = $repository->paginateEmissionsAdmin($page, '', $user, $isAdmin);
-    $maxPage = (int) ceil($emissions->getTotalItemCount() / $limit);
+        $emissions = $repository->paginateEmissionsAdmin($page, '', $user, $isAdmin);
+        $maxPage = (int) ceil($emissions->getTotalItemCount() / $limit);
 
-    return $this->render('admin/emission/index.html.twig', [
-        'emissions' => $emissions,
-        'maxPage' => $maxPage,
-    ]);
-}
+        return $this->render('admin/emission/index.html.twig', [
+            'emissions' => $emissions,
+            'maxPage' => $maxPage,
+        ]);
+    }
 
 
 
@@ -52,97 +56,91 @@ public function index(Request $request, EmissionRepository $repository, Security
         ]);
     }
 
-   #[Route('/create', name: 'create')]
-public function create(Request $request, EntityManagerInterface $em, Security $security): Response
-{
-    $emission = new Emission();
-    $form = $this->createForm(EmissionType::class, $emission);
-    $form->handleRequest($request);
-    
-    if ($form->isSubmitted() && $form->isValid()) {
-        $now = new \DateTime();
-        $user = $security->getUser();
+    #[Route('/create', name: 'create')]
+    public function create(Request $request, EntityManagerInterface $em, Security $security): Response
+    {
+        $emission = new Emission();
+        $form = $this->createForm(EmissionType::class, $emission);
+        $form->handleRequest($request);
 
-        // Si ref est vide, on met le username du user connecté
-        if (empty($emission->getRef()) && $user) {
-            $emission->setRef($user->getUserIdentifier());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $now = new \DateTime();
+            $user = $security->getUser();
+
+            // Si ref est vide, on met le username du user connecté
+            if (empty($emission->getRef()) && $user) {
+                $emission->setRef($user->getUserIdentifier());
+            }
+
+            $emission
+                ->setDatepub($now)
+                ->setUpdatedat($now)
+                ->setUser($user);
+
+            $em->persist($emission);
+            $em->flush();
+
+            $this->addFlash('success', 'L\'émission a été créée !');
+
+            return $this->redirectToRoute('admin.emission.index');
         }
 
-        $emission
-            ->setDatepub($now)
-            ->setUpdatedat($now)
-            ->setUser($user);
-
-        $em->persist($emission);
-        $em->flush();
-
-        $this->addFlash('success', 'L\'émission a été créée !');
-
-        return $this->redirectToRoute('admin.emission.index');
+        return $this->render('admin/emission/create.html.twig', [
+            'form' => $form,
+        ]);
     }
-
-    return $this->render('admin/emission/create.html.twig', [
-        'form' => $form,
-    ]);
-}
 
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-public function edit(
-    Request $request,
-    Emission $emission,
-    EntityManagerInterface $em,
-    Security $security,
-    SessionInterface $session
-): Response {
-    $user = $security->getUser();
+    public function edit(
+        Request $request,
+        Emission $emission,
+        EntityManagerInterface $em,
+        Security $security,
+        SessionInterface $session,
+        UrlGeneratorInterface $urlGenerator
+    ): Response {
+        $user = $security->getUser();
 
-    // Vérifie si l'utilisateur est admin/super_admin ou l'auteur de l'émission
-    if (
-        !$this->isGranted('ROLE_ADMIN') &&
-        !$this->isGranted('ROLE_SUPER_ADMIN') &&
-        $emission->getUser() !== $user
-    ) {
-        throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
-    }
-
-    // Récupère l'URL de redirection précédente via `?returnTo=...`
-    $returnTo = $request->query->get('returnTo');
-    if ($returnTo) {
-        $session->set('return_to_url', $returnTo);
-    }
-
-    // Création et gestion du formulaire (envoie le username au form)
-    $form = $this->createForm(EmissionType::class, $emission, [
-        'current_user_identifier' => $user?->getUserIdentifier(),
-    ]);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        if (!$emission->getUser()) {
-            $emission->setUser($user);
+        // Vérifie si l'utilisateur est admin/super_admin ou l'auteur de l'émission
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            !$this->isGranted('ROLE_SUPER_ADMIN') &&
+            $emission->getUser() !== $user
+        ) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
         }
 
-        $emission->setUpdatedat(new \DateTime());
-        $em->flush();
+        // Enregistre returnTo si présent
+        $this->storeReturnTo($request, $session);
 
-        $this->addFlash('success', 'L\'émission a bien été modifiée.');
+        // Création et gestion du formulaire (envoie le username au form)
+        $form = $this->createForm(EmissionType::class, $emission, [
+            'current_user_identifier' => $user?->getUserIdentifier(),
+        ]);
+        $form->handleRequest($request);
 
-        if ($session->has('return_to_url')) {
-            $url = $session->get('return_to_url');
-            $session->remove('return_to_url');
-            return $this->redirect($url);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$emission->getUser()) {
+                $emission->setUser($user);
+            }
+
+            $emission->setUpdatedat(new \DateTime());
+            $em->flush();
+
+            $this->addFlash('success', 'L\'émission a bien été modifiée.');
+
+            // Redirection intelligente
+            return $this->redirectToReturnTo($session, $urlGenerator, 'admin.emission.index', [
+                'page' => $session->get('previous_page_emission', 1),
+            ]);
         }
 
-        $previousPage = $session->get('previous_page_emission', 1);
-        return $this->redirectToRoute('admin.emission.index', ['page' => $previousPage]);
+        return $this->render('admin/emission/edit.html.twig', [
+            'emission' => $emission,
+            'formEmission' => $form->createView(),
+        ]);
     }
-
-    return $this->render('admin/emission/edit.html.twig', [
-        'emission' => $emission,
-        'formEmission' => $form->createView(),
-    ]);
-}
 
 
 
@@ -158,32 +156,30 @@ public function edit(
         return $this->redirectToRoute('admin.emission.index');
     }
 
-     #[Route('/rechercheadmin', name: 'rechercheadmin')]
+    #[Route('/rechercheadmin', name: 'rechercheadmin')]
     public function search(Request $request, EmissionRepository $emissionRepository): Response
-{
-    $form = $this->createForm(EmissionSearchType::class);
-    $form->handleRequest($request);
+    {
+        $form = $this->createForm(EmissionSearchType::class);
+        $form->handleRequest($request);
 
-    $emissions = [];
-    
-    if ($form->isSubmitted() && $form->isValid()) {
-        $criteria = $form->getData();
-        $page = $request->query->getInt('page', 1);
-        $emissions = $emissionRepository->findBySearchAdmin($criteria, $page);
-        foreach ($emissions as $emission) {
-    $lastDate = $emissionRepository->findLastDiffusionDate($emission->getId());
-    if ($lastDate) {
-        $emission->setLastDiffusion($lastDate);
+        $emissions = [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $criteria = $form->getData();
+            $page = $request->query->getInt('page', 1);
+            $emissions = $emissionRepository->findBySearchAdmin($criteria, $page);
+            foreach ($emissions as $emission) {
+                $lastDate = $emissionRepository->findLastDiffusionDate($emission->getId());
+                if ($lastDate) {
+                    $emission->setLastDiffusion($lastDate);
+                }
+            }
+        }
+
+        return $this->render('admin/recherche.html.twig', [
+            'form' => $form->createView(),
+            'emissions' => $emissions,
+            'searchTerm' => $form->get('titre')->getData() // ✅ Récupère la valeur du champ "titre"
+        ]);
     }
-}
-
-    
-    }
-
-    return $this->render('admin/recherche.html.twig', [
-        'form' => $form->createView(),
-        'emissions' => $emissions,
-        'searchTerm' => $form->get('titre')->getData() // ✅ Récupère la valeur du champ "titre"
-    ]);
-}
 }

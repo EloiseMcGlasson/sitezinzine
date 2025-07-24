@@ -115,7 +115,9 @@
                             
                         <div class="col4">
 
-                                <a class="btn btn-primary btn-sm" href="{{ path('admin.editeur.edit', {id: editeur.id}) }}">
+                                <a class="btn btn-primary btn-sm" href="{{ path('admin.editeur.edit', {id: editeur.id}) }}" data-controller="return"
+    data-return-url-value="{{ path('admin.editeur.edit', { id: editeur.id }) }}"
+    data-action="click->return#redirectWithReturnTo">
                                     Éditer
                                 </a>
                             {# <form action="{{ path('admin.editeur.delete', {id: editeur.id}) }}" method="post">
