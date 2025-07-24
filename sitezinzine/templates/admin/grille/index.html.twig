@@ -1,0 +1,106 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Grille de programmation{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.grid-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.grille-wrapper {
+    flex: 1;
+    overflow-x: auto;
+}
+
+.emissions-wrapper {
+    flex: 0 0 200px;
+}
+
+.grid-table th, .grid-table td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 4px;
+    min-height: 30px;
+    font-size: 12px;
+}
+
+.heure-cell {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.dropzone {
+    background-color: #fff;
+    min-height: 30px;
+}
+
+.dropzone.drag-over {
+    background-color: #ffecec;
+    border: 2px dashed #E4013A;
+}
+
+.emission-block {
+    background-color: #E4013A;
+    color: white;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: grab;
+    user-select: none;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<h1>Grille de programmation</h1>
+
+<div data-controller="grid" style="display: flex; gap: 30px;">
+
+    {# ➤ Grille principale #}
+    <div class="grille-wrapper">
+        <table class="grid-table">
+            <thead>
+                <tr>
+                    <th>Heure</th>
+                    {% set jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] %}
+                    {% for jour in jours %}
+                        <th>{{ jour }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in 0..23 %}
+                    {% for q in [0, 15, 30, 45] %}
+                        <tr>
+                            {% if loop.first %}
+                                <td rowspan="4" class="heure-cell">{{ "%02d:00"|format(h) }}</td>
+                            {% endif %}
+                            {% for i in 0..6 %}
+                                <td class="dropzone"
+                                    data-grid-target="dropzone"
+                                    data-jour="{{ i }}"
+                                    data-heure="{{ "%02d:%02d"|format(h, q) }}">
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# ➤ Colonne de droite : Émissions disponibles #}
+    <div class="emissions-wrapper">
+        <h2 style="font-size: 16px;">Émissions disponibles</h2>
+        <div id="emissions-pool" style="display: flex; flex-direction: column; gap: 10px;">
+            <div data-grid-target="emission" class="emission-block" draggable="true" data-id="1">🎙 Emission 1</div>
+            <div data-grid-target="emission" class="emission-block" draggable="true" data-id="2">🎧 Emission 2</div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

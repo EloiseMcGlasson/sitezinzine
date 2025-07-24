@@ -35,6 +35,10 @@
         {
             "name": "description-toggle",
             "path": "./assets/controllers/description_toggle_controller.js"
+        },
+        {
+            "name": "grid",
+            "path": "./assets/controllers/grid_controller.js"
         }
     ]
 }

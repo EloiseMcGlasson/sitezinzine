@@ -127,6 +127,10 @@
                     Utilisateurices
                 </a>
             </li>
+             <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+            <li>
+                <a href="{{ path('admin.grille.index') }}">Grille de programmation</a>
+            </li>
         {% endif %}
         <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
         <a href="{{ path('admin.emission.rechercheadmin') }}" class="{{ app.current_route == 'admin.emission.rechercheadmin' ? 'active' : '' }}">
