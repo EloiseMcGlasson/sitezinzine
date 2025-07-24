@@ -13,7 +13,6 @@ export default class extends Controller {
       const content = this.contentTarget;
       const isTruncated = content.scrollHeight > content.clientHeight + 1;
 
-      console.log("scrollH:", content.scrollHeight, "clientH:", content.clientHeight);
 
       if (isTruncated) {
         this.buttonTarget.hidden = false;

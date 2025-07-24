@@ -129,35 +129,36 @@
         <div class="pagination">
             {{ knp_pagination_render(categories) }}
         </div>
-        <h1>Liste des catégories</h1>
+        <h1>
+            Liste des catégories
+        </h1>
         <article>
             <div class="categorie">
                 {% for categorie in categories %}
                     {% for row in categories %}
                         {% set categorie = row[0] %}
                         {% set total = row.total %}
-
                         {% if categorie.active %}
                             <section>
-                        {% else %}
-                            <section style="background-color:gray">
-                        {% endif %}
+                            {% else %}
+                                <section style="background-color:gray">
+                                {% endif %}
                                 <div class="col1">
                                     {% if categorie.thumbnail %}
                                         <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
                                         {% endif %}
-                                </div>
-                                <div class="col2">
-                                    <div class="titre">
-                                        <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
-                                                {{ categorie.titre }}
-                                        </a>
                                     </div>
+                                    <div class="col2">
+                                        <div class="titre">
+                                            <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
+                                                {{ categorie.titre }}
+                                            </a>
+                                        </div>
                                         <div class="descriptif">
                                             {{ categorie.descriptif | raw }}
                                         </div>
-                                </div>
-                                <div class="col3">
+                                    </div>
+                                    <div class="col3">
                                         {% if total > 1 %}
                                             <p>
                                                 {{ total }}
@@ -172,26 +173,25 @@
                                                 Aucune émission
                                             </p>
                                         {% endif %}
-                                </div>
-                                <div class="col4">
-                                    <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: categorie.id}) }}">
-                                        Éditer
-                                    </a>
-                                {# <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                    Supprimer
-                                    </button>
-                                </form> #}
-                                </div>
-                    </section>
-                {% endfor %}
-
-                {% endfor %}
-            </div>
-        </article>
-                <div class="pagination">
-                    {{ knp_pagination_render(categories) }}
+                                    </div>
+                                    <div class="col4">
+                                        <a class="btn btn-primary btn-sm" data-controller="return" data-return-url-value="{{ path('admin.categorie.edit', { id: categorie.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                            Éditer
+                                        </a>
+                                    {# <form action="{{ path('admin.categorie.delete', {id: categorie.id}) }}" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                        Supprimer
+                                        </button>
+                                    </form> #}
+                                    </div>
+                                </section>
+                        {% endfor %}
+                    {% endfor %}
                 </div>
-            {% endblock %}
-            
+            </article>
+            <div class="pagination">
+                {{ knp_pagination_render(categories) }}
+            </div>
+        {% endblock %}
+        

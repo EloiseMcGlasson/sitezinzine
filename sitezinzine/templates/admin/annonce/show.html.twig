@@ -216,7 +216,9 @@
 
     <div class="annonce-actions">
 <a href="{{ path('admin.annonce.index') }}" class="btn btn-secondary">Retour</a>
-        <a href="{{ path('admin.annonce.edit', {id: annonce.id}) }}" class="btn">Modifier</a>
+        <a href="{{ path('admin.annonce.edit', {id: annonce.id}) }}" data-controller="return"
+    data-return-url-value="{{ path('admin.annonce.edit', { id: annonce.id }) }}"
+    data-action="click->return#redirectWithReturnTo" class="btn">Modifier</a>
         <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit" class="btn btn-danger">Supprimer</button>

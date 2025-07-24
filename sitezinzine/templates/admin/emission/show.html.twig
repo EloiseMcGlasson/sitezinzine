@@ -87,52 +87,50 @@ color: #E40039;
     
 </style>
     <div>
-      
-            <div class="texteemission">
-                <div class="titre">
-                    <h1>
-                        {{ emission.titre }}
-                    </h1>
+        <div class="texteemission">
+            <div class="titre">
+                <h1>
+                    {{ emission.titre }}
+                </h1>
+            </div>
+            {% if emission.thumbnail %}
+                <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                {% endif %}
+                <div class="descriptif">
+                    {{ emission.descriptif  | raw }}
                 </div>
-                {% if emission.thumbnail %}
-                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                    {% endif %}
-                    <div class="descriptif">
-                        {{ emission.descriptif  | raw }}
-                    </div>
-                    <p>
-                        {{ "Dernière rediffusion le " ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
-                    </p>
-                    <p>
-                        <a href="{{ emission.url }}">
-                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission">
+                <p>
+                    {{ "Dernière rediffusion le " ~ emission.datepub| format_datetime ('medium', 'short', locale = 'fr') }}
+                </p>
+                <p>
+                    <a href="{{ emission.url }}">
+                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></a>
+                        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
+                            Éditer
                         </a>
-                        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', {id: emission.id}) }}">
-                                                        Éditer
-                                                    </a>
                     </p>
                 </div>
                 <div class="bottom">
-                <img src="{{ asset('/images/top-content-dechire-D.gif') }}">
-            </div></div>
-                    <div class="catemission">
-                        <div class="titre">
-                            <h1>
-                                {{ emission.categorie.titre }}
-                            </h1>
-                        </div>
-                        <p>
-                            {% if emission.categorie.thumbnail %}
-                                <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.categorie.titre }}">
-                                {% endif %}
-                                <div class="descriptif">
-                                    {{ emission.categorie.descriptif | raw }}
-                                </div>
-                            </p>
-                            <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: emission.categorie.id}) }}">
-                                                        Éditer
-                                                    </a>
-                        </div>
+                    <img src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+                </div>
+                <div class="catemission">
+                    <div class="titre">
+                        <h1>
+                            {{ emission.categorie.titre }}
+                        </h1>
                     </div>
-                {% endblock %}
-                
+                    <p>
+                        {% if emission.categorie.thumbnail %}
+                            <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.categorie.titre }}">
+                            {% endif %}
+                            <div class="descriptif">
+                                {{ emission.categorie.descriptif | raw }}
+                            </div>
+                        </p>
+                        <a class="btn btn-primary btn-sm" href="{{ path('admin.categorie.edit', {id: emission.categorie.id}) }}">
+                            Éditer
+                        </a>
+                    </div>
+                </div>
+            {% endblock %}
+            

@@ -39,6 +39,10 @@
         {
             "name": "grid",
             "path": "./assets/controllers/grid_controller.js"
+        },
+        {
+            "name": "return",
+            "path": "./assets/controllers/return_controller.js"
         }
     ]
 }
