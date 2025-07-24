@@ -1,10 +1,10 @@
 {% extends 'admin/admin.html.twig' %}
-
-{% block title %}Grille de programmation{% endblock %}
-
+{% block title %}
+    Grille de programmation
+{% endblock %}
 {% block stylesheets %}
-{{ parent() }}
-<style>
+    {{ parent() }}
+    <style>
 .grid-table {
     border-collapse: collapse;
     width: 100%;
@@ -15,31 +15,45 @@
     overflow-x: auto;
 }
 
-.emissions-wrapper {
-    flex: 0 0 200px;
-}
-
 .grid-table th, .grid-table td {
     border: 1px solid #ccc;
     text-align: center;
-    padding: 4px;
-    min-height: 30px;
+    height: 8px;
+    
     font-size: 12px;
 }
 
 .heure-cell {
     font-weight: bold;
     font-size: 14px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #fff;
 }
 
 .dropzone {
     background-color: #fff;
-    min-height: 30px;
+    height: 30px;
+    position: relative;
+    padding: 0;
+    overflow: visible;
 }
 
 .dropzone.drag-over {
     background-color: #ffecec;
     border: 2px dashed #E4013A;
+}
+
+.dropzone.occupied {
+    background-image: repeating-linear-gradient(
+        45deg,
+        #e4013a 0,
+        #e4013a 3px,
+        white 3px,
+        white 6px
+    );
+    background-size: 10px 10px;
+    cursor: not-allowed;
 }
 
 .emission-block {
@@ -50,57 +64,160 @@
     font-size: 12px;
     cursor: grab;
     user-select: none;
+    box-sizing: border-box;
+    height: 100%;
 }
+
+.emission-block.in-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #E4013A;
+    color: white;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: grab;
+    z-index: 1;
+}
+
+.emission-block.in-grid::after {
+  content: attr(data-tooltip);
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 12px;
+  z-index: 10;
+  white-space: normal;
+  max-width: 200px;
+}
+
+.emission-block.in-grid:hover::after {
+  display: block;
+}
+
+.emissions-wrapper h2 {
+    font-size: 16px;
+    color: white;
+    margin: 0;
+}
+
+.emission-wrapper {
+    pointer-events: none;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.emission-wrapper .emission-block {
+    pointer-events: auto;
+}
+
+.rowgroup-even td {
+    background-color: #ffffff;
+}
+
+.rowgroup-odd td {
+    background-color: #f2f2f2;
+}
+
+.custom-tooltip {
+  position: fixed;
+    display: none;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
 </style>
 {% endblock %}
-
 {% block body %}
-<h1>Grille de programmation</h1>
-
-<div data-controller="grid" style="display: flex; gap: 30px;">
-
-    {# ➤ Grille principale #}
-    <div class="grille-wrapper">
-        <table class="grid-table">
-            <thead>
-                <tr>
-                    <th>Heure</th>
-                    {% set jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] %}
-                    {% for jour in jours %}
-                        <th>{{ jour }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for h in 0..23 %}
-                    {% for q in [0, 15, 30, 45] %}
-                        <tr>
-                            {% if loop.first %}
-                                <td rowspan="4" class="heure-cell">{{ "%02d:00"|format(h) }}</td>
-                            {% endif %}
-                            {% for i in 0..6 %}
-                                <td class="dropzone"
-                                    data-grid-target="dropzone"
-                                    data-jour="{{ i }}"
-                                    data-heure="{{ "%02d:%02d"|format(h, q) }}">
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
+    <h1>
+        Grille de programmation
+    </h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
+            ⬅ Semaine précédente
+        </a>
+        <h2>
+            Semaine du
+            {{ startOfWeek|date('d/m/Y') }}
+        </h2>
+        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
+            Semaine suivante ➡
+        </a>
     </div>
-
-    {# ➤ Colonne de droite : Émissions disponibles #}
-    <div class="emissions-wrapper">
-        <h2 style="font-size: 16px;">Émissions disponibles</h2>
-        <div id="emissions-pool" style="display: flex; flex-direction: column; gap: 10px;">
-            <div data-grid-target="emission" class="emission-block" draggable="true" data-id="1">🎙 Emission 1</div>
-            <div data-grid-target="emission" class="emission-block" draggable="true" data-id="2">🎧 Emission 2</div>
+    <div data-controller="grid" style="display: flex; gap: 30px;">
+        {# ➤ Grille principale #}
+        <div class="grille-wrapper">
+            <table class="grid-table">
+                <thead>
+                    <tr>
+                        <th>
+                            Heure
+                        </th>
+                        {% set jours = [] %}
+                        {% for i in 0..6 %}
+                            {% set jours = jours|merge([startOfWeek|date_modify("+" ~ i ~ " days")]) %}
+                        {% endfor %}
+                        {% for jour in jours %}
+                            <th>
+                                {{ jour|date('D d/m') }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in 0..23 %}
+                        {% set rowClass = cycle(['rowgroup-even', 'rowgroup-odd'], h) %}
+                        {% for q in [0, 15, 30, 45] %}
+                            <tr class="{{ rowClass }}">
+                                {% if loop.first %}
+                                    <td rowspan="4" class="heure-cell">
+                                        {{ "%02d:00"|format(h) }}
+                                    </td>
+                                {% endif %}
+                                {% for i in 0..6 %}
+                                    {% set currentDateTime = jours[i]|date_modify(h ~ ' hour')|date_modify(q ~ ' minutes') %}
+                                    {% set cellDate = startOfWeek|date_modify('+' ~ i ~ ' days')|date_modify('+' ~ h ~ ' hours')|date_modify('+' ~ q ~ ' minutes') %}
+                                    <td class="dropzone" data-grid-target="dropzone" data-date="{{ cellDate|date('Y-m-d H:i:00') }}"></td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {# ➤ Colonne de droite : Émissions disponibles #}
+        <div class="emissions-wrapper">
+            <h2 style="font-size: 16px;">
+                Émissions disponibles
+            </h2>
+            <div id="emissions-pool" style="display: flex; flex-direction: column; gap: 10px;">
+                <div data-grid-target="emission" class="emission-block" draggable="true" data-id="1" data-duration="35">
+                    🎙 Emission 1 (35 min)
+                </div>
+                <div data-grid-target="emission" class="emission-block" draggable="true" data-id="2" data-duration="22">
+                    🎧 Emission 2 (22 min)
+                </div>
+            </div>
         </div>
     </div>
-
-</div>
+    <div id="tooltip" class="custom-tooltip"></div>
 {% endblock %}
-
