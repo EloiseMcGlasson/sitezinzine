@@ -306,12 +306,13 @@ ul, li {
                                             </button>
                                         </form>
                                     {% endif %}
-                                    <form action="{{ path('admin.annonce.softDelete', {id: annonce.id}) }}" method="post">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                Supprimer
-                                            </button>
-                                        </form>
+                                     <form action="{{ path('admin.annonce.delete', { id: annonce.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
+                                                            <input type="hidden" name="_method" value="DELETE">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
+                                                                    <button type="submit" class="btn-action btn-delete">
+                                                                        Supprimer
+                                                                    </button>
+                                                                </form>
                                     </div>
                                 </section>
                                 {% if loop.index0 % 2 == 1 or loop.last %}

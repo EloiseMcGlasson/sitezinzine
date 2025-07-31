@@ -16,4 +16,10 @@ const application = Application.start();
 const context = require.context('./controllers', true, /\.js$/);
 application.load(definitionsFromContext(context));
 
+document.addEventListener('turbo:load', () => {
+  document.querySelectorAll('[data-controller="tinymce"]').forEach(el => {
+    el.dispatchEvent(new Event('tinymce:reload'));
+  });
+});
+
 console.log('Stimulus & Turbo loaded successfully 🎉');
