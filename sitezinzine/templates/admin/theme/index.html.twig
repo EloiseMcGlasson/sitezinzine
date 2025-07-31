@@ -1,9 +1,9 @@
 {% extends 'admin/admin.html.twig' %}
-
-{% block title %}Liste des thèmes !{% endblock %}
-
+{% block title %}
+    Liste des thèmes !
+{% endblock %}
 {% block body %}
-<style>
+    <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
    
@@ -64,53 +64,44 @@
     }
       
 </style>
-<div>
-       
-<p class="create">
-    <a class="btn-create" href="{{ path('admin.theme.create') }}">
-        Créer un nouveau thème
-    </a>
-</p>
-<h1>Liste des thèmes</h1>
-<article>
-    <div class="theme">
-
-    
-        
-            {% for theme in themes %}
-            
-            <div class="col1">
-            <p>
-                {% if theme.thumbnail %}
-                    <img class="imagetheme" src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
-                    {% endif %}
-                   
-                </p>
-            </div>
-            <div class="col2">
-                <a href="{{ path('admin.theme.show', {id: theme.id }) }}">
-                    {{ theme.name }}
-
-                </a>
-            </div>
-                       
-                       
-                      
-            <div class="col3">
-                <a class="btn btn-primary btn-sm" href="{{ path('admin.theme.edit', {id: theme.id}) }}">
-                    Éditer
-                </a>
-                {#  <form action="{{ path('admin.theme.delete', {id: theme.id}) }}" method="post">
-                    <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-danger btn-sm">
+    <div>
+        <p class="create">
+            <a class="btn-create" href="{{ path('admin.theme.create') }}">
+                Créer un nouveau thème
+            </a>
+        </p>
+        <h1>
+            Liste des thèmes
+        </h1>
+        <article>
+            <div class="theme">
+                {% for theme in themes %}
+                    <div class="col1">
+                        <p>
+                            {% if theme.thumbnail %}
+                                <img class="imagetheme" src="{{ vich_uploader_asset(theme, 'thumbnailFile') }}" alt="Photo de {{ theme.name }}">
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col2">
+                            <a href="{{ path('admin.theme.show', {id: theme.id }) }}">
+                                {{ theme.name }}
+                            </a>
+                        </div>
+                        <div class="col3">
+                            <a class="btn btn-primary btn-sm" href="{{ path('admin.theme.edit', {id: theme.id}) }}">
+                                Éditer
+                            </a>
+                        {#  <form action="{{ path('admin.theme.delete', { id: theme.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ theme.id) }}">
+                            <button type="submit" class="btn-action btn-delete">
                             Supprimer
-                        </button>
-                    </form> #}
-                </div>
-                           
+                            </button>
+                        </form> #}
+                        </div>
                     {% endfor %}
-               
-    </div>
-           
-        </article>
-{% endblock %}
+                </div>
+            </article>
+        {% endblock %}
+        
