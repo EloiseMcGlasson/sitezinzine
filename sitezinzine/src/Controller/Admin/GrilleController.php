@@ -18,10 +18,12 @@ class GrilleController extends AbstractController
     public function index(): Response
     {
         // On prend aujourd'hui
-        $now = new \DateTimeImmutable();
-
-        // On calcule le lundi de la semaine en cours
-        $startOfWeek = $now->modify(('Monday' === $now->format('l')) ? 'this monday' : 'last monday');
+        // Dans le contrôleur
+        $today = new \DateTimeImmutable();
+        
+        
+        // On calcule le mardi de la semaine en cours
+        $startOfWeek = $today->modify('this week')->modify('+1 day'); // Lundi + 1 => Mardi
         $startOfWeek = $startOfWeek->setTime(0, 0); // On met l'heure à 00:00
 
         return $this->render('admin/grille/index.html.twig', [
