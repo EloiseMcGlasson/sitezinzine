@@ -5,52 +5,55 @@ export default class extends Controller {
 
     connect() {
         this.tooltip = document.getElementById('tooltip')
+        this.draggedElement = null
+        this.sourceDropzone = null
+        this.pool = this.element.querySelector('#emissions-pool')
 
-        // Événements pour les émissions disponibles
+        // Événements sur les émissions
         this.emissionTargets.forEach(emission => {
-            emission.setAttribute('draggable', true)
-            emission.addEventListener('dragstart', this.handleDragStart.bind(this))
+            this.makeDraggable(emission)
         })
 
-        // Événements pour les dropzones
+        // Événements sur les dropzones de grille
         this.dropzoneTargets.forEach(dropzone => {
             dropzone.addEventListener('dragover', this.handleDragOver.bind(this))
             dropzone.addEventListener('drop', this.handleDrop.bind(this))
             dropzone.addEventListener('dragleave', this.handleDragLeave.bind(this))
         })
 
-        // Ajoute les tooltips aux émissions déjà dans la grille (si existantes)
+        // Événements sur la zone de retour (pool)
+        this.pool.addEventListener('dragover', this.handlePoolDragOver.bind(this))
+        this.pool.addEventListener('dragleave', this.handlePoolDragLeave.bind(this))
+        this.pool.addEventListener('drop', this.handleDropBackToPool.bind(this))
+
+        // Tooltips
         document.querySelectorAll('.emission-block.in-grid').forEach(block => {
             this.setupTooltipListeners(block)
         })
     }
 
-    setupTooltipListeners(element) {
-        element.addEventListener('mouseover', (e) => this.handleHoverElement(e))
-        element.addEventListener('mousemove', (e) => this.moveTooltip(e))
-        element.addEventListener('mouseout', () => this.hideTooltip())
+    makeDraggable(el) {
+        el.setAttribute('draggable', true)
+        el.dataset.source = 'pool'
+        el.addEventListener('dragstart', (e) => {
+            this.draggedElement = el
+            this.sourceDropzone = el.closest('.dropzone') || null
+        })
+        this.setupTooltipListeners(el)
     }
 
-    handleHoverElement(e) {
-        const text = e.currentTarget.innerText.trim()
-        if (!text) return
-
-        this.tooltip.innerText = text
-        this.tooltip.style.display = 'block'
-    }
-
-    moveTooltip(e) {
-        this.tooltip.style.top = `${e.clientY + 12}px`
-        this.tooltip.style.left = `${e.clientX + 12}px`
-    }
-
-    hideTooltip() {
-        this.tooltip.style.display = 'none'
-    }
-
-    handleDragStart(e) {
-        e.dataTransfer.setData('text/plain', e.target.outerHTML)
-        e.dataTransfer.effectAllowed = 'move'
+    setupTooltipListeners(el) {
+        el.addEventListener('mouseover', (e) => {
+            this.tooltip.innerText = e.currentTarget.innerText.trim()
+            this.tooltip.style.display = 'block'
+        })
+        el.addEventListener('mousemove', (e) => {
+            this.tooltip.style.top = `${e.clientY + 12}px`
+            this.tooltip.style.left = `${e.clientX + 12}px`
+        })
+        el.addEventListener('mouseout', () => {
+            this.tooltip.style.display = 'none'
+        })
     }
 
     handleDragOver(e) {
@@ -62,71 +65,105 @@ export default class extends Controller {
         e.currentTarget.classList.remove('drag-over')
     }
 
+    handlePoolDragOver(e) {
+        e.preventDefault()
+        this.pool.classList.add('drop-pool-hover')
+    }
+
+    handlePoolDragLeave(e) {
+        this.pool.classList.remove('drop-pool-hover')
+    }
+
+    formatLocalDate(date) {
+        const yyyy = date.getFullYear()
+        const mm = String(date.getMonth() + 1).padStart(2, '0')
+        const dd = String(date.getDate()).padStart(2, '0')
+        const hh = String(date.getHours()).padStart(2, '0')
+        const min = String(date.getMinutes()).padStart(2, '0')
+        return `${yyyy}-${mm}-${dd} ${hh}:${min}:00`
+    }
+
     handleDrop(e) {
         e.preventDefault()
         e.currentTarget.classList.remove('drag-over')
 
         const dropzone = e.currentTarget
-        const dateStr = dropzone.dataset.date
-        const startDate = new Date(dateStr)
-
-        const data = e.dataTransfer.getData('text/plain')
-        const temp = document.createElement('div')
-        temp.innerHTML = data
-        const emissionElement = temp.firstElementChild
-
-        const duration = parseInt(emissionElement.dataset.duration) || 15
+        const allDropzones = this.dropzoneTargets
+        const startDate = new Date(dropzone.dataset.date)
+        const duration = parseInt(this.draggedElement.dataset.duration) || 15
         const heightPer15Min = 8
         const calculatedHeight = (duration / 15) * heightPer15Min
         const cellsToCover = Math.ceil(duration / 15)
 
-        const allDropzones = this.dropzoneTargets
-
-        function formatLocalDate(date) {
-            const yyyy = date.getFullYear()
-            const mm = String(date.getMonth() + 1).padStart(2, '0')
-            const dd = String(date.getDate()).padStart(2, '0')
-            const hh = String(date.getHours()).padStart(2, '0')
-            const min = String(date.getMinutes()).padStart(2, '0')
-            return `${yyyy}-${mm}-${dd} ${hh}:${min}:00`
-        }
-
         // Vérifie occupation
         for (let i = 0; i < cellsToCover; i++) {
             const futureDate = new Date(startDate.getTime() + i * 15 * 60000)
-            const targetStr = formatLocalDate(futureDate)
-            const dz = allDropzones.find(el => el.dataset.date === targetStr)
+            const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(futureDate))
             if (!dz || dz.classList.contains('occupied')) {
-                console.warn('Cellule occupée, drop refusé')
+                console.warn('Cellule occupée')
                 return
             }
         }
 
-        // Supprime contenu actuel
-        dropzone.innerHTML = ''
+        // Si déjà dans la grille, libérer les anciennes cellules
+        if (this.sourceDropzone) {
+            const oldStart = new Date(this.sourceDropzone.dataset.date)
+            const oldDuration = parseInt(this.draggedElement.dataset.duration)
+            const oldCells = Math.ceil(oldDuration / 15)
+            for (let i = 0; i < oldCells; i++) {
+                const d = new Date(oldStart.getTime() + i * 15 * 60000)
+                const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(d))
+                if (dz) {
+                    dz.classList.remove('occupied')
+                    dz.innerHTML = ''
+                }
+            }
+        } else {
+            // Si venait du pool, on l'enlève
+            this.draggedElement.remove()
+        }
 
-        // Crée le bloc émission
-        const bloc = document.createElement('div')
-        bloc.classList.add('emission-block', 'in-grid')
-        bloc.textContent = emissionElement.textContent.trim()
-        bloc.dataset.id = emissionElement.dataset.id
-        bloc.dataset.duration = duration
+        // Mise en forme
+        const bloc = this.draggedElement
+        bloc.classList.add('in-grid')
+        bloc.dataset.source = 'grid'
         bloc.style.height = `${calculatedHeight}px`
-        bloc.setAttribute('draggable', true)
-        bloc.addEventListener('dragstart', this.handleDragStart.bind(this))
 
-        // Active le tooltip sur ce bloc
-        this.setupTooltipListeners(bloc)
-
-        // Ajoute à la grille
+        dropzone.innerHTML = ''
         dropzone.appendChild(bloc)
 
-        // Marque cellules comme occupées
         for (let i = 0; i < cellsToCover; i++) {
             const futureDate = new Date(startDate.getTime() + i * 15 * 60000)
-            const targetStr = formatLocalDate(futureDate)
-            const dz = allDropzones.find(el => el.dataset.date === targetStr)
+            const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(futureDate))
             if (dz) dz.classList.add('occupied')
         }
+    }
+
+    handleDropBackToPool(e) {
+        e.preventDefault()
+        this.pool.classList.remove('drop-pool-hover')
+
+        const el = this.draggedElement
+        if (!el || el.dataset.source !== 'grid') return
+
+        const allDropzones = this.dropzoneTargets
+        const duration = parseInt(el.dataset.duration) || 15
+        const startDate = new Date(this.sourceDropzone.dataset.date)
+        const cellsToFree = Math.ceil(duration / 15)
+
+        for (let i = 0; i < cellsToFree; i++) {
+            const futureDate = new Date(startDate.getTime() + i * 15 * 60000)
+            const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(futureDate))
+            if (dz) {
+                dz.classList.remove('occupied')
+                dz.innerHTML = ''
+            }
+        }
+
+        // Retour dans la liste
+        el.classList.remove('in-grid')
+        el.dataset.source = 'pool'
+        el.style = ''
+        this.pool.appendChild(el)
     }
 }
