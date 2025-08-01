@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.38] - 2025-07-??*
+## [1.0.38] - 2025-08-01
 ### Ajout
 - Ajout de la page admin/evenement/show qui avait été oublié.
 ### Correction
