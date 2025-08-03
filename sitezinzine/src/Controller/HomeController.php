@@ -120,5 +120,12 @@ public function index(EmissionRepository $emissionRepository, EvenementRepositor
         return $this->render('home/don.html.twig');
     }
 
+    #[Route("/newsletter", name: "newsletter")]
+    function newsletter(): Response
+    {
+
+        return $this->render('home/newsletter.html.twig');
+    }
+
 
 }

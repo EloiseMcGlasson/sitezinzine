@@ -1,0 +1,255 @@
+<style>
+   .emissions {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.col1 {
+    flex: 0 0 150px;
+}
+
+.col1 img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.col2 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.titre a {
+    color: #E4013A;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.titre a:hover {
+    color: #B81C61;
+}
+
+.cat {
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.descriptif-content {
+    line-height: 1.5;
+    color: #333;
+    font-family: "Montserrat";
+
+}
+
+.col3 {
+    flex: 0 0 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    font-family: "Montserrat";
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    width: 130px; /* Ajustable selon le contenu */
+    justify-content: left;
+    gap: 8px;
+    text-decoration: none;
+    color: black;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-link:hover {
+    transform: translateY(-2px);
+    color: #E4013A;
+}
+
+.action-link img {
+    width: 40px;
+    height: 40px;
+}
+
+
+.col3 img {
+    width: 40px;
+    cursor: pointer;
+}
+
+.actions-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-action {
+    background-color: #E4013A;
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn-action:hover {
+    background-color: #B81C61;
+}
+
+.btn-delete {
+    background-color: #E4013A;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background-color: #B81C61;
+}
+
+.descriptif-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.descriptif-content.expanded {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .col1 {
+        flex: 0 0 auto;
+    }
+
+    .col2 {
+        text-align: center;
+    }
+
+    .col3 {
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+    }
+}
+</style>
+<article>
+    <div class="emissions">
+        {% for emission in emissions %}
+            {% set lastDiffusion = emission.lastDiffusion %}
+            <section>
+                <div class="col1">
+                    {% if emission.thumbnail %}
+                        <img
+                        src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                            {% elseif emission.categorie.thumbnail %}
+                            <img
+                            src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                {% elseif emission.theme is defined and emission.theme.thumbnail is defined %}
+                                <img
+                                src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+                                    {% else %}
+                                    <img src="{{ asset('/images/emission-zinzine.jpg') }}" alt="Image par défaut pour {{ emission.titre }}">
+                                    {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <div class="titre">
+                                        <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
+                                            {{ emission.titre }}
+                                            {% if emission.user %}
+                                                -
+                                                {{ emission.user.username }}
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="cat">
+                                        <p>
+                                            {{ emission.categorie.titre }}
+                                        </p>
+                                    </div>
+                                    <div data-controller="descriptif">
+                                        <div data-descriptif-target="content" class="descriptif-content">
+                                            <p>
+                                                {{ emission.descriptif|raw }}
+                                            </p>
+                                        </div>
+                                        <button data-action="click->descriptif#toggle" data-descriptif-target="button" class="descriptif-toggle-btn" hidden>
+                                            Lire la suite
+                                        </button>
+                                    </div>
+                                    <p>
+                                        {% if lastDiffusion is not null %}
+                                            Dernière diffusion le :
+                                            {{ lastDiffusion|format_datetime('medium', 'short', locale='fr') }}
+                                        {% else %}
+                                            Aucune diffusion
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col3">
+                                    <a href="{{ emission.url }}" target="_blank" class="action-link">
+                                        <img src="{{ asset('/images/lecteur.png') }}" alt="Écouter {{ emission.titre }}">
+                                            Écouter
+                                        </a>
+                                        <a href="{{ emission.url }}" download target="_blank" class="action-link">
+                                            <img src="{{ asset('/images/telecharger.png') }}" alt="Télécharger {{ emission.titre }}">
+                                                Télécharger
+                                            </a>
+                                        </div>
+                                    {# <div class="actions-buttons">
+                                        {% if is_granted('ROLE_ADMIN') or (app.user is not null and emission.user == app.user) %}
+                                        <a class="btn-action" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                        Modifier
+                                        </a>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                        <form action="{{ path('admin.emission.delete', { id: emission.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emission.id) }}">
+                                        <button type="submit" class="btn-action btn-delete">Supprimer</button>
+                                        </form>
+                                        {% endif %}
+                                    </div> #}
+                                    </section>
+                                {% endfor %}
+                            </div>
+                        </article>
+                        
