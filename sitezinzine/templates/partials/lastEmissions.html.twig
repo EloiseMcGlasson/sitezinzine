@@ -305,11 +305,7 @@
                 <article>
                     {% for lastEmissionByGroupTheme in lastEmissionsByTheme %}
                         {% set bgImage = '' %}
-                        {% if lastEmissionByGroupTheme.emission_thumbnail is not empty %}
-                            {% set bgImage = asset('/uploads/images/emissions/' ~ lastEmissionByGroupTheme.emission_thumbnail|url_encode) %}
-                        {% elseif lastEmissionByGroupTheme.categorie_thumbnail is not empty %}
-                            {% set bgImage = asset('/uploads/images/categories/' ~ lastEmissionByGroupTheme.categorie_thumbnail|url_encode) %}
-                        {% elseif lastEmissionByGroupTheme.theme_thumbnail is not empty %}
+                        {% if lastEmissionByGroupTheme.theme_thumbnail is not empty %}
                             {% set bgImage = asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail|url_encode) %}
                         {% else %}
                             {% set bgImage = asset('/uploads/images/emissions/emission-zinzine.jpg') %}

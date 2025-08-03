@@ -1,7 +1,22 @@
 # Changelog
 
-## [1.0.38] - 2025-07-??
+## [1.0.39] - 2025-08-03
+### Ajout
+- Ajout des annonces et du mot recherche dans la navbar publique.
+- Ajour de le page newsletter, changement dans vagues de la case "aide à l'écoute" (en doublon avec le footer).
+### Correction
+- Factorisation de la liste des émissions de recherche dans le but de l'intégrer sur d'autre pages (modèle liste émissions de recherche).
+- Correction de la page de présentation des catégories.
 
+
+
+## [1.0.38] - 2025-08-01
+### Ajout
+- Ajout de la page admin/evenement/show qui avait été oublié.
+### Correction
+- Correction css de showevenement.
+- Correction du controller tinymce qui n'était pas parfaitement opérationnel ( bug du champ descriptif sur les formulaire ).
+- Gestion de la redirection après suppression d'émissions, annonces, évènements ou de catégories.
 
 
 ## [1.0.37] - 2025-07-24

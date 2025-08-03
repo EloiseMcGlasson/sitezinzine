@@ -40,7 +40,7 @@ class AnnonceController extends AbstractController
                 if ($annonce->getType() === 'autre' && !empty($autreType)) {
                     $annonce->setType($autreType);
                 }
-                $annonce->setUpdateAt(new \DateTimeImmutable());
+                $annonce->setUpdateAt(new \DateTime());
                 $annonce->setValid(false);
                 $annonce->setSoftDelete(false);
                 $em->persist($annonce);

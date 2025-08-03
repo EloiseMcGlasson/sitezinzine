@@ -428,12 +428,13 @@ button[type=reset]:hover {
                                                         </a>
                                                     {% endif %}
                                                     {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                                        <form action="{{ path('admin.emission.delete', {id: emission.id}) }}" method="post">
+                                                         <form action="{{ path('admin.emission.delete', { id: emission.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                <button type="submit" class="btn-action btn-delete">
-                                                                    Supprimer
-                                                                </button>
-                                                            </form>
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emission.id) }}">
+                                                                    <button type="submit" class="btn-action btn-delete">
+                                                                        Supprimer
+                                                                    </button>
+                                                                </form>
                                                         {% endif %}
                                                     </div>
                                                 </div>

@@ -120,12 +120,13 @@
     data-action="click->return#redirectWithReturnTo">
                                     Éditer
                                 </a>
-                            {# <form action="{{ path('admin.editeur.delete', {id: editeur.id}) }}" method="post">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                Supprimer
-                                </button>
-                            </form> #}
+                            {#  <form action="{{ path('admin.editeur.delete', { id: editeur.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
+                                                            <input type="hidden" name="_method" value="DELETE">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ editeur.id) }}">
+                                                                    <button type="submit" class="btn-action btn-delete">
+                                                                        Supprimer
+                                                                    </button>
+                                                                </form> #}
                         </div>
                       
                     </section>

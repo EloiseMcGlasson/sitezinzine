@@ -188,20 +188,16 @@
                                         {% endif %}
                                     </p>
                                 </div>
-                              <div data-controller="descriptif">
-  <div data-descriptif-target="content" class="descriptif-content">
-    <p>{{ emission.descriptif|raw }}</p>
-  </div>
-  <button data-action="click->descriptif#toggle"
-          data-descriptif-target="button"
-          class="descriptif-toggle-btn"
-          hidden>
-    Lire la suite
-  </button>
-</div>
-
-
-
+                                <div data-controller="descriptif">
+                                    <div data-descriptif-target="content" class="descriptif-content">
+                                        <p>
+                                            {{ emission.descriptif|raw }}
+                                        </p>
+                                    </div>
+                                    <button data-action="click->descriptif#toggle" data-descriptif-target="button" class="descriptif-toggle-btn" hidden>
+                                        Lire la suite
+                                    </button>
+                                </div>
                                 {% if lastDiffusion %}
                                     <div class="date">
                                         Dernière diffusion :

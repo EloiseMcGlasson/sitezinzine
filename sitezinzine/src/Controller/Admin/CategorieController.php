@@ -116,11 +116,25 @@ public function edit(
     }
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
-    public function remove(Categories $categorie, EntityManagerInterface $em)
+    public function remove(Request $request, Categories $categorie, EntityManagerInterface $em)
     {
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('delete' . $categorie->getId(), $token)) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('admin.categorie.index');
+        }
+    
+
         $em->remove($categorie);
         $em->flush();
         $this->addFlash('success', 'La catégorie a bien été supprimée');
+
+          // Retourne à l'URL courante (fournie en paramètre)
+    $returnTo = $request->query->get('returnTo');
+    if ($returnTo) {
+        return $this->redirect($returnTo);
+    }
+
         return $this->redirectToRoute('admin.categorie.index');
     }
 }
