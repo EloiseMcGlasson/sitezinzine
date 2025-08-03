@@ -194,16 +194,18 @@
         Grille de programmation
     </h1>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
-            ⬅ Semaine précédente
-        </a>
+       <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
+    ⬅ Semaine précédente
+</a>
         <h2 style="color:white; font-size: 18px; margin: 0;">
-            Semaine du
+            <a href="{{ path('admin.grille.index') }}">📅 Semaine actuelle</a>
+            Semaine du 
             {{ startOfWeek|date('d/m/Y') }}
+            
         </h2>
-        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
-            Semaine suivante ➡
-        </a>
+       <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
+    Semaine suivante ➡
+</a>
     </div>
     <div data-controller="grid" style="display: flex; gap: 30px;">
         {# ➤ Grille principale #}
