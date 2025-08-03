@@ -1,23 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/admin.html.twig' %}
 {% block title "Évènement : " ~ evenement.titre %}
 {% block body %}
 
 <style>
-.evenement {
-    background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
-    width: 100%;
-    margin: 0%;
-    padding: 0%;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    position: relative;
-    color: white;
-    line-height: 1.5em;
-}
 
 .evenement-container {
     max-width: 800px;
@@ -44,9 +29,12 @@
 
 .evenement-titre {
     text-align: center;
-    font-size: 28px;
-    color: #333;
-    margin-top: 20px;
+    color: black;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: clamp(24px, 5vw, 36pt);
+    margin: 20px auto;
 }
 
 .evenement-infos {
@@ -107,7 +95,7 @@
     opacity: 0.9;
 }
 
-/* Styles pour la modal */
+    /* Styles pour la modal */
 .evenement-container img {
     cursor: zoom-in;
     transition: transform 0.3s ease;
@@ -165,11 +153,10 @@
     transform: scale(1);
 }
 
-/* Rendre l'image cliquable */
-.evenement-container img {
-    cursor: pointer;
-}
-
+    /* Rendre l'image cliquable */
+    .evenement-container img {
+        cursor: pointer;
+    }
 /* 📱 Responsive Design */
 @media (max-width: 768px) {
     .evenement-details {
@@ -186,9 +173,9 @@
     }
 }
 
-    
+
     </style>
-    <div class="evenement">
+    <div>
 
 <div class="evenement-container">
 
@@ -230,7 +217,14 @@
     </div>
 
     <div class="evenement-actions">
-        <a href="{{ path('admin.evenement.index') }}" class="btn btn-secondary">Retour</a>
+<a href="{{ path('admin.evenement.index') }}" class="btn btn-secondary">Retour</a>
+        <a href="{{ path('admin.evenement.edit', {id: evenement.id}) }}" data-controller="return"
+    data-return-url-value="{{ path('admin.evenement.edit', { id: evenement.id }) }}"
+    data-action="click->return#redirectWithReturnTo" class="btn">Modifier</a>
+        <form action="{{ path('admin.evenement.softDelete', {id: evenement.id}) }}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
     </div>
 </div>
 <div id="imageModal" class="modal">
@@ -238,7 +232,7 @@
     <img class="modal-content" id="modalImage">
 </div>
     </div>
-</div>
+
     <script>
         function openModal(imgSrc) {
             const modal = document.getElementById('imageModal');
