@@ -26,28 +26,17 @@ class DiffusionRepository extends ServiceEntityRepository
         ->getResult();
 }
 
-    //    /**
-    //     * @return Diffusion[] Returns an array of Diffusion objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+public function findByWeek(\DateTimeInterface $start, \DateTimeInterface $end): array
+{
+    return $this->createQueryBuilder('d')
+        ->andWhere('d.horaireDiffusion >= :start')
+        ->andWhere('d.horaireDiffusion < :end')
+        ->setParameter('start', $start)
+        ->setParameter('end', $end)
+        ->orderBy('d.horaireDiffusion', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 
-    //    public function findOneBySomeField($value): ?Diffusion
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+
 }
