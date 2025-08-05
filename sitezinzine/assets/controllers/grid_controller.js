@@ -43,18 +43,22 @@ export default class extends Controller {
     }
 
     setupTooltipListeners(el) {
-        el.addEventListener('mouseover', (e) => {
-            this.tooltip.innerText = e.currentTarget.innerText.trim()
-            this.tooltip.style.display = 'block'
-        })
-        el.addEventListener('mousemove', (e) => {
-            this.tooltip.style.top = `${e.clientY + 12}px`
-            this.tooltip.style.left = `${e.clientX + 12}px`
-        })
-        el.addEventListener('mouseout', () => {
-            this.tooltip.style.display = 'none'
-        })
-    }
+    el.addEventListener('mouseover', (e) => {
+        const tooltipText = e.currentTarget.dataset.tooltip || ''
+        this.tooltip.innerText = tooltipText
+        this.tooltip.style.display = 'block'
+    })
+
+    el.addEventListener('mousemove', (e) => {
+        this.tooltip.style.top = `${e.clientY + 12}px`
+        this.tooltip.style.left = `${e.clientX + 12}px`
+    })
+
+    el.addEventListener('mouseout', () => {
+        this.tooltip.style.display = 'none'
+    })
+}
+
 
     handleDragOver(e) {
         e.preventDefault()

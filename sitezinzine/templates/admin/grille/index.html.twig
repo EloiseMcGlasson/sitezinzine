@@ -19,8 +19,13 @@
     border: 1px solid #ccc;
     text-align: center;
     height: 8px;
-    
     font-size: 12px;
+}
+
+.grid-table td {
+    overflow: hidden;
+    max-width: 150px; /* ou la largeur que tu souhaites */
+    position: relative; /* pour que .emission-block absolute reste dans la cellule */
 }
 
 .grid-table thead th {
@@ -110,28 +115,15 @@
     font-size: 12px;
     cursor: grab;
     z-index: 1;
+    white-space: normal;       /* Permet le retour à la ligne */
+    overflow: hidden;          /* Cache ce qui dépasse */
+    text-overflow: ellipsis;   /* Ajoute "..." si trop long */
+    word-wrap: break-word;     /* Coupe les mots trop longs */
+    max-width: 100%;           /* Ne dépasse pas la cellule */
+    box-sizing: border-box;    /* Inclut padding dans la largeur */
 }
 
-.emission-block.in-grid::after {
-  content: attr(data-tooltip);
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: rgba(0,0,0,0.85);
-  color: #fff;
-  padding: 6px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  font-size: 12px;
-  z-index: 10;
-  white-space: normal;
-  max-width: 200px;
-}
 
-.emission-block.in-grid:hover::after {
-  display: block;
-}
 
 .emission-block.in-use {
     opacity: 0.5;
@@ -179,11 +171,12 @@
     font-size: 12px;
     border-radius: 4px;
     pointer-events: none;
-    z-index: 1000;
-    max-width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    z-index: 9999;
+    max-width: 300px; /* Tu peux ajuster si tu veux une limite douce */
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    word-wrap: break-word;
 }
 
 
@@ -194,18 +187,19 @@
         Grille de programmation
     </h1>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-       <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
-    ⬅ Semaine précédente
-</a>
+        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
+            ⬅ Semaine précédente
+        </a>
         <h2 style="color:white; font-size: 18px; margin: 0;">
-            <a href="{{ path('admin.grille.index') }}">📅 Semaine actuelle</a>
-            Semaine du 
+            <a href="{{ path('admin.grille.index') }}">
+                📅 Semaine actuelle
+            </a>
+            Semaine du
             {{ startOfWeek|date('d/m/Y') }}
-            
         </h2>
-       <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
-    Semaine suivante ➡
-</a>
+        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
+            Semaine suivante ➡
+        </a>
     </div>
     <div data-controller="grid" style="display: flex; gap: 30px;">
         {# ➤ Grille principale #}
@@ -222,46 +216,82 @@
                         {% endfor %}
                         {% for jour in jours %}
                             <th>
-                                {{ jour| format_date('medium', locale='fr') }}
+                                {{ jour|format_date('medium', locale='fr') }}
                             </th>
                         {% endfor %}
                     </tr>
+                    
                 </thead>
-                <tbody>
-                    {% for h in 0..23 %}
-                        {% set rowClass = cycle(['rowgroup-even', 'rowgroup-odd'], h) %}
-                        {% for q in [0, 15, 30, 45] %}
-                            <tr class="{{ rowClass }}">
-                                {% if loop.first %}
-                                    <td rowspan="4" class="heure-cell">
-                                        {{ "%02d:00"|format(h) }}
-                                    </td>
-                                {% endif %}
-                                {% for i in 0..6 %}
-                                    {% set currentDateTime = jours[i]|date_modify(h ~ ' hour')|date_modify(q ~ ' minutes') %}
-                                    {% set cellDate = startOfWeek|date_modify('+' ~ i ~ ' days')|date_modify('+' ~ h ~ ' hours')|date_modify('+' ~ q ~ ' minutes') %}
-                                    <td class="dropzone" data-grid-target="dropzone" data-date="{{ cellDate|date('Y-m-d H:i:00') }}"></td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {# ➤ Colonne de droite : Émissions disponibles #}
-        <div class="emissions-wrapper">
-            <h2 style="font-size: 16px;">
-                Émissions disponibles
-            </h2>
-            <div id="emissions-pool" style="display: flex; flex-direction: column; gap: 10px;">
-                <div data-grid-target="emission" class="emission-block" draggable="true" data-id="1" data-duration="35">
-                    🎙 Emission 1 (35 min)
-                </div>
-                <div data-grid-target="emission" class="emission-block" draggable="true" data-id="2" data-duration="22">
-                    🎧 Emission 2 (22 min)
+         <tbody>
+    {% for row in displayRows %}
+    <tr>
+        {% set td_count = 0 %}
+        {% for dayIndex in 0..6 %}
+            {% set slot = row.slots[dayIndex] %}
+            {% if slot.type == 'emission' %}
+                <td colspan="{{ slot.colspan }}">
+                    {{ slot.diffusion.emission.titre }}
+                </td>
+                {% set td_count = td_count + slot.colspan %}
+            {% elseif slot.type == 'empty' %}
+                <td></td>
+                {% set td_count = td_count + 1 %}
+            {% else %}
+                {# covered => ne rien afficher, ne pas compter #}
+            {% endif %}
+        {% endfor %}
+        <td colspan="{{ 7 - td_count }}" style="color:black;">Cols: {{ td_count }}</td>
+    </tr>
+
+
+        <tr class="{{ cycle(['rowgroup-even', 'rowgroup-odd'], loop.index0) }}">
+            {% if row.quarter == 0 %}
+                <td class="heure-cell" rowspan="4">{{ "%02d:00"|format(row.hour) }}</td>
+            {% endif %}
+
+            {% for dayIndex in 0..6 %}
+                {% set slot = row.slots[dayIndex] %}
+
+                {% if slot.type == 'emission' %}
+                    <td class="dropzone" colspan="{{ slot.colspan }}">
+                        <div class="emission-block in-grid">
+                            🎙 {{ slot.diffusion.emission.titre }}<br>
+                            {{ slot.diffusion.emission.duree }} min
+                        </div>
+                    </td>
+                {% elseif slot.type == 'empty' %}
+                    {% set date = jours[dayIndex]|date_modify(row.hour ~ ' hour')|date_modify((row.quarter * 15) ~ ' minutes') %}
+                    <td class="dropzone"
+                        data-date="{{ date|date('Y-m-d H:i:00') }}"
+                        data-day="{{ dayIndex }}"
+                        data-hour="{{ row.hour }}"
+                        data-quarter="{{ row.quarter }}">
+                    </td>
+                {% endif %}
+                {# covered: on ne rend rien #}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</tbody>
+
+
+                </table>
+            </div>
+            {# ➤ Colonne de droite : Émissions disponibles #}
+            <div class="emissions-wrapper">
+                <h2 style="font-size: 16px;">
+                    Émissions disponibles
+                </h2>
+                <div id="emissions-pool" style="display: flex; flex-direction: column; gap: 10px;">{# {% for emission in emissions %}
+                    <div data-grid-target="emission" class="emission-block" draggable="true" data-id="{{ emission.id }}" data-duration="{{ emission.duree }}">
+                    🎙 {{ emission.titre }} ({{ emission.duree }} min)
+                    </div>
+                    {% else %}
+                    <div>Aucune émission disponible</div>
+                {% endfor %} #}
                 </div>
             </div>
         </div>
-    </div>
-    <div id="tooltip" class="custom-tooltip"></div>
-{% endblock %}
+        <div id="tooltip" class="custom-tooltip"></div>
+    {% endblock %}
+    
