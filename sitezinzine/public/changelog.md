@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.40] - 2025-08-07
+### Ajout
+- Ajout du softDelete sur categories, annule la redirection sur ce bouton (conflit controllerjs).
+- Ajout du user_id dans catégories, modification en conséquence des méthodes, controller et navbar.
+### Correction
+- Correction de l'erreur 500 de la page Annonce côté admin.
+### BUG
+- la liste émissions est plantée, en cours de réparation.
+
+
 ## [1.0.39] - 2025-08-03
 ### Ajout
 - Ajout des annonces et du mot recherche dans la navbar publique.
@@ -7,7 +17,6 @@
 ### Correction
 - Factorisation de la liste des émissions de recherche dans le but de l'intégrer sur d'autre pages (modèle liste émissions de recherche).
 - Correction de la page de présentation des catégories.
-
 
 
 ## [1.0.38] - 2025-08-01

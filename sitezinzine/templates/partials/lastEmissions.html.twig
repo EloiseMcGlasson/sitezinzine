@@ -152,6 +152,13 @@
         width: 40px;
     }
 
+    .bodylast .ecoute a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+
+
     .bodylast .bottom img{
         width: 100%;
         margin-bottom: 0px;
@@ -273,6 +280,13 @@
     right: 10px;
 }
 
+.bodylast .ecoute a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+
+
 .bodylast .ecoute img {
     width: 40px;
     transition: transform 0.3s;
@@ -332,11 +346,12 @@
                                         <p>
                                             Le
                                             {{ lastEmissionByGroupTheme.last_diffusion | format_datetime('medium', 'short', locale='fr') }}
-
                                         </p>
                                     </div>
                                     <div class="ecoute">
-                                        <img src="{{ asset('/images/lecteur.png') }}" alt="écoutez l'émission"></div>
+                                        <a href="{{ lastEmissionByGroupTheme.emission_url }}" target="_blank" aria-label="Écouter l'émission">
+                                            <img src="{{ asset('/images/lecteur.png') }}" alt="Écoutez l'émission"></a>
+                                        </div>
                                     </div>
                                 </a>
                                 <div class="shadow"></div>
