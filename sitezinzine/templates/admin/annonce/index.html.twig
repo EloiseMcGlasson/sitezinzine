@@ -306,7 +306,7 @@ ul, li {
                                             </button>
                                         </form>
                                     {% endif %}
-                                     <form action="{{ path('admin.annonce.delete', { id: annonce.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
+                                     <form action="{{ path('admin.annonce.softDelete', { id: annonce.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
                                                             <input type="hidden" name="_method" value="DELETE">
                                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
                                                                     <button type="submit" class="btn-action btn-delete">

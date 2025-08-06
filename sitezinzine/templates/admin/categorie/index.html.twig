@@ -166,23 +166,21 @@ a:hover {
                                         <a href="#" data-controller="return" data-return-url-value="{{ path('admin.categorie.edit', { id: categorie.id }) }}" data-action="click->return#redirectWithReturnTo">
                                             Éditer
                                         </a>
-                                    {# <form action="{{ path('admin.categorie.delete', { id: categorie.id }) }}"
-                                        method="post"
-                                        data-controller="return"
-                                        data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
-                                        <button type="submit" class="btn-action btn-delete">Supprimer</button>
-                                        </form>
-                                    #}
-                                    </div>
-                                </section>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            </article>
-            <div class="pagination">
-                {{ knp_pagination_render(categories) }}
-            </div>
-        {% endblock %}
-        
+                                        <form action="{{ path('admin.categorie.softDelete', { id: categorie.id }) }}" method="post">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+                                                    <button type="submit" class="btn-action btn-delete">
+                                                        Supprimer
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </section>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </article>
+                        <div class="pagination">
+                            {{ knp_pagination_render(categories) }}
+                        </div>
+                    {% endblock %}
+                    

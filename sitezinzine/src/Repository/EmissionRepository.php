@@ -91,34 +91,22 @@ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $use
      * @param int $page Le numéro de la page à paginer.
      * @param string $excludeUrl L'URL à exclure des résultats.
      */
- public function paginateEmissions(int $page, string $excludeUrl): PaginationInterface
+public function paginateEmissions(int $page, string $excludeUrl): PaginationInterface
 {
     $qb = $this->createQueryBuilder('e')
         ->select('e', 'c', 'MAX(d.horaireDiffusion) AS lastDiffusion')
         ->leftJoin('e.categorie', 'c')
-        ->innerJoin('e.diffusions', 'd') // INNER JOIN pour exclure les émissions sans diffusion
+        ->innerJoin('e.diffusions', 'd')
         ->andWhere('e.url != :excludeUrl')
         ->andWhere('c.id != 0')
         ->setParameter('excludeUrl', $excludeUrl)
         ->groupBy('e.id')
         ->orderBy('lastDiffusion', 'DESC');
 
-    $pagination = $this->paginator->paginate($qb, $page, 20, [
+    return $this->paginator->paginate($qb, $page, 20, [
         'distinct' => true,
         'sortFieldAllowList' => ['lastDiffusion'],
     ]);
-
-    // Convertir lastDiffusion en DateTime pour chaque émission
-    foreach ($pagination->getItems() as $item) {
-        if (is_array($item) && isset($item[0], $item['lastDiffusion'])) {
-            $emission = $item[0];
-            $dateString = $item['lastDiffusion'];
-            $date = $dateString ? new \DateTime($dateString) : null;
-            $emission->setLastDiffusion($date);
-        }
-    }
-
-    return $pagination;
 }
 
 
