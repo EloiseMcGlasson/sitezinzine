@@ -71,70 +71,68 @@
 </style>
 <nav>
     <a href="https://eloisemcglasson.ovh/" target="_blank">
-    <img src="{{ asset('/images/logo.gif') }}" alt="Logo"></a>
-    <ul>
-        <li>
-            <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
-                Accueil
-            </a>
-        </li>
-
-        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-
-        <li class="dropdown">
-            <button class="dropbtn">Gestion des émissions</button>
-            <div class="dropdown-content">
-                <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
-                    Émissions
-                </a>
-                <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
-                    Invité/animateur
-                </a>
-                
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
-                        Catégories
-                    </a>
-                    <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
-                        Thèmes
-                    </a>
-                    <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
-                        Éditeurs
-                    </a>
-                {% endif %}
-            </div>
-        </li>
-
-        {% if is_granted('ROLE_EDITOR') %}
-            <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+        <img src="{{ asset('/images/logo.gif') }}" alt="Logo"></a>
+        <ul>
             <li>
-                <a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
-                    Annonces
+                <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
+                    Accueil
                 </a>
             </li>
-            <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
             <li>
-                <a class="nav-link {{ app.current_route starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
-                    Évènements
-                </a>
-            </li>
-        {% endif %}
-
-        {% if is_granted('ROLE_ADMIN') %}
-            <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-            <li>
-                <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
-                    Utilisateurices
-                </a>
-            </li>
-             <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-            <li>
-                <a href="{{ path('admin.grille.index') }}">Grille de programmation</a>
-            </li>
-        {% endif %}
-        <li><img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
-        <a href="{{ path('admin.emission.rechercheadmin') }}" class="{{ app.current_route == 'admin.emission.rechercheadmin' ? 'active' : '' }}">
-            Recherche <img src="{{ asset('/images/ico-recherche.gif') }}" alt="Icône de recherche">
-        </a>
-    </ul>
-</nav>
+                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                <li class="dropdown">
+                    <button class="dropbtn">
+                        Gestion des émissions
+                    </button>
+                    <div class="dropdown-content">
+                        <a class="nav-link {{ app.current_route starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
+                            Émissions
+                        </a>
+                        <a class="nav-link {{ app.current_route starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
+                            Invité/animateur
+                        </a>
+                        <a class="nav-link {{ app.current_route starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
+                            Catégories
+                        </a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="nav-link {{ app.current_route starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
+                                Thèmes
+                            </a>
+                            <a class="nav-link {{ app.current_route starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
+                                Éditeurs
+                            </a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% if is_granted('ROLE_EDITOR') %}
+                    <li>
+                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                        <li>
+                            <a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
+                                Annonces
+                            </a>
+                        </li>
+                        <li>
+                            <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                            <li>
+                                <a class="nav-link {{ app.current_route starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
+                                    Évènements
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li>
+                                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                                <li>
+                                    <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
+                                        Utilisateurices
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                                <a href="{{ path('admin.emission.rechercheadmin') }}" class="{{ app.current_route == 'admin.emission.rechercheadmin' ? 'active' : '' }}">
+                                    <img src="{{ asset('/images/ico-recherche.gif') }}" alt="Icône de recherche"></a>
+                                </ul>
+                            </nav>
+                            

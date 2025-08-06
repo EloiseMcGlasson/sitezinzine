@@ -67,6 +67,12 @@ class Categories
     #[ORM\Column]
     private ?bool $active = null;
 
+    #[ORM\Column]
+    private ?bool $softDelete = null;
+
+    #[ORM\ManyToOne(inversedBy: 'categories')]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->emissions = new ArrayCollection();
@@ -219,6 +225,30 @@ class Categories
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function isSoftDelete(): ?bool
+    {
+        return $this->softDelete;
+    }
+
+    public function setSoftDelete(bool $softDelete): static
+    {
+        $this->softDelete = $softDelete;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

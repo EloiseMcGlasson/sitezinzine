@@ -13,15 +13,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route("/admin/categorie", name: 'admin.categorie.')]
-#[IsGranted("ROLE_ADMIN")]
-#[IsGranted("ROLE_SUPER_ADMIN")]
+#[IsGranted("ROLE_USER")]
 class CategorieController extends AbstractController
 {
 
 #[Route(name: 'index')]
-public function index(Request $request, CategoriesRepository $categoriesRepository, SessionInterface $session): Response
+public function index(Request $request, CategoriesRepository $categoriesRepository, SessionInterface $session, Security $security): Response
 {
     $page = $request->query->getInt('page', 1);
     $limit = 10;
@@ -29,7 +29,8 @@ public function index(Request $request, CategoriesRepository $categoriesReposito
     // Stockage de la page courante dans la session
     $session->set('previous_page', $page);
 
-    $categorie = $categoriesRepository->paginateCategoriesWithCount($page, $limit);
+    $user = $security->getUser();
+    $categorie = $categoriesRepository->paginateCategoriesWithCount($page, $limit, $user);
     $maxPage = ceil($categorie->getTotalItemCount() / $limit);
 
     return $this->render('admin/categorie/index.html.twig', [
@@ -39,15 +40,20 @@ public function index(Request $request, CategoriesRepository $categoriesReposito
 
 
 
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    public function show(Categories $categorie, int $id, CategoriesRepository $categorieRepository)
-    {
-        $categorie = $categorieRepository->find($id);
-        return $this->render('admin/categorie/show.html.twig', [
-            'categorie' => $categorie,
-            
-        ]);
+ #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+public function show(Categories $categorie): Response
+{
+    // ⛔ Vérifie si la catégorie est supprimée
+    if ($categorie->isSoftDelete()) {
+        $this->addFlash('warning', 'Cette catégorie a été supprimée.');
+        return $this->redirectToRoute('admin.categorie.index');
     }
+
+    return $this->render('admin/categorie/show.html.twig', [
+        'categorie' => $categorie,
+    ]);
+}
+
 
 #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
 public function edit(
@@ -56,10 +62,20 @@ public function edit(
     EntityManagerInterface $em,
     SessionInterface $session
 ): Response {
-    // Vérifie les droits
-    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_SUPER_ADMIN')) {
-        throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette catégorie.');
+    // ⛔ Blocage si soft deleted
+    if ($categorie->isSoftDelete()) {
+        $this->addFlash('warning', 'Impossible de modifier une catégorie supprimée.');
+        return $this->redirectToRoute('admin.categorie.index');
     }
+
+    // 🔐 Vérifie les droits d'accès à la catégorie
+if (
+    !$this->isGranted('ROLE_ADMIN') &&
+    !$this->isGranted('ROLE_SUPER_ADMIN') &&
+    $categorie->getUser() !== $this->getUser()
+) {
+    throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cette catégorie.');
+}
 
     // 🔁 Priorité au lien direct (via ?returnTo=...)
     $returnTo = $request->query->get('returnTo');
@@ -97,14 +113,17 @@ public function edit(
 
 
 
+
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em)
+    public function create(Request $request, EntityManagerInterface $em, Security $security)
     {
         $categorie = new Categories();
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $categorie->setUpdatedAt(new \DateTime());
+            $categorie->setSoftDelete(false); // facultatif si déjà par défaut
+            $categorie->setUser($security->getUser());
             $em->persist($categorie);
             $em->flush();
             $this->addFlash('success', 'La catégorie a été crée !');
@@ -115,17 +134,28 @@ public function edit(
         ]);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
+    #[Route('/{id}', name: 'softDelete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
     public function remove(Request $request, Categories $categorie, EntityManagerInterface $em)
     {
+
+         // ✅ Vérifie que la catégorie appartient bien à l'utilisateur (sauf admin)
+    if (
+        !$this->isGranted('ROLE_ADMIN') &&
+        !$this->isGranted('ROLE_SUPER_ADMIN') &&
+        $categorie->getUser() !== $this->getUser()
+    ) {
+        throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer cette catégorie.');
+    }
+        // Vérification du jeton CSRF
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete' . $categorie->getId(), $token)) {
             $this->addFlash('error', 'Jeton CSRF invalide.');
             return $this->redirectToRoute('admin.categorie.index');
         }
     
-
-        $em->remove($categorie);
+        // Marque la catégorie comme supprimée
+        $categorie->setSoftDelete(true);
+        $categorie->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('success', 'La catégorie a bien été supprimée');
 
