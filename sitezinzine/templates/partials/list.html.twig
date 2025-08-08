@@ -1,11 +1,11 @@
 <style>
-   .emissions {
+   .emission-list {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-section {
+.emission-list section {
     background: white;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -16,16 +16,16 @@ section {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-section:hover {
+.emission-list section:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
 }
 
-.col1 {
+.emission-list .col1 {
     flex: 0 0 150px;
 }
 
-.col1 img {
+.emission-list .col1 img {
     width: 150px;
     height: 150px;
     object-fit: cover;
@@ -33,38 +33,38 @@ section:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.col2 {
+.emission-list .col2 {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.titre a {
+.emission-list .titre a {
     color: #E4013A;
     font-size: 20px;
     font-weight: bold;
     text-decoration: none;
 }
 
-.titre a:hover {
+.emission-list .titre a:hover {
     color: #B81C61;
 }
 
-.cat {
+.emission-list .cat {
     color: #666;
     font-size: 14px;
     font-style: italic;
 }
 
-.descriptif-content {
+.emission-list .descriptif-content {
     line-height: 1.5;
     color: #333;
     font-family: "Montserrat";
 
 }
 
-.col3 {
+.emission-list .col3 {
     flex: 0 0 150px;
     display: flex;
     flex-direction: column;
@@ -74,7 +74,7 @@ section:hover {
     font-family: "Montserrat";
 }
 
-.action-link {
+.emission-list .action-link {
     display: flex;
     align-items: center;
     width: 130px; /* Ajustable selon le contenu */
@@ -82,36 +82,36 @@ section:hover {
     gap: 8px;
     text-decoration: none;
     color: black;
-    padding: 8px 12px;
+    padding: 8px 20px 8px 12px;
     border-radius: 8px;
     font-weight: 500;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.action-link:hover {
+.emission-list .action-link:hover {
     transform: translateY(-2px);
     color: #E4013A;
 }
 
-.action-link img {
+.emission-list .action-link img {
     width: 40px;
     height: 40px;
 }
 
 
-.col3 img {
+.emission-list .col3 img {
     width: 40px;
     cursor: pointer;
 }
 
-.actions-buttons {
+.emission-list .actions-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.btn-action {
+.emission-list .btn-action {
     background-color: #E4013A;
     color: white;
     padding: 8px 12px;
@@ -120,11 +120,11 @@ section:hover {
     text-align: center;
 }
 
-.btn-action:hover {
+.emission-list .btn-action:hover {
     background-color: #B81C61;
 }
 
-.btn-delete {
+.emission-list .btn-delete {
     background-color: #E4013A;
     color: white;
     border: none;
@@ -133,38 +133,38 @@ section:hover {
     cursor: pointer;
 }
 
-.btn-delete:hover {
+.emission-list .btn-delete:hover {
     background-color: #B81C61;
 }
 
-.descriptif-content {
+.emission-list .descriptif-content {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.descriptif-content.expanded {
+.emission-list .descriptif-content.expanded {
   -webkit-line-clamp: unset;
   display: block;
 }
 
 /* Responsive */
 @media screen and (max-width: 768px) {
-    section {
+    .emission-list section {
         flex-direction: column;
         align-items: center;
     }
 
-    .col1 {
+    .emission-list .col1 {
         flex: 0 0 auto;
     }
 
-    .col2 {
+    .emission-list .col2 {
         text-align: center;
     }
 
-    .col3 {
+    .emission-list .col3 {
         flex-direction: row;
         justify-content: center;
         gap: 15px;
@@ -172,7 +172,7 @@ section:hover {
 }
 </style>
 <article>
-    <div class="emissions">
+    <div class="emission-list">
         {% for emission in emissions %}
             {% set lastDiffusion = emission.lastDiffusion %}
             <section>
@@ -192,7 +192,7 @@ section:hover {
                                 </div>
                                 <div class="col2">
                                     <div class="titre">
-                                        <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
+                                        <a href="{{ path('emission.show', {id: emission.id }) }}">
                                             {{ emission.titre }}
                                             {% if emission.user %}
                                                 -
