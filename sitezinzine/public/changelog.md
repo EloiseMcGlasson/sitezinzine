@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.41] - 2025-08-08
+### Correction
+- Correction du lien titre dans les résultats de recherche public qui envoyait côté admin et recherche admin qui envoyait dans public.
+- Suppression de l'attribution user_id si pas de user en cas d'édition.
+- Modification de la navbar, fusion d'émissions et recherche.
+- Correction de la navbar public, Annonces n'était pas active (en rouge) quand on était sur ces pages.
+- Correction de admin/categories pour que le user soit affiché.
+
+
 ## [1.0.40] - 2025-08-07
 ### Ajout
 - Ajout du softDelete sur categories, annule la redirection sur ce bouton (conflit controllerjs).
