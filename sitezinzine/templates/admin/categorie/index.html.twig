@@ -122,7 +122,7 @@ a:hover {
         </h1>
         <article>
             <div class="categorie">
-                {% for categorie in categories %}
+                
                     {% for row in categories %}
                         {% set categorie = row[0] %}
                         {% set total = row.total %}
@@ -139,7 +139,7 @@ a:hover {
                                     <div class="col2">
                                         <div class="titre">
                                             <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
-                                                {{ categorie.titre }}
+                                                {{ categorie.titre }} - {{ categorie.user ? categorie.user.username : 'Utilisateur inconnu' }}
                                             </a>
                                         </div>
                                         <div class="descriptif">
@@ -176,7 +176,7 @@ a:hover {
                                             </div>
                                         </section>
                                     {% endfor %}
-                                {% endfor %}
+                               
                             </div>
                         </article>
                         <div class="pagination">
