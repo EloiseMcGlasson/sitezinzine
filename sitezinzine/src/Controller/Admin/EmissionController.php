@@ -121,9 +121,6 @@ class EmissionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$emission->getUser()) {
-                $emission->setUser($user);
-            }
 
             $emission->setUpdatedat(new \DateTime());
             $em->flush();

@@ -21,10 +21,10 @@
         height: 100vh;
     }
 
-    .top img {
+    .bodyadminannonce .top img {
         width: 100%;
     }
-    h1 {
+    .bodyadminannonce h1 {
             text-align: center;
             color: #ffffff;
             font-size: 2em;
@@ -33,7 +33,7 @@
             font-weight: 800;
             font-style: bold;
         }
-    .annonce {
+    .bodyadminannonce .annonce {
         background-color: transparent;
         color: white;
         display: grid;
@@ -42,35 +42,34 @@
         width: calc(100% - 80px); /* Largeur calculée en tenant compte des marges */
     }
 
-    section {
+    .bodyadminannonce section {
         border: solid 1px #ccc;
         border-radius: 8px;
         display: grid;
-        
         grid-template-columns: 150px auto 150px; /* Colonnes fixes pour le contenu */
         background-color: black;
         padding: 15px;
         transition: background-color 0.3s ease;
         min-width: 0; /* Empêche le dépassement */
-    overflow: hidden; /* Cache le contenu qui dépasse */
+        overflow: hidden; /* Cache le contenu qui dépasse */
     }
 
-    section:hover {
+    .bodyadminannonce section:hover {
         background-color: #333;
     }
 
-    a {
+    .bodyadminannonce a {
         padding: 14px 16px;
         color: white;
         text-decoration: none;
         font-weight: 800;
     }
 
-    a:hover {
+    .bodyadminannonce a:hover {
         color: #E40039;
     }
 
-    .col1 {
+    .bodyadminannonce .col1 {
         width: 150px;
         margin: auto;
         display: flex;
@@ -79,27 +78,26 @@
         padding: 5px;
     }
 
-    .col1 img {
+    .bodyadminannonce .col1 img {
         width: 150px;
         margin: 10px;
         padding: 10px;
         border-radius: 8px;
     }
 
-    .col2 {
+    .bodyadminannonce .col2 {
         padding: 10px;
-    overflow: hidden; /* Cache le contenu qui dépasse */
-    word-wrap: break-word; /* Permet la césure des mots longs */
-    margin: 15px;
+        overflow: hidden; /* Cache le contenu qui dépasse */
+        word-wrap: break-word; /* Permet la césure des mots longs */
+        margin: 15px;
     }
 
-    .col2 p {
+    .bodyadminannonce .col2 p {
         margin: 5px 0;
         padding-left: 15px;
     }
-
  
-    .presentation {
+    .bodyadminannonce .presentation {
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
@@ -110,16 +108,16 @@
         
         color: #cecece;
     }
-    em {
+
+    .bodyadminannonce em {
         font-style: italic !important;
     }
-    strong {
+
+    .bodyadminannonce strong {
         font-weight: 700 !important;
     }
 
-   
-
-    .annonces-row {
+    .bodyadminannonce .annonces-row {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(2, 1fr); /* Deux colonnes égales */
@@ -132,19 +130,19 @@
 
 /* Responsive design amélioré */
 @media (max-width: 1200px) {
-    .annonces-row {
+    .bodyadminannonce .annonces-row {
         grid-template-columns: 1fr;
     }
     
-    section {
+    .bodyadminannonce section {
         grid-template-columns: 100px auto 100px;
     }
-    
-    .col1 {
+
+    .bodyadminannonce .col1 {
         width: 100px;
     }
-    
-    .col1 img {
+
+    .bodyadminannonce .col1 img {
         width: 100%;
         max-width: 100px;
     }
@@ -152,36 +150,35 @@
 }
 
 @media (max-width: 768px) {
-    .annonce {
+    .bodyadminannonce .annonce {
         margin: 10px;
         width: calc(100% - 20px);
     }
-    
-    section {
+
+    .bodyadminannonce section {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
     }
-    
-    .col1, .col2 {
+
+    .bodyadminannonce .col1, .bodyadminannonce .col2 {
         width: 100%;
     }
 }
-h1 {
-        text-align: center;
-        color: #ffffff;
-        font-size: 2em;
-        margin-top: 20px;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-    }
+    .bodyadminannonce h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2em;
+            margin-top: 20px;
+            font-family: "Montserrat Alternates", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
 
-   
-.create {
+    .bodyadminannonce .create {
         margin: auto;
         padding: 20px;
     }
-    .btn-create-annonce {
+    .bodyadminannonce .btn-create-annonce {
         text-decoration: none;
         padding: 5px;
         font-size: 1.2em;
@@ -196,7 +193,7 @@ h1 {
         -moz-box-shadow: 3px 7px 13px #444444;
     }
 
-    .btn-create-annonce:hover {
+    .bodyadminannonce .btn-create-annonce:hover {
         padding: 5px;
         background-color: #E40039;
         color: #000000;

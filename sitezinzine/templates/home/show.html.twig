@@ -490,8 +490,8 @@ h1 {
                                                             <div id="theme-filter-buttons">
                                                                 {% for theme in themesInGroup %}
                                                                     {% set backgroundImage = theme.thumbnail
-        ? vich_uploader_asset(theme, 'thumbnailFile', 'App\\Entity\\Theme')
-        : asset('/uploads/images/emissions/emission-zinzine.org') %}
+                                                                        ? vich_uploader_asset(theme, 'thumbnailFile', 'App\\Entity\\Theme')
+                                                                            : asset('/uploads/images/emissions/emission-zinzine.org') %}
                                                                     <button class="theme-card-button" data-action="click->theme-filter#toggleFilter" data-theme-id="{{ theme.id }}" data-theme-filter-target="button">
                                                                         <div class="theme-card-background" style="background-image: url('{{ backgroundImage }}');">
                                                                             <div class="theme-card-overlay">
@@ -530,45 +530,44 @@ h1 {
                                                                                                     {{ emission.theme.name }}
                                                                                                 </h3>
                                                                                                 <div class="date">
-
-<div>
-                                                                                                    {% if emission.lastDiffusion %}
-                                                                                                        Dernière diffusion :
-                                                                                                        {{ emission.lastDiffusion|date('d/m/Y H:i') }}
-                                                                                                        
+                                                                                                    <div>
+                                                                                                        {% if emission.lastDiffusion %}
+                                                                                                            Dernière diffusion :
+                                                                                                            {{ emission.lastDiffusion|date('d/m/Y H:i') }}
                                                                                                         {% else %}
                                                                                                             Aucune diffusion enregistrée.
-                                                                                                            {% endif %}
-</div><div>
-                                                                                                            {% if emission.nextDiffusion %}
-                                                                                                                Prochaine diffusion :
-                                                                                                                {{ emission.nextDiffusion|date('d/m/Y H:i') }}
-                                                                                                            {% endif %}
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <div data-controller="description-toggle" class="description-wrapper">
-                                                                                                            <p data-description-toggle-target="content" class="description">
-                                                                                                                {{ emission.descriptif | raw }}
-                                                                                                            </p>
-                                                                                                            <button data-action="click->description-toggle#toggle" data-description-toggle-target="button" class="description-toggle-btn" hidden>
-                                                                                                                Lire la suite
-                                                                                                            </button>
-                                                                                                        </div>
+                                                                                                        {% endif %}
                                                                                                     </div>
-                                                                                                    <div class="emission-link">
-                                                                                                        <a href="{{ emission.url }}" class="listen-link">
-                                                                                                            🎧 Écouter
-                                                                                                        </a>
-                                                                                                        <br>
-                                                                                                            <a href="{{ emission.url }}" download target="_blank">
-                                                                                                                ⬇ Télécharger
-                                                                                                            </a>
-                                                                                                        </div>
-                                                                                                    </article>
-                                                                                                {% endif %}
-                                                                                            {% endfor %}
-                                                                                        </div>
-                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        {% if emission.nextDiffusion %}
+                                                                                                            Prochaine diffusion :
+                                                                                                            {{ emission.nextDiffusion|date('d/m/Y H:i') }}
+                                                                                                        {% endif %}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div data-controller="description-toggle" class="description-wrapper">
+                                                                                                    <p data-description-toggle-target="content" class="description">
+                                                                                                        {{ emission.descriptif | raw }}
+                                                                                                    </p>
+                                                                                                    <button data-action="click->description-toggle#toggle" data-description-toggle-target="button" class="description-toggle-btn" hidden>
+                                                                                                        Lire la suite
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="emission-link">
+                                                                                                <a href="{{ emission.url }}" class="listen-link">
+                                                                                                    🎧 Écouter
+                                                                                                </a>
+                                                                                                <br>
+                                                                                                    <a href="{{ emission.url }}" download target="_blank">
+                                                                                                        ⬇ Télécharger
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </article>
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
                                                                                 </div>
-                                                                            {% endblock %}
-                                                                            
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endblock %}
+                                                                    
