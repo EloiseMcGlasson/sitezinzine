@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.42] - 2025-08-
+### Correction
+- Correction du css de la liste d'émissions de la page showCat.
+
+
 ## [1.0.41] - 2025-08-08
 ### Correction
 - Correction du lien titre dans les résultats de recherche public qui envoyait côté admin et recherche admin qui envoyait dans public.

@@ -895,6 +895,11 @@
     loader-utils "^2.0.0 || ^3.0.0"
     schema-utils "^3.0.0 || ^4.0.0"
 
+"@symfony/ux-live-component@^2.29.1":
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/@symfony/ux-live-component/-/ux-live-component-2.29.1.tgz#ed5e890d65827a66c8c91141da304f4aced31b4c"
+  integrity sha512-v95Qjcrosyp25YszoltVH+xPtEwqiseqtcB4S1ddt0uU4pBOidnzBGGzPsR/GAePbGAPeVmjuEoFelnOKCaBIQ==
+
 "@symfony/webpack-encore@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@symfony/webpack-encore/-/webpack-encore-5.1.0.tgz#d5664153136959e3baf3e248c9b55350c2c81a6d"
