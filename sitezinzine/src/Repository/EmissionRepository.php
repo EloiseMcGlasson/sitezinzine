@@ -9,6 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use Doctrine\ORM\Query;
 
 
 /**
@@ -251,6 +252,70 @@ public function findEmissionsByThemeGroup(array $themeIds): array
     }
 
     return $results;
+}
+
+public function paginateEmissionsByThemeGroup(array $themeIds, int $page): PaginationInterface
+{
+    $now = new \DateTimeImmutable();
+
+    // Requête principale : juste les entités
+    $qb = $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.diffusions', 'd')
+        ->andWhere('e.theme IN (:themeIds)')
+        ->andWhere('e.url IS NOT NULL')
+        ->setParameter('themeIds', $themeIds)
+        ->groupBy('e.id')
+        ->orderBy('e.datepub', 'DESC'); // trie sur un champ existant, ex: datepub
+
+    $pagination = $this->paginator->paginate($qb, $page, 12);
+
+    // Pour chaque émission, on calcule les dates lastDiffusion et nextDiffusion via des méthodes dédiées
+    foreach ($pagination as $emission) {
+        $lastDiffusion = $this->getLastDiffusion($emission, $now);
+        
+        $emission->setLastDiffusion($lastDiffusion);  
+    }
+
+    return $pagination;
+}
+
+public function getLastDiffusion(Emission $emission, \DateTimeInterface $now): ?\DateTimeInterface
+{
+    $result = $this->getEntityManager()
+        ->createQuery('
+            SELECT MAX(d.horaireDiffusion)
+            FROM App\Entity\Diffusion d
+            WHERE d.emission = :emission AND d.horaireDiffusion <= :now
+        ')
+        ->setParameter('emission', $emission)
+        ->setParameter('now', $now)
+        ->getSingleScalarResult();
+
+    if ($result === null) {
+        return null;
+    }
+
+    return new \DateTime($result);
+}
+
+public function getNextDiffusion(Emission $emission, \DateTimeInterface $now): ?\DateTimeInterface
+{
+    $result = $this->getEntityManager()
+        ->createQuery('
+            SELECT MIN(d.horaireDiffusion)
+            FROM App\Entity\Diffusion d
+            WHERE d.emission = :emission AND d.horaireDiffusion > :now
+        ')
+        ->setParameter('emission', $emission)
+        ->setParameter('now', $now)
+        ->getSingleScalarResult();
+
+    if ($result === null) {
+        return null;
+    }
+
+    return new \DateTime($result);
 }
 
 
@@ -547,8 +612,38 @@ public function findLastDiffusionDate(int $emissionId): ?\DateTimeInterface
     return new \DateTime($lastDateString);
 }
 
+/**
+ * Retourne les 20 émissions d'une catégorie triées par dernière diffusion décroissante.
+ */
+public function findLatestByCategory(int $categoryId, int $limit = 20): array
+{
+    $now = new \DateTimeImmutable();
 
+    // On sélectionne uniquement l'ID de l'émission et la date de la dernière diffusion
+    $rows = $this->createQueryBuilder('e')
+        ->select('e.id AS emissionId, MAX(d.horaireDiffusion) AS lastDiffusion')
+        ->leftJoin('e.diffusions', 'd', 'WITH', 'd.horaireDiffusion <= :now')
+        ->andWhere('e.categorie = :cat')
+        ->setParameter('cat', $categoryId)
+        ->setParameter('now', $now)
+        ->groupBy('e.id')
+        ->orderBy('lastDiffusion', 'DESC')
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult(Query::HYDRATE_ARRAY); // hydrate en tableau pour ne plus avoir d'objet à traiter comme un tableau
 
+    // On transforme ces lignes en objets Emission en ajoutant la propriété lastDiffusion
+    $emissions = [];
+    foreach ($rows as $row) {
+        // $row['emissionId'] contient l'ID de l'émission sélectionnée
+        $emission = $this->find($row['emissionId']);
+        $last     = $row['lastDiffusion'];
+        $emission->setLastDiffusion($last ? new \DateTime($last) : null);
+        $emissions[] = $emission;
+    }
+
+    return $emissions;
+}
 
 
     /**

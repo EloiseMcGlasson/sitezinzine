@@ -175,7 +175,7 @@
     <div class="emission-list">
         {% for emission in emissions %}
             {% set lastDiffusion = emission.lastDiffusion %}
-            <section>
+            <section {% if filterable is defined and filterable and emission.theme is defined and emission.theme %} data-theme-id="{{ emission.theme.id }}" {% endif %} data-theme-filter-target="emission">
                 <div class="col1">
                     {% if emission.thumbnail %}
                         <img
