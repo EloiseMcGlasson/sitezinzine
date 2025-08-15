@@ -1,8 +1,9 @@
 # Changelog
 
-## [1.0.42] - 2025-08-
+## [1.0.42] - 2025-08-15
 ### Correction
 - Correction du css de la liste d'émissions de la page showCat.
+- Correction de la page show (filtrage avec livecomponent et pagination en dynamique) et css de la pagination.
 
 
 ## [1.0.41] - 2025-08-08

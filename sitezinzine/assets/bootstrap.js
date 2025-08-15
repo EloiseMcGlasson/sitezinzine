@@ -1,5 +1,18 @@
-import { startStimulusApp } from '@symfony/stimulus-bundle';
+// assets/bootstrap.js
+import { Application } from '@hotwired/stimulus';
+import * as Turbo from '@hotwired/turbo'; // turbo activé
+import LiveController from '@symfony/ux-live-component/dist/live_controller';
+import '@symfony/ux-live-component/dist/live.min.css';
+import { definitionsFromContext } from '@hotwired/stimulus-webpack-helpers';
 
-const app = startStimulusApp();
-// register any custom, 3rd party controllers here
-// app.register('some_controller_name', SomeImportedController);
+// Démarre Stimulus (sans stimulus-bridge)
+const app = Application.start();
+
+// Enregistre le contrôleur Live explicitement
+app.register('live', LiveController);
+
+// Auto-charge TES contrôleurs locaux (assets/controllers/**/*.js)
+const context = require.context('./controllers', true, /\.js$/);
+app.load(definitionsFromContext(context));
+
+export default app;

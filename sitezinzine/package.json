@@ -4,6 +4,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
     "@hotwired/turbo": "^8.0.13",
+    "@symfony/ux-turbo": "^2.29.1",
     "flatpickr": "^4.6.13",
     "stimulus": "^3.2.2",
     "tinymce": "^7.9.1"

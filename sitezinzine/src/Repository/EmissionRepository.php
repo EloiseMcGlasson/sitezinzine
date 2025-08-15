@@ -258,27 +258,34 @@ public function paginateEmissionsByThemeGroup(array $themeIds, int $page): Pagin
 {
     $now = new \DateTimeImmutable();
 
-    // Requête principale : juste les entités
+    // Sécurise les IDs et évite le IN() vide
+    $themeIds = array_values(array_map('intval', $themeIds));
+    if (empty($themeIds)) {
+        // retourne une pagination vide proprement
+        $qb = $this->createQueryBuilder('e')->andWhere('1 = 0');
+        return $this->paginator->paginate($qb, max(1, $page), 12);
+    }
+
     $qb = $this->createQueryBuilder('e')
         ->leftJoin('e.categorie', 'c')
         ->leftJoin('e.diffusions', 'd')
         ->andWhere('e.theme IN (:themeIds)')
-        ->andWhere('e.url IS NOT NULL')
+        ->andWhere('e.url IS NOT NULL AND e.url <> :empty')
+        ->setParameter('empty', '')
         ->setParameter('themeIds', $themeIds)
         ->groupBy('e.id')
-        ->orderBy('e.datepub', 'DESC'); // trie sur un champ existant, ex: datepub
+        ->orderBy('e.datepub', 'DESC');
 
-    $pagination = $this->paginator->paginate($qb, $page, 12);
+    $pagination = $this->paginator->paginate($qb, max(1, $page), 12);
 
-    // Pour chaque émission, on calcule les dates lastDiffusion et nextDiffusion via des méthodes dédiées
     foreach ($pagination as $emission) {
         $lastDiffusion = $this->getLastDiffusion($emission, $now);
-        
-        $emission->setLastDiffusion($lastDiffusion);  
+        $emission->setLastDiffusion($lastDiffusion);
     }
 
     return $pagination;
 }
+
 
 public function getLastDiffusion(Emission $emission, \DateTimeInterface $now): ?\DateTimeInterface
 {
