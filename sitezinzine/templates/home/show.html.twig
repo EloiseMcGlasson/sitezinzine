@@ -195,6 +195,15 @@
     transform: scale(1.03);
 }
 
+.bodyemission .theme-card-button.active {
+    transition: all 0.2s ease;
+}
+
+.bodyemission .theme-card-button.active .theme-card-overlay {
+    background-color: #E40039 !important; /* fond bandeau rouge */
+}
+
+
 .bodyemission .theme-card-background {
     width: 100%;
     height: 100%;
@@ -323,6 +332,68 @@
 .bodyemission .description-wrapper .description.expanded {
     -webkit-line-clamp: unset;
     max-height: 1000px;
+}
+
+/* ===== PAGINATION ===== */
+.bodyemission .pagination {
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.bodyemission .page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .35rem .8rem;
+  border: 2px solid #E40039;
+  background: #fff;
+  color: #E40039;
+  font-weight: 700;
+  border-radius: 9999px; /* pilule */
+  cursor: pointer;
+  transition: all .2s ease;
+  line-height: 1;
+  min-width: 2.25rem;
+  user-select: none;
+}
+
+.bodyemission .page-btn:hover {
+  background: #E40039;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(228, 0, 57, 0.15);
+}
+
+.bodyemission .page-btn.active,
+.bodyemission .page-btn[aria-current="page"] {
+  background: #E40039;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(228, 0, 57, 0.2);
+}
+
+.bodyemission .page-btn.is-prev,
+.bodyemission .page-btn.is-next {
+  padding: .35rem .7rem;
+}
+
+.bodyemission .page-btn[disabled],
+.bodyemission .page-btn.is-disabled {
+  opacity: .45;
+  pointer-events: none;
+  background: #f2f2f2;
+  color: #999;
+  border-color: #ddd;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Responsive : un peu plus compact sur mobile */
+@media (max-width: 480px) {
+  .bodyemission .page-btn { padding: .3rem .65rem; }
 }
 
 /* ========== RESPONSIVE ========== */
@@ -455,44 +526,15 @@
     </div> <!-- /.fiche-emission -->
 
     <img class="bottom" src="{{ asset('/images/top-content-dechire-D.gif') }}">
+<div class="theme">
+    {# On passe au composant la liste des IDs de thèmes du groupe #}
+{{ component('related_emissions', {
+  groupIds: themesInGroup|map(t => t.id),
+  selected: [],
+  page: 1
+}) }}
 
-    <div class="theme">
-        <div class="themeemission">
-            <h2>Envie de plus ?</h2>
-
-            <div class="theme-list">
-                <h3>Thèmes :</h3>
-
-                <div data-controller="theme-filter">
-                    <div id="theme-filter-buttons">
-                        {% for theme in themesInGroup %}
-                            {% set backgroundImage = theme.thumbnail
-                                ? vich_uploader_asset(theme, 'thumbnailFile', 'App\\Entity\\Theme')
-                                : asset('/uploads/images/emissions/emission-zinzine.org') %}
-                            <button class="theme-card-button"
-                                    data-action="click->theme-filter#toggleFilter"
-                                    data-theme-id="{{ theme.id }}"
-                                    data-theme-filter-target="button">
-                                <div class="theme-card-background" style="background-image: url('{{ backgroundImage }}');">
-                                    <div class="theme-card-overlay">
-                                        {{ theme.name }}
-                                    </div>
-                                </div>
-                            </button>
-                        {% endfor %}
-                    </div>
-
-                    {% include 'partials/list.html.twig' with {
-                        emissions: relatedEmissions|sort((a, b) => b.lastDiffusion <=> a.lastDiffusion),
-                        filterable: true
-                    } %}
-
-                    <div class="pagination">
-                        {{ knp_pagination_render(relatedEmissions) }}
-                    </div>
-                </div> <!-- /[data-controller="theme-filter"] -->
-            </div> <!-- /.theme-list -->
-        </div> <!-- /.themeemission -->
+       
     </div> <!-- /.theme -->
 </div> <!-- /.bodyemission -->
 
