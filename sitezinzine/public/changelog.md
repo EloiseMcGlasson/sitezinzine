@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.49] - 2025-08-16
+### Correction
+- Correction des reste d'importmap pour réparer le côté admin.
+
+## [1.0.48] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod, suppression de assets/images pour cause de conflit (5ème essai).
+
+
 ## [1.0.47] - 2025-08-16
 ### Correction
 - Correction des images qui ne marchent pas en prod, suppression de assets/images pour cause de conflit (4ème essai).
