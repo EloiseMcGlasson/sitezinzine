@@ -64,4 +64,22 @@ public function findAllWithCount(): array
         ->getResult();
 }
 
+/**
+ * Retourne les 20 dernières émissions pour une catégorie.
+ */
+public function findLatestEmissions(int $categoryId, int $limit = 20): array
+{
+    return $this->createQueryBuilder('c')
+        ->join('c.emissions', 'e')
+        ->andWhere('c.id = :id')
+        ->setParameter('id', $categoryId)
+        ->orderBy('e.datepub', 'DESC')
+        ->setMaxResults($limit)
+        ->select('e')
+        ->getQuery()
+        ->getResult();
+}
+
+
+
 }

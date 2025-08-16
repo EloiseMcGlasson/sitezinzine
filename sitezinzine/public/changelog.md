@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.0.50] - 2025-08-16
+### Correction
+- Correction de admin.html.twig auquel il manque un block stylesheets.
+
+
+## [1.0.49] - 2025-08-16
+### Correction
+- Correction des reste d'importmap pour réparer le côté admin.
+
+## [1.0.48] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod, suppression de assets/images pour cause de conflit (5ème essai).
+
+
+## [1.0.47] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod, suppression de assets/images pour cause de conflit (4ème essai).
+
+
+## [1.0.46] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod (3ème essai).
+
+
+## [1.0.45] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod (second essai).
+
+
+## [1.0.44] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod.
+
+
+## [1.0.43] - 2025-08-16
+### Correction
+- Correction live component qui ne marche pas en prod.
+
+
+## [1.0.42] - 2025-08-15
+### Correction
+- Correction du css de la liste d'émissions de la page showCat.
+- Correction de la page show (filtrage avec livecomponent et pagination en dynamique) et css de la pagination.
+
+
 ## [1.0.41] - 2025-08-08
 ### Correction
 - Correction du lien titre dans les résultats de recherche public qui envoyait côté admin et recherche admin qui envoyait dans public.

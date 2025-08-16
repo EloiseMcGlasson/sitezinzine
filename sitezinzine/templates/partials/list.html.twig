@@ -175,7 +175,7 @@
     <div class="emission-list">
         {% for emission in emissions %}
             {% set lastDiffusion = emission.lastDiffusion %}
-            <section>
+            <section {% if filterable is defined and filterable and emission.theme is defined and emission.theme %} data-theme-id="{{ emission.theme.id }}" {% endif %} data-theme-filter-target="emission">
                 <div class="col1">
                     {% if emission.thumbnail %}
                         <img
@@ -187,7 +187,7 @@
                                 <img
                                 src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
                                     {% else %}
-                                    <img src="{{ asset('/images/emission-zinzine.jpg') }}" alt="Image par défaut pour {{ emission.titre }}">
+                                    <img src="{{ asset('images/emission-zinzine.jpg') }}" alt="Image par défaut pour {{ emission.titre }}">
                                     {% endif %}
                                 </div>
                                 <div class="col2">
@@ -226,11 +226,11 @@
                                 </div>
                                 <div class="col3">
                                     <a href="{{ emission.url }}" target="_blank" class="action-link">
-                                        <img src="{{ asset('/images/lecteur.png') }}" alt="Écouter {{ emission.titre }}">
+                                        <img src="{{ asset('images/lecteur.png') }}" alt="Écouter {{ emission.titre }}">
                                             Écouter
                                         </a>
                                         <a href="{{ emission.url }}" download target="_blank" class="action-link">
-                                            <img src="{{ asset('/images/telecharger.png') }}" alt="Télécharger {{ emission.titre }}">
+                                            <img src="{{ asset('images/telecharger.png') }}" alt="Télécharger {{ emission.titre }}">
                                                 Télécharger
                                             </a>
                                         </div>
