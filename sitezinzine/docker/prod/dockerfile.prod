@@ -63,7 +63,6 @@ COPY --from=composer_build /app/vendor ./vendor
 
 # Assets Webpack compilés
 COPY --from=frontend_build /app/public/build ./public/build
-COPY --from=frontend_build /app/public/build/manifest.json ./public/build/manifest.json
 
 # Fix permissions et utilisateur non-root
 RUN addgroup --system app && adduser --system --ingroup app appuser && \

@@ -63,19 +63,20 @@ class RelatedEmissions
     }
 
     #[LiveAction]
-    public function toggleTheme(#[LiveArg] int $id): void
-    {
-        $id = (int) $id;
+public function toggleTheme(#[LiveArg] int $id): void
+{
+    $id = (int) $id;
 
-        // si déjà sélectionné => on désactive tout
-        if (!empty($this->selected) && $this->selected[0] === $id) {
-            $this->selected = [];
-        } else {
-            // sélection unique : on remplace par [id]
-            $this->selected = [$id];
-        }
-
-        $this->page = 1; // reset pagination
+    // si déjà sélectionné => on désactive tout
+    if (!empty($this->selected) && $this->selected[0] === $id) {
+        $this->selected = [];
+    } else {
+        // sélection unique : on remplace par [id]
+        $this->selected = [$id];
     }
+
+    $this->page = 1; // reset pagination
+}
+
 
 }
