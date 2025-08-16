@@ -7,14 +7,12 @@
                 Administration
             {% endblock %}
         </title>
-        {% block stylesheets %}
-           
-            <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;700&display=swap" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-       
+         {{ encore_entry_link_tags('app') }}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
             <style>
             .main-content {
                 background: linear-gradient(#E4013A, #B81C61);
@@ -201,15 +199,10 @@
             </style>
         {% endblock %}
      {% block javascripts %}
-    <!-- Charger le CDN de TinyMCE -->
-   <script src="{{ asset('build/app.js') }}"></script>  <!-- Assure-toi que ce chemin est correct -->
+    {{ encore_entry_script_tags('app') }}
+    
+{% endblock %}
 
-{{ encore_entry_script_tags('app') }}
-            {{ encore_entry_link_tags('app') }}
-            {% block importmap %} 
-                {{ importmap('app') }}
-            {% endblock %}
-        {% endblock %}
     </head>
     <body>
         {% include 'admin/navbar.html.twig' %}
