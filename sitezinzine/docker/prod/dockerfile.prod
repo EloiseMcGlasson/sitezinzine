@@ -64,6 +64,9 @@ COPY --from=composer_build /app/vendor ./vendor
 # Assets Webpack compilés
 COPY --from=frontend_build /app/public/build ./public/build
 
+# ⬇️ Ajoute cette ligne pour tes images
+COPY assets/images ./public/images
+
 # Fix permissions et utilisateur non-root
 RUN addgroup --system app && adduser --system --ingroup app appuser && \
     mkdir -p var && chown -R www-data:www-data var && \
