@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.43] - 2025-08-16
+### Correction
+- Correction live component qui ne marche pas en prod.
+
+
 ## [1.0.42] - 2025-08-15
 ### Correction
 - Correction du css de la liste d'émissions de la page showCat.
