@@ -1,8 +1,13 @@
 # Changelog
 
+## [1.0.47] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod, suppression de assets/images pour cause de conflit (4ème essai).
+
+
 ## [1.0.46] - 2025-08-16
 ### Correction
-- Correction des images qui ne marchent pas en prod.
+- Correction des images qui ne marchent pas en prod (3ème essai).
 
 
 ## [1.0.45] - 2025-08-16
