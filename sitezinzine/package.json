@@ -4,6 +4,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
     "@hotwired/turbo": "^8.0.13",
+    "@symfony/ux-turbo": "^2.29.1",
     "flatpickr": "^4.6.13",
     "stimulus": "^3.2.2",
     "tinymce": "^7.9.1"
@@ -17,6 +18,7 @@
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@symfony/stimulus-bridge": "^4.0.1",
+    "@symfony/ux-live-component": "^2.29.1",
     "@symfony/webpack-encore": "^5.1.0",
     "babel-loader": "^10.0.0",
     "copy-webpack-plugin": "^13.0.0",

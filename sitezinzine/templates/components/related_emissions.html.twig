@@ -1,0 +1,68 @@
+<div {{ attributes.defaults({ 'data-controller': 'live' }) }}>
+  <div id="theme-filter-buttons" class="flex flex-wrap gap-2 mb-4">
+    {% for theme in this.themesInGroup %}
+      {% set isActive = (this.selected|length == 1) and (this.selected[0] == theme.id) %}
+      <button
+        type="button"
+        class="theme-card-button {{ isActive ? 'active' : '' }}"
+        aria-pressed="{{ isActive ? 'true' : 'false' }}"
+        title="{{ theme.name }}"
+        data-action="live#action"
+        data-live-action-param="toggleTheme"
+        data-live-id-param="{{ theme.id }}"
+      >
+        <div class="theme-card-background"
+             style="width:180px;height:120px;border-radius:8px;overflow:hidden;position:relative;
+                    background-size:cover;background-position:center;
+                    background-image:url('{{ theme.thumbnail
+                      ? vich_uploader_asset(theme, 'thumbnailFile', 'App\\Entity\\Theme')
+                      : asset('images/emission-zinzine.jpg') }}');">
+          <div class="theme-card-overlay"
+               style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);
+                      color:#fff;padding:.5rem;font-weight:700;text-align:center;">
+            {{ theme.name }}
+          </div>
+        </div>
+      </button>
+    {% endfor %}
+  </div>
+
+  {% include 'partials/list.html.twig' with {
+    emissions: this.relatedEmissions,
+    filterable: false
+  } %}
+
+  {% set p = this.relatedEmissions.paginationData %}
+  <nav class="pagination" aria-label="Pagination">
+    <button
+      type="button"
+      class="page-btn is-prev {{ p.previous is not defined ? 'is-disabled' : '' }}"
+      {% if p.previous is defined %}
+        data-action="live#action"
+        data-live-action-param="goToPage"
+        data-live-page-param="{{ p.previous }}"
+      {% else %}disabled{% endif %}
+    >← Préc.</button>
+
+    {% for num in p.pagesInRange %}
+      <button
+        type="button"
+        class="page-btn {{ num == this.page ? 'active' : '' }}"
+        data-action="live#action"
+        data-live-action-param="goToPage"
+        data-live-page-param="{{ num }}"
+        aria-current="{{ num == this.page ? 'page' : 'false' }}"
+      >{{ num }}</button>
+    {% endfor %}
+
+    <button
+      type="button"
+      class="page-btn is-next {{ p.next is not defined ? 'is-disabled' : '' }}"
+      {% if p.next is defined %}
+        data-action="live#action"
+        data-live-action-param="goToPage"
+        data-live-page-param="{{ p.next }}"
+      {% else %}disabled{% endif %}
+    >Suiv. →</button>
+  </nav>
+</div>
