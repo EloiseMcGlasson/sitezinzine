@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.50] - 2025-08-16
+### Correction
+- Correction de admin.html.twig auquel il manque un block stylesheets.
+
+
 ## [1.0.49] - 2025-08-16
 ### Correction
 - Correction des reste d'importmap pour réparer le côté admin.
