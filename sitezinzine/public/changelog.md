@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.45] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod (second essai).
+
+
+## [1.0.44] - 2025-08-16
+### Correction
+- Correction des images qui ne marchent pas en prod.
+
+
 ## [1.0.43] - 2025-08-16
 ### Correction
 - Correction live component qui ne marche pas en prod.

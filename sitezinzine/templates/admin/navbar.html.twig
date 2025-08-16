@@ -71,7 +71,7 @@
 </style>
 <nav>
     <a href="https://eloisemcglasson.ovh/" target="_blank">
-        <img src="{{ asset('/images/logo.gif') }}" alt="Logo"></a>
+        <img src="{{ asset('images/logo.gif') }}" alt="Logo"></a>
         <ul>
             <li>
                 <a class="nav-link {{ app.current_route == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
@@ -79,7 +79,7 @@
                 </a>
             </li>
             <li>
-                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
                 <li class="dropdown">
                     <button class="dropbtn">
                         Gestion des émissions
@@ -106,14 +106,14 @@
                 </li>
                 {% if is_granted('ROLE_EDITOR') %}
                     <li>
-                        <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                        <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
                         <li>
                             <a class="nav-link {{ app.current_route starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
                                 Annonces
                             </a>
                         </li>
                         <li>
-                            <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                            <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
                             <li>
                                 <a class="nav-link {{ app.current_route starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
                                     Évènements
@@ -122,7 +122,7 @@
                         {% endif %}
                         {% if is_granted('ROLE_ADMIN') %}
                             <li>
-                                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                                <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
                                 <li>
                                     <a class="nav-link {{ app.current_route starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
                                         Utilisateurices
@@ -130,9 +130,9 @@
                                 </li>
                             {% endif %}
                             <li>
-                                <img src="{{ asset('/images/puce-rond-rouge.gif') }}"></li>
+                                <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
                                 <a href="{{ path('admin.emission.rechercheadmin') }}" class="{{ app.current_route == 'admin.emission.rechercheadmin' ? 'active' : '' }}">
-                                    <img src="{{ asset('/images/ico-recherche.gif') }}" alt="Icône de recherche"></a>
+                                    <img src="{{ asset('images/ico-recherche.gif') }}" alt="Icône de recherche"></a>
                                 </ul>
                             </nav>
                             

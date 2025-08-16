@@ -88,7 +88,7 @@
     <div>
         <div class="catblock">
             <div class="top">
-                <img src="{{ asset('/images/bottom-header.gif') }}"></div>
+                <img src="{{ asset('images/bottom-header.gif') }}"></div>
                 <div class="fiche-emission">
                     <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">
                         ← Retour
@@ -99,7 +99,7 @@
                                 <img
                                 src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Image de la catégorie {{ categorie.titre }}">
                                     {% else %}
-                                    <img src="{{ asset('/images/emission-zinzine.jpg') }}" alt="Image par défaut">
+                                    <img src="{{ asset('images/emission-zinzine.jpg') }}" alt="Image par défaut">
                                     {% endif %}
                                 </div>
                                 <div class="bloc-texte">
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         <div class="bottom">
-                            <img src="{{ asset('/images/top-content-dechire-D.gif') }}"></div>
+                            <img src="{{ asset('images/top-content-dechire-D.gif') }}"></div>
                         </div>
                     </div>
                     <div class="emissionsdelacategorie">
