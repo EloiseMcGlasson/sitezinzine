@@ -64,8 +64,8 @@ COPY --from=composer_build /app/vendor ./vendor
 # Assets Webpack compilés
 COPY --from=frontend_build /app/public/build ./public/build
 
-# ⬇️ Ajoute cette ligne pour tes images
-COPY assets/images ./public/images
+# ⬇️ copie conditionnelle : si assets/images existe, on copie vers public/images
+RUN if [ -d assets/images ]; then mkdir -p public/images && cp -r assets/images/* public/images/; fi
 
 # Fix permissions et utilisateur non-root
 RUN addgroup --system app && adduser --system --ingroup app appuser && \
