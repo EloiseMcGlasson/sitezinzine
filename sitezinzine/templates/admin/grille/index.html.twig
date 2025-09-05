@@ -1,297 +1,218 @@
 {% extends 'admin/admin.html.twig' %}
 {% block title %}
-    Grille de programmation
+  Grille de programmation
 {% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-.grid-table {
-    border-collapse: collapse;
-    width: 100%;
+  {{ parent() }}
+  <style>
+  :root{
+    --slot-h: 8px;               /* 1 quart d’heure = 8px */
+    --head-h: 44px;              /* hauteur de l’en-tête */
+    --grid-bg:#fff;
+    --grid-line:#e6e6e6;
+    --head-bg:#f0f0f0;
+    --head-text:#1c1c1a;
+    --hour-text:#3a3a3a;
+
+    /* Post-it plus neutre */
+    --postit:#d75a6f;            /* rouge adouci */
+    --postit-border:#b9475a;
+    --postit-text:#fff;
+  }
+
+  .schedule-layout{display:flex;gap:24px;align-items:flex-start}
+  .grid-area{flex:1;min-width:0}
+  .sidebar{width:320px;flex:0 0 320px}
+
+  /* Grille unique : 1 ligne d’en-tête + 96 lignes de slots */
+  .schedule-grid{
+    display:grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    grid-template-rows: var(--head-h) repeat(96, var(--slot-h));
+    border-left:1px solid var(--grid-line);
+    border-right:1px solid var(--grid-line);
+    background:var(--grid-bg);
+  }
+
+  /* En-têtes */
+  .head{
+    display:flex;align-items:center;justify-content:center;
+    background:var(--head-bg);color:var(--head-text);
+    border-bottom:1px solid var(--grid-line);
+    border-right:1px solid var(--grid-line);
+    font-weight:700;font-size:14px;padding:0 8px;text-align:center;
+  }
+  .head.hour{justify-content:flex-start;padding-left:8px}
+
+  /* Colonne HEURE (wrapper sur 96 lignes) */
+  .hours-col{
+    grid-column:1;
+    grid-row:2 / span 96;
+    position:relative;
+    border-right:1px solid var(--grid-line);
+  }
+  .h-slot{
+    position:absolute;left:0;right:0;height:var(--slot-h);
+    border-top:1px solid rgba(0,0,0,.06);
+    pointer-events:none;
+  }
+  .h-slot.hour-start{ border-top-color:#d8d8d8; }
+.hour-label{
+  position:absolute;
+  left:8px;
+  top:0;                 /* on place exactement sur la ligne de l’heure */
+  font-size:13px;
+  font-weight:700;
+  line-height:1;
+  color:var(--hour-text);
+  transform:none;        /* au cas où un cache traîne */
 }
 
-.grille-wrapper {
-    flex: 1;
-    overflow-x: auto;
-}
-
-.grid-table th, .grid-table td {
-    border: 1px solid #ccc;
-    text-align: center;
-    height: 8px;
-    font-size: 12px;
-}
-
-.grid-table td {
-    overflow: hidden;
-    max-width: 150px; /* ou la largeur que tu souhaites */
-    position: relative; /* pour que .emission-block absolute reste dans la cellule */
-}
-
-.grid-table thead th {
-    padding: 8px;
-    background-color: #f5f5f5;
-    font-size: 14px;
-    text-align: center;
-    vertical-align: middle;
-    height: 60px;
-}
-
-.grid-table thead th > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    line-height: 1.2;
-}
-
-.grid-table thead th div:first-child {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.grid-table thead th div:last-child {
-    font-size: 14px;
-    color: #555;
-}
-
-.heure-cell {
-    font-weight: bold;
-    font-size: 14px;
-    text-align: center;
-    vertical-align: middle;
-    background-color: #fff;
-}
-
-.dropzone {
-    background-color: #fff;
-    height: 30px;
+  /* Colonnes JOUR (wrapper sur 96 lignes) */
+  .day-col{
     position: relative;
-    padding: 0;
-    overflow: visible;
+    grid-row: 2 / span 96;
+    border-left:1px solid var(--grid-line);
+  }
+  .day-slot{
+    position:absolute;left:0;right:0;height:var(--slot-h);
+    border-top:1px solid rgba(0,0,0,.06);
+    pointer-events:none;
+  }
+  .day-slot.hour-start{ border-top-color:#d8d8d8; }
+
+  .day-col.drag-over{outline:2px dashed var(--postit);outline-offset:-2px}
+
+  /* Post-it plus sobre */
+/* Post-it : base neutre, pas de coin arrondi, pas de débordement */
+.postit{
+  position:absolute;
+  left:1px; right:1px; top:0;
+  background:var(--postit);
+  color:var(--postit-text);
+  border:1px solid var(--postit-border);
+  border-radius:0;
+
+  display:flex; align-items:center; justify-content:center;
+
+  /* pas de padding vertical -> respecte la hauteur exacte (8px par slot) */
+  padding:0 2px;
+  font-size:9px;         /* plus petit */
+  font-weight:500;
+  line-height:1;         /* clé pour les 15 min */
+  text-align:center;
+
+  overflow:hidden;
+  text-overflow:ellipsis;
+  cursor:grab; user-select:none;
+  z-index:2;
 }
 
-.dropzone.drag-over {
-    background-color: #ffecec;
-    border: 2px dashed #E4013A;
+/* Cas 1 slot (15 min) : une seule ligne, jamais de wrap */
+.postit[data-slots="1"]{
+  white-space:nowrap;
 }
 
-.dropzone.occupied {
-    background-image: repeating-linear-gradient(
-        45deg,
-        #e4013a 0,
-        #e4013a 3px,
-        white 3px,
-        white 6px
-    );
-    background-size: 10px 10px;
-    cursor: not-allowed;
+/* Cas >= 2 slots : on autorise le retour à la ligne dans le bloc */
+.postit:not([data-slots="1"]){
+  white-space:normal;    /* => wrap autorisé */
+  line-height:1.05;      /* un poil d’air */
+  padding:1px 3px;       /* léger padding, reste dans la hauteur calculée */
+  word-break:break-word; /* coupe proprement si nécessaire */
 }
 
-.emission-block {
-    background-color: #E4013A;
-    color: white;
-    padding: 4px 6px;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: grab;
-    user-select: none;
-    box-sizing: border-box;
-    height: 100%;
-}
+  /* Sidebar */
+  .sidebar h2{font-size:16px;margin:0 0 8px;color:var(--head-text)}
+  #emissions-pool{display:flex;flex-direction:column;gap:10px}
+  #emissions-pool.drop-pool-hover{background:#fff8f8;border:2px dashed var(--postit);padding:10px;border-radius:6px}
+  .emission-card{
+    background:var(--postit);color:#fff;border:1px solid var(--postit-border);
+    padding:6px 8px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab;user-select:none
+  }
 
-.emission-block.in-grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #E4013A;
-    color: white;
-    padding: 4px 6px;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: grab;
-    z-index: 1;
-    white-space: normal;       /* Permet le retour à la ligne */
-    overflow: hidden;          /* Cache ce qui dépasse */
-    text-overflow: ellipsis;   /* Ajoute "..." si trop long */
-    word-wrap: break-word;     /* Coupe les mots trop longs */
-    max-width: 100%;           /* Ne dépasse pas la cellule */
-    box-sizing: border-box;    /* Inclut padding dans la largeur */
-}
+  /* Tooltip custom (si tu veux revenir plus tard) */
+  .custom-tooltip{
+    position:fixed;display:none;background:rgba(0,0,0,.85);color:#fff;
+    padding:4px 8px;border-radius:4px;font-size:12px;pointer-events:none;z-index:9999;
+  }
 
-
-
-.emission-block.in-use {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-#emissions-pool.drop-pool-hover {
-    background-color: #fff8f8;
-    border: 2px dashed #E4013A;
-    padding: 10px;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-}
-
-.emissions-wrapper h2 {
-    font-size: 16px;
-    color: white;
-    margin: 0;
-}
-
-.emission-wrapper {
-    pointer-events: none;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-.emission-wrapper .emission-block {
-    pointer-events: auto;
-}
-
-.rowgroup-even td {
-    background-color: #ffffff;
-}
-
-.rowgroup-odd td {
-    background-color: #f2f2f2;
-}
-
-.custom-tooltip {
-  position: fixed;
-    display: none;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 4px;
-    pointer-events: none;
-    z-index: 9999;
-    max-width: 300px; /* Tu peux ajuster si tu veux une limite douce */
-    white-space: normal;
-    overflow: visible;
-    text-overflow: unset;
-    word-wrap: break-word;
-}
-
-
-</style>
+  @media (max-width: 900px){ .grid-area{overflow-x:auto} }
+  </style>
 {% endblock %}
 {% block body %}
-    <h1>
-        Grille de programmation
-    </h1>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
-            ⬅ Semaine précédente
-        </a>
-        <h2 style="color:white; font-size: 18px; margin: 0;">
-            <a href="{{ path('admin.grille.index') }}">
-                📅 Semaine actuelle
-            </a>
-            Semaine du
-            {{ startOfWeek|date('d/m/Y') }}
-        </h2>
-        <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
-            Semaine suivante ➡
-        </a>
-    </div>
-    <div data-controller="grid" style="display: flex; gap: 30px;">
-        {# ➤ Grille principale #}
-        <div class="grille-wrapper">
-            <table class="grid-table">
-                <thead>
-                    <tr>
-                        <th>
-                            Heure
-                        </th>
-                        {% set jours = [] %}
-                        {% for i in 0..6 %}
-                            {% set jours = jours|merge([startOfWeek|date_modify("+" ~ i ~ " days")]) %}
-                        {% endfor %}
-                        {% for jour in jours %}
-                            <th>
-                                {{ jour|format_date('medium', locale='fr') }}
-                            </th>
-                        {% endfor %}
-                    </tr>
-                    
-                </thead>
-         <tbody>
-    {% for row in displayRows %}
-    <tr>
-        {% set td_count = 0 %}
-        {% for dayIndex in 0..6 %}
-            {% set slot = row.slots[dayIndex] %}
-            {% if slot.type == 'emission' %}
-                <td colspan="{{ slot.colspan }}">
-                    {{ slot.diffusion.emission.titre }}
-                </td>
-                {% set td_count = td_count + slot.colspan %}
-            {% elseif slot.type == 'empty' %}
-                <td></td>
-                {% set td_count = td_count + 1 %}
-            {% else %}
-                {# covered => ne rien afficher, ne pas compter #}
-            {% endif %}
-        {% endfor %}
-        <td colspan="{{ 7 - td_count }}" style="color:black;">Cols: {{ td_count }}</td>
-    </tr>
-
-
-        <tr class="{{ cycle(['rowgroup-even', 'rowgroup-odd'], loop.index0) }}">
-            {% if row.quarter == 0 %}
-                <td class="heure-cell" rowspan="4">{{ "%02d:00"|format(row.hour) }}</td>
-            {% endif %}
-
-            {% for dayIndex in 0..6 %}
-                {% set slot = row.slots[dayIndex] %}
-
-                {% if slot.type == 'emission' %}
-                    <td class="dropzone" colspan="{{ slot.colspan }}">
-                        <div class="emission-block in-grid">
-                            🎙 {{ slot.diffusion.emission.titre }}<br>
-                            {{ slot.diffusion.emission.duree }} min
-                        </div>
-                    </td>
-                {% elseif slot.type == 'empty' %}
-                    {% set date = jours[dayIndex]|date_modify(row.hour ~ ' hour')|date_modify((row.quarter * 15) ~ ' minutes') %}
-                    <td class="dropzone"
-                        data-date="{{ date|date('Y-m-d H:i:00') }}"
-                        data-day="{{ dayIndex }}"
-                        data-hour="{{ row.hour }}"
-                        data-quarter="{{ row.quarter }}">
-                    </td>
-                {% endif %}
-                {# covered: on ne rend rien #}
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</tbody>
-
-
-                </table>
-            </div>
-            {# ➤ Colonne de droite : Émissions disponibles #}
-            <div class="emissions-wrapper">
-                <h2 style="font-size: 16px;">
-                    Émissions disponibles
-                </h2>
-                <div id="emissions-pool" style="display: flex; flex-direction: column; gap: 10px;">{# {% for emission in emissions %}
-                    <div data-grid-target="emission" class="emission-block" draggable="true" data-id="{{ emission.id }}" data-duration="{{ emission.duree }}">
-                    🎙 {{ emission.titre }} ({{ emission.duree }} min)
-                    </div>
-                    {% else %}
-                    <div>Aucune émission disponible</div>
-                {% endfor %} #}
-                </div>
-            </div>
+  <h1>
+    Grille de programmation
+  </h1>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
+      ⬅ Semaine précédente
+    </a>
+    <h2 style="font-size:18px;margin:0;">
+      <a href="{{ path('admin.grille.index') }}">
+        📅 Semaine actuelle
+      </a>
+      Semaine du
+      {{ startOfWeek|date('d/m/Y') }}
+    </h2>
+    <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
+      Semaine suivante ➡
+    </a>
+  </div>
+  <div class="schedule-layout" data-controller="grid">
+    <div class="grid-area">
+      <div class="schedule-grid">
+        {# Ligne d’en-tête #}
+        <div class="head hour" style="grid-column:1;grid-row:1;">
+          Heure
         </div>
-        <div id="tooltip" class="custom-tooltip"></div>
-    {% endblock %}
-    
+        {% for i in 0..6 %}
+          {% set jour = startOfWeek|date_modify("+" ~ i ~ " days") %}
+          <div class="head" style="grid-column: {{ 2 + i }}; grid-row:1;">
+            {{ jour|format_date('medium', locale='fr') }}
+          </div>
+        {% endfor %}
+        {# Colonne HEURE : 96 quarts d’heure + labels toutes les 4 lignes #}
+        <div class="hours-col">
+          {% for i in 0..95 %}
+            <div class="h-slot {{ i % 4 == 0 ? 'hour-start' : '' }}" style="top: calc({{ i }} * var(--slot-h));"></div>
+          {% endfor %}
+          {% for h in 0..23 %}
+            <div class="hour-label" style="top: calc({{ h*4 }} * var(--slot-h));">
+              {{ "%02d:00"|format(h) }}
+            </div>
+          {% endfor %}
+        </div>
+        {# 7 colonnes JOUR #}
+        {% for dayIndex in 0..6 %}
+          <div class="day-col" data-grid-target="day" style="grid-column: {{ 2 + dayIndex }};">
+            {# 96 quarts d’heure = 24h * 4 #}
+            {% for i in 0..95 %}
+              <div class="day-slot {{ i % 4 == 0 ? 'hour-start' : '' }}" style="top: calc({{ i }} * var(--slot-h));"></div>
+            {% endfor %}
+            {# Post-its existants #}
+            {% for seg in (daySegments[dayIndex] ?? []) %}
+              {% set slots = (seg.duration / 15)|round(0, 'ceil') %}
+              {% set h = (seg.startIndex // 4) %}
+              {% set m = (seg.startIndex % 4) * 15 %}
+              <div class="postit" style="top: calc({{ seg.startIndex }} * var(--slot-h));
+              height: calc({{ slots }} * var(--slot-h));" data-slots="{{ slots }}" data-duration="{{ seg.duration }}" title="🎙 {{ seg.title }} • {{ seg.duration }} min" {# tooltip natif #} draggable="true">
+                🎙
+                {{ seg.title }}
+                •
+                {{ seg.duration }}
+                min
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <aside class="sidebar">
+      <h2>
+        Émissions disponibles
+      </h2>
+      <div id="emissions-pool"></div>
+    </aside>
+  </div>
+  <div id="tooltip" class="custom-tooltip"></div>
+{% endblock %}

@@ -1,173 +1,107 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-    static targets = ['emission', 'dropzone']
+  static targets = ['day','emission']  // plus besoin de 'slot'
 
-    connect() {
-        this.tooltip = document.getElementById('tooltip')
-        this.draggedElement = null
-        this.sourceDropzone = null
-        this.pool = this.element.querySelector('#emissions-pool')
+  connect() {
+    // 1 slot = 15 min ; 1 slot = 8px
+    this.CELL_MIN = 15
+    this.CELL_H   = 8
 
-        // Événements sur les émissions
-        this.emissionTargets.forEach(emission => {
-            this.makeDraggable(emission)
-        })
+    this.dragged = null
+    this.fromDay = null
+    this.fromStartIndex = null
 
-        // Événements sur les dropzones de grille
-        this.dropzoneTargets.forEach(dropzone => {
-            dropzone.addEventListener('dragover', this.handleDragOver.bind(this))
-            dropzone.addEventListener('drop', this.handleDrop.bind(this))
-            dropzone.addEventListener('dragleave', this.handleDragLeave.bind(this))
-        })
+    // rendre draggables : post-its déjà en grille (et plus tard ceux du pool)
+    this.element.querySelectorAll('.postit').forEach(el => this.makeDraggable(el, 'grid'))
 
-        // Événements sur la zone de retour (pool)
-        this.pool.addEventListener('dragover', this.handlePoolDragOver.bind(this))
-        this.pool.addEventListener('dragleave', this.handlePoolDragLeave.bind(this))
-        this.pool.addEventListener('drop', this.handleDropBackToPool.bind(this))
-
-        // Tooltips
-        document.querySelectorAll('.emission-block.in-grid').forEach(block => {
-            this.setupTooltipListeners(block)
-        })
-    }
-
-    makeDraggable(el) {
-        el.setAttribute('draggable', true)
-        el.dataset.source = 'pool'
-        el.addEventListener('dragstart', (e) => {
-            this.draggedElement = el
-            this.sourceDropzone = el.closest('.dropzone') || null
-        })
-        this.setupTooltipListeners(el)
-    }
-
-    setupTooltipListeners(el) {
-    el.addEventListener('mouseover', (e) => {
-        const tooltipText = e.currentTarget.dataset.tooltip || ''
-        this.tooltip.innerText = tooltipText
-        this.tooltip.style.display = 'block'
+    // colonnes “jour” (drop global)
+    this.dayTargets.forEach(day => {
+      day.addEventListener('dragover', e => { e.preventDefault(); day.classList.add('drag-over') })
+      day.addEventListener('dragleave', () => day.classList.remove('drag-over'))
+      day.addEventListener('drop', e => this.dropOnDay(e, day))
     })
 
-    el.addEventListener('mousemove', (e) => {
-        this.tooltip.style.top = `${e.clientY + 12}px`
-        this.tooltip.style.left = `${e.clientX + 12}px`
+    // pool (optionnel, prêt pour plus tard)
+    const pool = this.element.querySelector('#emissions-pool')
+    if (pool) {
+      pool.addEventListener('dragover', e => { e.preventDefault(); pool.classList.add('drop-pool-hover') })
+      pool.addEventListener('dragleave', () => pool.classList.remove('drop-pool-hover'))
+      pool.addEventListener('drop', e => this.dropBackToPool(e, pool))
+    }
+  }
+
+  // helpers durée
+  durationToCells(d){ d=parseInt(d||'15',10); return Math.max(1, Math.ceil(d/this.CELL_MIN)) }
+  durationToPx(d){ d=parseInt(d||'15',10); return (d/this.CELL_MIN)*this.CELL_H }
+
+  makeDraggable(el, source) {
+    el.setAttribute('draggable','true')
+    el.dataset.source = source
+    el.addEventListener('dragstart', () => {
+      this.dragged = el
+      if (source === 'grid') {
+        this.fromDay = el.closest('.day-col')
+        const top = parseFloat(el.style.top || '0')
+        this.fromStartIndex = Math.round(top / this.CELL_H)
+      } else {
+        this.fromDay = null
+        this.fromStartIndex = null
+      }
     })
+  }
 
-    el.addEventListener('mouseout', () => {
-        this.tooltip.style.display = 'none'
-    })
-}
+  // place/replace un post-it dans une colonne jour
+  placePostIt(dayEl, startIndex) {
+    const duration = parseInt(this.dragged.dataset.duration || '15', 10)
+    const heightPx = this.durationToPx(duration)
+    const cells    = this.durationToCells(duration)
 
+    // clamp en bas de journée
+    if (startIndex + cells > 96) startIndex = 96 - cells
+    if (startIndex < 0) startIndex = 0
 
-    handleDragOver(e) {
-        e.preventDefault()
-        e.currentTarget.classList.add('drag-over')
+    // si vient du pool, rattacher à la colonne
+    if (this.dragged.dataset.source === 'pool') {
+      dayEl.appendChild(this.dragged)
+      this.dragged.dataset.source = 'grid'
     }
 
-    handleDragLeave(e) {
-        e.currentTarget.classList.remove('drag-over')
-    }
+    // style/position
+    this.dragged.classList.add('postit')
+    this.dragged.style.top    = `${startIndex * this.CELL_H}px`
+    this.dragged.style.left   = '4px'
+    this.dragged.style.right  = '4px'
+    this.dragged.style.height = `${heightPx}px`
 
-    handlePoolDragOver(e) {
-        e.preventDefault()
-        this.pool.classList.add('drop-pool-hover')
-    }
+    // mémoriser
+    this.fromDay = dayEl
+    this.fromStartIndex = startIndex
+  }
 
-    handlePoolDragLeave(e) {
-        this.pool.classList.remove('drop-pool-hover')
-    }
+  dropOnDay(e, dayEl) {
+    dayEl.classList.remove('drag-over')
+    if (!this.dragged) return
 
-    formatLocalDate(date) {
-        const yyyy = date.getFullYear()
-        const mm = String(date.getMonth() + 1).padStart(2, '0')
-        const dd = String(date.getDate()).padStart(2, '0')
-        const hh = String(date.getHours()).padStart(2, '0')
-        const min = String(date.getMinutes()).padStart(2, '0')
-        return `${yyyy}-${mm}-${dd} ${hh}:${min}:00`
-    }
+    const rect = dayEl.getBoundingClientRect()
+    let startIndex = Math.floor((e.clientY - rect.top) / this.CELL_H)
 
-    handleDrop(e) {
-        e.preventDefault()
-        e.currentTarget.classList.remove('drag-over')
+    this.placePostIt(dayEl, startIndex)
+  }
 
-        const dropzone = e.currentTarget
-        const allDropzones = this.dropzoneTargets
-        const startDate = new Date(dropzone.dataset.date)
-        const duration = parseInt(this.draggedElement.dataset.duration) || 15
-        const heightPer15Min = 8
-        const calculatedHeight = (duration / 15) * heightPer15Min
-        const cellsToCover = Math.ceil(duration / 15)
+  // retour au pool (quand tu activeras la colonne droite)
+  dropBackToPool(e, pool) {
+    e.preventDefault()
+    pool.classList.remove('drop-pool-hover')
+    if (!this.dragged || this.dragged.dataset.source !== 'grid') return
 
-        // Vérifie occupation
-        for (let i = 0; i < cellsToCover; i++) {
-            const futureDate = new Date(startDate.getTime() + i * 15 * 60000)
-            const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(futureDate))
-            if (!dz || dz.classList.contains('occupied')) {
-                console.warn('Cellule occupée')
-                return
-            }
-        }
+    this.dragged.removeAttribute('style')
+    this.dragged.classList.remove('postit')
+    this.dragged.dataset.source = 'pool'
+    pool.appendChild(this.dragged)
 
-        // Si déjà dans la grille, libérer les anciennes cellules
-        if (this.sourceDropzone) {
-            const oldStart = new Date(this.sourceDropzone.dataset.date)
-            const oldDuration = parseInt(this.draggedElement.dataset.duration)
-            const oldCells = Math.ceil(oldDuration / 15)
-            for (let i = 0; i < oldCells; i++) {
-                const d = new Date(oldStart.getTime() + i * 15 * 60000)
-                const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(d))
-                if (dz) {
-                    dz.classList.remove('occupied')
-                    dz.innerHTML = ''
-                }
-            }
-        } else {
-            // Si venait du pool, on l'enlève
-            this.draggedElement.remove()
-        }
-
-        // Mise en forme
-        const bloc = this.draggedElement
-        bloc.classList.add('in-grid')
-        bloc.dataset.source = 'grid'
-        bloc.style.height = `${calculatedHeight}px`
-
-        dropzone.innerHTML = ''
-        dropzone.appendChild(bloc)
-
-        for (let i = 0; i < cellsToCover; i++) {
-            const futureDate = new Date(startDate.getTime() + i * 15 * 60000)
-            const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(futureDate))
-            if (dz) dz.classList.add('occupied')
-        }
-    }
-
-    handleDropBackToPool(e) {
-        e.preventDefault()
-        this.pool.classList.remove('drop-pool-hover')
-
-        const el = this.draggedElement
-        if (!el || el.dataset.source !== 'grid') return
-
-        const allDropzones = this.dropzoneTargets
-        const duration = parseInt(el.dataset.duration) || 15
-        const startDate = new Date(this.sourceDropzone.dataset.date)
-        const cellsToFree = Math.ceil(duration / 15)
-
-        for (let i = 0; i < cellsToFree; i++) {
-            const futureDate = new Date(startDate.getTime() + i * 15 * 60000)
-            const dz = allDropzones.find(el => el.dataset.date === this.formatLocalDate(futureDate))
-            if (dz) {
-                dz.classList.remove('occupied')
-                dz.innerHTML = ''
-            }
-        }
-
-        // Retour dans la liste
-        el.classList.remove('in-grid')
-        el.dataset.source = 'pool'
-        el.style = ''
-        this.pool.appendChild(el)
-    }
+    this.dragged = null
+    this.fromDay = null
+    this.fromStartIndex = null
+  }
 }
