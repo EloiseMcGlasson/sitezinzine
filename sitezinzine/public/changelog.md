@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.51] - 2025-11-22
+### Ajout
+- MAJ de la base de donnée au 21 novembre 2025
+### Correction
+- MAJ de la page don
+
+
 ## [1.0.50] - 2025-08-16
 ### Correction
 - Correction de admin.html.twig auquel il manque un block stylesheets.
