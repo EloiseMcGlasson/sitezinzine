@@ -29,13 +29,16 @@ class DiffusionRepository extends ServiceEntityRepository
 public function findByWeek(\DateTimeInterface $start, \DateTimeInterface $end): array
 {
     return $this->createQueryBuilder('d')
-        ->andWhere('d.horaireDiffusion >= :start')
-        ->andWhere('d.horaireDiffusion < :end')
-        ->setParameter('start', $start)
-        ->setParameter('end', $end)
-        ->orderBy('d.horaireDiffusion', 'ASC')
-        ->getQuery()
-        ->getResult();
+    ->addSelect('e')
+    ->join('d.emission', 'e')
+    ->andWhere('d.horaireDiffusion >= :start')
+    ->andWhere('d.horaireDiffusion < :end')
+    ->setParameter('start', $start)
+    ->setParameter('end', $end)
+    ->orderBy('d.horaireDiffusion', 'ASC')
+    ->getQuery()
+    ->getResult();
+
 }
 
 

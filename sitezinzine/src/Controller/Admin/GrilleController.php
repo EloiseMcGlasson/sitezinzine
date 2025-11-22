@@ -12,7 +12,6 @@ use App\Repository\DiffusionRepository;
 
 #[Route("/admin/grille", name: 'admin.grille.')]
 #[IsGranted("ROLE_ADMIN")]
-#[IsGranted("ROLE_SUPER_ADMIN")]
 class GrilleController extends AbstractController
 {
 #[Route('/{startOfWeek?}', name: 'index')]

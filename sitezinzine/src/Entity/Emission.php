@@ -236,7 +236,7 @@ class Emission
      */
     #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $diffusions;
-    
+
     /**
      * @var \DateTimeInterface|null
      * This field is used to store the last diffusion date of the emission.
@@ -319,7 +319,7 @@ class Emission
      * @param string $keyword The keyword to set.
      * @return static Returns the current instance for method chaining.
      */
-    public function setKeyword(string $keyword): static
+    public function setKeyword(?string $keyword): static
     {
         $this->keyword = $keyword;
 
@@ -412,7 +412,7 @@ class Emission
      * @param string $url The URL to set.
      * @return static Returns the current instance for method chaining.
      */
-    public function setUrl(string $url): static
+    public function setUrl(?string $url): static
     {
         $this->url = $url;
 
@@ -691,12 +691,15 @@ class Emission
      *
      * @return  self
      */
-    public function setThumbnailFileMp3($thumbnailFileMp3): static
+    public function setThumbnailFileMp3(?File $file): static
     {
-        $this->thumbnailFileMp3 = $thumbnailFileMp3;
-
+        $this->thumbnailFileMp3 = $file;
+        if ($file) {
+            $this->updatedat = new \DateTime();
+        }
         return $this;
     }
+
 
 
     /**
@@ -775,20 +778,20 @@ class Emission
      *
      * @return \DateTimeInterface|null The last diffusion date, or null if no valid diffusions exist.
      */
-   public function getDerniereDiffusion(): ?\DateTimeInterface
-{
-    $diffusions = $this->getDiffusions()->filter(function (Diffusion $d) {
-        return $d->getHoraireDiffusion() !== null;
-    })->toArray();
+    public function getDerniereDiffusion(): ?\DateTimeInterface
+    {
+        $diffusions = $this->getDiffusions()->filter(function (Diffusion $d) {
+            return $d->getHoraireDiffusion() !== null;
+        })->toArray();
 
-    if (empty($diffusions)) {
-        return null;
+        if (empty($diffusions)) {
+            return null;
+        }
+
+        usort($diffusions, fn($a, $b) => $b->getHoraireDiffusion() <=> $a->getHoraireDiffusion());
+
+        return $diffusions[0]->getHoraireDiffusion();
     }
-
-    usort($diffusions, fn($a, $b) => $b->getHoraireDiffusion() <=> $a->getHoraireDiffusion());
-
-    return $diffusions[0]->getHoraireDiffusion();
-}
 
 
     /**

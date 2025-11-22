@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.51] - 2025-09-
+### Correction
+
+
+
 ## [1.0.50] - 2025-08-16
 ### Correction
 - Correction de admin.html.twig auquel il manque un block stylesheets.
