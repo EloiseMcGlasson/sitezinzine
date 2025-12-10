@@ -1,8 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Radio Zinzine{% endblock %}
+{% block title %}{{ page.title }}{% endblock %}
 
 {% block body %}
+
+
 <style>
 .bodyradio {
         background: linear-gradient(#E4013A, #B81C61);
@@ -50,12 +52,50 @@
 h1 {
     font-weight: 800;
     font-size: 23px;
-    padding: 10px;
     
 }
 
 .texte1image p, .texte2img p {
     margin: 20px;
+}
+.page-content {
+    padding: 20px;
+}
+
+/* Par défaut : on enlève tout float/marge, on repartir à zéro */
+.page-content img {
+    max-width: 100%;
+    height: auto;
+    float: none;
+    margin: 0 0 20px 0;
+    display: block;
+}
+
+/* Image alignée à gauche (TinyMCE ou à la main) */
+.page-content img.align-left,
+.page-content img[style*="float: left"] {
+    float: left;
+    margin: 0 20px 20px 0; /* espace à droite */
+}
+
+/* Image alignée à droite */
+.page-content img.align-right,
+.page-content img[style*="float: right"] {
+    float: right;
+    margin: 0 0 20px 20px; /* espace à gauche */
+}
+
+/* Titre dans le contenu */
+.page-content h1 {
+    margin: 20px 0 10px 0;
+    clear: both;
+}
+
+/* Pour que le conteneur prenne bien la hauteur avec les floats */
+.page-content::after {
+    content: "";
+    display: block;
+    clear: both;
 }
 
 </style>
@@ -63,7 +103,7 @@ h1 {
 <div class="bodyradio">
 <div class="top">
             <img src="{{ asset('images/bottom-header.gif') }}"></div>
-<div class="texteradio">
+{# <div class="texteradio">
 <div class="texte1img">
 <p>
 <img src="{{ asset('images/radio.jpeg') }}"></p>
@@ -85,5 +125,23 @@ Radio Zinzine est une radio d'opinion, de caractère, qui tient à son indépend
 
 <div style="clear:both"></div>
 </div>
+</div> #}
+
+
+
+<div class="page-radio">
+
+    {# Image de tête optionnelle #}
+{#     {% if page.mainImageName %}
+        <div class="page-hero">
+            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
+                 alt="{{ page.title }}">
+        </div>
+    {% endif %} #}
+
+
+    <div class="page-content">
+        {{ page.content|raw }}
+    </div>
 </div>
 {% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Repository\EmissionRepository;
 use App\Repository\EvenementRepository;
+use App\Repository\PageRepository;
 use App\Entity\Evenement;
 use Symfony\Component\Routing\Requirement\Requirement;
 
@@ -59,11 +60,19 @@ public function index(EmissionRepository $emissionRepository, EvenementRepositor
         ]);
     }
 
-    #[Route("/radio", name: "radio")]
-    function radio(): Response
+   #[Route('/radio', name: 'radio')]
+    public function radio(PageRepository $pageRepository): Response
     {
+        // adapte le slug si tu l'as appelé autrement dans l’admin
+        $page = $pageRepository->findOneBy(['slug' => 'radio']);
 
-        return $this->render('home/radio.html.twig');
+        if (!$page) {
+            throw $this->createNotFoundException('Page "radio" introuvable.');
+        }
+
+        return $this->render('home/radio.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/programme", name: "programme")]

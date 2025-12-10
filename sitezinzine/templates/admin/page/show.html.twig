@@ -1,0 +1,21 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block body %}
+<div class="page-container">
+
+    {% if page.mainImageName %}
+        <div class="page-hero">
+            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
+                 alt="{{ page.title }}">
+        </div>
+    {% endif %}
+
+    <h1 class="page-title">{{ page.title }}</h1>
+
+    <div class="page-content">
+        {{ page.content|raw }}
+    </div>
+</div>
+{% endblock %}

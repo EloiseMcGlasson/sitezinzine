@@ -38,3 +38,7 @@ vich_uploader:
             namer:
                 service: App\Service\SafeFilenameNamer
                 options: { property: 'titre'}
+        page_main_image:
+            uri_prefix: /uploads/pages
+            upload_destination: '%kernel.project_dir%/public/uploads/pages'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
