@@ -17,9 +17,10 @@ class Diffusion
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'nombreDiffusion')]
+    #[ORM\ManyToOne(inversedBy: 'diffusions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Emission $emission = null;
+
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $horaireDiffusion = null;

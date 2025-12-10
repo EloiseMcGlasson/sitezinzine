@@ -1,0 +1,51 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Gestion des pages{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+
+<a href="{{ path('admin.page.create') }}" class="btn btn-success mb-3">
+    + Créer une nouvelle page
+</a>
+
+    <h1>Pages éditables</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Slug</th>
+                <th>Titre</th>
+                <th>Dernière mise à jour</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for page in pages %}
+            <tr>
+                <td>{{ page.id }}</td>
+                <td>{{ page.slug }}</td>
+                <td>{{ page.title }}</td>
+                <td>
+                    {{ page.updatedAt ? page.updatedAt|date('d/m/Y H:i') : '—' }}
+                </td>
+                <td>
+                    <a href="{{ path('admin.page.edit', {id: page.id}) }}" class="btn btn-sm btn-primary">
+                        Éditer
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucune page pour le moment.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

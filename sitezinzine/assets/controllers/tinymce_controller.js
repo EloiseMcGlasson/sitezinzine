@@ -68,29 +68,37 @@ export default class extends Controller {
     }
 
     tinymce.init({
-      target: textarea,
-      language: 'fr_FR',
-      language_url: 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/langs/fr_FR.js',
-      plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
-        'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media',
-        'nonbreaking', 'save', 'table', 'directionality', 'emoticons'
-      ],
-      toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | " +
-               "outdent indent | bullist numlist | link",
-      menubar: false,
-      height: 300,
-      skin_url: '/build/skins/ui/oxide',
-      content_css: '/build/skins/content/default/content.css',
-      base_url: '/build',
-      suffix: '.min',
-      license_key: 'gpl',
-      setup: function (editor) {
-        editor.on('change keyup', function () {
-          editor.save();
-        });
-      }
+  target: textarea,
+  language: 'fr_FR',
+  language_url: 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/langs/fr_FR.js',
+  plugins: [
+    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
+    'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media',
+    'nonbreaking', 'save', 'table', 'directionality', 'emoticons'
+  ],
+  toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | " +
+           "outdent indent | bullist numlist | link image media | table | code preview fullscreen",
+  menubar: false,
+  height: 300,
+  skin_url: '/build/skins/ui/oxide',
+  content_css: '/build/skins/content/default/content.css',
+  base_url: '/build',
+  suffix: '.min',
+  license_key: 'gpl',
+
+  // 🔥 Partie upload d’images
+  automatic_uploads: true,
+  images_upload_url: '/admin/tinymce/upload',
+  file_picker_types: 'image',
+  images_upload_credentials: true, // pour envoyer les cookies (auth admin)
+
+  setup: (editor) => {
+    editor.on('change keyup', () => {
+      editor.save();
     });
+  }
+});
+
   }
 }

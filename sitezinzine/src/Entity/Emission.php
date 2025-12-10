@@ -234,9 +234,10 @@ class Emission
      * It has a cascade persist option, meaning that if a diffusion is added to the emission,
      * it will be persisted to the database automatically.
      */
-    #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true)]
     private Collection $diffusions;
-    
+
+
     /**
      * @var \DateTimeInterface|null
      * This field is used to store the last diffusion date of the emission.
@@ -775,20 +776,20 @@ class Emission
      *
      * @return \DateTimeInterface|null The last diffusion date, or null if no valid diffusions exist.
      */
-   public function getDerniereDiffusion(): ?\DateTimeInterface
-{
-    $diffusions = $this->getDiffusions()->filter(function (Diffusion $d) {
-        return $d->getHoraireDiffusion() !== null;
-    })->toArray();
+    public function getDerniereDiffusion(): ?\DateTimeInterface
+    {
+        $diffusions = $this->getDiffusions()->filter(function (Diffusion $d) {
+            return $d->getHoraireDiffusion() !== null;
+        })->toArray();
 
-    if (empty($diffusions)) {
-        return null;
+        if (empty($diffusions)) {
+            return null;
+        }
+
+        usort($diffusions, fn($a, $b) => $b->getHoraireDiffusion() <=> $a->getHoraireDiffusion());
+
+        return $diffusions[0]->getHoraireDiffusion();
     }
-
-    usort($diffusions, fn($a, $b) => $b->getHoraireDiffusion() <=> $a->getHoraireDiffusion());
-
-    return $diffusions[0]->getHoraireDiffusion();
-}
 
 
     /**

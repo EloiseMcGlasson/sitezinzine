@@ -1,0 +1,63 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Édition de la page {{ page.title }}{% endblock %}
+
+{% block style %}
+<style>
+.page-content img.align-left {
+    float: left;
+    margin: 0 20px 20px 0;
+}
+
+.page-content img.align-right {
+    float: right;
+    margin: 0 0 20px 20px;
+}
+
+.page-content img.align-center {
+    display: block;
+    margin: 20px auto;
+}
+</style>
+{% endblock %}    
+
+{% block body %}
+<div class="admin-container">
+    <h1>Éditer la page : {{ page.title }}</h1>
+
+    <a href="{{ path('admin.page.index') }}" class="btn btn-secondary mb-3">
+        ← Retour à la liste des pages
+    </a>
+
+    {# Ton contrôleur Stimulus TinyMCE s'applique sur ce wrapper #}
+    <div data-controller="tinymce">
+        {{ form_start(form) }}
+
+            {{ form_row(form.slug) }}
+            {{ form_row(form.title) }}
+
+            {# Champ TinyMCE #}
+            {{ form_row(form.content) }}
+
+            {# Image de tête si tu as gardé mainImageFile #}
+            {% if form.mainImageFile is defined %}
+                {{ form_row(form.mainImageFile) }}
+
+                {% if page.mainImageName %}
+                    <div class="mt-2">
+                        <p>Image actuelle :</p>
+                        <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
+                             alt="{{ page.title }}"
+                             style="max-width: 200px; height: auto;">
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <button class="btn btn-primary mt-3">
+                Enregistrer
+            </button>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

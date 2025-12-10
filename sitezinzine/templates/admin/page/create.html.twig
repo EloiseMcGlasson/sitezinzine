@@ -1,0 +1,31 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Créer une nouvelle page{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <h1>Créer une nouvelle page</h1>
+
+    <a href="{{ path('admin.page.index') }}" class="btn btn-secondary mb-3">
+        ← Retour à la liste des pages
+    </a>
+
+    <div data-controller="tinymce">
+        {{ form_start(form) }}
+
+            {{ form_row(form.slug) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.content) }}
+
+            {% if form.mainImageFile is defined %}
+                {{ form_row(form.mainImageFile) }}
+            {% endif %}
+
+            <button class="btn btn-primary mt-3">
+                Enregistrer
+            </button>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
