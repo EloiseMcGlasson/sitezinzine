@@ -1,8 +1,9 @@
 # Changelog
 
-## [1.0.52] - 2025-12-xx
+## [1.0.52] - 2025-12-10
 ### Ajout
 - Création de l'édition des pages fixes du site côté admin. Création du menu, de la page d'index, de la page de création et de la page d'édition.
+- Modification de la base de données en conséquence, ajout de la table page.
 - Modification du module tinymce pour qu'il gère l'upload de photos et de vidéos.
 ### Correction
 - Correction d'attribut d'entity concernant la base de donnée. (datetime mutable -> datetime) dans un soucis de solidité des données.
