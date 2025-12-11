@@ -78,86 +78,19 @@
         <div class="top">
             <img src="{{ asset('images/bottom-header.gif') }}"></div>
             <div class="zinzine-message">
-    <h1>Chères auditrices, chers auditeurs,</h1>
-
-    <img src="{{ asset('images/panneau.jpeg') }}" alt="Panneau Radio Zinzine" class="zinzine-image">
-
-    <div class="zinzine-paragraphs">
-     
-        <p>
-            Voici venu le temps des frimas, et de notre lettre de demande de soutien, dans un contexte bien particulier :
-            la menace d’une diminution de <strong>40 %</strong> de la subvention du Fonds de Soutien (FSER), qui assure plus de la moitié
-            de nos dépenses. Une attaque frontale envers des centaines de radios indépendantes, dont beaucoup risquent de disparaître,
-            des voix en moins dans la lutte contre la bolorisation de l’information.
-        </p>
-
-        <p>
-            Pour nous à Radio Zinzine, même si le bénévolat est majoritaire, la secousse serait de taille.
-            On y survivra probablement, mais avec des ajustements majeurs sur les investissements et le fonctionnement.
-        </p>
-
-        <p>
-            Au-delà de cette fâcheuse nouvelle, les temps ne se prêtent pas à beaucoup d’optimisme, et les lendemains qui chantent
-            se sont enroués. On vit à l’ère des « vérités alternatives » et du pouvoir décomplexé, dont Trump et Poutine ne sont que
-            des exemples caricaturaux. Sans oublier le déferlement technologique des chantres survoltés de l’IA, les Musk et ses clones,
-            qui nous vendent le monde 2.0. Le réchauffement climatique devient une opinion. Les « gauches » se sabordent, sans souffle,
-            sans courage. Les extrêmes-droites ont pignon sur rue et gagnent en influence.
-        </p>
-
-        <p>
-            Pourtant, quand on change de focale, qu’on regarde les choses à une autre échelle, d’un peu plus près, il existe des raisons
-            d’imaginer que les lendemains retrouvent leur voix. Partout, des initiatives, des regroupements, des solidarités,
-            des victoires (petites certes, mais réelles) sur des projets scélérats, des cerveaux qui refusent la lobotomisation.
-        </p>
-
-        <p>
-            On sème et on plante sur l’emplacement des grands incendies, on invente de nouvelles façons d’être ensemble,
-            on ne cède pas à l’impuissance. La vraie vie, quoi, et elle est foisonnante. On se rend compte qu’on n’est pas seuls,
-            et ça soulage. Heureusement, les médias indépendants continuent de s’en faire l’écho.
-        </p>
-
-        <p>
-            En France, plusieurs initiatives majeures sont nées cette année pour coordonner et affermir cette constellation :
-            portail des médias libres, fonds de soutien aux médias indépendants, regroupement de sites mutualistes…
-        </p>
-
-        <p>
-            Et chez nous, alors ? De nouvelles émissions, un nouveau site web — beaucoup plus fonctionnel —
-            en cours de finalisation, une newsletter qui fait ses premiers pas. Et puis la magnifique chaudière,
-            co-financée grâce à vous, accomplit des merveilles pour la température du studio, lui-même superbement rénové.
-        </p>
-
-        <p>
-            On se fait aussi toujours l’écho des luttes, des projets, des analyses des grands et petits phénomènes de ce monde,
-            épaulés par une myriade de personnes plus savantes que nous sur quantité de sujets.
-        </p>
-
-        <p>
-            Nous avons donc <strong>plus que jamais besoin de votre soutien financier</strong>, déterminant cette année face
-            à la menace d’une diminution drastique de la subvention d’État. Toute contribution — de 10&nbsp;€ à l’infini —
-            sera la bienvenue, via le QR code ci-dessous ou le formulaire couleur joint.
-        </p>
-
-        <p>
-            Vous n’aurez pas de tee-shirt, mais toute notre reconnaissance.
-        </p>
-
-        <p>
-            Heureusement, le studio est niché dans la splendeur de l’automne, et il est impossible dans ces couleurs
-            de s’abandonner à la grisaille de l’esprit. Un proverbe indien dit :
-            <em>« Si tu vois la vie en gris, déplace l’éléphant. »</em><br>
-            Déplaçons-le ensemble, voulez-vous ?
-        </p>
-
-        <p class="signature">L’équipe de la Zinzine</p>
-
-        <div class="infos-contact">
-            <p><strong>Radio Zinzine</strong> – Hameau Hippolyte, 04300 LIMANS</p>
-            <p><strong>IBAN :</strong> FR53 3000 2016 5000 0007 9096 D42<br>
-               <strong>BIC :</strong> CRLYFRPP</p>
+                {# Image de tête optionnelle #}
+                {% if page.mainImageName %}
+                    <div class="page-hero">
+                    <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
+                    alt="{{ page.title }}">
+                    </div>
+                {% endif %}
+                    <h1 class="page-title"> {{ page.title }}
+                </h1>
+                <div class="page-content">
+                    {{ page.content|raw }}
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
-        {% endblock %}
-        
+    {% endblock %}
+    
