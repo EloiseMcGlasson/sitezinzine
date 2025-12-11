@@ -123,10 +123,18 @@ public function index(EmissionRepository $emissionRepository, EvenementRepositor
     }
 
     #[Route("/don", name: "don")]
-    function don(): Response
+    function don(PageRepository $pageRepository): Response
     {
+ // adapte le slug si tu l'as appelé autrement dans l’admin
+        $page = $pageRepository->findOneBy(['slug' => 'don']);
 
-        return $this->render('home/don.html.twig');
+        if (!$page) {
+            throw $this->createNotFoundException('Page "don" introuvable.');
+        }
+
+        return $this->render('home/don.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/newsletter", name: "newsletter")]
