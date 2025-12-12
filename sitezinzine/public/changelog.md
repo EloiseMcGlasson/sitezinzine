@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.54] - 2025-12-12
+### Correction
+- Correction du controller js tinymce pour corriger les erreurs d'upload d'image.
+
+
 ## [1.0.53] - 2025-12-12
 ### Correction
 - Correction du docker-compose.prod pour persister les nouveaux dossiers images des pages éditables.
