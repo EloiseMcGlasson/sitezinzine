@@ -1,6 +1,11 @@
 # Changelog
 
-## [1.0.52] - 2025-12-10
+## [1.0.53] - 2025-12-12
+### Correction
+- Correction du docker-compose.prod pour persister les nouveaux dossiers images des pages éditables.
+
+
+## [1.0.52] - 2025-12-12
 ### Ajout
 - Création de l'édition des pages fixes du site côté admin. Création du menu, de la page d'index, de la page de création et de la page d'édition.
 - Modification de la base de données en conséquence, ajout de la table page.
