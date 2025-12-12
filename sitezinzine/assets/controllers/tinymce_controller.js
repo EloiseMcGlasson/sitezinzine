@@ -67,31 +67,68 @@ export default class extends Controller {
       tinymce.remove(existing);
     }
 
-    tinymce.init({
+   tinymce.init({
   target: textarea,
   language: 'fr_FR',
   language_url: 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/langs/fr_FR.js',
+
   plugins: [
     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
     'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
     'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media',
     'nonbreaking', 'save', 'table', 'directionality', 'emoticons'
   ],
+
   toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | " +
            "outdent indent | bullist numlist | link image media | table | code preview fullscreen",
+  relative_urls: false,
+  remove_script_host: false,
+  convert_urls: true,
+  document_base_url: window.location.origin + '/',
+
   menubar: false,
   height: 300,
+
   skin_url: '/build/skins/ui/oxide',
   content_css: '/build/skins/content/default/content.css',
   base_url: '/build',
   suffix: '.min',
   license_key: 'gpl',
 
-  // 🔥 Partie upload d’images
   automatic_uploads: true,
-  images_upload_url: '/admin/tinymce/upload',
   file_picker_types: 'image',
-  images_upload_credentials: true, // pour envoyer les cookies (auth admin)
+
+  // ✅ UPLOAD HANDLER (ICI)
+  images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true; // 🔥 indispensable pour éviter le 302 /login
+    xhr.open('POST', '/admin/tinymce/upload');
+
+    xhr.onload = () => {
+      if (xhr.status < 200 || xhr.status >= 300) {
+        return reject('HTTP Error: ' + xhr.status);
+      }
+
+      let json;
+      try {
+        json = JSON.parse(xhr.responseText);
+      } catch (e) {
+        return reject('Invalid JSON: ' + xhr.responseText);
+      }
+
+      if (!json.location) {
+        return reject('Invalid response: missing location');
+      }
+
+      resolve(json.location);
+    };
+
+    xhr.onerror = () => reject('XHR Transport Error');
+
+    const formData = new FormData();
+    formData.append('file', blobInfo.blob(), blobInfo.filename());
+    xhr.send(formData);
+  }),
 
   setup: (editor) => {
     editor.on('change keyup', () => {
@@ -99,6 +136,7 @@ export default class extends Controller {
     });
   }
 });
+
 
   }
 }
