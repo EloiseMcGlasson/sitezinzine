@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.55] - 2025-12-14
+### Ajout
+- Ajout du visuel de preview pour les pages éditables identique aux pages côté public.
+- Ajout du CSS des pages éditables côtés admin.
+- Ajout de toutes les pages éditables.
+### Correction
+- Blocage dur slug en édition afin de ne pas casser les liens.
+- Possibilité de créer de nouvelles pages bloquée pour l'instant.
+
+
 ## [1.0.54] - 2025-12-12
 ### Correction
 - Correction du controller js tinymce pour corriger les erreurs d'upload d'image.

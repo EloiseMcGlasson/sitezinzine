@@ -52,107 +52,25 @@
                     
             }
 </style>
-    <div class="bodyamis">
+    <div class="body">
         <div class="top">
             <img src="{{ asset('images/bottom-header.gif') }}"></div>
-            <h1>
-                    Sites amis
-                </h1>
-            <div class="liens">
-                <h2>
-                    Radio zinzine
-                </h2>
-                <p>
-                    <a href="https://www.radiozinzineaix.org/" target="_blank">
-                        Zinzine Aix
-                    </a>
-                </p>
-                <p>
-                    <a href="http://rz.jazz.free.fr/" target="_blank">
-                        Bulle de jazz
-                    </a>
-                </p>
-                <h2>
-                    Infos libres
-                </h2>
-                <p>
-                    <a href="http://www.bastamag.net/" target="_blank">
-                        Basta Mag,</a> agence d'information sur les mouvements sociaux, l'écologie, les enjeux environnementaux
-                </p>
-                <p>
-                    <a href="https://mars-infos.org/" target="_blank">
-                        Marseille infos autonomes,</a> site collaboratif d’infos & luttes à Marseille
-                </p>
-                <p>
-                    <a href="https://mediaslibres.org/" target="_blank">
-                        mediaslibres.org,</a> site d’agrégation des différents médias partie prenante de la coordination médias libres
-                </p>
-                <p>
-                    <a href="http://www.millebabords.org/" target="_blank">
-                        Mille Babords,</a> une tribune pour les luttes
-                </p>
-                <p>
-                    <a href="https://paris-luttes.info/" target="_blank">
-                        Paris lutte infos,</a> site coopératif d’infos et de luttes Paris - banlieue
-                </p>
-                <p>
-                    <a href="http://www.radiorageuses.net/" target="_blank">
-                        Radiorageuses,</a> une nébuleuse d’émissions de féministes, de meufs, de gouines, de trans et de femmes
-                </p>
-                <p>
-                    <a href="http://rebellyon.info/" target="_blank">
-                        Rebellyon,</a> site collaboratif d’infos alternatives
-                </p>
-                <p>
-                    <a href="http://rezo.net/" target="_blank">
-                        Rezo.net,</a> le portail des copains
-                </p>
-                <h2>
-                    Culture
-                </h2>
-                <p>
-                    <a href="http://laboitearessort.com/" target="_blank">
-                        La Boîte à ressort,</a> Atelier de Mécanique Artistique
-                </p>
-                <p>
-                    <a href="http://zbqlab.info/" target="_blank">
-                        Zbqlab infos,</a> entretiens vidéos avec des artistes et organisateurs culturels
-                </p>
-                <h2>
-                    Revues
-                </h2>
-                <p>
-                    <a href="http://jefklak.org/" target="_blank">
-                        Jef Klak,</a> Critique sociale & expériences littéraires
-                </p>
-                <p>
-                    <a href="https://timult.poivron.org/" target="_blank">
-                        Timult,</a> récits analyses et critiques
-                </p>
-                <p>
-                    <a href="http://www.zite.fr/" target="_blank">
-                        Z,</a> revue itinérante d'enquête et de critique sociale
-                </p>
-                <h2>
-                    Divers
-                </h2>
-                <p>
-                    <a href="http://corpsetpolitique.noblogs.org/agate-armoise-et-salamandre/" target="_blank">
-                        Agate,</a> Armoise et Salamandre, bibliothèque féministe, etc...
-                </p>
-                <p>
-                    <a href="https://tanneries.org/fr/" target="_blank">
-                        Espace Autogéré des Tanneries,</a> centre social, culturel et politique situé à Dijon (fRance),
-                </p>
-                <p>
-                    <a href="https://infokiosques.net/" target="_blank">
-                        Infokiosques.net,</a> brochures subversives à lire, imprimer, propager
-                </p>
-                <p>
-                    <a href="http://zad.nadir.org/" target="_blank">
-                        Zone A Défendre,</a> site des occupant⋅e⋅s de la ZAD de Notre-Dame-des-Landes
-                </p>
+             <div class="editable">
+                <div class="page-card">
+                    {# Image de tête optionnelle #}
+                    {% if page.mainImageName %}
+                        <div class="page-hero">
+                            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
+                        {% endif %}
+                        <h1 class="page-title">
+                            {{ page.title }}
+                        </h1>
+                        <div class="page-content">
+                            {{ page.content|raw }}
+                        </div>
+                </div>
             </div>
-        </div>
+            </div>
+       
     {% endblock %}
     

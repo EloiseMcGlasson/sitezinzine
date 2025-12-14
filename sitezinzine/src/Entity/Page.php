@@ -127,4 +127,20 @@ class Page
         $this->updatedAt = $updatedAt;
         return $this;
     }
+
+        /**
+     * Champ virtuel (non stocké en BDD)
+     */
+    private ?bool $deleteMainImage = false;
+
+    public function getDeleteMainImage(): ?bool
+    {
+        return $this->deleteMainImage;
+    }
+
+    public function setDeleteMainImage(?bool $deleteMainImage): self
+    {
+        $this->deleteMainImage = $deleteMainImage;
+        return $this;
+    }
 }
