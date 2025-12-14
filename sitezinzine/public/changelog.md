@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.57] - 2025-12-14
+### Correction
+- Correction du bug qui empêchait la validation des formulaires d'édition de pages.
+- Correction de l'affichage du bouton supprimer l'image sur le formulaire d'édition qui apparaissait même s'il n'y avait pas d'image.
+
 ## [1.0.56] - 2025-12-14
 ### Correction
 - Correction du controller js de tinymce afin que la preview fonctionne correctement en prod.

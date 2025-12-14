@@ -141,47 +141,51 @@ input[readonly] {
   {{ page.title }}
 {% endblock %}
 {% block body %}
+
   <div class="admin-edit-page">
-    <h1>
-      Éditer la page :
-      {{ page.title }}
-    </h1>
-    <a href="{{ path('admin.page.index') }}" class="btn btn-secondary mb-3" aria-label="Retour à la liste des pages">
+    <h1>Éditer la page : {{ page.title }}</h1>
+
+    <a href="{{ path('admin.page.index') }}"
+       class="btn btn-secondary mb-3"
+       aria-label="Retour à la liste des pages">
       ← Retour à la liste des pages
     </a>
+
     {{ form_start(form) }}
-    <div class="ligne2">
-      <div class="mb-3">
-        <label class="form-label">
-          Slug
-        </label>
-        <input class="form-control" value="{{ page.slug }}" readonly>
-          <small class="form-text text-muted">
-            Non modifiable après création
-          </small>
-        </div>
+
+      <div class="ligne2">
+        {{ form_row(form.slug) }}
         {{ form_row(form.title) }}
       </div>
-      <div class="ligne3" data-controller="tinymce" data-tinymce-css-value="{{ asset(encore_entry_css_files('app')[0]) }}">
+
+      <div class="ligne3"
+           data-controller="tinymce"
+           data-tinymce-css-value="{{ asset(encore_entry_css_files('app')[0]) }}">
         {{ form_row(form.content) }}
       </div>
+
       <div class="ligne4">
         {% if form.mainImageFile is defined %}
           {{ form_row(form.mainImageFile) }}
+
           {% if page.mainImageName is not empty %}
             <div class="current-image">
-              <p>
-                Image actuelle :
-              </p>
-              <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
-              {{ form_row(form.deleteMainImage) }}
-            {% endif %}
+              <p>Image actuelle :</p>
+              <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}">
+            </div>
+
+            {{ form_row(form.deleteMainImage) }}
           {% endif %}
-        </div>
-        <button class="btn btn-primary mt-3">
-          Enregistrer
-        </button>
-        {{ form_end(form, {render_rest: false}) }}
+        {% endif %}
       </div>
+
+      <button type="submit" class="btn btn-primary mt-3">
+        Enregistrer
+      </button>
+
+    {{ form_end(form) }}
+  </div>
+
+
     {% endblock %}
     
