@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Form;
 
 use App\Entity\Page;
@@ -17,6 +16,7 @@ class PageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // slug (par défaut modifiable)
         $builder
             ->add('slug', TextType::class, [
                 'label' => 'Identifiant de la page (slug)',
@@ -46,30 +46,22 @@ class PageType extends AbstractType
                 return;
             }
 
-            $isEdit = null !== $page->getId();
-
-            // ✅ Édition : slug visible mais non modifiable
-            if ($isEdit && $form->has('slug')) {
-                $config = $form->get('slug')->getConfig();
-                $options = $config->getOptions();
-                $options['disabled'] = true;      // important : disabled, pas readonly
-                $options['help'] = 'Non modifiable après création';
-
-                $form->add('slug', TextType::class, $options);
+            // ✅ EDITION : slug visible mais non modifiable
+            if (null !== $page->getId()) {
+                $form->add('slug', TextType::class, [
+                    'label' => 'Identifiant de la page (slug)',
+                    'help'  => 'Non modifiable après création',
+                    'disabled' => true, // affiché mais non éditable / non soumis
+                ]);
             }
 
-            // ✅ Checkbox uniquement si une image existe
+            // ✅ Checkbox suppression : uniquement si une image existe
             if ($page->getMainImageName()) {
                 $form->add('deleteMainImage', CheckboxType::class, [
                     'required' => false,
-                    'mapped'   => false,
-                    'label'    => 'Supprimer l’image de tête',
+                    'mapped' => false, // on gère la suppression dans le controller
+                    'label' => 'Supprimer l’image de tête',
                 ]);
-            } else {
-                // si jamais tu avais une ancienne version qui l’ajoutait, on nettoie
-                if ($form->has('deleteMainImage')) {
-                    $form->remove('deleteMainImage');
-                }
             }
         });
     }
