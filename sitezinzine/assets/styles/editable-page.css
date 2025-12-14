@@ -1,0 +1,160 @@
+
+/* Conteneur de la page */
+
+
+
+/* ====== CONTENEUR GLOBAL (PUBLIC + ADMIN) ====== */
+.editable {
+  background: linear-gradient(#E4013A, #B81C61);
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 2rem 1rem;
+}
+
+
+
+/* ====== TinyMCE iframe (éditeur + preview) ====== */
+html {
+  background: linear-gradient(#E4013A, #B81C61);
+}
+
+/* TinyMCE met toujours mce-content-body sur le body de l’iframe */
+.page-card,
+body.mce-content-body {
+  background: #fdfdfd;
+  color: #1C1C1A;
+  font-family: 'Montserrat', sans-serif;
+
+  max-width: 900px !important;
+  margin: 0 auto;             /* centrage garanti */
+  padding: 2rem;
+  box-sizing: border-box;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  line-height: 1.7;
+}
+body.mce-content-body { margin-top: 2rem; }
+
+/* Ton style de titres dans le contenu */
+body.mce-content-body h1 {
+  font-weight: 800;
+  font-size: 23px;
+  margin: 20px 0 10px 0;
+  clear: both;
+}
+
+/* Images */
+body.mce-content-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 0 20px 0;
+}
+
+body.mce-content-body img[style*="float: left"],
+body.mce-content-body img.align-left {
+  float: left;
+  margin: 0 20px 20px 0;
+}
+
+body.mce-content-body img[style*="float: right"],
+body.mce-content-body img.align-right {
+  float: right;
+  margin: 0 0 20px 20px;
+}
+
+/* Clearfix */
+body.mce-content-body::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+
+.page-title {
+    text-align: center;
+    color: #E4013A;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: clamp(24px, 5vw, 36pt);
+    margin: 20px auto; /* Pour centrer verticalement aussi */
+}
+
+/* Contenu éditorial */
+.page-content {
+    padding: 0px;
+}
+
+/* Par défaut : images sans float, juste au-dessus du texte */
+.page-content img {
+    max-width: 100%;
+    height: auto;
+    float: none;
+    margin: 0 0 20px 0;
+    display: block;
+}
+
+/* Image alignée à gauche (TinyMCE ou style inline) */
+.page-content img.align-left,
+.page-content img[style*="float: left"] {
+    float: left;
+    margin: 0 20px 20px 0; /* espace à droite */
+}
+
+/* Image alignée à droite */
+.page-content img.align-right,
+.page-content img[style*="float: right"] {
+    float: right;
+    margin: 0 0 20px 20px; /* espace à gauche */
+}
+
+/* Titres dans le contenu */
+.page-content h1 {
+    font-weight: 800;
+    font-size: 23px;
+    margin: 20px 0 10px 0;
+    clear: both;
+}
+
+/* Pour que le conteneur prenne bien la hauteur avec les floats */
+.page-content::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.page-hero {
+    display: flex;
+    justify-content: center;   /* centre horizontalement */
+    margin: 30px 0;            /* espace au-dessus et en dessous */
+}
+
+.page-hero img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ====== ADMIN : centrage du preview TinyMCE ====== */
+.admin-container .tox .tox-edit-area__iframe {
+  width: 100%;
+}
+
+.admin-container .tox .tox-edit-area__iframe iframe {
+  display: block;
+  width: 100%;
+}
+
+.page-content strong,
+.page-content b {
+  font-weight: 700;
+}
+
+
+
+

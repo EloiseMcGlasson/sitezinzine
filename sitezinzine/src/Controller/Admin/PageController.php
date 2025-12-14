@@ -57,6 +57,12 @@ class PageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($page->getDeleteMainImage()) {
+                // on supprime la référence fichier
+                $page->setMainImageFile(null);
+                $page->setMainImageName(null);
+            }
             $page->setUpdatedAt(new \DateTime());
 
             $em->flush();

@@ -1,111 +1,26 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}{{ page.title }}{% endblock %}
-
-{% block body %}
-
-<style>
-.bodyradio {
-    background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-    line-height: 1.5em;
-    position: relative;
-    color: white;
-}
-
-.top img {
-    width: 100%;
-}
-
-/* Conteneur de la page radio */
-.page-radio {
-    /* tu peux rajouter un max-width + margin auto plus tard si tu veux centrer */
-}
-
-.page-title {
-    text-align: center;
-    color: white;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 900;
-    font-style: normal;
-    font-size: clamp(24px, 5vw, 36pt);
-    margin: 20px auto; /* Pour centrer verticalement aussi */
-}
-
-/* Contenu éditorial */
-.page-content {
-    padding: 20px;
-}
-
-/* Par défaut : images sans float, juste au-dessus du texte */
-.page-content img {
-    max-width: 100%;
-    height: auto;
-    float: none;
-    margin: 0 0 20px 0;
-    display: block;
-}
-
-/* Image alignée à gauche (TinyMCE ou style inline) */
-.page-content img.align-left,
-.page-content img[style*="float: left"] {
-    float: left;
-    margin: 0 20px 20px 0; /* espace à droite */
-}
-
-/* Image alignée à droite */
-.page-content img.align-right,
-.page-content img[style*="float: right"] {
-    float: right;
-    margin: 0 0 20px 20px; /* espace à gauche */
-}
-
-/* Titres dans le contenu */
-.page-content h1 {
-    font-weight: 800;
-    font-size: 23px;
-    margin: 20px 0 10px 0;
-    clear: both;
-}
-
-/* Pour que le conteneur prenne bien la hauteur avec les floats */
-.page-content::after {
-    content: "";
-    display: block;
-    clear: both;
-}
-
-
-</style>
-
-
-<div class="bodyradio">
-<div class="top">
-            <img src="{{ asset('images/bottom-header.gif') }}"></div>
-
-<div class="page-radio">
-
-    {# Image de tête optionnelle #}
-    {# {% if page.mainImageName %}
-        <div class="page-hero">
-            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
-                 alt="{{ page.title }}">
-        </div>
-    {% endif %} #}
-    <h1 class="page-title">{{ page.title }}</h1>
-
-
-    <div class="page-content">
-        {{ page.content|raw }}
-    </div>
-</div>
-</div>
+{% block title %}
+    {{ page.title }}
 {% endblock %}
+{% block body %}
+    <div class="body">
+        <div class="top">
+            <img src="{{ asset('images/bottom-header.gif') }}"></div>
+            <div class="editable">
+                <div class="page-card">
+                    {# Image de tête optionnelle #}
+                    {% if page.mainImageName %}
+                        <div class="page-hero">
+                            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
+                        {% endif %}
+                        <h1 class="page-title">
+                            {{ page.title }}
+                        </h1>
+                        <div class="page-content">
+                            {{ page.content|raw }}
+                        </div>
+                </div>
+            </div>
+    </div>
+        {% endblock %}
+        
