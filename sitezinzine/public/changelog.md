@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.56] - 2025-12-14
+### Correction
+- Correction du controller js de tinymce afin que la preview fonctionne correctement en prod.
+- Correction du bouton supprimer l'image des pages éditable qui apparait quand il ne faut pas.
+
+
 ## [1.0.55] - 2025-12-14
 ### Ajout
 - Ajout du visuel de preview pour les pages éditables identique aux pages côté public.

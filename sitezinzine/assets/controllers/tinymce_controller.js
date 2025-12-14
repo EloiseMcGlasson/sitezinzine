@@ -30,6 +30,10 @@ import 'tinymce/plugins/directionality';
 import 'tinymce/plugins/emoticons';
 
 export default class extends Controller {
+  static values = {
+  css: String
+}
+
   connect() {
     this.reloadEditor = this.init.bind(this);
 
@@ -70,7 +74,7 @@ export default class extends Controller {
     tinymce.init({
       target: textarea,
       content_css: [
-        '/build/app.css',
+        this.cssValue,
         'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&family=Montserrat+Alternates:wght@400;500;700;900&display=swap'
       ],
       content_style: `

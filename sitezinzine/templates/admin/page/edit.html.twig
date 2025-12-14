@@ -162,13 +162,13 @@ input[readonly] {
         </div>
         {{ form_row(form.title) }}
       </div>
-      <div class="ligne3" data-controller="tinymce">
+      <div class="ligne3" data-controller="tinymce" data-tinymce-css-value="{{ asset(encore_entry_css_files('app')[0]) }}">
         {{ form_row(form.content) }}
       </div>
       <div class="ligne4">
         {% if form.mainImageFile is defined %}
           {{ form_row(form.mainImageFile) }}
-          {% if page.mainImageName %}
+          {% if page.mainImageName is not empty %}
             <div class="current-image">
               <p>
                 Image actuelle :
@@ -181,7 +181,7 @@ input[readonly] {
         <button class="btn btn-primary mt-3">
           Enregistrer
         </button>
-        {{ form_end(form) }}
+        {{ form_end(form, {render_rest: false}) }}
       </div>
     {% endblock %}
     
