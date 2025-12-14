@@ -36,26 +36,40 @@ class PageType extends AbstractType
                 'label'    => 'Image de tête (optionnelle)',
                 'required' => false,
             ])
-            ->add('deleteMainImage', CheckboxType::class, [
-                'required' => false,
-                'mapped' => true,
-                'label' => 'Supprimer l’image de tête',
-            ])
         ;
 
-        // 🔥 ICI : logique création vs édition
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $page = $event->getData();
             $form = $event->getForm();
 
-            if (!$page || null === $page->getId()) {
-                // ➜ CRÉATION : slug modifiable
+            if (!$page) {
                 return;
             }
 
-            // Édition : on SUPPRIME le champ du form => impossible à soumettre/modifier
-            if ($form->has('slug')) {
-                $form->remove('slug');
+            $isEdit = null !== $page->getId();
+
+            // ✅ Édition : slug visible mais non modifiable
+            if ($isEdit && $form->has('slug')) {
+                $config = $form->get('slug')->getConfig();
+                $options = $config->getOptions();
+                $options['disabled'] = true;      // important : disabled, pas readonly
+                $options['help'] = 'Non modifiable après création';
+
+                $form->add('slug', TextType::class, $options);
+            }
+
+            // ✅ Checkbox uniquement si une image existe
+            if ($page->getMainImageName()) {
+                $form->add('deleteMainImage', CheckboxType::class, [
+                    'required' => false,
+                    'mapped'   => false,
+                    'label'    => 'Supprimer l’image de tête',
+                ]);
+            } else {
+                // si jamais tu avais une ancienne version qui l’ajoutait, on nettoie
+                if ($form->has('deleteMainImage')) {
+                    $form->remove('deleteMainImage');
+                }
             }
         });
     }

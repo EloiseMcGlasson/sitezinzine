@@ -149,7 +149,7 @@
       {{ form_row(form.title) }}
     </div>
 
-    <div class="ligne3" data-controller="tinymce">
+    <div class="ligne3" data-controller="tinymce" data-tinymce-css-value="{{ asset(encore_entry_css_files('app')[0]) }}">
       {{ form_row(form.content) }}
     </div>
 
