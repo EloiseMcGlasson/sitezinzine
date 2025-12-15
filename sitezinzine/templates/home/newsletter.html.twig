@@ -3,87 +3,27 @@
     Radio Zinzine
 {% endblock %}
 {% block body %}
-    <style>
-    .bodynewsletter {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-       display: flex;
-       flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        font-size: 18px;
-        position: relative;
-        min-height: 100vh;
-    }
-    .bodynewsletter .top img{
-        width: 100%;
-    }
-    
 
-    .zinzine-newsletter {
-    background-color: #fdfdfd;
-    color: #1C1C1A;
-    font-family: 'Montserrat', sans-serif;
-    padding: 2rem;
-    max-width: 900px;
-    margin: 2rem auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-radius: 8px;
-    line-height: 1.7;
-}
-
-.zinzine-newsletter h1 {
-    font-size: 1.8em;
-    color: #E40039;
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.zinzine-image {
-    display: block;
-    margin: 1rem auto 2rem auto;
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.zinzine-paragraphs p {
-    margin-bottom: 1.2rem;
-    text-align: justify;
-}
-
-.zinzine-paragraphs strong {
-    color: #B81C61;
-    font-weight: bold;
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .zinzine-message {
-        padding: 1rem;
-    }
-
-    .zinzine-message h1 {
-        font-size: 1.4em;
-    }
-}
-
-</style>
-    <div class="bodynewsletter">
+    <div class="body">
         <div class="top">
             <img src="{{ asset('images/bottom-header.gif') }}"></div>
-            <div class="zinzine-newsletter">
-    <h1>Des infos, des news et des idées à écouter</h1>
+      <div class="editable">
+ <div class="page-card">
+    {# Image de tête optionnelle #}
+    {% if page.mainImageName %}
+        <div class="page-hero">
+            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
+                 alt="{{ page.title }}">
+        </div>
+    {% endif %}
+    <h1 class="page-title">{{ page.title }}</h1>
 
-<iframe width="540" height="750" src="https://9875a83d.sibforms.com/serve/MUIFAA4qKmBFUXFCTVswLXYBFce20Bz8O7HXUtjnqqoj4nvrs003D6onBGsrpx35v80j7FJ_hPrsuBHroKlbG9xNU_fqIyRBxfM2AhKU6MFZ14MaCVM32KdSpmlp0GnZY-7o29k5aacSKEXHi5Kv-Bg2RCEHWplGDyHqd13M_nUMscWIkebKj7aOCm9r6OdP0kPsoR_U9vLfaO6I" frameborder="0" scrolling="auto" allowfullscreen style="display: block;margin-left: auto;margin-right: auto;max-width: 100%;"></iframe>
 
-            </div>
-    
+    <div class="page-content">
+        {{ page.content|raw }}
+    </div>
+</div>
+    </div>
 </div>
 
         {% endblock %}

@@ -1,8 +1,63 @@
 # Changelog
 
-## [1.0.51] - 2025-09-
+## [1.0.59] - 2025-12-15
 ### Correction
+- Correction de la page edit qui empêchait la validation de la page.
 
+
+## [1.0.58] - 2025-12-15
+### Ajout
+- Ajout du css de la page d'index d'admin.
+- Ajour de la barre de menu dans l'éditeur tinymce pour l'édition des pages.
+- Ajout de la mise en page de la page index côté admin (page d'acceuil).
+### Correction
+- Correction de la page zone d'écoute qui ne prenait pas en compte les valeurs du formulaire d'édition.
+
+## [1.0.57] - 2025-12-14
+### Correction
+- Correction du bug qui empêchait la validation des formulaires d'édition de pages.
+- Correction de l'affichage du bouton supprimer l'image sur le formulaire d'édition qui apparaissait même s'il n'y avait pas d'image.
+
+## [1.0.56] - 2025-12-14
+### Correction
+- Correction du controller js de tinymce afin que la preview fonctionne correctement en prod.
+- Correction du bouton supprimer l'image des pages éditable qui apparait quand il ne faut pas.
+
+
+## [1.0.55] - 2025-12-14
+### Ajout
+- Ajout du visuel de preview pour les pages éditables identique aux pages côté public.
+- Ajout du CSS des pages éditables côtés admin.
+- Ajout de toutes les pages éditables.
+### Correction
+- Blocage dur slug en édition afin de ne pas casser les liens.
+- Possibilité de créer de nouvelles pages bloquée pour l'instant.
+
+
+## [1.0.54] - 2025-12-12
+### Correction
+- Correction du controller js tinymce pour corriger les erreurs d'upload d'image.
+
+
+## [1.0.53] - 2025-12-12
+### Correction
+- Correction du docker-compose.prod pour persister les nouveaux dossiers images des pages éditables.
+
+
+## [1.0.52] - 2025-12-12
+### Ajout
+- Création de l'édition des pages fixes du site côté admin. Création du menu, de la page d'index, de la page de création et de la page d'édition.
+- Modification de la base de données en conséquence, ajout de la table page.
+- Modification du module tinymce pour qu'il gère l'upload de photos et de vidéos.
+### Correction
+- Correction d'attribut d'entity concernant la base de donnée. (datetime mutable -> datetime) dans un soucis de solidité des données.
+
+
+## [1.0.51] - 2025-11-22
+### Ajout
+- MAJ de la base de donnée au 21 novembre 2025
+### Correction
+- MAJ de la page don
 
 
 ## [1.0.50] - 2025-08-16
