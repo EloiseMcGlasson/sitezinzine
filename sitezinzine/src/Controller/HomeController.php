@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Repository\EmissionRepository;
 use App\Repository\EvenementRepository;
+use App\Repository\PageRepository;
 use App\Entity\Evenement;
 use Symfony\Component\Routing\Requirement\Requirement;
 
@@ -15,55 +16,58 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-#[Route("/", name: "home")]
-public function index(EmissionRepository $emissionRepository, EvenementRepository $evenementRepository): Response
-{
-    $date = new \DateTime('2025-06-25');
+    #[Route("/", name: "home")]
+    public function index(EmissionRepository $emissionRepository, EvenementRepository $evenementRepository): Response
+    {
+        $date = new \DateTime('2025-06-25');
 
-    $emissions = $emissionRepository->findEmissionsByDate($date);
+        $emissions = $emissionRepository->findEmissionsByDate($date);
 
-    // On prépare une structure : une liste de couples [emission, diffusion]
-    $lastEmissions = [];
+        // On prépare une structure : une liste de couples [emission, diffusion]
+        $lastEmissions = [];
 
-    foreach ($emissions as $emission) {
-        foreach ($emission->getDiffusions() as $diffusion) {
-            if ($diffusion->getHoraireDiffusion()->format('Y-m-d') === $date->format('Y-m-d')) {
-                $lastEmissions[] = [
-                    'emission' => $emission,
-                    'diffusion' => $diffusion->getHoraireDiffusion(),
-                ];
+        foreach ($emissions as $emission) {
+            foreach ($emission->getDiffusions() as $diffusion) {
+                if ($diffusion->getHoraireDiffusion()->format('Y-m-d') === $date->format('Y-m-d')) {
+                    $lastEmissions[] = [
+                        'emission' => $emission,
+                        'diffusion' => $diffusion->getHoraireDiffusion(),
+                    ];
+                }
             }
         }
+
+        return $this->render('home/index.html.twig', [
+            'lastEmissions' => $lastEmissions,
+            'lastEmissionsByTheme' => $emissionRepository->lastEmissionsByGroupTheme(''),
+            'evenements' => $evenementRepository->findUpcomingEvenements(),
+        ]);
     }
-
-    return $this->render('home/index.html.twig', [
-        'lastEmissions' => $lastEmissions,
-        'lastEmissionsByTheme' => $emissionRepository->lastEmissionsByGroupTheme(''),
-        'evenements' => $evenementRepository->findUpcomingEvenements(),
-    ]);
-}
-
-
-
-
-
 
     #[Route('/{id}', name: 'showEvenement', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function showEvenement(Evenement $evenement): Response
     {
 
-        
+
         return $this->render('/home/showEvenement.html.twig', [
             'evenement' => $evenement,
-            
+
         ]);
     }
 
-    #[Route("/radio", name: "radio")]
-    function radio(): Response
+    #[Route('/radio', name: 'radio')]
+    public function radio(PageRepository $pageRepository): Response
     {
+        // adapte le slug si tu l'as appelé autrement dans l’admin
+        $page = $pageRepository->findOneBy(['slug' => 'radio']);
 
-        return $this->render('home/radio.html.twig');
+        if (!$page) {
+            throw $this->createNotFoundException('Page "radio" introuvable.');
+        }
+
+        return $this->render('home/radio.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/programme", name: "programme")]
@@ -81,51 +85,105 @@ public function index(EmissionRepository $emissionRepository, EvenementRepositor
     }
 
     #[Route("/zone", name: "zone")]
-    function zone(): Response
+    function zone(PageRepository $pageRepository): Response
     {
 
-        return $this->render('home/zoneecoute.html.twig');
+        $page = $pageRepository->findOneBy(['slug' => 'zone']);
+
+        if (!$page) {
+            throw $this->createNotFoundException('Page "zone" introuvable.');
+        }
+
+        return $this->render('home/zoneecoute.html.twig', [
+            'page' => $page,
+        ]);
     }
     #[Route("/aide", name: "aide")]
-    function aide(): Response
+    function aide(PageRepository $pageRepository): Response
     {
 
-        return $this->render('home/aide.html.twig');
+        $page = $pageRepository->findOneBy(['slug' => 'aide']);
+
+        if (!$page) {
+            throw $this->createNotFoundException('Page "aide" introuvable.');
+        }
+
+        return $this->render('home/aide.html.twig', [
+            'page' => $page,
+        ]);
     }
     #[Route("/amis", name: "amis")]
-    function amis(): Response
+    function amis(PageRepository $pageRepository): Response
     {
 
-        return $this->render('home/amis.html.twig');
+        $page = $pageRepository->findOneBy(['slug' => 'amis']);
+
+        if (!$page) {
+            throw $this->createNotFoundException('Page "amis" introuvable.');
+        }
+
+        return $this->render('home/amis.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/mentions", name: "mentions")]
-    function mentions(): Response
+    function mentions(PageRepository $pageRepository): Response
     {
 
-        return $this->render('home/mentions.html.twig');
+        $page = $pageRepository->findOneBy(['slug' => 'mentions']);
+
+        if (!$page) {
+            throw $this->createNotFoundException('Page "mentions" introuvable.');
+        }
+
+        return $this->render('home/mentions.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/contacts", name: "contacts")]
-    function contacts(): Response
+    function contacts(PageRepository $pageRepository): Response
     {
 
-        return $this->render('home/contacts.html.twig');
+        $page = $pageRepository->findOneBy(['slug' => 'contacts']);
+
+        if (!$page) {
+            throw $this->createNotFoundException('Page "contacts" introuvable.');
+        }
+
+        return $this->render('home/contacts.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/don", name: "don")]
-    function don(): Response
+    function don(PageRepository $pageRepository): Response
     {
+        // adapte le slug si tu l'as appelé autrement dans l’admin
+        $page = $pageRepository->findOneBy(['slug' => 'don']);
 
-        return $this->render('home/don.html.twig');
+        if (!$page) {
+            throw $this->createNotFoundException('Page "don" introuvable.');
+        }
+
+        return $this->render('home/don.html.twig', [
+            'page' => $page,
+        ]);
     }
 
     #[Route("/newsletter", name: "newsletter")]
-    function newsletter(): Response
+    function newsletter(PageRepository $pageRepository): Response
     {
 
-        return $this->render('home/newsletter.html.twig');
+        $page = $pageRepository->findOneBy(['slug' => 'newsletter']);
+
+        if (!$page) {
+            throw $this->createNotFoundException('Page "newsletter" introuvable.');
+        }
+
+        return $this->render('home/newsletter.html.twig', [
+            'page' => $page,
+        ]);
     }
-
-
 }

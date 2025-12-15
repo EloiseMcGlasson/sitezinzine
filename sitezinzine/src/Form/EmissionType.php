@@ -8,6 +8,7 @@ use App\Entity\Emission;
 use App\Entity\Theme;
 use App\Entity\Editeur;
 use App\Repository\CategoriesRepository;
+use App\Repository\ThemeRepository;
 use App\Repository\InviteOldAnimateurRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -47,7 +48,11 @@ class EmissionType extends AbstractType
                 'class' => Theme::class,
                 'placeholder' => 'Sélectionnez un thème  (obligatoire)', // Texte par défaut
                 'choice_label' => 'name',
-                'label' => 'Thème'
+                'label' => 'Thème',
+                'query_builder' => function (ThemeRepository $ert): QueryBuilder {
+                    return $ert->createQueryBuilder('v')
+                        ->orderBy('v.name', 'ASC');
+                }
             ])
             ->add('editeur', EntityType::class, [
                 'class' => Editeur::class,

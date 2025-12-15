@@ -14,8 +14,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./public/uploads/images:/var/www/html/public/uploads/images
-      - ./public/uploads/emissionsMp3:/var/www/html/public/uploads/emissionsMp3
+      - ./public/uploads:/var/www/html/public/uploads
     ports:
       - "8080:80"
     networks:

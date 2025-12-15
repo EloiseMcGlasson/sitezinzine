@@ -6,47 +6,47 @@
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
             @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-        </style>
-        <title>
-            {% block title %}
-                Welcome!
-            {% endblock %}
-        </title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-            <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        {% endblock %}
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}            
-        {% endblock %}
+            
+            .body {
+                background: linear-gradient(#E4013A, #B81C61);
+                background-size: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                font-family: "Montserrat Alternates", sans-serif;
+                font-weight: 500;
+                font-style: normal;
+                line-height: 1.5em;
+                position: relative;
+                color: white;
+            }
+
+            .top img {
+                width: 100%;
+            }
+
+</style> 
     </head>
-    <body>
-        {# Lecteur en dehors de turbo-frame #}
-        <turbo-frame id="player" data-turbo-permanent>
-            {% include 'partials/lecteur.html.twig' %}
-        </turbo-frame>
-        {# Contenu principal dans turbo-frame #}
-        
-            <header>
-                {% include 'navbar.html.twig' %}
-            </header>
-            <main>
-                {% block body %}{% endblock %}
-            </main>
-      
-        <footer>
-            {% include 'footer.html.twig' %}
-        </footer>
+<title>
+{% block title %}
+    Welcome!
+{% endblock %}
+</title>
+{% block stylesheets %}
+{{ encore_entry_link_tags('app') }}
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>{% endblock %}{% block javascripts %}
+{{ encore_entry_script_tags('app') }}{% endblock %}</head><body>{# Lecteur en dehors de turbo-frame #}<turbo-frame id="player" data-turbo-permanent>
+{% include 'partials/lecteur.html.twig' %}</turbo-frame>{# Contenu principal dans turbo-frame #}<header>
+{% include 'navbar.html.twig' %}</header><main>
+{% block body %}
 
- 
-
-<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
-
-
-
-    </body>
-</html>
+{% endblock %}</main>
+<footer>
+{% include 'footer.html.twig' %}</footer>
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script></body></html>

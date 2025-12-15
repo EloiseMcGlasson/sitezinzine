@@ -86,19 +86,24 @@
 
     </style>
     
-    <div class="bodycontacts">
+    <div class="body">
     <div class="top">
             <img src="{{ asset('images/bottom-header.gif') }}"></div>
-    <h1>Contacts</h1>
-    <div class="contacts">
-        <p>Pour nous contacter, vous pouvez utiliser les moyens suivants :</p>
-        <ul>
-            <li><strong>Email :</strong> <a href="mailto:contact@radiozinzine.com">contact@radiozinzine.com</a></li>
-        </ul>
-        <p>Vous pouvez également nous suivre sur les réseaux sociaux :</p>
-        <ul>
-            <li><strong>Facebook :</strong> <a href="https://www.facebook.com/radiolibre04" target="_blank">Radio Zinzine</a></li>
-        </ul>
+     <div class="editable">
+                <div class="page-card">
+                    {# Image de tête optionnelle #}
+                    {% if page.mainImageName %}
+                        <div class="page-hero">
+                            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
+                        {% endif %}
+                        <h1 class="page-title">
+                            {{ page.title }}
+                        </h1>
+                        <div class="page-content">
+                            {{ page.content|raw }}
+                        </div>
+                </div>
+            </div>
     </div>
 
 

@@ -234,9 +234,13 @@ class Emission
      * It has a cascade persist option, meaning that if a diffusion is added to the emission,
      * it will be persisted to the database automatically.
      */
-    #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true)]
     private Collection $diffusions;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
     /**
      * @var \DateTimeInterface|null
      * This field is used to store the last diffusion date of the emission.

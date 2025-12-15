@@ -81,35 +81,24 @@ h1 {
 
 </style>
 
-<div class="bodyzoneecoute">
+<div class="body">
 <div class="top">
             <img src="{{ asset('images/bottom-header.gif') }}"></div>
-<h1>Zone d'écoute (en attente de klaus)</h1>
-<div class="frequences-container">
-    <h2>Légende</h2>
-
-    <ul class="frequences-list">
-        <li><strong>100.7</strong> – Forcalquier</li>
-        <li><strong>87.9</strong> – Embrun Guillestre</li>
-        <li><strong>95.6</strong> – Digne</li>
-        <li><strong>103</strong> – Sisteron</li>
-        <li><strong>101.4</strong> – Briançon</li>
-        <li><strong>88.1</strong> – Aix</li>
-        <li><strong>106.3</strong> – Gap</li>
-        <li><strong>105</strong> – Manosque</li>
-        <li><strong>92.7</strong> – Apt</li>
-    </ul>
-
-    <div class="dab-info">
-        <p>Depuis juin 2014, Radio Zinzine diffuse tout son programme sur la zone <strong>Marseille - Aix-en-Provence - Aubagne</strong> en <strong>DAB+</strong>.</p>
-        <p>Vous pouvez nous écouter confortablement sur le <strong>canal 8C (199.36MHz)</strong>.</p>
-        <p>Si vous avez l'intention d'acheter une nouvelle voiture ou un nouveau récepteur radio, vérifiez bien qu'il est compatible <strong>DAB+</strong>.</p>
-        <p><em>On vous souhaite une bonne écoute.</em></p>
-        <p class="carte-info"><strong>PS :</strong> La carte sera bientôt mise à jour.
-        <img src="{{ asset('images/carte.gif') }}" alt="Carte des fréquences"></p>
-    </div>
-</div>
-
+ <div class="editable">
+                <div class="page-card">
+                    {# Image de tête optionnelle #}
+                    {% if page.mainImageName %}
+                        <div class="page-hero">
+                            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
+                        {% endif %}
+                        <h1 class="page-title">
+                            {{ page.title }}
+                        </h1>
+                        <div class="page-content">
+                            {{ page.content|raw }}
+                        </div>
+                </div>
+            </div>
 
 </div>
 {% endblock %}
