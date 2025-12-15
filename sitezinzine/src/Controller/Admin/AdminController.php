@@ -14,14 +14,25 @@ use App\Repository\UserRepository;
 class AdminController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(UserRepository $userRepository): Response
-    {
-        $user = $this->getUser();
+public function index(UserRepository $userRepository): Response
+{
+    $user = $this->getUser();
+    $users = $userRepository->findAll();
+
+    // Tri alphabétique par username (insensible à la casse)
+    usort($users, static function ($a, $b) {
+        return strcmp(
+            mb_strtolower($a->getUsername() ?? ''),
+            mb_strtolower($b->getUsername() ?? '')
+        );
+    });
+
     return $this->render('admin/index.html.twig', [
-        'user' => $user,
-        'users' => $userRepository->findAll() // Ajout de tous les utilisateurs
-        ]);
-    }
+        'user'  => $user,
+        'users' => $users,
+    ]);
+}
+
 
 
 
