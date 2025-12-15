@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.58] - 2025-12-15
+### Ajout
+- Ajout du css de la page d'index d'admin.
+- Ajour de la barre de menu dans l'éditeur tinymce pour l'édition des pages.
+- Ajout de la mise en page de la page index côté admin (page d'acceuil).
+### Correction
+- Correction de la page zone d'écoute qui ne prenait pas en compte les valeurs du formulaire d'édition.
+
 ## [1.0.57] - 2025-12-14
 ### Correction
 - Correction du bug qui empêchait la validation des formulaires d'édition de pages.

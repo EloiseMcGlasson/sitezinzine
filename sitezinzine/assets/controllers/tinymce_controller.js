@@ -97,7 +97,16 @@ export default class extends Controller {
       convert_urls: true,
       document_base_url: window.location.origin + '/',
 
-      menubar: false,
+      menubar: "file edit view insert format tools table help",
+
+      menu: {
+        edit:   { title: "Édition", items: "undo redo | cut copy paste | selectall | searchreplace" },
+        insert: { title: "Insertion", items: "link image media | inserttable | hr | pagebreak" },
+        format: { title: "Format", items: "bold italic underline | removeformat | blocks | align | bullist numlist" },
+        table:  { title: "Tableau", items: "inserttable tableprops deletetable | cell row column" },
+        tools:  { title: "Outils", items: "code preview fullscreen | visualblocks wordcount" },
+      },
+
       height: 300,
 
       skin_url: '/build/skins/ui/oxide',
