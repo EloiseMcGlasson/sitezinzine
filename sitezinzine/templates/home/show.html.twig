@@ -452,7 +452,7 @@
     </style>
     <div class="bodyemission">
     <div class="top">
-        <img src="{{ asset('images/bottom-header.gif') }}">
+        <img src="/images/bottom-header.gif">
     </div>
 
     <div class="fiche-emission">
@@ -467,7 +467,7 @@
                 {% elseif emission.theme.thumbnail is defined %}
                     <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
                 {% else %}
-                    <img src="{{ asset('images/emission-zinzine.jpg') }}" alt="Image par défaut">
+                    <img src="/images/emission-zinzine.jpg" alt="Image par défaut">
                 {% endif %}
             </div>
 

@@ -91,7 +91,7 @@ article{
             </div>
         </div>
         <div class="bottom">
-            <img src="{{ asset('images/top-content-dechire-D.gif') }}"></div>
+            <img src="/images/top-content-dechire-D.gif"></div>
         </div>
         <div class="emissionsdelaInviteOldAnimateur">
             <div class="titre">
@@ -120,7 +120,7 @@ article{
                                 {% if emission.url %}
                                     <div class='ecoute'>
                                         <a href="{{ emission.url }}">
-                                            <img src="{{ asset('images/lecteur.png') }}" alt="écoutez l'émission"></a>
+                                            <img src="/images/lecteur.png" alt="écoutez l'émission"></a>
                                         </div>
                                         <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
                                             Éditer

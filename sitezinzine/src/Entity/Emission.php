@@ -237,10 +237,6 @@ class Emission
     #[ORM\OneToMany(mappedBy: 'emission', targetEntity: Diffusion::class, orphanRemoval: true)]
     private Collection $diffusions;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> main
     /**
      * @var \DateTimeInterface|null
      * This field is used to store the last diffusion date of the emission.
