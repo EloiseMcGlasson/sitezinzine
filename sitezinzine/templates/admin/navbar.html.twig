@@ -71,7 +71,7 @@
 </style>
 <nav>
     <a href="https://eloisemcglasson.ovh/" target="_blank">
-        <img src="{{ asset('images/logo.gif') }}" alt="Logo"></a>
+        <img src="/images/logo.gif" alt="Logo"></a>
         <ul>
             <li>
                 <a class="nav-link {{ app.request.get('_route') == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
@@ -79,7 +79,8 @@
                 </a>
             </li>
             <li>
-                <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
+                <img src="/images/puce-rond-rouge.gif" alt="">
+            </li>
                 <li class="dropdown">
                     <button class="dropbtn">
                         Gestion des émissions
@@ -106,21 +107,21 @@
                 </li>
                 {% if is_granted('ROLE_EDITOR') %}
                     <li>
-                        <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
+                        <img src="/images/puce-rond-rouge.gif" alt="">
                         <li>
                             <a class="nav-link {{ app.request.get('_route') starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
                                 Annonces
                             </a>
                         </li>
                         <li>
-                            <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
+                            <img src="/images/puce-rond-rouge.gif"></li>
                             <li>
                                 <a class="nav-link {{ app.request.get('_route') starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
                                     Évènements
                                 </a>
                             </li>
                             <li>
-                            <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
+                            <img src="/images/puce-rond-rouge.gif"></li>
                             <li>
                                 <a class="nav-link {{ app.request.get('_route') starts with 'admin.page.' ? 'active' : '' }}" href="{{ path('admin.page.index') }}">
                                     Pages
@@ -129,17 +130,24 @@
                         {% endif %}
                         {% if is_granted('ROLE_ADMIN') %}
                             <li>
-                                <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
+                                <img src="/images/puce-rond-rouge.gif"></li>
                                 <li>
                                     <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
                                         Utilisateurices
                                     </a>
                                 </li>
+                            <li>
+                            <img src="/images/puce-rond-rouge.gif"></li>
+                            <li>
+                                <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}" href="{{ path('admin.grille.index') }}">
+                                    Grille
+                                </a>
+                            </li>
                             {% endif %}
                             <li>
-                                <img src="{{ asset('images/puce-rond-rouge.gif') }}"></li>
+                                <img src="/images/puce-rond-rouge.gif"></li>
                                 <a href="{{ path('admin.emission.rechercheadmin') }}" class="{{ app.request.get('_route') == 'admin.emission.rechercheadmin' ? 'active' : '' }}">
-                                    <img src="{{ asset('images/ico-recherche.gif') }}" alt="Icône de recherche"></a>
+                                    <img src="/images/ico-recherche.gif" alt="Icône de recherche"></a>
                                 </ul>
                             </nav>
                             

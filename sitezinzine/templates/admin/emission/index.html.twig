@@ -163,7 +163,7 @@
                                         <img
                                         src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
                                             {% else %}
-                                            <img src="{{ asset('images/emission-zinzine.jpg') }}">
+                                            <img src="/images/emission-zinzine.jpg">
                                             {% endif %}
                                         </div>
                                         <div class="col2">
@@ -206,7 +206,7 @@
                                             <div class='ecoute'>
                                                 {% if emission.url %}
                                                     <a href="{{ emission.url }}">
-                                                        <img src="{{ asset('images/lecteur.png') }}" alt="écoutez l'émission"></a>
+                                                        <img src="/images/lecteur.png" alt="écoutez l'émission"></a>
                                                     {% else %}
                                                         Pas de fichier audio disponible
                                                     {% endif %}

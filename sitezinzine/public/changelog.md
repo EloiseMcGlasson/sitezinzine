@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.60] - 2025-12-xx
+
+
+
 ## [1.0.59] - 2025-12-15
 ### Correction
 - Correction de la page edit qui empêchait la validation de la page.
@@ -13,10 +17,12 @@
 ### Correction
 - Correction de la page zone d'écoute qui ne prenait pas en compte les valeurs du formulaire d'édition.
 
+
 ## [1.0.57] - 2025-12-14
 ### Correction
 - Correction du bug qui empêchait la validation des formulaires d'édition de pages.
 - Correction de l'affichage du bouton supprimer l'image sur le formulaire d'édition qui apparaissait même s'il n'y avait pas d'image.
+
 
 ## [1.0.56] - 2025-12-14
 ### Correction
