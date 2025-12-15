@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.59] - 2025-12-15
+### Correction
+- Correction de la page edit qui empêchait la validation de la page.
+
+
 ## [1.0.58] - 2025-12-15
 ### Ajout
 - Ajout du css de la page d'index d'admin.
