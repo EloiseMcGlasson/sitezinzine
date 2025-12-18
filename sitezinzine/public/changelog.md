@@ -1,8 +1,13 @@
 # Changelog
 
+## [1.0.62] - 2025-12-18
+### Correction
+- correction du yml vitch pour suppression correcte des fichiers entêtes des pages éditables.(bis)
+
 ## [1.0.61] - 2025-12-18
 ### Correction
 - correction du yml vitch pour suppression correcte des fichiers entêtes des pages éditables.
+
 
 ## [1.0.60] - 2025-12-18
 ### Ajout
