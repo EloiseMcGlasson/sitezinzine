@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.60] - 2025-12-xx
+## [1.0.60] - 2025-12-18
 ### Ajout
 - Ajout du responsive pour le menu, ondes, vagues, footer, lecteur et lastemission côté public.
 - Ajout de la partie grille côté public (en cours).
