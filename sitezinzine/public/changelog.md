@@ -1,8 +1,14 @@
 # Changelog
 
+## [1.0.63] - 2025-12-18
+### Correction
+- correction du yml vitch pour suppression correcte des fichiers entêtes des pages éditables.(ter)
+
+
 ## [1.0.62] - 2025-12-18
 ### Correction
 - correction du yml vitch pour suppression correcte des fichiers entêtes des pages éditables.(bis)
+
 
 ## [1.0.61] - 2025-12-18
 ### Correction
@@ -15,7 +21,6 @@
 - Ajout de la partie grille côté public (en cours).
 ### Correction
 - correction des formulaires d'édition des pages pour réparer la suppression de l'image de tête.
-
 
 
 ## [1.0.59] - 2025-12-15
