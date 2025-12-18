@@ -49,8 +49,8 @@
   display: inline-block;
 }
 
-/* Inputs / selects / textarea */
-.admin-edit-page input,
+/* Inputs texte / select / textarea (PAS checkbox, PAS file) */
+.admin-edit-page input:not([type="checkbox"]):not([type="file"]),
 .admin-edit-page select,
 .admin-edit-page textarea {
   width: 100%;
@@ -62,11 +62,19 @@
   box-sizing: border-box;
 }
 
-/* Checkboxes : éviter le "checkbox pleine largeur" */
-.admin-edit-page input[type="checkbox"] {
-  width: auto;
-  margin-right: 8px;
+/* File input : on évite le padding énorme */
+.admin-edit-page input[type="file"]{
+  width: 100%;
+  margin: 8px 0;
 }
+
+/* Checkbox : style minimal, fiable */
+.admin-edit-page input[type="checkbox"]{
+  width: auto;
+  margin: 0 8px 0 0;
+  padding: 0;
+}
+
 
 /* Bloc image actuelle */
 .admin-edit-page .current-image {

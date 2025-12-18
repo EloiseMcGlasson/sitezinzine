@@ -1,229 +1,281 @@
 <style>
-   
-    nav ul {
-      
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        background-color: white;
-        overflow: hidden;
+  nav.site-nav{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;                 /* permet au menu de passer dessous */
+    gap:12px;
+    font-family:"Montserrat Alternates",sans-serif;
+    background:#fff;
+    padding:10px 20px;
+    box-sizing:border-box;
+    margin:0;
+  }
+
+  /* évite la petite “ligne” due aux espacements inline */
+  nav.site-nav img{ display:block; }
+
+  /* zone gauche */
+  .site-nav .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:0 0 auto;
+  }
+  .site-nav .brand img.logo{ height:60px; width:auto; }
+  .site-nav .brand img.aix{ width:110px; height:auto; }
+
+  /* zone droite : DON + burger */
+  .site-nav .nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-left:auto;
+    flex:0 0 auto;
+  }
+
+  /* bouton don */
+  .site-nav .don-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Montserrat",sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color:#fff;
+    background:#E4013A;
+    border-radius:8px;              /* plus “carré” */
+    padding:10px 12px;
+    min-height:36px;                /* plus régulier */
+    box-shadow:0 3px 5px #000;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .site-nav .don-btn:hover{ background:#B81C61; }
+
+  /* burger */
+  .site-nav .burger{
+    display:none;                   /* visible seulement en mobile */
+    flex-direction:column;
+    cursor:pointer;
+    padding:10px;
+    border:0;
+    background:transparent;
+  }
+  .site-nav .burger span{
+    height:3px;
+    width:26px;
+    background:#E40039;
+    margin:4px 0;
+    border-radius:2px;
+  }
+
+  /* ✅ reset UL/LI : empêche les puces (les petits points) en toutes circonstances */
+  .site-nav ul.nav-menu{
+    list-style:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    padding-left:0 !important;
+  }
+  .site-nav ul.nav-menu li{
+    list-style:none !important;
+  }
+
+  /* menu desktop */
+  .site-nav ul.nav-menu{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    flex:1 1 auto;
+    font-size:21pt;
+  }
+  .site-nav ul.nav-menu li{
+    display:flex;
+    align-items:center;
+  }
+  .site-nav ul.nav-menu a{
+    padding:10px 12px;
+    color:#1C1C1A;
+    text-decoration:none;
+    font-weight:800;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .site-nav ul.nav-menu a:hover{ color:#E40039; }
+  .site-nav ul.nav-menu a.active{ color:#E40039 !important; }
+
+  /* icône recherche */
+  .site-nav .nav-link-icon img{ height:24px; width:auto; }
+
+  /* séparateurs desktop (taille réelle) */
+  .site-nav li.sep{
+    display:flex;
+    align-items:center;
+  }
+  .site-nav li.sep img{
+    width:5px;
+    height:5px;
+  }
+
+  /* ===== mobile ===== */
+  @media (max-width:900px){
+    nav.site-nav{
+      padding:10px 12px;
     }
 
-    nav li {
-        text-align: center;
-        display: inline;
-        vertical-align: middle;
-    }
-        
-    nav li a {
-            padding: 14px 16px;
-            color: #1C1C1A;
-            text-decoration: none;
-            font-weight: 800;
-            
-    }
-    nav li a:hover {
-            padding: 14px 16px;
-            color: #E40039;
-            text-decoration: none;
-            font-weight: 800;
-            
+    /* ✅ permet de garder DON + burger sur la même ligne : brand peut rétrécir */
+    .site-nav .brand{
+      flex:1 1 auto;
+      min-width:0;
+      gap:8px;
     }
 
-   nav a.nav-link-icon {
-    display: inline-flex;
-    align-items: center; /* aligne l’image et le texte verticalement */
-    gap: 8px; /* espace entre l’image et le texte */
-    vertical-align: middle;
-}
+    /* logos plus petits */
+    .site-nav .brand img.logo{ height:44px; }
+    .site-nav .brand img.aix{ width:78px; }
 
-nav a.nav-link-icon img {
-    height: 24px; /* taille confortable pour la loupe */
-    width: auto;
-    display: block;
-}
+    /* burger visible */
+    .site-nav .burger{ display:flex; }
 
-
-   
-    
-
-    nav {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-size: 21pt;
-    padding: 0 20px; /* 👈 espace intérieur à gauche et à droite */
-    box-sizing: border-box; /* ✅ important pour ne pas faire dépasser */
-}
-
-
-    nav .button-nav-don {
-    display: inline-block;
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    background-color: #e4013A;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0px 3px 5px black;
-    padding: 10px;
-    cursor: pointer;
-    text-align: center;
-    }
-    nav .button-nav-don a {
-    color: white;
-    text-decoration: none !important; /* ❌ enlève le soulignement */
-
-}
-
-nav .button-nav-don:hover {
-    background-color: #B81C61;
-    text-decoration: none;
-}
-
-
-    nav a img.aix {
-        width: 110px;
-        padding-top: 10px;
+    /* bouton DON plus compact et plus “carré” */
+    .site-nav .don-btn{
+      padding:8px 10px;
+      font-size:12px;
+      border-radius:6px;
+      min-height:34px;
     }
 
-nav a.active {
-    color: #E40039 !important; /* forcer si besoin */
-}
+    /* menu dropdown sous la barre */
+    .site-nav ul.nav-menu{
+      display:none;
+      width:100%;
+      flex-direction:column;
+      align-items:stretch;
+      justify-content:flex-start;
+      gap:6px;
+      font-size:16pt;
+      padding:10px 0;
+      border-top:1px solid #eee;
+      order: 99;                    /* passe sous brand + actions */
+      flex: 0 0 100%;
+    }
+    .site-nav ul.nav-menu.active{ display:flex; }
 
-/* Général : cacher le menu mobile par défaut */
-nav .nav-menu {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-}
+    .site-nav ul.nav-menu li{ padding:0 12px; }
 
-nav .burger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    padding: 10px;
-}
-
-nav .burger span {
-    height: 3px;
-    width: 25px;
-    background: #E40039;
-    margin: 4px 0;
-    border-radius: 2px;
-    transition: 0.3s;
-}
-
-@media (max-width: 900px) {
-    nav {
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 10px 16px;
+    .site-nav ul.nav-menu a{
+      width:100%;
+      padding:10px 0;
+      justify-content:flex-start;
     }
 
-    nav .nav-menu {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background-color: white;
-        margin-top: 10px;
-        padding: 10px 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+    /* pas de séparateurs en mobile */
+    .site-nav li.sep{ display:none !important; }
+  }
 
-    nav .nav-menu.active {
-        display: flex;
-    }
+  @media (max-width: 900px) and (orientation: landscape) {
+  /* NAV : compacte un peu */
+  nav.site-nav{
+    padding: 6px 10px;
+    gap: 8px;
+  }
 
-    nav .nav-menu li {
-        display: block;
-        margin: 8px 0;
-    }
+  .site-nav .brand img.logo{ height: 42px; }
+  .site-nav .brand img.aix{ width: 74px; }
 
-    nav .burger {
-        display: flex;
-    }
+  .site-nav .don-btn{
+    padding: 7px 10px;
+    font-size: 12px;
+    min-height: 32px;
+  }
 
-    nav .button-nav-don,
-    nav .aix,
-    nav .search-icon {
-        margin-top: 10px;
-    }
+  .site-nav .burger{
+    padding: 8px;
+  }
 
-    nav .search-icon img {
-        width: 32px;
-    }
-}
-
-    
+  /* Si le menu burger est ouvert : éviter qu’il prenne toute la page */
+  .site-nav ul.nav-menu.active{
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  }
 </style>
-<nav>
-    <img src="/images/logo.gif" alt="Logo de Radio Zinzine" style="height: 60px;">
-        <a href="https://www.radiozinzineaix.org/" target="_blank">
-            <img class="aix" src="/images/zinzine-aix.png" alt="Logo de Radio Zinzine Aix"></a>
-            <div class="burger" onclick="document.querySelector('.nav-menu').classList.toggle('active')">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-menu">
-                <li>
-                    DEMO
-                </li>
-                <li>
-                    <a class="{{ app.request.attributes.get('_route') == 'home' ? 'active' : '' }}" href="{{ path('home') }}">
-                        Accueil
-                    </a>
-                </li>
-                <li>
-                    <img src="/images/puce-rond-rouge.gif"></li>
-                    <li>
-                        <a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}" href="{{ path('radio') }}">
-                            Radio Zinzine
-                        </a>
-                    </li>
-                    <li>
-                        <img src="/images/puce-rond-rouge.gif"></li>
-                        <li>
-                            <a class="nav-link-icon {{ app.request.attributes.get('_route') == 'recherche' ? 'active' : '' }}" href="{{ path('emission.recherche') }}">
-                                <img src="/images/ico-recherche.gif" alt="Icône de recherche">
-                                    <span>
-                                        Émissions
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <img src="/images/puce-rond-rouge.gif"></li>
-                                <li>
-                                    <a class="{{ app.request.attributes.get('_route') == 'infos' ? 'active' : '' }}" href="{{ path('infos') }}">
-                                        Infos du soir
-                                    </a>
-                                </li>
-                                <li>
-                                    <img src="/images/puce-rond-rouge.gif"></li>
-                                    <li>
-                                        <a class="{{ app.request.attributes.get('_route') == 'programme' ? 'active' : '' }}" href="{{ path('programme') }}">
-                                            Programme
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <img src="/images/puce-rond-rouge.gif"></li>
-                                        <li>
-                                            <a class="{{ app.request.attributes.get('_route')  starts with 'annonce.' ? 'active' : '' }}" href="{{ path('annonce.index') }}">
-                                                Annonces
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="button-nav-don">
-                                        <a class="{{ app.request.attributes.get('_route') == 'don' ? 'active' : '' }}" href="{{ path('don') }}">
-                                            FAIRE UN DON
-                                        </a>
-                                    </div>
-                                </nav>
-                            </li>
-                        </li>
-                    </li>
-                </li>
-                
+
+<nav class="site-nav">
+  <div class="brand">
+    <img class="logo" src="/images/logo.gif" alt="Logo de Radio Zinzine">
+   {#  <a href="https://www.radiozinzineaix.org/" target="_blank" rel="noopener">
+      <img class="aix" src="/images/zinzine-aix.png" alt="Logo de Radio Zinzine Aix">
+    </a> #}
+     <a class="don-btn {{ app.request.attributes.get('_route') == 'don' ? 'active' : '' }}"
+    href="{{ path('don') }}">
+    FAIRE UN DON
+</a>
+  </div>
+
+ 
+
+    <button class="burger" type="button"
+      aria-label="Ouvrir/fermer le menu"
+      aria-expanded="false"
+      onclick="
+        const nav = this.closest('nav');
+        const menu = nav.querySelector('.nav-menu');
+        const isOpen = menu.classList.toggle('active');
+        this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      ">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <ul class="nav-menu" id="mainMenu">
+    <li>DEMO</li>
+
+    <li>
+      <a class="{{ app.request.attributes.get('_route') == 'home' ? 'active' : '' }}"
+         href="{{ path('home') }}">Accueil</a>
+    </li>
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li>
+      <a class="{{ app.request.attributes.get('_route') == 'radio' ? 'active' : '' }}"
+         href="{{ path('radio') }}">Radio Zinzine</a>
+    </li>
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li>
+      <a class="nav-link-icon {{ app.request.attributes.get('_route') == 'recherche' ? 'active' : '' }}"
+         href="{{ path('emission.recherche') }}">
+        <span>Émissions</span>
+        <img src="/images/ico-recherche.gif" alt="">
+      </a>
+    </li>
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li>
+      <a class="{{ app.request.attributes.get('_route') == 'infos' ? 'active' : '' }}"
+         href="{{ path('infos') }}">Infos du soir</a>
+    </li>
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li>
+      <a class="{{ app.request.attributes.get('_route') == 'programme' ? 'active' : '' }}"
+         href="{{ path('programme') }}">Programme</a>
+    </li>
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li>
+      <a class="{{ app.request.attributes.get('_route') starts with 'annonce.' ? 'active' : '' }}"
+         href="{{ path('annonce.index') }}">Annonces</a>
+    </li>
+    <li>
+    <div class="nav-actions">
+   
+</div>
+</li>
+</ul>
+</nav>

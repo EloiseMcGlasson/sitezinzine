@@ -58,7 +58,8 @@ class PageController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($page->getDeleteMainImage()) {
+            if ($form->has('deleteMainImage') && $form->get('deleteMainImage')->getData()) {
+
                 // on supprime la référence fichier
                 $page->setMainImageFile(null);
                 $page->setMainImageName(null);
