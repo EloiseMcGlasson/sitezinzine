@@ -1,35 +1,75 @@
 <style>
-    .footer {
-        font-family: "Montserrat", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: <weight>;
-        font-style: normal;
-        background: #1C1C1A;
-        background-size: 100%;
-        color: white;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-grow: 0;
-        flex-shrink: 0;
-        width: 100%;
-    }
-    .footer a {
-        text-decoration: none;
-        color: white;
-    }
-    .footer a:hover {
-        text-decoration: none;
-        color: #E40039;
-    }
-    .footer div {
-        margin: 20px;
-    }
+/* ===== Footer – base ===== */
+.footer{
+  font-family:"Montserrat", sans-serif;
+  font-weight:400;
+  background:#1C1C1A;
+  color:#fff;
+  font-size:14px;
+
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+
+  padding:12px 14px;
+  gap: 6px 12px;
+  box-sizing:border-box;
+}
+
+.footer a{
+  color:#fff;
+  text-decoration:none;
+}
+.footer a:hover{
+  color:#E40039;
+}
+
+.footer > div{
+  margin: 4px 6px;
+  white-space: nowrap;
+}
+
+/* ===== Mobile portrait : grille compacte ===== */
+@media (max-width: 560px){
+  .footer{
+    display:grid;
+    grid-template-columns: 1fr 1fr;   /* 👈 2 liens par ligne */
+    gap: 6px 12px;
+    justify-items:start;
+    font-size:13px;
+  }
+
+  /* Bloc titre/version en pleine largeur */
+  .footer > div:first-child{
+    grid-column: 1 / -1;
+    text-align:center;
+    margin-bottom:6px;
+    white-space:normal;
+  }
+
+  .footer > div{
+    margin: 0;
+  }
+}
+
+/* ===== Mobile paysage : encore plus condensé ===== */
+@media (max-width: 900px) and (orientation: landscape){
+  .footer{
+    grid-template-columns: repeat(3, 1fr); /* 👈 3 colonnes en paysage */
+    font-size:12.5px;
+    gap: 4px 10px;
+  }
+
+  .footer > div:first-child{
+    grid-column: 1 / -1;
+  }
+}
+
 </style>
 <div class='footer'>
     <div>
-        Radio Zinzine Saint Hippolyte F-04300 Limans v1.0.59
+        Radio Zinzine Saint Hippolyte F-04300 Limans v1.0.60
     </div>
     <div>
         <a href="{{ path('contacts') }}">

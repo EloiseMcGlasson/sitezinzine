@@ -1,70 +1,134 @@
 <style>
-    .vagues {
-        font-family: "Montserrat", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: 400;
-        font-style: normal;
-        background-image: url("images/motif.jpg");
-        background-size: 100%;
-        color: black;
-        display: flex;
-        flex-direction: column;
-    }
-    .vagues a {
-    text-decoration: none;
-    }
-    .vagues a:hover {
-        text-decoration: none;
-    }
+.vagues{
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 
+  background-image: url("/images/motif.jpg");
+  background-position: center;
+  background-size: cover;
+  color: #000;
 
-    .vagues .blocks {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin: 50px;
-    }
+  display: flex;
+  flex-direction: column;
+min-height: 420px;
 
-    .vagues .blocdon, .vagues .blocannonces, .vagues .blocaide {
-        width: 250px;
-        background-color: white;
-        border: solid 2px gray;
-        margin: 25px;
-        padding: 25px;
-        text-align: center;
-        justify-content: center;
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
+}
 
-    .vagues .blocdon:hover, .vagues .blocannonces:hover, .vagues .blocaide:hover {
-        transform: translateY(-5px); /* Légère élévation */
-        box-shadow: rgba(50, 50, 93, 0.35) 0px 20px 40px -5px, rgba(0, 0, 0, 0.4) 0px 10px 20px -8px;
-        border-color: #E40039; /* Changement de couleur de bordure */
-    }
+.vagues a{ text-decoration: none; }
+.vagues a:hover{ text-decoration: none; }
 
-    .vagues .blocdon h1, .vagues .blocannonces h1, .vagues .blocaide h1 {
-        font-family: "Montserrat", sans-serif;
-        font-weight: 900;
-        font-size: 22px;
-        color: black;
-        margin-bottom: 5px;
-    }
+/* ✅ Desktop : une rangée centrée, bien espacée, pas collée en haut */
+.vagues .blocks{
+ flex: 1;                         /* prend toute la hauteur dispo */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;             /* ✅ centrage vertical */
+  gap: 200px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 60px 80px;              /* air haut/bas */
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+}
 
-    .vagues .blocdon h2, .vagues .blocannonces h2, .vagues .blocaide h2 {
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 400;
-        font-style: italic;
-        font-size: 16px;
-        color: gray;
-    }
+.vagues .blocdon,
+.vagues .blocannonces,
+.vagues .blocaide{
+  flex: 0 1 280px;
+  width: 280px;
+  max-width: 100%;
+  margin: 0;
 
-    .vagues .bottomvagues img{
-        width: 100%;        
-        margin-bottom: 0px;
-        padding-bottom: 0px;
-    }
+  background: #fff;
+  border: 2px solid gray;
+  padding: 25px;
+  text-align: center;
 
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+              rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  box-sizing: border-box;
+}
+
+.vagues .blocdon:hover,
+.vagues .blocannonces:hover,
+.vagues .blocaide:hover{
+  transform: translateY(-5px);
+  box-shadow: rgba(50, 50, 93, 0.35) 0px 20px 40px -5px,
+              rgba(0, 0, 0, 0.4) 0px 10px 20px -8px;
+  border-color: #E40039;
+}
+
+.vagues .blocdon h1,
+.vagues .blocannonces h1,
+.vagues .blocaide h1{
+  font-weight: 900;
+  font-size: 22px;
+  color: #000;
+  margin: 0 0 6px;
+}
+
+.vagues .blocdon h2,
+.vagues .blocannonces h2,
+.vagues .blocaide h2{
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 16px;
+  color: gray;
+  margin: 0;
+}
+
+.vagues .bottomvagues{
+  width: 100%;
+  display: block;
+  margin-top: auto;
+  
+}
+
+/* ✅ Mobile/tablette : vertical (et on réduit le padding global) */
+@media (max-width: 900px){
+  .vagues{
+   position:relative;
+    padding: 40px 0 60px;
+    background-size: cover;
+    min-height: 30vh;
+  }
+
+  .vagues .blocks{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    padding: 40px 16px;
+    box-sizing: border-box;
+  }
+    .vagues .blocks a{
+    display: block;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .vagues .blocdon,
+  .vagues .blocannonces,
+  .vagues .blocaide{
+    width: 100%;
+    max-width: 360px;
+    padding: 20px;
+  }
+
+.vagues img.bottomvagues{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+}
 </style>
 <div class='vagues'>
     <div class="blocks">

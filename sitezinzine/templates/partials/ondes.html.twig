@@ -275,6 +275,93 @@ color: black;
     .bodyondes .glide__arrows img {
       width: 40px;
     }
+    /* =========================
+   SUR LES ONDES – responsive + landscape
+   ========================= */
+
+/* Base plus safe : évite le débordement horizontal */
+.bodyondes{
+  box-sizing: border-box;
+}
+
+/* Images titres : éviter qu’elles forcent trop large */
+.bodyondes .ondestitres img{
+  max-width: 150px;
+  height: auto;
+}
+
+/* <= 1024px : padding moins agressif */
+@media (max-width: 1024px){
+  .bodyondes{
+    padding: 0 40px;
+  }
+
+  /* Flèches moins “loin” */
+  .bodyondes .glide__arrow--left{ left: -30px; }
+  .bodyondes .glide__arrow--right{ right: -30px; }
+
+  .bodyondes .glide__arrow img{ width: 52px; }
+}
+
+/* <= 768px : on réduit encore et on garde les flèches visibles */
+@media (max-width: 768px){
+  .bodyondes{
+    padding: 0 16px;
+  }
+
+  .bodyondes .ondestitres{
+    gap: 14px;
+  }
+
+  .bodyondes .ondestitres img{
+    width: 90px;
+    margin: 0 10px;
+    padding-bottom: 0;
+  }
+
+  .bodyondes h1{ font-size: 26pt; }
+  .bodyondes h3{ font-size: 16pt; }
+
+  /* Les flèches passent DANS le container pour éviter les valeurs négatives */
+  .bodyondes .glide__arrow--left{ left: 6px; }
+  .bodyondes .glide__arrow--right{ right: 6px; }
+  .bodyondes .glide__arrow img{ width: 38px; }
+}
+
+/* Mobile en paysage : hauteur faible -> cartes moins hautes + titres plus compacts */
+@media (max-width: 900px) and (orientation: landscape){
+  .bodyondes{
+    padding: 0 16px;
+  }
+
+  .bodyondes .carousel{
+    height: 240px;           /* baisse la hauteur */
+    margin: 18px 0;          /* moins d’air vertical */
+  }
+
+  .bodyondes .image_carousel{
+    height: 120px;           /* image moins haute */
+  }
+
+  .bodyondes .date_carousel{
+    font-size: 18px;
+  }
+
+  .bodyondes .titre_carousel{
+    font-size: 16px;
+  }
+
+  .bodyondes .categorie_carousel{
+    height: 46px;            /* bandeau moins haut */
+    font-size: 14px;
+  }
+
+  /* flèches visibles sans déborder */
+  .bodyondes .glide__arrow--left{ left: 6px; }
+  .bodyondes .glide__arrow--right{ right: 6px; }
+  .bodyondes .glide__arrow img{ width: 34px; }
+}
+
   }
   </style>
 
@@ -337,15 +424,18 @@ color: black;
 </ul>
 
       </div>
-      <div class="glide__arrows" data-glide-el="controls">
-        <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="/images/previous.png"></button>
-        <button class=" glide__arrow glide__arrow--right" data-glide-dir=">
-          "><img src="/images/next.png">
-        </button>
-      </div>
+     <div class="glide__arrows" data-glide-el="controls">
+  <button class="glide__arrow glide__arrow--left" data-glide-dir="<">
+    <img src="/images/previous.png" alt="Précédent">
+  </button>
+
+  <button class="glide__arrow glide__arrow--right" data-glide-dir=">">
+    <img src="/images/next.png" alt="Suivant">
+  </button>
+</div>
+
       </div>
     </div>
-  </div>
-</div>
+  
       
       

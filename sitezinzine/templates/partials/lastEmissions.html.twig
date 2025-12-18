@@ -1,363 +1,336 @@
 <style>
-    @media screen and (min-width: 1024px) {
-        
-    
-    .bodylast {
-    background: linear-gradient(#E4013A, #B81C61);
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-}
-.bodylast h1, .bodylast h3 {
-    color: white;
-    text-align: center;
+/* =========================
+   ÉMISSIONS RÉCENTES
+   ========================= */
+
+.bodylast{
+  background: linear-gradient(#E4013A, #B81C61);
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.bodylast h1 {
-    font-size: 36pt;
+.bodylast .top img,
+.bodylast .bottom{
+  width: 100%;
+  display: block; /* évite les petits décalages inline */
 }
 
-.bodylast h3 {
-    font-size: 24pt;
+/* ===== Header titre ===== */
+.bodylast .titrelast{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 18px;
+  padding: 20px 16px 10px;
 }
-  
-/* Grid adaptable */
-.bodylast article {
+
+.bodylast .titrelast img{
+  width: 120px;
+  height: auto;
+  display:block;
+}
+
+.bodylast h1, .bodylast h3{
+  color: #fff;
+  text-align: left;
+  margin: 0;
+}
+
+.bodylast h1{
+  font-weight: 900;
+  font-size: clamp(24px, 3.2vw, 36px);
+  line-height: 1.05;
+}
+
+.bodylast h3{
+  font-weight: 700;
+  font-size: clamp(14px, 2vw, 24px);
+  margin-top: 6px;
+  line-height: 1.1;
+}
+
+/* ===== Grid desktop ===== */
+@media screen and (min-width: 1024px){
+  .bodylast article{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-/* Cartes */
-.bodylast .carte {
-    background-color: black;
-    width: 100%;
-    max-width: 350px;
-    height: 300px; /* Définir une hauteur fixe pour forcer l'affichage de l'image */
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden; /* Peut être conservé ou ajusté selon tes besoins */
-}
-
-/* Texte et éléments internes */
-.bodylast .categorie, .bodylast .titre, .bodylast .date {
-    margin: 10px;
-    text-align: center;
-}
-
-.bodylast .theme {
-    background-color: #7E4095;
-    padding: 8px;
-    color: white;
-    font-weight: bold;
-}
-
-/* Icône d'écoute */
-.bodylast .ecoute img {
-    width: 30px;
-}
-
-.bodylast article {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(250px, 1fr)); /* 3 cartes par ligne */
-    grid-auto-flow: row dense; /* Force le remplissage correct des lignes */
-    grid-auto-rows: auto;
-    gap:  60px 100px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-}
-
-    .bodylast .carte {
-        
-        display: block;
-        background-color: black;
-        width: 350px;
-        height: 300px;
-        position: relative;
-        flex-direction: row;
-      
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .bodylast .carte:hover {
-    transform: translateY(-5px); /* Légère élévation */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus marquée */
-}
-
-    .bodylast .categorie {
-        
-        background-color: #35BAC0;
-        font-family: "Source Code Pro", monospace;
-        font-optical-sizing: auto;
-        font-weight: 600;
-        font-size: 16px;
-        font-style: normal;
-        color: white;
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-top: -10px;
-        padding: 5px;
-        text-align: center;
-    }
-
-  .bodylast .titre {
-        font-family: "Montserrat", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: 800;
-        font-size: 25px;
-        font-style: normal;
-        color: white;
-        text-wrap: balance;
-        margin-left: 20px;
-        margin-right: 20px;
-        padding: 5px;
-        -webkit-text-stroke-width: 0.5px;
-        -webkit-text-stroke-color: black;
-      
-    }
-    .bodylast .titre p {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;      /* 👉 Limite à 2 lignes */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;    /* 👉 Affiche "…" si le texte déborde */
-        }
-
-    .bodylast .date {
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        font-size: 20px;
-        color: white;
-        margin-left: 20px;
-    }
-
-
-    .bodylast .ecoute {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        margin-right: 5px;
-        margin-bottom: 5px;
-    }
-
-    .bodylast .ecoute img {
-        width: 40px;
-    }
-
-    .bodylast .ecoute a {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-}
-
-
-    .bodylast .bottom img{
-        width: 100%;
-        margin-bottom: 0px;
-        padding-bottom: 0px;
-        
-    }
-
-    .bodylast .top img{
-        width: 100%;
-    }
-    .bodylast .titrelast {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .bodylast .titrelast img {
-        all: unset;
-        width: 150px;
-        margin:0 60px;
-        padding-bottom: 15px;
-    }
-
-    .bodylast a {
-        text-decoration: none;
-    }
-    .bodylast .shadow {
-        width: 70px;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        box-shadow: -8px 6px 20px 2px #000000;
-    }
-
-    .bodylast .theme {
-        background-color: #7E4095;
-        font-family: "Source Code Pro", monospace;
-        text-align: center;
-        font-size: 17px;
-        margin: 0px;
-        padding: 10px;
-        color: white;
-        -webkit-text-stroke-width: 0.5px;
-        -webkit-text-stroke-color: black;
-    }
-
-    .bodylast .transparent {
-        all: unset;
-        width: 350px;
-        height: 150px;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        max-height: 100%;
-        background: rgba(163, 163, 142, 0.5) /* Grey background with 30% opacity */
-
-    }
-    }
-
-   
-   /* Responsive */
-@media screen and (max-width: 1023px) {
-
-.bodylast {
-    background: linear-gradient(#E4013A, #B81C61);
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-}
-.bodylast .top img{
-    width: 100%;
-}
-    /* Grid adaptable */
-.bodylast article {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 50px;
-    padding: 20px;
+    grid-template-columns: repeat(3, 350px);
     justify-content: center;
+    gap: 60px 100px; /* <-- comme toi, bien aéré */
+    padding: 20px 20px 50px;
+    margin: 0 auto;
+  }
+
+  .bodylast .carte{
+    width: 350px;
+    height: 300px;
+  }
 }
 
-/* Cartes */
-.bodylast .carte {
-    display: flex;
-    flex-direction: column;
-    background-color: black;
+/* ===== Grid tablette/mobile ===== */
+@media screen and (max-width: 1023px){
+  .bodylast article{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    justify-content: center;
+    gap: 26px;
+    padding: 16px 14px 40px;
+  }
+
+  .bodylast .carte{
     width: 100%;
     max-width: 350px;
-    height: auto;
-    position: relative;
-    margin: auto;
-    overflow: hidden;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
+    height: 300px; /* on garde la “vibe” desktop */
+    margin: 0 auto;
+  }
+
+  .bodylast .titrelast{
+    justify-content:flex-start;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+ @media (max-width: 480px){
+  .bodylast .titrelast img{
+    height: 55px;
+    width: 55px;
+  }
 }
 
-/* Texte et éléments internes */
-.bodylast .categorie, .bodylast .titre, .bodylast .date {
-    margin: 10px;
-    text-align: center;
 }
 
-.bodylast .theme {
-    background-color: #7E4095;
-    padding: 10px;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    border-radius: 5px;
+/* ===== Carte ===== */
+.bodylast .carte{
+  position: relative;
+  overflow: hidden;
+  background-color: #000;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,.45);
+  transition: transform .2s ease, box-shadow .2s ease;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-/* Icône d'écoute */
-.bodylast .ecoute {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+.bodylast .carte:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
 }
 
-.bodylast .ecoute a {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
+.bodylast a{ text-decoration:none; }
+
+/* Bandeau thème en haut */
+.bodylast .theme{
+  background-color: #7E4095;
+  font-family: "Source Code Pro", monospace;
+  text-align: center;
+  font-size: 15px;
+  margin: 0;
+  padding: 10px 12px;
+  color: white;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: black;
 }
 
+/* ===== Voile “transparent” RECTANGULAIRE en bas, plein largeur ===== */
+/* ===== Voile : commence au milieu du bandeau catégorie ===== */
+.bodylast .transparent{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-.bodylast .ecoute img {
-    width: 40px;
-    transition: transform 0.3s;
-}
-
-.bodylast .ecoute img:hover {
-    transform: scale(1.1);
-}
-
+  height: 37%;                  /* hauteur du voile */
  
+
+  background: rgba(163,163,142,0.55);
+  z-index: 1;
+  pointer-events: none;
 }
-    
-    
+
+/* Le contenu texte reste au-dessus du voile */
+.bodylast .content{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px 12px;
+  z-index: 2;
+}
+
+.bodylast .categorie{
+  background-color: #35BAC0;
+  font-family: "Source Code Pro", monospace;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+
+  margin: 0 10px;
+  margin-top: -10px;
+  padding: 6px 10px;
+
+  text-align: center;
+  border-radius: 8px;
+
+  position: relative;
+  z-index: 2; /* au-dessus du voile */
+}
+
+/* le voile est en dessous du contenu, mais on veut que son "début"
+   soit à mi-hauteur du bandeau catégorie : on le remonte de 50% de la hauteur du bandeau */
+.bodylast .content .categorie{
+  /* rien ici, c’est juste pour le sélecteur si tu veux plus tard */
+}
+
+.bodylast .content:has(.categorie) ~ .transparent{
+  /* ne marche pas partout (has) -> on ne l'utilise pas */
+}
+
+.bodylast .titre{
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: white;
+  margin: 10px 18px 6px;
+  padding: 0;
+  
+  line-height: 1.15;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bodylast .date{
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: white;
+  margin: 0 18px 0;
+}
+
+/* ===== Bouton écoute : au-dessus de tout (et sans “réserver” de place) ===== */
+.bodylast .ecoute{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 5;
+}
+
+.bodylast .ecoute a{
+  position: relative;
+  z-index: 6;
+}
+
+.bodylast .ecoute img{
+  width: 40px;
+  height: 40px;
+  display:block;
+}
+.bodylast .theme p,
+.bodylast .categorie p,
+.bodylast .titre p,
+.bodylast .date p{
+  margin: 0;
+}
+
+/* Mobile : un peu plus compact */
+@media (max-width: 480px){
+  .bodylast .titre{ font-size: 20px; }
+  .bodylast .date{ font-size: 16px; }
+  .bodylast .categorie{ font-size: 14px; }
+}
+
+/* Mobile en paysage : hauteur faible, on compacte */
+@media (max-width: 900px) and (orientation: landscape) {
+
+  /* BODYLAST : titres + grille plus compacts */
+  .bodylast .titrelast{
+    padding: 12px 12px 6px;
+    gap: 12px;
+  }
+
+  .bodylast .titrelast img{
+    width: 80px; /* au lieu de 120 */
+  }
+
+  .bodylast article{
+    gap: 18px;
+    padding: 12px 10px 24px;
+  }
+
+  /* Cartes un peu moins hautes en paysage (hauteur écran limitée) */
+  .bodylast .carte{
+    height: 240px;
+  }
+
+  /* Textes un poil plus petits pour éviter les collisions */
+  .bodylast .titre{ font-size: 20px; }
+  .bodylast .date{ font-size: 16px; }
+}
+
 </style>
-<div class='bodylast'>
-    <div>
-        <div class="top">
-            <img src="/images/bottom-header.gif"></div>
-            <div class="titrelast">
-                <img src="/images/illu-radio-libre.gif">
-                    <div>
-                        <h1>
-                            ÉMISSIONS RÉCENTES
-                        </h1>
-                        <h3>
-                            À réécouter
-                        </h3>
-                    </div>
+<div class="bodylast">
+    <div class="top">
+        <img src="/images/bottom-header.gif" alt=""></div>
+        <div class="titrelast">
+            <img src="/images/illu-radio-libre.gif" alt="">
+                <div>
+                    <h1>
+                        ÉMISSIONS RÉCENTES
+                    </h1>
+                    <h3>
+                        À réécouter
+                    </h3>
                 </div>
-                <article>
-                    {% for lastEmissionByGroupTheme in lastEmissionsByTheme %}
-                        {% set bgImage = '' %}
-                        {% if lastEmissionByGroupTheme.theme_thumbnail is not empty %}
-                            {% set bgImage = asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail|url_encode) %}
-                        {% else %}
-                            {% set bgImage = asset('/uploads/images/emissions/emission-zinzine.jpg') %}
-                        {% endif %}
-                        <div class="carte" style="background-image: url('{{ bgImage }}'); background-size: cover; background-repeat: no-repeat;">
-                            <div class="theme">
-                                <p>
-                                    {{ lastEmissionByGroupTheme.theme_group | default('') | upper }}
-                                </p>
+            </div>
+            <article>
+                {% for lastEmissionByGroupTheme in lastEmissionsByTheme %}
+                    {% if lastEmissionByGroupTheme.theme_thumbnail is not empty %}
+                        {% set bgImage = asset('/uploads/images/theme/' ~ lastEmissionByGroupTheme.theme_thumbnail|url_encode) %}
+                    {% else %}
+                        {% set bgImage = asset('/uploads/images/emissions/emission-zinzine.jpg') %}
+                    {% endif %}
+                    <div class="carte" style="background-image:url('{{ bgImage }}');">
+                        <div class="theme">
+                            <p>
+                                {{ lastEmissionByGroupTheme.theme_group|default('')|upper }}
+                            </p>
+                        </div>
+                    <div class="transparent"></div>
+                        {# lien vers la page émission (zone texte + voile) #}
+                        <a href="{{ path('emission.show', {id: lastEmissionByGroupTheme.emission_id}) }}" aria-label="Voir l'émission">
+                        <div class="content">
+                                <div class="categorie">
+                                    <p>
+                                        {{ lastEmissionByGroupTheme.categorie_titre|upper }}
+                                    </p>
+                                </div>
+                                <div class="titre">
+                                    <p>
+                                        {{ lastEmissionByGroupTheme.emission_titre }}
+                                    </p>
+                                </div>
+                                <div class="date">
+                                    <p>
+                                        Le
+                                        {{ lastEmissionByGroupTheme.last_diffusion|format_datetime('medium','short', locale='fr') }}
+                                    </p>
+                                </div>
                             </div>
-                            <a href="{{ path('emission.show', {id: lastEmissionByGroupTheme.emission_id}) }}" style="text-decoration: none;">
-                                <div class="transparent">
-                                    <div class="categorie">
-                                        <p>
-                                            {{ lastEmissionByGroupTheme.categorie_titre | upper }}
-                                        </p>
-                                    </div>
-                                    <div class="titre">
-                                        <p>
-                                            {{ lastEmissionByGroupTheme.emission_titre }}
-                                        </p>
-                                    </div>
-                                    <div class="date">
-                                        <p>
-                                            Le
-                                            {{ lastEmissionByGroupTheme.last_diffusion | format_datetime('medium', 'short', locale='fr') }}
-                                        </p>
-                                    </div>
-                                    <div class="ecoute">
-                                        <a href="{{ lastEmissionByGroupTheme.emission_url }}" target="_blank" aria-label="Écouter l'émission">
-                                            <img src="/images/lecteur.png" alt="Écoutez l'émission"></a>
-                                        </div>
-                                    </div>
-                                </a>
-                                <div class="shadow"></div>
+                        </a>
+                        {# bouton écoute séparé (reste cliquable) #}
+                        <div class="ecoute">
+                            <a href="{{ lastEmissionByGroupTheme.emission_url }}" target="_blank" rel="noopener" aria-label="Écouter l'émission">
+                                <img src="/images/lecteur.png" alt="Écoutez l'émission"></a>
                             </div>
-                        {% endfor %}
-                    </article>
-                </div>
-                <img class="bottom" src="/images/top-content-dechire-D.gif"></div>
+                        </div>
+                    {% endfor %}
+                </article>
+                <img class="bottom" src="/images/top-content-dechire-D.gif" alt=""></div>
                 
