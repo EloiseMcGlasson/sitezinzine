@@ -3,102 +3,19 @@
 {% block title %}Zone d'écoute Radio Zinzine{% endblock %}
 
 {% block body %}
-<style>
-    .bodyzoneecoute {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-       display: flex;
-       flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        font-size: 24px;
-        position: relative;
-min-height: 100vh;
-    }
-    .top img{
-        width: 100%;
-    }
-h1 {
-    font-size: 36px; 
-    color: white; 
-    text-align: center;
-    margin-top: 20px;
-}
+  <div class="editable">
+    <div class="page-card">
+      {% if page.mainImageName %}
+        <div class="page-hero">
+          <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}">
+        </div>
+      {% endif %}
 
-.frequences-container {
-    max-width: 800px;
-    margin: 3rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 8px;
-    color: #1C1C1A;
-    font-family: "Montserrat", sans-serif;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    line-height: 1.6;
-}
+      <h1 class="page-title">{{ page.title }}</h1>
 
-.frequences-container h2 {
-    color: #E40039;
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.frequences-list {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.8rem 1.5rem;
-}
-
-.frequences-list li {
-    background-color: #f4f4f4;
-    border-left: 5px solid #E40039;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-}
-
-.dab-info p {
-    margin-bottom: 1rem;
-}
-
-.dab-info em {
-    color: #B81C61;
-    font-style: italic;
-}
-
-.carte-info {
-    margin-top: 2rem;
-    color: #666;
-    font-size: 0.95rem;
-}
-
-</style>
-
-<div class="body">
-<div class="top">
-            <img src="/images/bottom-header.gif"></div>
- <div class="editable">
-                <div class="page-card">
-                    {# Image de tête optionnelle #}
-                    {% if page.mainImageName %}
-                        <div class="page-hero">
-                            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
-                        {% endif %}
-                        <h1 class="page-title">
-                            {{ page.title }}
-                        </h1>
-                        <div class="page-content">
-                            {{ page.content|raw }}
-                        </div>
-                </div>
-            </div>
-
-</div>
+      <div class="page-content">
+        {{ page.content|raw }}
+      </div>
+    </div>
+  </div>
 {% endblock %}

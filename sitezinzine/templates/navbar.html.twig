@@ -4,7 +4,7 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    flex-wrap:wrap;                 /* permet au menu de passer dessous */
+    flex-wrap:wrap;
     gap:12px;
     font-family:"Montserrat Alternates",sans-serif;
     background:#fff;
@@ -13,10 +13,8 @@
     margin:0;
   }
 
-  /* évite la petite “ligne” due aux espacements inline */
   nav.site-nav img{ display:block; }
 
-  /* zone gauche */
   .site-nav .brand{
     display:flex;
     align-items:center;
@@ -26,7 +24,6 @@
   .site-nav .brand img.logo{ height:60px; width:auto; }
   .site-nav .brand img.aix{ width:110px; height:auto; }
 
-  /* zone droite : DON + burger */
   .site-nav .nav-actions{
     display:flex;
     align-items:center;
@@ -35,7 +32,6 @@
     flex:0 0 auto;
   }
 
-  /* bouton don */
   .site-nav .don-btn{
     display:inline-flex;
     align-items:center;
@@ -45,18 +41,17 @@
     font-weight:700;
     color:#fff;
     background:#E4013A;
-    border-radius:8px;              /* plus “carré” */
+    border-radius:8px;
     padding:10px 12px;
-    min-height:36px;                /* plus régulier */
+    min-height:36px;
     box-shadow:0 3px 5px #000;
     text-decoration:none;
     white-space:nowrap;
   }
   .site-nav .don-btn:hover{ background:#B81C61; }
 
-  /* burger */
   .site-nav .burger{
-    display:none;                   /* visible seulement en mobile */
+    display:none;
     flex-direction:column;
     cursor:pointer;
     padding:10px;
@@ -71,7 +66,6 @@
     border-radius:2px;
   }
 
-  /* ✅ reset UL/LI : empêche les puces (les petits points) en toutes circonstances */
   .site-nav ul.nav-menu{
     list-style:none !important;
     margin:0 !important;
@@ -82,7 +76,6 @@
     list-style:none !important;
   }
 
-  /* menu desktop */
   .site-nav ul.nav-menu{
     display:flex;
     align-items:center;
@@ -107,10 +100,8 @@
   .site-nav ul.nav-menu a:hover{ color:#E40039; }
   .site-nav ul.nav-menu a.active{ color:#E40039 !important; }
 
-  /* icône recherche */
   .site-nav .nav-link-icon img{ height:24px; width:auto; }
 
-  /* séparateurs desktop (taille réelle) */
   .site-nav li.sep{
     display:flex;
     align-items:center;
@@ -126,21 +117,17 @@
       padding:10px 12px;
     }
 
-    /* ✅ permet de garder DON + burger sur la même ligne : brand peut rétrécir */
     .site-nav .brand{
       flex:1 1 auto;
       min-width:0;
       gap:8px;
     }
 
-    /* logos plus petits */
     .site-nav .brand img.logo{ height:44px; }
     .site-nav .brand img.aix{ width:78px; }
 
-    /* burger visible */
     .site-nav .burger{ display:flex; }
 
-    /* bouton DON plus compact et plus “carré” */
     .site-nav .don-btn{
       padding:8px 10px;
       font-size:12px;
@@ -148,93 +135,105 @@
       min-height:34px;
     }
 
-    /* menu dropdown sous la barre */
+    /* menu dropdown sous la barre (fermé) */
     .site-nav ul.nav-menu{
       display:none;
       width:100%;
-      flex-direction:column;
-      align-items:stretch;
-      justify-content:flex-start;
-      gap:6px;
       font-size:16pt;
-      padding:10px 0;
+      padding:10px 12px;
       border-top:1px solid #eee;
-      order: 99;                    /* passe sous brand + actions */
+      order: 99;
       flex: 0 0 100%;
     }
-    .site-nav ul.nav-menu.active{ display:flex; }
 
-    .site-nav ul.nav-menu li{ padding:0 12px; }
+    /* ✅ ouvert : 2 liens par ligne */
+    .site-nav ul.nav-menu.active{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px 12px;
+      align-items:stretch;
+    }
+
+    .site-nav ul.nav-menu li{
+      padding:0;
+      margin:0;
+      display:flex;
+    }
 
     .site-nav ul.nav-menu a{
       width:100%;
-      padding:10px 0;
-      justify-content:flex-start;
+      padding:10px 8px;
+      justify-content:center;
+      text-align:center;
+      border-radius:6px;
     }
 
-    /* pas de séparateurs en mobile */
     .site-nav li.sep{ display:none !important; }
   }
 
+  /* très petit : 1 colonne */
+  @media (max-width:420px){
+    .site-nav ul.nav-menu.active{
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 900px) and (orientation: landscape) {
-  /* NAV : compacte un peu */
-  nav.site-nav{
-    padding: 6px 10px;
-    gap: 8px;
-  }
+    nav.site-nav{
+      padding: 6px 10px;
+      gap: 8px;
+    }
 
-  .site-nav .brand img.logo{ height: 42px; }
-  .site-nav .brand img.aix{ width: 74px; }
+    .site-nav .brand img.logo{ height: 42px; }
+    .site-nav .brand img.aix{ width: 74px; }
 
-  .site-nav .don-btn{
-    padding: 7px 10px;
-    font-size: 12px;
-    min-height: 32px;
-  }
+    .site-nav .don-btn{
+      padding: 7px 10px;
+      font-size: 12px;
+      min-height: 32px;
+    }
 
-  .site-nav .burger{
-    padding: 8px;
-  }
+    .site-nav .burger{
+      padding: 8px;
+    }
 
-  /* Si le menu burger est ouvert : éviter qu’il prenne toute la page */
-  .site-nav ul.nav-menu.active{
-    max-height: 60vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+    .site-nav ul.nav-menu.active{
+      max-height: 60vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 </style>
+
 
 <nav class="site-nav">
   <div class="brand">
     <img class="logo" src="/images/logo.gif" alt="Logo de Radio Zinzine">
-   {#  <a href="https://www.radiozinzineaix.org/" target="_blank" rel="noopener">
+
+    {#  <a href="https://www.radiozinzineaix.org/" target="_blank" rel="noopener">
       <img class="aix" src="/images/zinzine-aix.png" alt="Logo de Radio Zinzine Aix">
     </a> #}
-     <a class="don-btn {{ app.request.attributes.get('_route') == 'don' ? 'active' : '' }}"
-    href="{{ path('don') }}">
-    FAIRE UN DON
-</a>
+
+    <a class="don-btn {{ app.request.attributes.get('_route') == 'don' ? 'active' : '' }}"
+       href="{{ path('don') }}">
+      FAIRE UN DON
+    </a>
   </div>
 
- 
-
-    <button class="burger" type="button"
-      aria-label="Ouvrir/fermer le menu"
-      aria-expanded="false"
-      onclick="
-        const nav = this.closest('nav');
-        const menu = nav.querySelector('.nav-menu');
-        const isOpen = menu.classList.toggle('active');
-        this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      ">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
+  <button class="burger" type="button"
+    aria-label="Ouvrir/fermer le menu"
+    aria-expanded="false"
+    aria-controls="mainMenu"
+    onclick="
+      const nav = this.closest('nav');
+      const menu = nav.querySelector('#mainMenu');
+      const isOpen = menu.classList.toggle('active');
+      this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    ">
+    <span></span><span></span><span></span>
+  </button>
 
   <ul class="nav-menu" id="mainMenu">
-    <li>DEMO</li>
-
     <li>
       <a class="{{ app.request.attributes.get('_route') == 'home' ? 'active' : '' }}"
          href="{{ path('home') }}">Accueil</a>
@@ -272,10 +271,6 @@
       <a class="{{ app.request.attributes.get('_route') starts with 'annonce.' ? 'active' : '' }}"
          href="{{ path('annonce.index') }}">Annonces</a>
     </li>
-    <li>
-    <div class="nav-actions">
-   
-</div>
-</li>
-</ul>
+  </ul>
 </nav>
+

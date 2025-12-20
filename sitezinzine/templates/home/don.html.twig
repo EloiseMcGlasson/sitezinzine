@@ -1,28 +1,21 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-    Radio Zinzine
-{% endblock %}
-{% block body %}
 
-    <div class="body">
-        <div class="top">
-            <img src="/images/bottom-header.gif"></div>
-            <div class="editable">
-            <div class="page-card">
-                {# Image de tête optionnelle #}
-                {% if page.mainImageName %}
-                    <div class="page-hero">
-                    <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
-                    alt="{{ page.title }}">
-                    </div>
-                {% endif %}
-                    <h1 class="page-title"> {{ page.title }}
-                </h1>
-                <div class="page-content">
-                    {{ page.content|raw }}
-                </div>
-            </div>
-            </div>
+{% block title %}Don{% endblock %}
+
+{% block body %}
+  <div class="editable">
+    <div class="page-card">
+      {% if page.mainImageName %}
+        <div class="page-hero">
+          <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}">
         </div>
-    {% endblock %}
-    
+      {% endif %}
+
+      <h1 class="page-title">{{ page.title }}</h1>
+
+      <div class="page-content">
+        {{ page.content|raw }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

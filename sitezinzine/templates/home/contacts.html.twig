@@ -2,110 +2,71 @@
 
 {% block title %}Contacts radio Zinzine{% endblock %}
 
-{% block body %}<style>
-    .bodycontacts {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-       display: flex;
-       flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        font-size: 24px;
-        position: relative;
-    min-height: 100vh;
-        }
-        .top img{
-        width: 100%;
+{% block body %}
+  <style>
+    /* =========================
+       Spécifique CONTACTS
+       ========================= */
+
+    /* Listes de contacts avec icône 📍 */
+    .page-content ul{
+      list-style: none;
+      padding-left: 0;
+      margin: 0 0 1.2rem 0;
     }
-    h1 {
-    color: white;
-    font-size: 2rem;
-    text-align: center;
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
-    font-family: "Montserrat Alternates", sans-serif;
-}
-    .contacts {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 8px;
-    font-family: "Montserrat", sans-serif;
-    color: #1C1C1A;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    line-height: 1.6;
-}
 
-.contacts h1 {
-    color: #E40039;
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
+    .page-content li{
+      margin: 0.6rem 0;
+      padding-left: 1.6rem;
+      position: relative;
+    }
 
-.contacts p {
-    margin-bottom: 1rem;
-}
+    .page-content li::before{
+      content: "📍";
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
 
-.contacts ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 1.5rem;
-}
+    /* Liens */
+    .page-content a{
+      color: #E40039;
+      font-weight: 700;
+      text-decoration: none;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
 
-.contacts li {
-    margin-bottom: 0.5rem;
-    padding-left: 1.2rem;
-    position: relative;
-}
+    .page-content a:hover{
+      text-decoration: underline;
+      color: #B81C61;
+    }
 
-.contacts li::before {
-    content: "📍";
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: #E40039;
-    font-size: 1rem;
-}
+    /* Mobile : liens plus visibles */
+    @media (max-width: 768px){
+      .page-content a{
+        text-decoration: underline;
+      }
+    }
+  </style>
 
-.contacts a {
-    color: #E40039;
-    text-decoration: none;
-    font-weight: bold;
-}
+  <div class="editable">
+    <div class="page-card">
 
-.contacts a:hover {
-    text-decoration: underline;
-    color: #B81C61;
-}
+      {% if page.mainImageName %}
+        <div class="page-hero">
+          <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}">
+        </div>
+      {% endif %}
 
-    </style>
-    
-    <div class="body">
-    <div class="top">
-            <img src="/images/bottom-header.gif"></div>
-     <div class="editable">
-                <div class="page-card">
-                    {# Image de tête optionnelle #}
-                    {% if page.mainImageName %}
-                        <div class="page-hero">
-                            <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}" alt="{{ page.title }}"></div>
-                        {% endif %}
-                        <h1 class="page-title">
-                            {{ page.title }}
-                        </h1>
-                        <div class="page-content">
-                            {{ page.content|raw }}
-                        </div>
-                </div>
-            </div>
+      <h1 class="page-title">{{ page.title }}</h1>
+
+      <div class="page-content">
+        {{ page.content|raw }}
+      </div>
+
     </div>
-
-
-  
+  </div>
 {% endblock %}

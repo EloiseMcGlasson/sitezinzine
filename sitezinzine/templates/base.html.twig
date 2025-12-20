@@ -24,9 +24,35 @@
                 color: white;
             }
 
-            .top img {
-                width: 100%;
-            }
+           .top{
+  line-height: 0;    /* supprime tout résidu de baseline */
+}
+
+.top img{
+  display: block;    /* supprime le gap inline */
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+            /* Layout global vertical */
+.site-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Le main prend tout l’espace disponible */
+.site-layout main {
+  flex: 1 0 auto;
+}
+
+/* Footer reste en bas naturellement */
+.site-layout footer {
+  flex-shrink: 0;
+}
+
 
 </style> 
     </head>
@@ -42,9 +68,13 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>{% endblock %}{% block javascripts %}
-{{ encore_entry_script_tags('app') }}{% endblock %}</head><body>{# Lecteur en dehors de turbo-frame #}<turbo-frame id="player" data-turbo-permanent>
+{{ encore_entry_script_tags('app') }}{% endblock %}</head><body class="site-layout">{# Lecteur en dehors de turbo-frame #}<turbo-frame id="player" data-turbo-permanent>
 {% include 'partials/lecteur.html.twig' %}</turbo-frame>{# Contenu principal dans turbo-frame #}<header>
-{% include 'navbar.html.twig' %}</header><main>
+{% include 'navbar.html.twig' %}</header>
+<main class="body">
+ <div class="top">
+    <img src="/images/bottom-header.gif" alt="">
+  </div>
 {% block body %}
 
 {% endblock %}</main>
