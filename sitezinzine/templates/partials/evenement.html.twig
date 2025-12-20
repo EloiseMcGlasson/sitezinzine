@@ -1,227 +1,335 @@
 <style>
-    .bodyEvenement {
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-       display: flex;
-       flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 700;
-        font-style: normal;
-        min-height: 100vh;
-        
-    
-    }
-    
-    .bodyEvenement h1 {
-        color:white;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 900;
-        font-style: normal;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        font-size: 34pt;
-        color: #E40039;
-    }
-    .bodyEvenement h3 {
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 300;
-        font-style: normal;
-        justify-content: center;
-        text-align: center;
-        color:white;
-        font-size: 24pt;
-        color: #E40039;
-        
-    }
+  /* =========================
+     Section full width (fond)
+     ========================= */
+  .evenements-section,
+  .evenements-section *{
+    box-sizing: border-box;
+  }
 
-    .bodyEvenement .titreevenement {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-.bodyEvenement .titreevenement img {
-                   all: unset;
-        width: 150px;
-        margin:0 60px;
-        padding-bottom: 15px;
-            }
-    
-    
-    .bodyEvenement article.evenements {
-        display: grid;
-        grid-template-areas:
-            "article1 article1"
-            "article2 article3";
-        grid-template-columns: 1fr 1fr;
-        gap: 60px;
-        padding: 20px;
-        margin: auto;
-        max-width: 1400px;
-    }
+  .evenements-section{
+    width: 100%;
+    background: #fff; /* ✅ bords blancs */
+    font-family: "Montserrat Alternates", sans-serif;
+    padding: 24px 0; /* air vertical (optionnel) */
+  }
 
+  /* =========================
+     Container interne
+     ========================= */
+  .bodyEvenement{
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1400px;
+    padding: 0 60px;  /* desktop : remplace le padding de la grid */
+    display: flex;
+    flex-direction: column;
 
-    .bodyEvenement .evenement:nth-child(1) {
-        grid-area: article1;
-        
-    }
+    /* ❌ pas de min-height: 100vh dans un partial */
+    min-height: auto;
+  }
 
-    .bodyEvenement .evenement:nth-child(2) {
-        grid-area: article2;
-    }
+  .bodyEvenement h1{
+    margin: 0;
+    font-weight: 900;
+    text-align: left;
+    font-size: 34pt;
+    color: #E40039;
+  }
 
-    .bodyEvenement .evenement:nth-child(3) {
-        grid-area: article3;
-    }
+  .bodyEvenement h3{
+    margin: 8px 0 0 0;
+    font-weight: 300;
+    text-align: left;
+    font-size: 24pt;
+    color: #E40039;
+  }
 
-    .bodyEvenement .evenement {
-        display: flex;
-        flex-direction: row;
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-    
-        .bodyEvenement .evenement:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
+  /* =========================
+     Header titre + illu
+     ========================= */
+  .bodyEvenement .titreevenement{
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 32px;
+    padding: 20px 0; /* padding interne au container */
+  }
 
-        .bodyEvenement .evenement .top {
-            flex: 1;
-            max-width: 40%; /* L'image occupe 40% de la largeur */
-        }
+  .bodyEvenement .titreevenement .titrebloc{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+  }
 
-        .bodyEvenement .evenement .top img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+  .bodyEvenement .titreevenement img{
+    all: unset;
+    display: block;
+    height: 100%;
+    width: auto;
+    max-height: 140px;
+    object-fit: contain;
+  }
 
-        .bodyEvenement .evenement .bottom {
-            position: relative; 
-            flex: 2;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .bodyEvenement .evenement .bottom img {
+  /* =========================
+     Grid des évènements (desktop)
+     ========================= */
+  .bodyEvenement article.evenements{
+    display: grid;
+    grid-template-areas:
+      "article1 article1"
+      "article2 article3";
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+
+    /* ✅ plus de padding ici : c’est le container qui gère les bords */
+    padding: 20px 0 40px 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .bodyEvenement .evenement:nth-child(1){ grid-area: article1; }
+  .bodyEvenement .evenement:nth-child(2){ grid-area: article2; }
+  .bodyEvenement .evenement:nth-child(3){ grid-area: article3; }
+  .bodyEvenement .evenement:nth-child(n+4){ grid-column: span 1; }
+
+  /* =========================
+     Carte évènement
+     ========================= */
+  .bodyEvenement .evenement{
+    display: flex;
+    flex-direction: row;
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .bodyEvenement .evenement:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .bodyEvenement .evenement .top{
+    flex: 1;
+    max-width: 40%;
+  }
+
+  .bodyEvenement .evenement .top img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .bodyEvenement .evenement .bottom{
+    position: relative;
+    flex: 2;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bodyEvenement .evenement .date{
+    font-weight: 600;
+    font-size: 14px;
+    color: #E4013A;
+  }
+
+  .bodyEvenement .evenement .titre{
+    font-weight: 800;
+    font-size: 18px;
+    color: #333;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .bodyEvenement .evenement .presentation{
+    font-weight: 400;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* CTA */
+  .bodyEvenement .evenement__cta{
     position: absolute;
     bottom: 10px;
     right: 10px;
-    width: 50px; /* Ajustez cette valeur selon la taille souhaitée */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .bodyEvenement .evenement__cta img{
+    width: 50px;
     height: auto;
-    
-    
-}
+    display: block;
+  }
 
-        .bodyEvenement .evenement .date {
-            font-family: "Montserrat Alternates", sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            color: #E4013A;
-        }
+  /* =========================
+     Responsive
+     ========================= */
 
-        .bodyEvenement .evenement .titre {
-            font-family: "Montserrat Alternates", sans-serif;
-            font-weight: 800;
-            font-size: 18px;
-            color: #333;
-        }
+  /* <= 1024px */
+  @media (max-width: 1024px){
+    .evenements-section{
+      padding: 18px 0;
+    }
 
-        .bodyEvenement .evenement .presentation {
-            font-family: "Montserrat Alternates", sans-serif;
-            font-weight: 400;
-            font-size: 14px;
-            color: #666;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 10;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    
-        @media screen and (max-width: 768px) {
-            .bodyEvenement .titreevenement {
-                flex-direction: column;
-                text-align: center;
-            }
+    .bodyEvenement{
+      padding: 0 24px; /* ✅ bords gérés ici */
+      max-width: none;
+    }
 
-            .bodyEvenement .titreevenement img {
-                margin: 0 0 20px 0;
-            }
-    
-            .bodyEvenement article {
-                grid-template-areas:
-                    "article1"
-                    "article2"
-                    "article3";
-                grid-template-columns: 1fr;
-            }
-    
-            .bodyEvenement .evenement {
-                flex-direction: column;
-            }
+    .bodyEvenement article.evenements{
+      gap: 28px;
+      padding: 16px 0 28px 0;
+    }
+  }
 
-            .bodyEvenement .evenement .top {
-                max-width: 100%;
-            }
+  /* <= 768px */
+  @media (max-width: 768px){
+    .bodyEvenement{
+      padding: 0 16px;
+    }
 
-            .bodyEvenement .evenement .top img {
-                height: 200px;
-            }
+    .bodyEvenement .titreevenement{
+      gap: 16px;
+      padding: 14px 0;
+    }
 
-            .bodyEvenement .evenement .bottom {
-                padding: 15px;
-            }
-        }
-    </style>
-    
-    <div class='bodyEvenement'>
-    
-        <div class="titreevenement">
-            <img src="/images/illu-evenements.gif">
-                <div>
-                    <h1>
-                        ÉVÈNEMENTS
-                    </h1>
-                    <h3>
-                        Des prochaines semaines
-                    </h3>
-                </div>
-        </div>
-        
-        <article class="evenements">
-            {% for evenement in evenements %}
-            <div class="evenement evenement-{{ loop.index }}">
-                <div class="top">
-                    {% if evenement.thumbnail %}
-                    <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
-                    {% endif %}
-                </div>
-                <div class="bottom">
-                    <div class="date">
-                        {{ "Le " ~ evenement.dateDebut|format_date('long', locale='fr') }} {{ evenement.horaire }}
-                    </div>
-                    <div class="titre">
-                        {{ evenement.titre }}
-                    </div>
-                    <div class="presentation">
-                        {{ evenement.presentation|raw }}
-                    </div>
-                    <div>
-                    <a href="{{ path('showEvenement', {id: evenement.id }) }}">
+    .bodyEvenement .titreevenement img{
+      max-height: 92px;
+    }
 
-                    <img src="/images/lire-la-suite.gif"></div>
-                </a>
-                
-                </div>
-            </div>
-            {% endfor %}
-        </article>
+    .bodyEvenement h1{ font-size: 24pt; }
+    .bodyEvenement h3{ font-size: 16pt; margin-top: 6px; }
+
+    .bodyEvenement article.evenements{
+      grid-template-areas:
+        "article1"
+        "article2"
+        "article3";
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 12px 0 24px 0;
+    }
+
+    .bodyEvenement .evenement{
+      flex-direction: column;
+    }
+
+    .bodyEvenement .evenement .top{
+      max-width: 100%;
+    }
+
+    .bodyEvenement .evenement .top img{
+      height: 200px;
+    }
+
+    .bodyEvenement .evenement .bottom{
+      padding: 15px;
+      padding-bottom: 70px;
+    }
+  }
+
+  /* Landscape */
+  @media (max-width: 1024px) and (orientation: landscape){
+    .bodyEvenement article.evenements{
+      grid-template-areas: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .bodyEvenement .evenement{
+      flex-direction: row;
+    }
+
+    .bodyEvenement .evenement .top{
+      max-width: 45%;
+    }
+
+    .bodyEvenement .evenement .top img{
+      height: 100%;
+      min-height: 140px;
+    }
+
+    .bodyEvenement .evenement .presentation{
+      -webkit-line-clamp: 6;
+    }
+
+    .bodyEvenement .evenement .bottom{
+      padding-bottom: 60px;
+    }
+  }
+
+  /* Ultra étroit */
+  @media (max-width: 320px){
+    .bodyEvenement .titreevenement{
+      flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .bodyEvenement h1,
+    .bodyEvenement h3{
+      text-align: center;
+    }
+
+    .bodyEvenement .titreevenement img{
+      max-height: 64px;
+    }
+  }
+</style>
+
+<div class="evenements-section">
+  <div class="bodyEvenement">
+    <div class="titreevenement">
+      <img src="/images/illu-evenements.gif" alt="">
+      <div class="titrebloc">
+        <h1>ÉVÈNEMENTS</h1>
+        <h3>Des prochaines semaines</h3>
+      </div>
     </div>
+
+    <article class="evenements">
+      {% for evenement in evenements %}
+        <div class="evenement evenement-{{ loop.index }}">
+          <div class="top">
+            {% if evenement.thumbnail %}
+              <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
+            {% endif %}
+          </div>
+
+          <div class="bottom">
+            <div class="date">
+              {{ "Le " ~ evenement.dateDebut|format_date('long', locale='fr') }} {{ evenement.horaire }}
+            </div>
+
+            <div class="titre">
+              {{ evenement.titre }}
+            </div>
+
+            <div class="presentation">
+              {{ evenement.presentation|raw }}
+            </div>
+
+            <a class="evenement__cta" href="{{ path('showEvenement', {id: evenement.id }) }}">
+              <img src="/images/lire-la-suite.gif" alt="Lire la suite : {{ evenement.titre }}">
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </article>
+  </div>
+</div>

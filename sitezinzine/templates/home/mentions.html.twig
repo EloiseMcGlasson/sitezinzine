@@ -1,107 +1,24 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-    Mentions Légales Radio Zinzine
-{% endblock %}
+
+{% block title %}Mentions légales Radio Zinzine{% endblock %}
+
 {% block body %}
-    <style>
-     .bodymentions {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        font-size: 16px; /* Taille plus petite pour améliorer la lisibilité */
-        color: #fff; /* Texte en blanc pour plus de contraste */
-        position: relative;
-        min-height: 100vh;
-        box-sizing: border-box;
-    }
-        .top img{
-        width: 100%;
-    }
-    .bodymentions .mentions {
-        max-width: 800px; /* Limiter la largeur pour une meilleure lisibilité */
-        margin: 20px auto; /* Centrer le contenu */
-        padding: 20px;
-        background-color: rgba(0, 0, 0, 0.8); /* Fond semi-transparent pour le contraste */
-        border-radius: 10px; /* Coins arrondis pour un aspect moderne */
-    }
-    .bodymentions h1, .bodymentions h2, .bodymentions h3 {
-        color: #ffffff; /* Couleur des titres en blanc */
-        font-weight: 700; /* Mettre les titres en gras pour les distinguer */
-        margin-top: 20px;
-    }
+  <div class="editable">
+    <div class="page-card">
+      {% if page.mainImageName %}
+        <div class="page-hero">
+          <img
+            src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
+            alt="{{ page.title }}"
+          >
+        </div>
+      {% endif %}
 
-    .bodymentions h2, .bodymentions h3 {
-        font-size: 1.4rem; /* Taille un peu plus petite que le h1 */
-    }
+      <h1 class="page-title">{{ page.title }}</h1>
 
-    .bodymentions p {
-        line-height: 1.8;
-        margin-bottom: 15px;
-    }
-
-    .bodymentions ul {
-        padding-left: 20px;
-        list-style-type: disc;
-        margin-bottom: 15px;
-        background: transparent;
-    }
-
-    .bodymentions ul li {
-        margin-bottom: 8px;
-    }
-
-    .bodymentions a {
-        color: #ffcc00; /* Jaune pour les liens */
-        text-decoration: none; /* Pas de soulignement des liens */
-    }
-
-    .bodymentions a:hover {
-        text-decoration: underline; /* Souligner le lien au survol */
-    }
-
-    .bodymentions strong {
-        font-weight: bold;
-    }
-
- 
-    .bodymentions > h1, .bodymentions > h2, .bodymentions > h3, .bodymentions > p {
-        margin-top: 0;
-    }
-
-    /* Formater le texte de la date de mise à jour */
-    .bodymentions p strong {
-        font-size: 1.2rem;
-        color: white
-    }
-    
- 
-    </style>
-    <div class="body">
-        <div class="top">
-            <img src="/images/bottom-header.gif" alt="Logo"></div>
-              <div class="editable">
-            <div class="page-card">
-                {# Image de tête optionnelle #}
-                {% if page.mainImageName %}
-                    <div class="page-hero">
-                    <img src="{{ asset('uploads/pages/' ~ page.mainImageName) }}"
-                    alt="{{ page.title }}">
-                    </div>
-                {% endif %}
-                    <h1 class="page-title"> {{ page.title }}
-                </h1>
-                <div class="page-content">
-                    {{ page.content|raw }}
-                </div>
-            </div>
-            </div>
-            </div>
-        {% endblock %}
-        
+      <div class="page-content">
+        {{ page.content|raw }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

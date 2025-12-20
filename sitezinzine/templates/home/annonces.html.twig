@@ -4,276 +4,213 @@
 {% endblock %}
 {% block body %}
 
-    <style>
-    .bodyadminannonce {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        max-width: 100%;
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        height: 100vh;
-    }
+<style>
+  /* =========================
+     Annonces – sécurité
+     ========================= */
+  .annonces-grid,
+  .annonces-grid *{
+    box-sizing: border-box;
+  }
 
-    .bodyadminannonce .top img {
-        width: 100%;
-    }
-    .bodyadminannonce h1 {
-            text-align: center;
-            color: #ffffff;
-            font-size: 2em;
-            margin-top: 20px;
-            font-family: "Montserrat Alternates", sans-serif;
-            font-weight: 800;
-            font-style: bold;
-        }
-    .bodyadminannonce .annonce {
-        background-color: transparent;
-        color: white;
-        display: grid;
-        margin:  20px 40px;
-        align-items: center;
-        width: calc(100% - 80px); /* Largeur calculée en tenant compte des marges */
-    }
+  /* =========================
+     Titre + CTA
+     ========================= */
+  .annonces-title{
+    text-align: center;
+    color: #fff;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    font-size: clamp(24px, 4vw, 36px);
+    margin: 24px 0 12px;
+  }
 
-    .bodyadminannonce section {
-        border: solid 1px #ccc;
-        border-radius: 8px;
-        display: grid;
-        grid-template-columns: 150px auto 150px; /* Colonnes fixes pour le contenu */
-        background-color: black;
-        padding: 15px;
-        transition: background-color 0.3s ease;
-        min-width: 0; /* Empêche le dépassement */
-        overflow: hidden; /* Cache le contenu qui dépasse */
-    }
+  .annonces-create{
+    text-align: center;
+    margin-bottom: 32px;
+  }
 
-    .bodyadminannonce section:hover {
-        background-color: #333;
-    }
+  .btn-create-annonce{
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+    background: #fff;
+    border-radius: 999px;
+    border: 3px solid #000;
+    text-decoration: none;
+    box-shadow: 3px 6px 12px rgba(0,0,0,0.4);
+  }
 
-    .bodyadminannonce a {
-        padding: 14px 16px;
-        color: white;
-        text-decoration: none;
-        font-weight: 800;
-    }
+  .btn-create-annonce:hover{
+    background: #E40039;
+    color: #000;
+  }
 
-    .bodyadminannonce a:hover {
-        color: #E40039;
-    }
-
-    .bodyadminannonce .col1 {
-        width: 150px;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5px;
-    }
-
-    .bodyadminannonce .col1 img {
-        width: 150px;
-        margin: 10px;
-        padding: 10px;
-        border-radius: 8px;
-    }
-
-    .bodyadminannonce .col2 {
-        padding: 10px;
-        overflow: hidden; /* Cache le contenu qui dépasse */
-        word-wrap: break-word; /* Permet la césure des mots longs */
-        margin: 15px;
-    }
-
-    .bodyadminannonce .col2 p {
-        margin: 5px 0;
-        padding-left: 15px;
-    }
- 
-    .bodyadminannonce .presentation {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.5;
-        margin-top: 15px !important;
-        
-        color: #cecece;
-    }
-
-    .bodyadminannonce em {
-        font-style: italic !important;
-    }
-
-    .bodyadminannonce strong {
-        font-weight: 700 !important;
-    }
-
-    .bodyadminannonce .annonces-row {
+  /* =========================
+     Grille principale
+     ========================= */
+  .annonces-grid{
     display: grid;
+
+    /* Desktop : 2 colonnes stables */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 24px;
+    padding: 0 24px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* =========================
+     Carte annonce
+     ========================= */
+  .annonce-card{
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 16px;
+
+    background: #000;
+    border-radius: 12px;
+    padding: 16px;
+    color: #fff;
+    border: 1px solid #444;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .annonce-card:hover{
+    transform: translateY(-3px);
+    background: #222;
+  }
+
+  .annonce-image img{
     width: 100%;
-    grid-template-columns: repeat(2, 1fr); /* Deux colonnes égales */
-    gap: 20px; /* ✅ Espacement entre les annonces */
-    margin-bottom: 20px;
-    justify-content: center; /* ✅ Centre bien les annonces */
-}
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    object-fit: cover;
+  }
 
+  .annonce-content{
+    min-width: 0;
+  }
 
+  .annonce-title{
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0 0 6px;
+  }
 
-/* Responsive design amélioré */
-@media (max-width: 1200px) {
-    .bodyadminannonce .annonces-row {
-        grid-template-columns: 1fr;
+  .annonce-title a{
+    color: #fff;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .annonce-title a:hover{
+    color: #E40039;
+  }
+
+  .annonce-meta,
+  .annonce-dates{
+    font-size: 0.85rem;
+    color: #ccc;
+    margin-bottom: 6px;
+  }
+
+  .annonce-presentation{
+    font-size: 0.9rem;
+    color: #ddd;
+    line-height: 1.4;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* =========================
+     Responsive (robuste)
+     ========================= */
+
+  /* <= 900px : 1 colonne (inclut beaucoup de mobiles landscape) */
+  @media (max-width: 900px){
+    .annonces-grid{
+      grid-template-columns: 1fr;
+      padding: 0 16px 32px;
+      gap: 18px;
     }
-    
-    .bodyadminannonce section {
-        grid-template-columns: 100px auto 100px;
-    }
+  }
 
-    .bodyadminannonce .col1 {
-        width: 100px;
-    }
-
-    .bodyadminannonce .col1 img {
-        width: 100%;
-        max-width: 100px;
-    }
-    
-}
-
-@media (max-width: 768px) {
-    .bodyadminannonce .annonce {
-        margin: 10px;
-        width: calc(100% - 20px);
-    }
-
-    .bodyadminannonce section {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-    }
-
-    .bodyadminannonce .col1, .bodyadminannonce .col2 {
-        width: 100%;
-    }
-}
-    .bodyadminannonce h1 {
-            text-align: center;
-            color: #ffffff;
-            font-size: 2em;
-            margin-top: 20px;
-            font-family: "Montserrat Alternates", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-    .bodyadminannonce .create {
-        margin: auto;
-        padding: 20px;
-    }
-    .bodyadminannonce .btn-create-annonce {
-        text-decoration: none;
-        padding: 5px;
-        font-size: 1.2em;
-        color: #000000;
-        background-color: #ffffff;
-        border-radius: 26px;
-        -webkit-border-radius: 26px;
-        -moz-border-radius: 26px;
-        border: 4px solid black;
-        box-shadow: 3px 7px 13px #444444;
-        -webkit-box-shadow: 3px 7px 13px #444444;
-        -moz-box-shadow: 3px 7px 13px #444444;
+  /* <= 600px : la card passe en colonne (image au-dessus) */
+  @media (max-width: 600px){
+    .annonce-card{
+      grid-template-columns: 1fr;
     }
 
-    .bodyadminannonce .btn-create-annonce:hover {
-        padding: 5px;
-        background-color: #E40039;
-        color: #000000;
-        border-radius: 24px;
-        -webkit-border-radius: 24px;
-        -moz-border-radius: 24px;
-        box-shadow: 3px 7px 13px #777777;
-        -webkit-box-shadow: 3px 7px 13px #777777;
-        -moz-box-shadow: 3px 7px 13px #777777;
+    .annonce-image{
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
     }
-
-
-    
+  }
 </style>
+
   
-    <div class="bodyadminannonce">
-        <div class="top">
-            <img src="/images/bottom-header.gif"></div>
-        <h1>Les annonces des auditeurices</h1>
-            <p class="create">
-            <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
-            Créer une nouvelle annonce
-        </a>
-            </p>
-            <article>
-                <div class="annonce">
-                    {% for annonce in annonces %}
-                        {% if loop.index == 0 or loop.index % 2 == 1 %}
-                            {# ✅ Ouvre une nouvelle ligne TOUS LES 2 ÉLÉMENTS #}
-                            <div class="annonces-row">
-                            {% endif %}
-                            <section>
-                                <div class="col1">
-                                    {% if annonce.thumbnail %}
-                                        <img src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}" alt="Photo de {{ annonce.titre }}">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col2">
-                                        <div class="type">
-                                            {{ annonce.type }}
-                                        </div>
-                                        <div class="titre">
-                                            <a href="{{ path('annonce.show', {id: annonce.id }) }}">
-                                                {{ annonce.titre }}
-                                            </a>
-                                        </div>
-                                        <div class="orga">
-                                            {{ annonce.organisateur }}
-                                        </div>
-                                        <div class="ville">
-                                            {{ annonce.ville }}
-                                        </div>
-                                        <div class="departement">
-                                            {{ annonce.departement }}
-                                        </div>
-                                        <div class="debutFin">
-                                            {{ annonce.dateDebut|date('d/m/Y') }}
-                                            -
-                                            {{ annonce.dateFin|date('d/m/Y') }}
-                                            -
-                                            {{ annonce.horaire }}
-                                        </div>
-                                        <div class="presentation">
-                                            {{ annonce.presentation | raw }}
-                                        </div>
-                                    </div>
-                                    
-                                        
-                                       
-                                    
-                                        
-                                    </section>
-                                    {% if loop.index0 % 2 == 1 or loop.last %}
-                                    {# ✅ Ferme la ligne après 2 annonces ou si c'est la DERNIÈRE annonce seule #}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </article>
-                </div>
-            {% endblock %}
+
+  <h1 class="annonces-title">Les annonces des auditeurices</h1>
+
+  <p class="annonces-create">
+    <a class="btn-create-annonce" href="{{ path('annonce.create') }}">
+      Créer une nouvelle annonce
+    </a>
+  </p>
+
+  <article class="annonces-grid">
+    {% for annonce in annonces %}
+      <section class="annonce-card">
+        <div class="annonce-image">
+          {% if annonce.thumbnail %}
+            <img
+              src="{{ vich_uploader_asset(annonce, 'thumbnailFile') }}"
+              alt="Photo de {{ annonce.titre }}"
+            >
+          {% endif %}
+        </div>
+
+        <div class="annonce-content">
+          <div class="annonce-type">{{ annonce.type }}</div>
+
+          <h2 class="annonce-title">
+            <a href="{{ path('annonce.show', { id: annonce.id }) }}">
+              {{ annonce.titre }}
+            </a>
+          </h2>
+
+          <div class="annonce-meta">
+            <span>{{ annonce.organisateur }}</span> ·
+            <span>{{ annonce.ville }} ({{ annonce.departement }})</span>
+          </div>
+
+          <div class="annonce-dates">
+            {{ annonce.dateDebut|date('d/m/Y') }}
+            –
+            {{ annonce.dateFin|date('d/m/Y') }}
+            · {{ annonce.horaire }}
+          </div>
+
+          <div class="annonce-presentation">
+            {{ annonce.presentation|raw }}
+          </div>
+        </div>
+    </section>
+    {% endfor %}
+  </article>
+
+{% endblock %}
+
             
     
