@@ -1,312 +1,195 @@
 {% extends 'base.html.twig' %}
 
-{% block title 'Créer une annonce' %}
+{% block title %}Créer une annonce{% endblock %}
 
 {% block body %}
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-
-
 <style>
-    .anedit img {
-        width: 150px;
-        margin: auto;
-    }
-    .anedit {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        }
-    .anedit .top img{
-        width: 100%;
-    }
+  .annonce-form-page,
+  .annonce-form-page *{ box-sizing: border-box; }
 
-    .anedit .tox-checklist > li:not(.tox-checklist--hidden) {
-    list-style: none;
-    margin: 0.25em 0;
-    position: relative;
-    }
-    .anedit .tox-checklist > li:not(.tox-checklist--hidden)::before {
-    content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-unchecked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2215%22%20height%3D%2215%22%20x%3D%22.5%22%20y%3D%22.5%22%20fill-rule%3D%22nonzero%22%20stroke%3D%22%234C4C4C%22%20rx%3D%222%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
-    cursor: pointer;
-    height: 1em;
-    margin-left: -1.5em;
-    margin-top: 0.125em;
-    position: absolute;
-    width: 1em;
-    }
-    .anedit .tox-checklist li:not(.tox-checklist--hidden).tox-checklist--checked::before {
-    content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-checked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%234099FF%22%20fill-rule%3D%22nonzero%22%20rx%3D%222%22%2F%3E%3Cpath%20id%3D%22Path%22%20fill%3D%22%23FFF%22%20fill-rule%3D%22nonzero%22%20d%3D%22M11.5703186%2C3.14417309%20C11.8516238%2C2.73724603%2012.4164781%2C2.62829933%2012.83558%2C2.89774797%20C13.260121%2C3.17069355%2013.3759736%2C3.72932262%2013.0909105%2C4.14168582%20L7.7580587%2C11.8560195%20C7.43776896%2C12.3193404%206.76483983%2C12.3852142%206.35607322%2C11.9948725%20L3.02491697%2C8.8138662%20C2.66090143%2C8.46625845%202.65798871%2C7.89594698%203.01850234%2C7.54483354%20C3.373942%2C7.19866177%203.94940006%2C7.19592841%204.30829608%2C7.5386474%20L6.85276923%2C9.9684299%20L11.5703186%2C3.14417309%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
-    }
-
-    .anedit input[type=text], .anedit select {
+  .annonce-form-page{
     width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
-  .anedit input[type=submit] {
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .anedit input[type=submit]:hover {
-    background-color: #45a049;
-  }
-
-  .anedit form {
-    padding: 50px;
-  }
-  .anedit div.mb-3 {
-    margin: 15px;
-  }
-  .anedit label {
-    margin-bottom: 15px;
-  }
-  
-  .anedit #mceu_14 {
-    margin: 15px 0;
-  }
-
-  .anedit textarea {
-    width: auto;
-  }
-  .anedit .form-label { color:white;
-  font-family: "Montserrat Alternates", sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  
-  font-size: 16pt;
-  }
-  .anedit input {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  .anedit h1 {
-    color:white;
+    padding: 28px 16px 48px;
     font-family: "Montserrat Alternates", sans-serif;
+    color: #fff;
+  }
+
+  .annonce-form-card{
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    background: rgba(249,249,249,0.98);
+    color: #1C1C1A;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    overflow: hidden;
+  }
+
+  .annonce-form-header{
+    padding: 22px 20px 12px;
+    text-align: center;
+  }
+
+  .annonce-form-title{
+    margin: 0;
     font-weight: 900;
-    font-style: normal;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 36pt;
-    margin: 20px;
+    font-size: clamp(20px, 4vw, 34px);
+    color: #333;
+    line-height: 1.15;
   }
 
-  .anedit .form-check {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
+  .annonce-form-body{
+    padding: 18px 20px 22px;
+  }
+
+  .form-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+  }
+
+  .form-grid--1{ grid-template-columns: 1fr; }
+  .form-grid--dates{ grid-template-columns: 1fr 1fr; }
+
+  .form-block{ margin-top: 14px; }
+
+  .annonce-form-page label{
     display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-family: "Montserrat Alternates", sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  color: white;
-  font-size: 16pt;
-  align-items: center;
-    text-align: center;
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #333;
+    font-size: 0.95rem;
   }
-  .anedit .ligne1, .anedit .ligne3, .anedit .ligne4, .anedit .ligne6, .anedit .ligne7 {
+
+  .annonce-form-page input,
+  .annonce-form-page select,
+  .annonce-form-page textarea{
+    width: 100%;
+    padding: 12px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    color: #1C1C1A;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .annonce-form-page textarea{ min-height: 160px; }
+
+  .field-limit{
+    margin-top: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #B81C61;
+  }
+
+  .annonce-form-actions{
+    margin-top: 18px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between; /* 🔥 Espacement maximal entre les champs */
-    gap: 10px; /* 🔥 Ajoute un espace entre les champs */
-    width: 100%; /* 🔥 Occupe toute la largeur du parent */
-    
-}
+    justify-content: center;
+  }
 
-.anedit .ligne1 > div, .anedit .ligne3 > div, .anedit .ligne4 > div, .anedit .ligne6 > div, .anedit .ligne7 > div {
-    flex: 1; /* 🔥 Étire chaque champ pour qu'ils occupent un espace équitable */
-    min-width: 200px; /* 🔥 Empêche que les champs deviennent trop petits */
-}
+  .annonce-form-page button[type="submit"]{
+    width: auto;
+    border: 0;
+    cursor: pointer;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-family: "Montserrat Alternates", sans-serif;
+    background: #fff;
+    color: #000;
+    border: 3px solid #000;
+    box-shadow: 3px 6px 12px rgba(0,0,0,0.35);
+  }
 
-.anedit .error-message {
-    color: white !important; /* 🔥 Force la couleur blanche */
-    font-size: 0.9em;
-    font-weight: bold;
-    margin-top: 5px;
-    transition: opacity 0.3s ease-in-out;
-    padding: 5px;
-    border-radius: 5px;
-    text-align: center;
-}
+  .annonce-form-page button[type="submit"]:hover{
+    background: #E40039;
+  }
 
+  .autre-type{ display: none; }
+  .autre-type.is-visible{ display: block; }
 
-.anedit .hidden-textarea {
-    position: absolute;
-    left: -9999px; /* 🔥 Déplace le champ hors écran au lieu de le cacher */
-    visibility: hidden; /* 🔥 Assure qu'il n'est pas visible */
-}
+  @media (max-width: 860px){
+    .form-grid{ grid-template-columns: 1fr; }
+    .form-grid--dates{ grid-template-columns: 1fr; }
+    .annonce-form-body{ padding: 16px 14px 18px; }
+  }
 
-
-
-
-  
+  @media (max-width: 900px) and (orientation: landscape){
+    .annonce-form-page{ padding-top: 18px; }
+  }
 </style>
-<div class="anedit">
-<div class="top">
-<img src="/images/bottom-header.gif'"></div>
-<h1>Créer votre annonce</h1>
 
-  
+<div class="annonce-form-page"
+     data-controller="annonce-form"
+     data-annonce-form-autre-value="__autre__">
+  <article class="annonce-form-card">
+    <header class="annonce-form-header">
+      <h1 class="annonce-form-title">Créer votre annonce</h1>
+    </header>
 
+    <div class="annonce-form-body">
+      {{ form_start(form) }}
 
-    {{ form_start(form) }}
-    <div class="ligne1">
-    {{ form_row(form.titre) }}
-    {{ form_row(form.organisateur) }}
-    {{ form_row(form.type, { 'attr': {'id': 'annonce_type'} }) }}
-  <div id="autre-type-wrapper"{% if form.autreType.vars.data %}style="display: block;"{% else %}style="display: none;"{% endif %}>
-      {{ form_row(form.autreType, { 'attr': {'id': 'annonce_autreType'} }) }}
-  </div>
-    </div>
-   
-<div class="ligne3">
-    {{ form_row(form.ville) }}
-    {{ form_row(form.departement) }}
-    {{ form_row(form.adresse) }}
-    </div>
-    <div class="ligne4">
-    {{ form_row(form.dateDebut, {
-    attr: {
-      'data-controller': 'flatpickr'
-    }
-}) }}
-    {{ form_row(form.dateFin, {
-    attr: {
-      'data-controller': 'flatpickr'
-    }
-}) }}
-    {{ form_row(form.horaire) }}
-    {{ form_row(form.prix) }}
-    </div>
+      <div class="form-grid">
+        {{ form_row(form.titre, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'100'} }) }}
+        {{ form_row(form.organisateur, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'100'} }) }}
 
-    <div class="ligne6" data-controller="tinymce">
-    {{ form_row(form.presentation) }}
-    </div>
-    <div class="ligne7">
-    {{ form_row(form.contact) }}
-    </div>
-    {{ form_end(form) }}
-</div>
+        {{ form_row(form.type, {
+          attr: {
+            'data-action': 'change->annonce-form#toggleAutreType',
+            'data-annonce-form-target': 'typeSelect limitField',
+            'data-maxlength': '50'
+          }
+        }) }}
 
-<script defer>
-document.addEventListener("DOMContentLoaded", function() {
-    let typeSelect = document.getElementById("annonce_type"); // Sélection du menu déroulant
-    let autreTypeWrapper = document.getElementById("autre-type-wrapper"); // Sélection du div contenant autreType
-    let autreTypeInput = document.getElementById("annonce_autreType"); // Sélection de l'input texte
+        <div class="autre-type {% if form.autreType.vars.data %}is-visible{% endif %}" data-annonce-form-target="autreTypeWrapper">
+          {{ form_row(form.autreType, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'50'} }) }}
+        </div>
+      </div>
 
-    function toggleAutreType() {
+      <div class="form-grid form-block">
+        {{ form_row(form.ville, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'50'} }) }}
+        {{ form_row(form.departement, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'50'} }) }}
+        {{ form_row(form.adresse, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'50'} }) }}
+      </div>
+
+      <div class="form-grid form-grid--dates form-block">
+        {{ form_row(form.dateDebut, { attr: {'data-controller':'flatpickr'} }) }}
+        {{ form_row(form.dateFin,   { attr: {'data-controller':'flatpickr'} }) }}
+        {{ form_row(form.horaire,   { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'50'} }) }}
+        {{ form_row(form.prix,      { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'50'} }) }}
+      </div>
+
+      <div class="form-block">
+        {{ form_row(form.thumbnailFile) }}
+      </div>
+
+      {# TinyMCE : preview = CSS du show (richtext) #}
+      <div
+        class="form-block"
+        data-controller="tinymce"
+        data-tinymce-css-value="{{ absolute_url(asset('build/app.css')) }}"
+        data-tinymce-body-class-value="richtext"
+        data-tinymce-upload-url-value="{{ path('public.tinymce.upload') }}"
+      >
+        {{ form_row(form.presentation) }}
+      </div>
+
+      <div class="form-grid form-grid--1 form-block">
+        {{ form_row(form.contact, { attr: {'data-annonce-form-target':'limitField', 'data-maxlength':'100'} }) }}
+      </div>
+
       
-        if (!typeSelect) {
-            console.error("⚠️ ERREUR : annonce_type est NULL !");
-            return;
-        }
-
-        // ✅ Vérifier avec "autre" en minuscule pour correspondre à ChoiceType
-        if (typeSelect.value.toLowerCase() === "autre") {
-          autreTypeInput.style.display = "block"; // 🔥 Affiche l'input au lieu de juste le div
-          autreTypeWrapper.style.display = "block"; // ✅ Afficher le champ si "Autre" est sélectionné
-            
-        } else {
-            autreTypeWrapper.style.display = "none"; // ✅ Cacher le champ sinon
-            autreTypeInput.value = ''; // Réinitialiser si on sélectionne autre chose
-        }
-    }
-
-    // ✅ Vérifie si un type personnalisé est déjà sélectionné
-    if (typeSelect.value.toLowerCase() === "autre") {
-        autreTypeWrapper.style.display = "block";
-    }
-
-    // Exécuter immédiatement pour masquer si nécessaire
-    toggleAutreType();
-
-    // Écouter les changements sur le select
-    typeSelect.addEventListener("change", toggleAutreType);    
-});
-
-
-
-</script>
-
-<script defer>
-document.addEventListener("DOMContentLoaded", function() {
-    // 🔥 Définition des champs et de leurs limites de caractères
-    let fieldsWithLimits = {
-        "annonce_titre": 100,
-        "annonce_organisateur": 100,
-        "annonce_ville": 50,
-        "annonce_adresse": 50,
-        "annonce_horaire": 50,
-        "annonce_prix": 50,
-        "annonce_contact": 100,
-        "annonce_type": 50,
-        "annonce_autreType": 50
-    };
-
-    // 🔥 Fonction de validation
-    function enforceMaxLength(event) {
-        let field = event.target;
-        let maxLength = fieldsWithLimits[field.id];
-
-        // Vérifie si le message d'erreur existe déjà
-        let errorMessage = field.nextElementSibling;
-        if (!errorMessage || !errorMessage.classList.contains("error-message")) {
-            errorMessage = document.createElement("div");
-            errorMessage.className = "error-message";
-            errorMessage.style.color = "red";
-            errorMessage.style.fontSize = "0.9em";
-            errorMessage.style.marginTop = "5px";
-            field.parentNode.appendChild(errorMessage);
-        }
-
-        if (field.value.length >= maxLength) {
-            errorMessage.textContent = `🚨 Ce champ est limité à ${maxLength} caractères.`;
-            field.value = field.value.substring(0, maxLength); // Coupe immédiatement le texte
-        } else {
-            errorMessage.textContent = ""; // Efface le message si la limite n'est pas atteinte
-        }
-    }
-
-    // 🔥 Applique l'événement à tous les champs concernés
-    Object.keys(fieldsWithLimits).forEach(function(fieldId) {
-        let field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener("input", enforceMaxLength);
-        }
-    });
-
-
-});
-</script>
-
-
+      {# IMPORTANT : on rend les champs cachés (CSRF, etc.), MAIS PAS le reste (donc pas de submit caché) #}
+      {{ form_rest(form) }}
+      <div class="annonce-form-actions">
+        <button type="submit">Soumettre l’annonce</button>
+      </div>
+      {{ form_end(form, { render_rest: false }) }}
+    </div>
+  </article>
+</div>
 {% endblock %}

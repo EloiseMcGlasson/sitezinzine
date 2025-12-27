@@ -1,0 +1,270 @@
+<style>
+  /* ============== Base ============== */
+  .emission-list{
+    width: 100%;
+    margin: 0 auto;
+    padding: 0; /* ✅ le padding doit être sur .results */
+  }
+
+  .emission-list,
+  .emission-list *{
+    box-sizing: border-box;
+  }
+
+  .emission-list section{
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: 0 auto 30px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+  }
+
+  .emission-list section:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .emission-list .col1{ flex: 0 0 150px; }
+
+  .emission-list .col1 img{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+  }
+
+  .emission-list .col2{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0; /* ✅ shrink en flex */
+  }
+
+  .emission-list .col2 p{ margin: 0; }
+  .emission-list .horaire{ margin-top: 6px; }
+
+  .emission-list .titre a{
+    color: #E4013A;
+    font-size: 20px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 5px;
+    display: block;
+    font-family: "Montserrat Alternates", sans-serif;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .emission-list .titre a:hover{ color: #B81C61; }
+
+  .emission-list .cat{
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .emission-list .descriptif-content{
+    line-height: 1.5;
+    color: #333;
+    font-family: "Montserrat", sans-serif;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .emission-list .descriptif-content.expanded{
+    -webkit-line-clamp: unset;
+    display: block;
+  }
+
+  .emission-list .descriptif-toggle-btn{
+    margin-top: 8px;
+    padding: 8px 12px;
+  }
+
+  /* ✅ COL3 : même largeur des boutons en desktop */
+  .emission-list .col3{
+    flex: 0 0 170px;              /* un poil plus large que 150 => "Télécharger" respire */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    align-items: stretch;         /* ✅ les liens prennent la même largeur */
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .emission-list .action-link{
+    display: flex;                /* (ok aussi en inline-flex, mais flex aide le stretch) */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+
+    width: 100%;                  /* ✅ même largeur */
+    height: 44px;
+    line-height: 1;
+
+    text-decoration: none;
+    color: #000;
+
+    padding: 8px 12px;            /* ✅ un padding cohérent (moins de “gros bloc”) */
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, color 0.2s ease;
+    background: #fff;
+
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .emission-list .action-link:hover{
+    transform: translateY(-2px);
+    color: #E4013A;
+  }
+
+  .emission-list .action-link img{
+    width: 34px;                  /* ✅ un peu plus petit pour éviter les boutons “trop hauts” */
+    height: 34px;
+    flex: 0 0 auto;
+    display: block;
+  }
+
+  /* ============== Responsive ============== */
+  @media (max-width: 768px){
+
+    .emission-list{
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .emission-list section{
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto 30px;
+      padding: 16px;
+
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+    }
+
+    .emission-list .col2{
+      width: 100%;
+      min-width: 0;
+    }
+
+    .emission-list .col1{
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ✅ MOBILE : col3 ne force PAS de hauteur => plus d’étirement */
+    .emission-list .col3{
+      width: 100%;
+      flex: none;
+      height: auto;               /* ✅ important */
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .emission-list .action-link{
+      width: auto;                /* ✅ en row, on laisse prendre la place nécessaire */
+      height: 40px;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 10px;
+      justify-content: center;
+    }
+
+    .emission-list .action-link img{
+      width: 28px;
+      height: 28px;
+    }
+  }
+</style>
+
+{% set lastDiffusion = emission.lastDiffusion ?? null %}
+
+<section>
+  <div class="col1">
+    {% if emission.thumbnail %}
+      <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+    {% elseif emission.categorie.thumbnail %}
+      <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+    {% elseif emission.theme is defined and emission.theme.thumbnail is defined %}
+      <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+    {% else %}
+      <img src="/images/emission-zinzine.jpg" alt="Image par défaut pour {{ emission.titre }}">
+    {% endif %}
+  </div>
+
+  <div class="col2">
+    <div class="titre">
+      <a href="{{ path('emission.show', { id: emission.id }) }}">
+        {{ emission.titre }}
+        {% if emission.user %} - {{ emission.user.username }}{% endif %}
+      </a>
+    </div>
+
+    <div class="cat">
+      <p>{{ emission.categorie.titre }}</p>
+    </div>
+
+    <div data-controller="descriptif">
+      <div data-descriptif-target="content" class="descriptif-content">
+        <p>{{ emission.descriptif|raw }}</p>
+      </div>
+
+      <button
+        data-action="click->descriptif#toggle"
+        data-descriptif-target="button"
+        class="descriptif-toggle-btn"
+        hidden
+      >
+        Lire la suite
+      </button>
+    </div>
+
+    <p class="horaire">
+      {% if lastDiffusion %}
+        Dernière diffusion le : {{ lastDiffusion|format_datetime('medium', 'short', locale='fr') }}
+      {% else %}
+        Aucune diffusion
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="col3">
+    {% if emission.url %}
+      <a href="{{ emission.url }}" target="_blank" class="action-link">
+        <img src="/images/lecteur.png" alt="Écouter {{ emission.titre }}">
+        Écouter
+      </a>
+
+      <a href="{{ emission.url }}" download target="_blank" class="action-link">
+        <img src="/images/telecharger.png" alt="Télécharger {{ emission.titre }}">
+        Télécharger
+      </a>
+    {% endif %}
+  </div>
+</section>

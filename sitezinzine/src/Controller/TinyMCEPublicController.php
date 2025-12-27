@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -8,43 +8,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class TinyMCEController extends AbstractController
+class TinyMCEPublicController extends AbstractController
 {
-    #[Route('/admin/tinymce/upload', name: 'admin.tinymce.upload', methods: ['POST'])]
+    #[Route('/tinymce/upload', name: 'public.tinymce.upload', methods: ['POST'])]
     public function upload(Request $request, SluggerInterface $slugger): JsonResponse
     {
-        // Optionnel mais conseillé si cette route doit rester admin-only
-        // $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $uploadedFile = $request->files->get('file');
 
         if (!$uploadedFile) {
             return new JsonResponse(['error' => 'Aucun fichier reçu'], 400);
         }
 
-        if ($uploadedFile->getSize() > 5 * 1024 * 1024) {
-            return new JsonResponse(['error' => 'Fichier trop volumineux (max 5 Mo)'], 400);
-        }
+        // (optionnel mais conseillé) limite taille
+        // if ($uploadedFile->getSize() > 5_000_000) { ... }
 
-        if (!in_array($uploadedFile->getMimeType(), ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)) {
+        $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $mime = $uploadedFile->getMimeType();
+
+        if (!$mime || !in_array($mime, $allowed, true)) {
             return new JsonResponse(['error' => 'Format d’image non supporté'], 400);
         }
 
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $slugger->slug($originalFilename);
+        $safeFilename = $slugger->slug($originalFilename)->lower();
+        $extension = $uploadedFile->guessExtension() ?: 'bin';
 
-        $ext = $uploadedFile->guessExtension() ?: 'bin';
-        $newFilename = $safeFilename.'-'.uniqid().'.'.$ext;
+        $newFilename = $safeFilename.'-'.bin2hex(random_bytes(6)).'.'.$extension;
 
         $targetDirectory = $this->getParameter('kernel.project_dir').'/public/uploads/tinymce';
 
         if (!is_dir($targetDirectory)) {
-            mkdir($targetDirectory, 0775, true);
+            @mkdir($targetDirectory, 0775, true);
         }
 
         try {
             $uploadedFile->move($targetDirectory, $newFilename);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse(['error' => 'Erreur pendant l’upload du fichier'], 500);
         }
 

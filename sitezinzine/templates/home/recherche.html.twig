@@ -1,102 +1,100 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Recherche d'émissions{% endblock %}
-
+{% block title %}
+    Recherche d'émissions
+{% endblock %}
 {% block body %}
+    <style>
+.recherche,
+.results{
+  overflow-x: clip;
+}
 
 
-<style>
-    .recherche {
-        background: linear-gradient(#E4013A, #B81C61);
-        background-size: 100%;
-        width: 100%;
-        margin: 0%;
-        padding: 0%;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 500;
-        font-style: normal;
-        
-        }
-    .recherche .top img{
-        width: 100%;
-    }
-   
-    strong {
-        font-weight: 700 !important;
-    }
-    em {
-        font-style: italic !important;
-    }
+  /* box-sizing appliqué au bloc formulaire */
+  .recherche, .recherche * { box-sizing: border-box; }
 
-    .recherche h1 {
-        color: white;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-weight: 900;
-        font-style: normal;
-        text-align: center;
-        font-size: 36pt;
-        margin-bottom: 10px;
-    }
+  /* Les cellules flex doivent pouvoir rétrécir */
+  .search-row > div,
+  .date-range > div { min-width: 0; }
 
-    .recherche h2 {
-        font-size: 20px;
-        text-align: center;
-        margin: 10px; 
-    }
+  .recherche{
+    background: linear-gradient(#E4013A, #B81C61);
+    background-size: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
 
-    .form {
-        padding: 10px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    .search-row {
+  .recherche strong{ font-weight: 700 !important; }
+  .recherche em{ font-style: italic !important; }
+
+  .recherche h1{
+    color: white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+    text-align: center;
+    font-size: 36pt;
+    margin-bottom: 10px;
+  }
+
+  .form{
+    padding: 10px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .search-row{
     display: flex;
     gap: 20px;
     margin-bottom: 20px;
-}
+  }
+  .search-row > div{ flex: 1; }
 
-.search-row > div {
-    flex: 1;
-}
-    .form label {
+  .form label{
     color: white;
     font-family: "Montserrat Alternates", sans-serif;
     font-weight: normal;
     font-size: 16pt;
     margin-bottom: 15px;
-}
+  }
 
-.form input[type=text], 
-.form select, 
-.form input[type=datetime-local] {
+  /* Champs (y compris flatpickr) */
+  .form input[type="text"],
+  .form select,
+  .form input[type="datetime-local"],
+  .form input.flatpickr-input{
     width: 100%;
+    max-width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
-    display: inline-block;
+    display: block;
     border: 1px solid #ccc;
     border-radius: 4px;
+    background: #fff;
     box-sizing: border-box;
-}
-.date-range {
+  }
+
+  .date-range{
     display: flex;
     gap: 20px;
     margin: 15px 0;
-}
+  }
+  .date-range > div{ flex: 1; }
 
-.date-range > div {
-    flex: 1;
-}
-
-.button-group {
+  .button-group{
     display: flex;
     gap: 20px;
     margin: 20px 0;
-}
+  }
 
-button[type=submit],
-button[type=reset] {
+  button[type=submit],
+  button[type=reset]{
     flex: 1;
     background-color: white;
     color: #E4013A;
@@ -108,235 +106,105 @@ button[type=reset] {
     font-weight: bold;
     font-size: 16pt;
     transition: all 0.3s ease;
-}
+  }
 
-button[type=reset] {
+  button[type=reset]{
     background-color: transparent;
     border: 2px solid white;
     color: white;
-}
+  }
 
-button[type=submit]:hover,
-button[type=reset]:hover {
+  button[type=submit]:hover,
+  button[type=reset]:hover{
     background-color: #E4013A;
     color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+  }
 
-button[type=reset]:hover {
+  button[type=reset]:hover{
     background-color: white;
     color: #E4013A;
-}
+  }
 
-    .results {
-        
-    padding: 20px;
-    min-height: 42vh;
-    max-width: 1200px;
-    margin: 0 auto;
+  
 
-    }
-    .results h2 {
-    color: #E4013A;
-    font-size: 24px;
-    margin-bottom: 30px;
-    text-align: center;
-}
+  /* Responsive FORMULAIRE */
+  @media (max-width: 768px){
+    .recherche{ padding-right: 0; padding-left: 0; }
 
-    section {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
-        padding: 20px;
-        display: flex;
-        gap: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-    .col1 {
-        flex: 0 0 150px;
+    .form{ padding: 10px 12px; }
+.imgbottom{
+    margin-bottom: -1px;
+    width: 100%;
+  }
+    .recherche h1{
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 12px;
     }
 
-    .col1 img {
-        width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    .search-row,
+    .date-range,
+    .button-group{
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .col2 {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+    button[type=submit],
+    button[type=reset]{
+      width: 100%;
+      flex: unset;
     }
-
-    .col2 p {
-        margin: 5px 0;
-        padding-left: 15px;
-    }
-    .titre a {
-    color: #E4013A;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-    margin-bottom: 5px;
-    display: block;
-}
-
-.titre a:hover {
-    color: #B81C61;
-}
-.cat {
-    color: #666;
-    font-size: 14px;
-    font-style: italic;
-}
-.descriptif {
-    margin: 10px 0;
-    line-height: 1.5;
-    color: #333;
-}
-.horaire {
-    color: #666;
-    font-size: 14px;
-    margin-top: auto;
-}
-
-/* Message "aucun résultat" */
-.no-results {
-    text-align: center;
-    color: #666;
-    padding: 30px;
-    font-style: italic;
-}
-
-    .highlight {
-    background-color: yellow;
-    font-weight: bold;
-    color: black;
-    padding: 2px 4px;
-    border-radius: 3px;
-}
-.date-range {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 15px;
-}
-
-.date-range > div {
-    flex: 1;
-}
-
-.pagination {
-    background-color: transparent;
-    margin: auto;
-    padding: 10px;
-}
-
-.pagination a:hover {
-    padding: 14px 16px;
-    color: grey;
-    text-decoration: none;
-    font-weight: 800;
-}
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .search-row {
-        flex-direction: column;
-        gap: 10px;
-    }
-    section {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .col1 {
-        flex: 0 0 auto;
-    }
-
-    .col2 {
-        text-align: center;
-    }
-}
+  }
 </style>
-<div class="recherche">
-    <div class="top">
-        <img src="/images/bottom-header.gif">
-    </div>
-
-    <h1>Recherche d'émissions</h1>
-
-        <div class="form">
-            {{ form_start (form) }}
+    <div class="recherche">
+        <h1>
+            Recherche d'émissions
+        </h1>
+        <div class="form" data-controller="reset-form" data-reset-form-url-value="{{ path('emission.recherche') }}">
+            {{ form_start(form, { attr: { 'data-reset-form-target': 'form' } }) }}
             <div class="search-row">
-        <div>{{ form_row (form.titre) }}</div>
-        <div>{{ form_row (form.categorie) }}</div>
-        <div>{{ form_row (form.theme) }}</div>
-    </div>
+                <div>
+                    {{ form_row(form.titre) }}
+                </div>
+                <div>
+                    {{ form_row(form.categorie) }}
+                </div>
+                <div>
+                    {{ form_row(form.theme) }}
+                </div>
+            </div>
             <div class="date-range">
-            {{ form_row(form.dateDebut, {
-    attr: {
-      'data-controller': 'flatpickr'
-    }
-}) }}
-    {{ form_row(form.dateFin, {
-    attr: {
-      'data-controller': 'flatpickr'
-    }
-}) }}
+                {{ form_row(form.dateDebut, { attr: { 'data-controller': 'flatpickr' } }) }}
+                {{ form_row(form.dateFin,   { attr: { 'data-controller': 'flatpickr' } }) }}
+            </div>
+            <div class="button-group">
+                <button type="submit">
+                    Rechercher
+                </button>
+                <button type="reset" data-action="reset-form#reset">
+                    Réinitialiser
+                </button>
+            </div>
+            {{ form_end(form) }}
         </div>
-        <div class="button-group">
-    <button type="submit">Rechercher</button>
-    <button type="reset" onclick="resetForm()">Réinitialiser</button>
-</div>
-            {{ form_end (form) }}
-        </div>
-        
-    <img class="imgbottom" src="{{ asset('images/top-content-dechire-D.gif') }}">
-</div>
-<div class="results">
-    {% if emissions is not empty %}
-        <h2>Résultats de la recherche :</h2>
-            <div class="pagination">
-            {{ knp_pagination_render(emissions) }}
-        
-        </div>
-    {% for emission in emissions %}
-{% include 'partials/list.html.twig' with { emission: emission, searchTerm: searchTerm } %}
-
-{% endfor %}
-
-            <div class="pagination">
-            {{ knp_pagination_render(emissions) }}
-        
-        </div>
-    {% elseif form.vars.submitted %}
-        <p>Aucune émission trouvée pour les critères de recherche.</p>
-    {% endif %}
-</div>
-<script>
-    // Fonction pour réinitialiser le formulaire et rediriger vers la page de recherche
-    function resetForm() {
-        // Réinitialiser les champs du formulaire
-        document.querySelector('form').reset();
-        
-        // Réinitialiser les datepickers Flatpickr
-        document.querySelectorAll('.flatpickr-input').forEach(input => {
-            if (input._flatpickr) {
-                input._flatpickr.clear();
-            }
-        });
-        
-        // Rediriger vers la page de recherche sans paramètres
-        // 👉 Utilise Turbo pour ne pas recharger toute la page (et couper la musique)
-            Turbo.visit('{{ path('emission.recherche') }}');
-    }
-    
+        <img class="imgbottom" src="/images/top-content-dechire-D.gif" alt=""></div>
+        {# ✅ Tout ce qui concerne l'affichage des émissions est externalisé #}
+        {% include 'partials/_emission_results.html.twig' with { emissions: emissions, form: form, searchTerm: searchTerm } %}
+        <script>
+  window.addEventListener('load', () => {
+    const docW = document.documentElement.clientWidth;
+    const offenders = [...document.querySelectorAll('*')].filter(el => el.scrollWidth > docW);
+    console.log("Viewport:", docW);
+    console.log("Offenders:", offenders.map(el => ({
+      tag: el.tagName,
+      class: el.className,
+      id: el.id,
+      scrollWidth: el.scrollWidth
+    })));
+    offenders.forEach(el => el.style.outline = '3px solid lime');
+  });
 </script>
-{% endblock %}
+
+    {% endblock %}
+    

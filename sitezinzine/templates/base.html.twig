@@ -25,7 +25,8 @@
             }
 
            .top{
-  line-height: 0;    /* supprime tout résidu de baseline */
+  line-height: 0;
+  vertical-align: top;    /* supprime tout résidu de baseline */
 }
 
 .top img{
@@ -53,6 +54,10 @@
   flex-shrink: 0;
 }
 
+
+@media (max-width: 768px){
+  .top img{ margin-top: -1px; }
+}
 
 </style> 
     </head>
