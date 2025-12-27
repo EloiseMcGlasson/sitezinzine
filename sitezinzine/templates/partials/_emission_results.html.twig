@@ -1,0 +1,127 @@
+<style>
+  .results{
+    background: #fff;
+    width: 100%;
+    padding: 24px 16px 48px;
+    overflow-x: hidden;
+  }
+
+  .results,
+.results *{
+  box-sizing: border-box;
+}
+
+
+  /* ✅ UN SEUL conteneur centré */
+  .results-inner{
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .results h2{
+    color: #E4013A;
+    font-size: 24px;
+    margin: 0 0 18px 0;
+    text-align: center;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+  }
+
+  .no-results{
+    text-align: center;
+    color: #666;
+    padding: 30px 0;
+    font-style: italic;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  /* Pagination */
+  .pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0 18px;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .pagination a,
+  .pagination span{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 800;
+    color: #E4013A;
+  }
+
+  .pagination a{
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  }
+
+  .pagination a:hover{
+    background: #E4013A;
+    color: #fff;
+  }
+
+  .pagination .current,
+  .pagination span.current{
+    background: #E4013A;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.10);
+  }
+
+  .pagination .disabled,
+  .pagination span.disabled{
+    opacity: 0.45;
+  }
+
+  @media (max-width: 480px){
+    .pagination{
+      gap: 4px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .pagination a,
+    .pagination span{
+      min-width: 34px;
+      height: 34px;
+      padding: 0 8px;
+      font-size: 14px;
+    }
+  }
+</style>
+
+<div class="results">
+  <div class="results-inner">
+    {% if emissions is not empty %}
+      <h2>Résultats de la recherche :</h2>
+
+      <div class="pagination">
+        {{ knp_pagination_render(emissions) }}
+      </div>
+
+      <div class="emission-list">
+        {% for emission in emissions %}
+          {% include 'partials/_emission_card.html.twig' with { emission: emission, searchTerm: searchTerm } %}
+        {% endfor %}
+      </div>
+
+      <div class="pagination">
+        {{ knp_pagination_render(emissions) }}
+      </div>
+
+    {% elseif form.vars.submitted %}
+      <p class="no-results">Aucune émission trouvée pour les critères de recherche.</p>
+    {% endif %}
+  </div>
+</div>

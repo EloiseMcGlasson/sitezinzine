@@ -10,6 +10,7 @@ Encore
   .setOutputPath('public/build/')
   .setPublicPath('/build')
   .addEntry('app', './assets/app.js')
+  .addStyleEntry('annonce_show', './assets/styles/annonce_show.css')
   .splitEntryChunks()
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()

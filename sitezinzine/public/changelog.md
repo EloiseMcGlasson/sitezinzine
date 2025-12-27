@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.64] - 2025-12-27
+### Correction
+- Correction du CSS coté public (tout les partials, les éditables, navbar, annonces, emissions recherche, login, register), restructuration de l'architecture du CSS (factorisation dans base + editable.css, personnalisation possible sur les pages elles même).
+
 ## [1.0.63] - 2025-12-18
 ### Correction
 - correction du yml vitch pour suppression correcte des fichiers entêtes des pages éditables.(ter)
