@@ -1,30 +1,38 @@
 {% extends 'base.html.twig' %}
-{% block title "Catégorie : " ~ categorie.titre %}
-{% block body %}
-    <style>
 
-.catblock {
+{% block title %}Catégorie : {{ categorie.titre }}{% endblock %}
+
+{% block body %}
+<style>
+  /* ====== Layout global ====== */
+  .catblock,
+  .catblock *{
+    box-sizing: border-box;
+  }
+
+  .catblock{
     background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
     width: 100%;
-    margin: 0%;
-    padding: 0%;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     font-family: "Montserrat Alternates", sans-serif;
     font-weight: 700;
     font-style: normal;
-    position: relative;
     color: white;
     line-height: 1.5em;
-}
+  }
 
-.top img {
+  .top img{
     width: 100%;
-}
+    display: block;
+  }
 
-.fiche-emission {
+  /* ====== Fiche catégorie ====== */
+  .fiche-emission{
     max-width: 900px;
+    width: calc(100% - 32px);
     margin: 2rem auto;
     background-color: #fff;
     color: #1C1C1A;
@@ -32,103 +40,173 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     padding: 1.5rem;
     font-family: "Montserrat Alternates", sans-serif;
-}
+  }
 
-.bloc-haut {
+  .bloc-haut{
     display: flex;
     gap: 1.5rem;
     align-items: flex-start;
     flex-wrap: wrap;
-}
+  }
 
-.bloc-image img {
+  .bloc-image img{
     width: 200px;
     border-radius: 6px;
     object-fit: cover;
     max-width: 100%;
-}
+    height: auto;
+    display: block;
+  }
 
-.bloc-texte {
+  .bloc-texte{
     flex: 1;
-}
+    min-width: 0;
+  }
 
-.bloc-texte h1 {
+  .bloc-texte h1{
     font-size: 1.6rem;
     margin-bottom: 1rem;
     color: #E40039;
-}
+    overflow-wrap: anywhere;
+  }
 
-.descriptif {
+  .descriptif{
     font-size: 1rem;
     line-height: 1.6;
     margin: 15px;
-}
+    overflow-wrap: anywhere;
+  }
 
-.titre {
-    text-align: center;
-    margin: 10px;
-}
+  .btn-back{
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #E40039;
+    font-weight: bold;
+    text-decoration: none;
+  }
 
-.emissionsdelacategorie {
-    background-color: white;
-}
+  .btn-back:hover{
+    text-decoration: underline;
+  }
 
-.catdescriptif {
-    margin: 15px;
-}
-
-.bottom img {
+  .bottom img{
     width: 100%;
     display: block;
     margin: 0;
     padding: 0;
-}
+  }
 
+  /* ====== Section émissions (fond blanc sans “double wrapper”) ====== */
+  .emissionsdelacategorie{
+    background: #fff;      /* ✅ fond blanc de la section */
+    color: #1C1C1A;
+    padding: 24px 0 10px;  /* espace autour des résultats */
+  }
+
+  /* ✅ On “neutralise” le wrapper blanc du partial pour éviter le double fond/padding */
+  .emissionsdelacategorie .results{
+    background: transparent;
+    padding: 0;
+  }
+
+  .emissionsdelacategorie .results-inner{
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .more-link{
+    text-align: center;
+    padding: 0 16px 24px;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .more-link a{
+    color: #E40039;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .more-link a:hover{
+    color: #000;
+  }
+
+  /* ====== Responsive ====== */
+  @media (max-width: 768px){
+    .fiche-emission{
+      width: calc(100% - 24px);
+      padding: 1rem;
+      margin: 1rem auto;
+    }
+
+    .bloc-haut{
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bloc-image img{
+      width: min(320px, 100%);
+    }
+
+    .bloc-texte{
+      text-align: center; /* titre centré */
+    }
+
+    /* ✅ texte plus lisible */
+    .bloc-texte .descriptif{
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin: 12px 0;
+    }
+
+    .bloc-texte h1{
+      font-size: 1.3rem;
+    }
+  }
 </style>
-    <div>
-        <div class="catblock">
-            <div class="top">
-                <img src="/images/bottom-header.gif"></div>
-                <div class="fiche-emission">
-                    <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">
-                        ← Retour
-                    </a>
-                    <div class="bloc-haut">
-                        <div class="bloc-image">
-                            {% if categorie.thumbnail %}
-                                <img
-                                src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Image de la catégorie {{ categorie.titre }}">
-                                    {% else %}
-                                    <img src="/images/emission-zinzine.jpg" alt="Image par défaut">
-                                    {% endif %}
-                                </div>
-                                <div class="bloc-texte">
-                                    <h1>
-                                        {{ categorie.titre }}
-                                    </h1>
-                                    <div class="descriptif">
-                                        {{ categorie.descriptif | raw }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bottom">
-                            <img src="/images/top-content-dechire-D.gif"></div>
-                        </div>
-                    </div>
-                    <div class="emissionsdelacategorie">
-                        <div class="titre">
-                            <h2>
-                                Toutes les émissions de cette catégorie :
-                            </h2>
-                        </div>
-                        <div class="catemission">
-                            {% include 'partials/list.html.twig' with {
-        emissions: emissions,
-        filterable: false
-    } %}
+
+<div class="catblock">
+  <div class="fiche-emission">
+    <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">← Retour</a>
+
+    <div class="bloc-haut">
+      <div class="bloc-image">
+        {% if categorie.thumbnail %}
+          <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Image de la catégorie {{ categorie.titre }}">
+        {% else %}
+          <img src="/images/emission-zinzine.jpg" alt="Image par défaut">
+        {% endif %}
+      </div>
+
+      <div class="bloc-texte">
+        <h1>{{ categorie.titre }}</h1>
+        <div class="descriptif">
+          {{ categorie.descriptif | raw }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <img src="/images/top-content-dechire-D.gif" alt="">
+  </div>
+</div>
+
+<div class="emissionsdelacategorie">
+  {% include 'partials/_emission_results.html.twig' with {
+    emissions: emissions,
+    showNoResults: true,
+    resultsTitle: 'Toutes les émissions de cette catégorie :',
+    noResultsText: 'Aucune émission trouvée dans cette catégorie.',
+    useKnpPagination: true,
+    useLivePagination: false,
+    searchTerm: null
+  } only %}
+
+  <div class="more-link">
     Vous en voulez plus ? <a href="{{ path('emission.index') }}">Voir toutes les émissions</a>
-                        </div>
-                    </div>
-                {% endblock %}
-                
+  </div>
+</div>
+{% endblock %}

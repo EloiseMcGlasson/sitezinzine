@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 
 /**
@@ -670,5 +671,15 @@ public function findLatestByCategory(int $categoryId, int $limit = 20): array
             ->getQuery()
             ->getResult();
     }
+
+    public function createLatestByCategoryQueryBuilder(int $categoryId): QueryBuilder
+{
+    return $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->addSelect('c')
+        ->andWhere('c.id = :catId')
+        ->setParameter('catId', $categoryId)
+        ->orderBy('e.id', 'DESC'); // ou e.datepub si tu as un champ date fiable
+}
 
 }

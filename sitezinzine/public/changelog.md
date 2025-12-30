@@ -1,6 +1,8 @@
 # Changelog
 
-## [1.0.65] - 2025-12-xx
+## [1.0.65] - 2025-12-30
+### Correction
+- Correction responsive et uniformisation des listes côté public, correction responsive d'évènements et du lecteur.
 
 
 ## [1.0.64] - 2025-12-27

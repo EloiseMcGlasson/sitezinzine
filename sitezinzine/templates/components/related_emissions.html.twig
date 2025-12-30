@@ -27,42 +27,16 @@
     {% endfor %}
   </div>
 
-  {% include 'partials/list.html.twig' with {
-    emissions: this.relatedEmissions,
-    filterable: false
-  } %}
+  {% include 'partials/_emission_results.html.twig' with {
+  emissions: this.relatedEmissions,
+  showNoResults: true,
+  resultsTitle: 'Émissions liées :',
+  noResultsText: (this.selected|length == 1)
+    ? 'Aucune émission ne correspond à ce thème.'
+    : 'Aucune émission liée trouvée.',
+  useKnpPagination: false,
+  useLivePagination: true,
+  liveCurrentPage: this.page
+} only %}
 
-  {% set p = this.relatedEmissions.paginationData %}
-  <nav class="pagination" aria-label="Pagination">
-    <button
-      type="button"
-      class="page-btn is-prev {{ p.previous is not defined ? 'is-disabled' : '' }}"
-      {% if p.previous is defined %}
-        data-action="live#action"
-        data-live-action-param="goToPage"
-        data-live-page-param="{{ p.previous }}"
-      {% else %}disabled{% endif %}
-    >← Préc.</button>
-
-    {% for num in p.pagesInRange %}
-      <button
-        type="button"
-        class="page-btn {{ num == this.page ? 'active' : '' }}"
-        data-action="live#action"
-        data-live-action-param="goToPage"
-        data-live-page-param="{{ num }}"
-        aria-current="{{ num == this.page ? 'page' : 'false' }}"
-      >{{ num }}</button>
-    {% endfor %}
-
-    <button
-      type="button"
-      class="page-btn is-next {{ p.next is not defined ? 'is-disabled' : '' }}"
-      {% if p.next is defined %}
-        data-action="live#action"
-        data-live-action-param="goToPage"
-        data-live-page-param="{{ p.next }}"
-      {% else %}disabled{% endif %}
-    >Suiv. →</button>
-  </nav>
 </div>

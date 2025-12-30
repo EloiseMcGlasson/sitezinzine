@@ -3,54 +3,42 @@
     font-family: "Montserrat", sans-serif;
     background-color: black;
     color: white;
-    height: 60px;  /* Fixer une hauteur spécifique */
+    height: 60px;
     display: flex;
     justify-content: space-between;
-    align-items: center;  /* Centrer verticalement */
-    padding: 0 20px;     /* Espacement horizontal */
-    box-sizing: border-box; /* S'assurer que padding et bordure sont inclus dans la hauteur */
-    overflow: hidden; /* Éviter que les éléments débordent */
-}
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
 
-.lecteur audio {
-    width: 100%;  /* Utiliser toute la largeur du conteneur, ajusté selon l'écran */
-    height: 40px;  /* Hauteur fixe pour l'audio */
-    max-width: 500px;  /* Taille maximale du lecteur */
-    margin: 0 auto;  /* Centrer l'audio dans le conteneur */
-    display: block; /* S'assurer que l'audio se comporte comme un élément de bloc */
-}
+  .lecteur .gauche { padding: 10px; }
+  .lecteur .direct, .lecteur .sousdirect { margin: 0; padding: 0; }
 
-.lecteur .gauche {
-    padding: 10px;
-}
-
-.lecteur .direct, .lecteur .sousdirect {
-    margin: 0;
-    padding: 0;
-}
-
-.lecteur .milieu {
-    flex: 1;           /* Prend l'espace disponible */
+  .lecteur .milieu{
+    flex: 1;
     text-align: center;
-}
+    min-width: 0; /* ✅ important */
+  }
 
-.lecteur .droite {
+  .lecteur .droite{
     font-size: 16px;
     padding: 10px;
     font-weight: bold;
-}
+  }
 
-.lecteur .custom-audio-player {
+  .lecteur .custom-audio-player{
     display: flex;
     align-items: center;
     gap: 10px;
     background: black;
-    
     border-radius: 10px;
     width: 100%;
-}
+    min-width: 0;
+    max-width: 100%;
+  }
 
-.lecteur #play-pause {
+  .lecteur #play-pause{
     width: 40px;
     height: 40px;
     background-size: contain;
@@ -59,246 +47,234 @@
     background-position: center;
     border: none;
     cursor: pointer;
-    flex-shrink: 0;  /* Empêcher le bouton de rétrécir */
-}
+    flex-shrink: 0;
+  }
 
-.lecteur #progress-bar, .lecteur #volume-control {
+  .lecteur #progress-bar,
+  .lecteur #volume-control{
     flex: 1;
     -webkit-appearance: none;
     appearance: none;
     background: gray;
     height: 5px;
     border-radius: 5px;
-}
 
-.lecteur #progress-bar::-webkit-slider-thumb, .lecteur #volume-control::-webkit-slider-thumb {
+    /* ✅ empêche le dépassement en flex */
+    min-width: 0;
+    width: 0;
+    flex-basis: 0;
+  }
+
+  .lecteur #progress-bar::-webkit-slider-thumb,
+  .lecteur #volume-control::-webkit-slider-thumb{
     -webkit-appearance: none;
     width: 12px;
     height: 12px;
     background: white;
     border-radius: 50%;
     cursor: pointer;
-}
-/* =========================
-   Responsive lecteur
-   ========================= */
-
-/* Tablette / petits laptops : on compacte un peu sans casser */
-@media (max-width: 1024px){
-  .lecteur{
-    padding: 0 12px;
   }
 
-  .lecteur .droite{
-    font-size: 14px;
-    white-space: nowrap;
+  /* =========================
+     Responsive lecteur
+     ========================= */
+
+  @media (max-width: 1024px){
+    .lecteur{ padding: 0 12px; }
+    .lecteur .droite{ font-size: 14px; white-space: nowrap; }
+    .lecteur .custom-audio-player{ gap: 8px; }
   }
 
-  .lecteur .custom-audio-player{
-    gap: 8px;
-  }
-}
+  @media (max-width: 768px){
+    .lecteur{
+      height: auto;
+      padding: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+      overflow: visible;
+    }
 
-/* Mobile “classique” : on reste sur UNE LIGNE, on enlève le slogan, on masque le volume */
-@media (max-width: 768px){
-  .lecteur{
-    height: auto;
-    padding: 10px;
-    gap: 8px;
-    flex-wrap: wrap;     /* autorise une 2e ligne */
-    overflow: visible;   /* IMPORTANT : stop le “cut” */
-  }
+    .lecteur .gauche{
+      padding: 0;
+      flex: 0 0 auto;
+    }
 
-  /* bloc gauche (LE DIRECT) */
-  .lecteur .gauche{
-    padding: 0;
-    flex: 0 0 auto;
-  }
+    .lecteur .direct{ font-size: 14px; line-height: 1.1; }
+    .lecteur .sousdirect{ font-size: 12px; line-height: 1.1; opacity: .85; }
 
-  .lecteur .direct{ font-size: 14px; line-height: 1.1; }
-  .lecteur .sousdirect{ font-size: 12px; line-height: 1.1; opacity: .85; }
+    .lecteur .milieu{
+      flex: 1 1 auto;
+      min-width: 0;
+      width: auto;
+      text-align: left;
+    }
 
-  /* bloc milieu : prend la largeur */
-  .lecteur .milieu{
-    flex: 1 1 auto;
-    min-width: 0;
-    width: auto;
-    text-align: left;
-  }
+    .lecteur .custom-audio-player{
+      width: 100%;
+      gap: 8px;
+    }
 
-  /* player : on garde tout sur une ligne, mais on compacte */
-  .lecteur .custom-audio-player{
-    width: 100%;
-    gap: 8px;
-  }
+    .lecteur #play-pause{
+      width: 36px;
+      height: 36px;
+    }
 
-  .lecteur #play-pause{
-    width: 36px;
-    height: 36px;
-  }
+    .lecteur #progress-bar{
+      flex: 2 1 140px;
+      min-width: 0;
+    }
 
-  /* progress grand, volume compact mais visible */
-  .lecteur #progress-bar{
-    flex: 2 1 140px;
-    min-width: 120px;
-  }
+    /* ✅ volume visible + ne force pas l’overflow */
+    .lecteur #volume-control{
+      flex: 0 1 88px;
+      max-width: 96px;
+      min-width: 0;
+    }
 
-  .lecteur #volume-control{
-    flex: 1 0 90px;   /* largeur “raisonnable” sur mobile */
-    max-width: 120px;
-  }
-
-  /* le slogan passe en dessous (2e ligne) */
-  .lecteur .droite{
-    display: block;
-    width: 100%;
-    padding: 0;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 700;
-    opacity: .9;
-  }
-}
-
-
-/* Très petit mobile : on peut passer en 2 lignes (sans exploser la hauteur) */
-@media (max-width: 420px){
-  .lecteur{
-    height: auto;
-    padding: 8px 10px;
-    flex-wrap: wrap;
+    .lecteur .droite{
+      display: block;
+      width: 100%;
+      padding: 0;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: .9;
+    }
   }
 
-  .lecteur .gauche{
-    width: 100%;
+  @media (max-width: 420px){
+    .lecteur{
+      height: auto;
+      padding: 8px 10px;
+      flex-wrap: wrap;
+    }
+
+    .lecteur .gauche{ width: 100%; }
+    .lecteur .milieu{ width: 100%; }
   }
 
-  .lecteur .milieu{
-    width: 100%;
+  /* ✅ Ultra petit : on passe le volume sur une 2e ligne (au lieu de le cacher) */
+  @media (max-width: 380px){
+    .lecteur .custom-audio-player{
+      flex-wrap: wrap;
+      row-gap: 10px;
+    }
+
+    .lecteur #progress-bar{
+      order: 2;
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    .lecteur #volume-control{
+      order: 3;
+      flex: 1 1 100%;
+      width: 100%;
+      max-width: none;
+    }
   }
-}
 
-/* Paysage mobile : on garde une ligne, mais on réduit un peu les textes */
-@media (max-width: 900px) and (orientation: landscape){
-  .lecteur .direct{ font-size: 12px; }
-  .lecteur .sousdirect{ font-size: 11px; }
-  .lecteur #play-pause{ width: 34px; height: 34px; }
-}
-
-
-
+  @media (max-width: 900px) and (orientation: landscape){
+    .lecteur .direct{ font-size: 12px; }
+    .lecteur .sousdirect{ font-size: 11px; }
+    .lecteur #play-pause{ width: 34px; height: 34px; }
+  }
 </style>
 
+<div class="lecteur">
+  <div class="gauche">
+    <p class="direct">LE DIRECT</p>
+    <p class="sousdirect">Le programme du moment</p>
+  </div>
 
+  <div class="milieu">
+    <div class="custom-audio-player">
+      <audio id="audio-player" src="https://stream.radiozinzine.org:8443/3" preload="metadata"></audio>
 
-<div class='lecteur'>
-<div class="gauche">
-<p class="direct">LE DIRECT</p>
-<p class="sousdirect">Le programme du moment</p>
+      <button
+        id="play-pause"
+        type="button"
+        data-play-icon="/images/lecteur.png"
+        data-pause-icon="/images/bouton-pause.png"
+      ></button>
 
-</div>
-<div class="milieu">
-<div class="custom-audio-player">
-    <audio id="audio-player" src="https://stream.radiozinzine.org:8443/3" preload="metadata"></audio>
-    <button
-  id="play-pause"
-  type="button"
-  data-play-icon="/images/lecteur.png"
-  data-pause-icon="/images/bouton-pause.png"
-></button>
+      <input type="range" id="progress-bar" value="0">
+      <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1">
+    </div>
+  </div>
 
-    <input type="range" id="progress-bar" value="0">
-    <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1">
-    
-</div>
-
-
-</div>
-<div class="droite">
-RADIO ZINZINE, UNE RADIO LIBRE !
-</div>
+  <div class="droite">
+    RADIO ZINZINE, UNE RADIO LIBRE !
+  </div>
 </div>
 
 <script>
-   
+  document.addEventListener("DOMContentLoaded", function () {
+    const audio = document.getElementById("audio-player");
+    const playPauseButton = document.getElementById("play-pause");
+    const progressBar = document.getElementById("progress-bar");
+    const volumeControl = document.getElementById("volume-control");
 
-document.addEventListener("DOMContentLoaded", function () {
-  const audio = document.getElementById("audio-player");
-  const playPauseButton = document.getElementById("play-pause");
-  const progressBar = document.getElementById("progress-bar");
-  const volumeControl = document.getElementById("volume-control");
+    const playIcon = playPauseButton.dataset.playIcon;
+    const pauseIcon = playPauseButton.dataset.pauseIcon;
 
-  // ✅ URLs venant des data-attributes du bouton
-  const playIcon = playPauseButton.dataset.playIcon;
-  const pauseIcon = playPauseButton.dataset.pauseIcon;
+    function setIcon(isPlaying) {
+      playPauseButton.style.backgroundImage = `url("${isPlaying ? pauseIcon : playIcon}")`;
+    }
 
-  function setIcon(isPlaying) {
-    playPauseButton.style.backgroundImage = `url("${isPlaying ? pauseIcon : playIcon}")`;
-  }
+    function togglePlayPause() {
+      if (audio.paused) {
+        audio.play();
+        setIcon(true);
+      } else {
+        audio.pause();
+        setIcon(false);
+      }
+    }
 
-  function togglePlayPause() {
-    if (audio.paused) {
-      audio.play();
+    setIcon(false);
+    playPauseButton.addEventListener("click", togglePlayPause);
+
+    audio.addEventListener("timeupdate", function () {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        progressBar.value = (audio.currentTime / audio.duration) * 100;
+      }
+    });
+
+    progressBar.addEventListener("input", function () {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        audio.currentTime = (progressBar.value / 100) * audio.duration;
+      }
+    });
+
+    const savedVolume = parseFloat(localStorage.getItem("audioVolume") || "1");
+    audio.volume = savedVolume;
+    volumeControl.value = savedVolume;
+
+    volumeControl.addEventListener("input", function () {
+      audio.volume = volumeControl.value;
+      localStorage.setItem("audioVolume", String(volumeControl.value));
+    });
+
+    audio.addEventListener("play", function () {
+      localStorage.setItem("audioWasPlaying", "true");
       setIcon(true);
-    } else {
-      audio.pause();
-      setIcon(false);
-    }
-  }
+    });
 
-  // init icône
-  setIcon(false);
-
-  // click
-  playPauseButton.addEventListener("click", togglePlayPause);
-
-  // progression
-  audio.addEventListener("timeupdate", function () {
-    if (!isNaN(audio.duration) && audio.duration > 0) {
-      progressBar.value = (audio.currentTime / audio.duration) * 100;
-    }
-  });
-
-  progressBar.addEventListener("input", function () {
-    if (!isNaN(audio.duration) && audio.duration > 0) {
-      audio.currentTime = (progressBar.value / 100) * audio.duration;
-    }
-  });
-
-  // volume + sauvegarde
-  const savedVolume = parseFloat(localStorage.getItem("audioVolume") || "1");
-  audio.volume = savedVolume;
-  volumeControl.value = savedVolume;
-
-  volumeControl.addEventListener("input", function () {
-    audio.volume = volumeControl.value;
-    localStorage.setItem("audioVolume", String(volumeControl.value));
-  });
-
-  // état lecture + reprise
-  audio.addEventListener("play", function () {
-    localStorage.setItem("audioWasPlaying", "true");
-    setIcon(true);
-  });
-
-  audio.addEventListener("pause", function () {
-    localStorage.setItem("audioWasPlaying", "false");
-    setIcon(false);
-  });
-
-  audio.addEventListener("ended", function () {
-    progressBar.value = 0;
-    setIcon(false);
-  });
-
-  if (localStorage.getItem("audioWasPlaying") === "true") {
-    audio.play().catch(() => {
-      // autoplay bloqué: on laisse l'icône en "play"
+    audio.addEventListener("pause", function () {
+      localStorage.setItem("audioWasPlaying", "false");
       setIcon(false);
     });
-  }
-});
 
+    audio.addEventListener("ended", function () {
+      progressBar.value = 0;
+      setIcon(false);
+    });
 
+    if (localStorage.getItem("audioWasPlaying") === "true") {
+      audio.play().catch(() => setIcon(false));
+    }
+  });
 </script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

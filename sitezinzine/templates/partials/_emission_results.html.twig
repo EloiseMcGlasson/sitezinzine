@@ -84,6 +84,43 @@
     opacity: 0.45;
   }
 
+  .pagination button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 800;
+  color: #E4013A;
+
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  border: 0;
+  cursor: pointer;
+}
+
+.pagination button:hover{
+  background: #E4013A;
+  color: #fff;
+}
+
+.pagination button.active{
+  background: #E4013A;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.10);
+}
+
+.pagination button:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
   @media (max-width: 480px){
     .pagination{
       gap: 4px;
@@ -91,37 +128,94 @@
       padding-right: 8px;
     }
 
-    .pagination a,
-    .pagination span{
-      min-width: 34px;
-      height: 34px;
-      padding: 0 8px;
-      font-size: 14px;
-    }
+     .pagination a,
+  .pagination span,
+  .pagination button{
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    font-size: 14px;
+  }
   }
 </style>
+
+{# ✅ defaults : marche en recherche (avec form) ET en LiveComponent (sans form) #}
+{% set showNoResults = showNoResults ?? false %}
+{% set resultsTitle = resultsTitle ?? 'Résultats :' %}
+{% set noResultsText = noResultsText ?? 'Aucune émission trouvée.' %}
+
+{% set useKnpPagination = useKnpPagination ?? true %}
+{% set useLivePagination = useLivePagination ?? false %}
+{% set liveCurrentPage = liveCurrentPage ?? 1 %}
 
 <div class="results">
   <div class="results-inner">
     {% if emissions is not empty %}
-      <h2>Résultats de la recherche :</h2>
+      <h2>{{ resultsTitle }}</h2>
 
-      <div class="pagination">
-        {{ knp_pagination_render(emissions) }}
-      </div>
+      {# Pagination KNP “classique” (recherche) #}
+      {% if useKnpPagination %}
+        <div class="pagination">
+          {{ knp_pagination_render(emissions) }}
+        </div>
+      {% endif %}
 
       <div class="emission-list">
         {% for emission in emissions %}
-          {% include 'partials/_emission_card.html.twig' with { emission: emission, searchTerm: searchTerm } %}
+          {% include 'partials/_emission_card.html.twig' with {
+            emission: emission,
+            searchTerm: searchTerm ?? null
+          } only %}
         {% endfor %}
       </div>
 
-      <div class="pagination">
-        {{ knp_pagination_render(emissions) }}
-      </div>
+      {% if useKnpPagination %}
+        <div class="pagination">
+          {{ knp_pagination_render(emissions) }}
+        </div>
+      {% endif %}
 
-    {% elseif form.vars.submitted %}
-      <p class="no-results">Aucune émission trouvée pour les critères de recherche.</p>
+      {# Pagination LiveComponent #}
+      {% if useLivePagination %}
+        {% set p = emissions.paginationData %}
+        <nav class="pagination" aria-label="Pagination">
+          <button
+            type="button"
+            class="page-btn is-prev {{ p.previous is not defined ? 'is-disabled' : '' }}"
+            {% if p.previous is defined %}
+              data-action="live#action"
+              data-live-action-param="goToPage"
+              data-live-page-param="{{ p.previous }}"
+            {% else %}disabled{% endif %}
+          >← Préc.</button>
+
+          {% for num in p.pagesInRange %}
+            <button
+              type="button"
+              class="page-btn {{ num == liveCurrentPage ? 'active' : '' }}"
+              data-action="live#action"
+              data-live-action-param="goToPage"
+              data-live-page-param="{{ num }}"
+             {% if num == liveCurrentPage %}aria-current="page"{% endif %}
+
+            >{{ num }}</button>
+          {% endfor %}
+
+          <button
+            type="button"
+            class="page-btn is-next {{ p.next is not defined ? 'is-disabled' : '' }}"
+            {% if p.next is defined %}
+              data-action="live#action"
+              data-live-action-param="goToPage"
+              data-live-page-param="{{ p.next }}"
+            {% else %}disabled{% endif %}
+          >Suiv. →</button>
+        </nav>
+      {% endif %}
+
+    {% elseif showNoResults %}
+      <p class="no-results">{{ noResultsText }}</p>
     {% endif %}
   </div>
 </div>
+

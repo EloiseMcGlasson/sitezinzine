@@ -28,7 +28,10 @@ export default class extends Controller {
         768: { perView: 1, focusAt: 0, peek: { before: 0, after: 110 }, gap: 14 },
 
         // Très petit
-        480: { perView: 1, focusAt: 0, peek: { before: 0, after: 90 }, gap: 12 }
+        480: { perView: 1, focusAt: 0, peek: { before: 0, after: 90 }, gap: 12 },
+
+         /* ✅ très petit : pas de peek (sinon ça se chevauche visuellement) */
+        360: { perView: 1, focusAt: 0, peek: { before: 0, after: 0 }, gap: 10 }
       }
     });
 
