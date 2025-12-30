@@ -6,454 +6,461 @@
 {% block body %}
     <style>
 /* ========== GÉNÉRAL ========== */
+.bodyemission,
+.bodyemission *{
+  box-sizing: border-box;
+}
 
 .bodyemission {
-    background: linear-gradient(#E4013A, #B81C61);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    position: relative;
-    color: white;
-    line-height: 1.5em;
-    margin: 0 auto;
-    padding: 0;
+  background: linear-gradient(#E4013A, #B81C61);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  position: relative;
+  color: white;
+  line-height: 1.5em;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .bodyemission a,
 .bodyemission .table-infos a {
-    color: #E40039;
-    font-weight: bold;
-    text-decoration: none;
-    transition: color 0.3s ease;
+  color: #E40039;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .bodyemission a:hover,
 .bodyemission .table-infos a:hover {
-    color: black;
-}
-
-.bodyemission h1 {
-    font-size: 23px;
+  color: black;
 }
 
 .bodyemission .titre {
-    text-align: center;
-    margin: 10px;
+  text-align: center;
+  margin: 10px;
 }
 
-.bodyemission .top img,
 .bodyemission .bottom img {
-    width: 100%;
-    display: block;
+  width: 100%;
+  display: block;
+  margin-bottom: -1px;
 }
 
 /* ========== FICHE ÉMISSION ========== */
-
 .bodyemission .fiche-emission {
-    max-width: 900px;
-    margin: 2rem auto;
-    background-color: #fff;
-    color: #1C1C1A;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    padding: 1.5rem;
-    font-family: "Montserrat Alternates", sans-serif;
+  max-width: 900px;
+  width: calc(100% - 32px);   /* ✅ évite les débordements */
+  margin: 2rem auto;
+  background-color: #fff;
+  color: #1C1C1A;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  font-family: "Montserrat Alternates", sans-serif;
 }
 
 .bodyemission .bloc-haut {
-    display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .bodyemission .bloc-image img {
-    width: 200px;
-    border-radius: 6px;
-    object-fit: cover;
-    max-width: 100%;
+  width: 200px;
+  border-radius: 6px;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 .bodyemission .bloc-texte {
-    flex: 1;
+  flex: 1;
+  min-width: 0; /* ✅ évite les overflow en flex */
 }
 
 .bodyemission .bloc-texte h1 {
-    font-size: 1.6rem;
-    margin-bottom: 1rem;
-    color: #E40039;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #E40039;
+  overflow-wrap: anywhere;
 }
 
 .bodyemission .descriptif {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin: 15px;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 15px;
+  overflow-wrap: anywhere;
 }
 
 .bodyemission .btn-back {
-    display: inline-block;
-    margin-bottom: 1rem;
-    color: #E40039;
-    font-weight: bold;
-    text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #E40039;
+  font-weight: bold;
+  text-decoration: none;
 }
 
 .bodyemission .btn-back:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* ========== BLOC INFOS (TABLEAU) ========== */
-
 .bodyemission .bloc-infos {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
 .bodyemission .table-infos {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .bodyemission .table-infos thead {
-    border: 2px solid #E40039;
-    
+  border: 2px solid #E40039;
 }
 
 .bodyemission .table-infos th {
-    background-color: #E40039;
-    color: white;
-    padding: 1rem;
-    text-align: left;
-    font-weight: bold;
-    vertical-align: top;
-    border-bottom: 2px solid #E40039;
+  background-color: #E40039;
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: bold;
+  vertical-align: top;
+  border-bottom: 2px solid #E40039;
 }
 
 .bodyemission .table-infos td {
-    text-align: left;
-    padding: 1rem;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+  text-align: left;
+  padding: 1rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+  overflow-wrap: anywhere;
 }
 
 /* ========== CATEGORIE ========== */
-
 .bodyemission .catemission {
-    border: 2px solid black;
-    overflow: hidden;
-    border-radius: 8px;
+  border: 2px solid black;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-top: 2rem;
+  padding-bottom: 10px;
 }
 
 .bodyemission .catemission img {
-    float: left;
-    margin: 10px 20px 10px 10px;
-    width: 250px;
-    max-width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 8%;
+  float: left;
+  margin: 10px 20px 10px 10px;
+  width: 250px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8%;
 }
 
 /* ========== ÉMISSION LIÉES / THEMES ========== */
-
 .bodyemission .theme {
-    text-align: center;
-    background: white;
-    color: black;
+  text-align: center;
+  background: white;
+  color: black;
 }
 
 .bodyemission .themeemission {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1rem;
-    width: 80%;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  width: min(900px, 100%);   /* ✅ pas de 80% fixe */
+  margin: 0 auto;
 }
 
-.bodyemission .theme-card-button {
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    width: 180px;
-    height: 120px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: none;
-    position: relative;
-    transition: transform 0.2s ease-in-out;
-}
-
-.bodyemission .theme-card-button:hover {
-    transform: scale(1.03);
-}
-
-.bodyemission .theme-card-button.active {
-    transition: all 0.2s ease;
-}
-
-.bodyemission .theme-card-button.active .theme-card-overlay {
-    background-color: #E40039 !important; /* fond bandeau rouge */
-}
-
-
-.bodyemission .theme-card-background {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    position: relative;
-}
-
-.bodyemission .theme-card-overlay {
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-}
-
-.bodyemission .theme-card-button.active .theme-card-overlay {
-    background-color: #E40039;
-    opacity: 1;
-    transition: all 0.3s ease;
-}
+/* (tes styles existants pour les boutons/carte thème restent) */
 
 /* ========== LISTE ÉMISSIONS LIÉES ========== */
-
 .bodyemission .emission-row {
-    display: flex;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    align-items: center;
-    gap: 1rem;
-    color: #1C1C1A;
-    margin-bottom: 1.5rem;
+  display: flex;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  gap: 1rem;
+  color: #1C1C1A;
+  margin-bottom: 1.5rem;
 }
 
 .bodyemission .emission-image img {
-    width: 120px;
-    height: auto;
-    border-radius: 4px;
-    object-fit: cover;
+  width: 120px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+  display: block;
 }
 
 .bodyemission .emission-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    text-align: left;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+  min-width: 0;
 }
 
 .bodyemission .emission-content h3 {
-    margin: 0;
-    font-size: 1.2em;
-    color: #1C1C1A;
+  margin: 0;
+  font-size: 1.2em;
+  color: #1C1C1A;
+  overflow-wrap: anywhere;
 }
 
 .bodyemission .emission-content .date {
-    font-size: 0.9em;
-    color: #888;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  font-size: 0.9em;
+  color: #888;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
 }
 
 .bodyemission .emission-content .description {
-    font-size: 1em;
-    color: #333;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
+  font-size: 1em;
+  color: #333;
+  overflow-wrap: anywhere;
 }
 
 .bodyemission .emission-link {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 
 .bodyemission .listen-link {
-    background-color: #E40039;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.4rem 0.8rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #E40039;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 .bodyemission .listen-link:hover {
-    background-color: #c70030;
+  background-color: #c70030;
 }
 
-/* ========== DESCRIPTION TOGGLE ========== */
+/* =========================
+   THEME BUTTONS (fix style actif)
+   ========================= */
 
-.bodyemission .description-wrapper {
-    position: relative;
-    margin-top: 0.5em;
-}
+/* le conteneur peut rester comme tu veux, ici je ne touche pas à ta mise en page globale */
+.bodyemission .theme-card-button{
+  /* IMPORTANT : neutralise le style "button" natif */
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0 !important;
+  outline: none;
+  background: none;
+  padding: 0;
+  margin: 0;
 
-.bodyemission .description-toggle-btn {
-    background: none;
-    color: #E40039;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    margin-top: 0.5em;
-}
-
-.bodyemission .description-wrapper .description {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 4.5em;
-    transition: max-height 0.3s ease;
-}
-
-.bodyemission .description-wrapper .description.expanded {
-    -webkit-line-clamp: unset;
-    max-height: 1000px;
-}
-
-/* ===== PAGINATION ===== */
-.bodyemission .pagination {
-  display: flex;
-  gap: .5rem;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-}
-
-.bodyemission .page-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: .35rem .8rem;
-  border: 2px solid #E40039;
-  background: #fff;
-  color: #E40039;
-  font-weight: 700;
-  border-radius: 9999px; /* pilule */
   cursor: pointer;
-  transition: all .2s ease;
-  line-height: 1;
-  min-width: 2.25rem;
-  user-select: none;
+  width: 180px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+
+  /* ton effet */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.bodyemission .page-btn:hover {
-  background: #E40039;
+.bodyemission .theme-card-button:hover{
+  transform: scale(1.03);
+}
+
+/* enlève l’outline de focus “moche” (on remplace par un focus propre) */
+.bodyemission .theme-card-button:focus{
+  outline: none;
+}
+.bodyemission .theme-card-button:focus-visible{
+  box-shadow: 0 0 0 3px rgba(228, 0, 57, 0.35);
+}
+
+/* fond image */
+.bodyemission .theme-card-background{
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* bandeau (par défaut sombre) */
+.bodyemission .theme-card-overlay{
+  width: 100%;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
   color: #fff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(228, 0, 57, 0.15);
+
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: background-color 0.2s ease;
 }
 
-.bodyemission .page-btn.active,
-.bodyemission .page-btn[aria-current="page"] {
-  background: #E40039;
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(228, 0, 57, 0.2);
+/* ✅ état actif : bandeau rouge (ton style d’origine) */
+.bodyemission .theme-card-button.active .theme-card-overlay{
+  background-color: #E40039 !important;
 }
 
-.bodyemission .page-btn.is-prev,
-.bodyemission .page-btn.is-next {
-  padding: .35rem .7rem;
+/* (optionnel) si tu veux que l’actif ressorte un peu sans changer ton rendu */
+.bodyemission .theme-card-button.active{
+  transform: scale(1.02);
 }
 
-.bodyemission .page-btn[disabled],
-.bodyemission .page-btn.is-disabled {
-  opacity: .45;
-  pointer-events: none;
-  background: #f2f2f2;
-  color: #999;
-  border-color: #ddd;
-  box-shadow: none;
-  transform: none;
-}
-
-/* Responsive : un peu plus compact sur mobile */
-@media (max-width: 480px) {
-  .bodyemission .page-btn { padding: .3rem .65rem; }
-}
 
 /* ========== RESPONSIVE ========== */
-
 @media (max-width: 768px) {
-    .bodyemission .bloc-haut {
-        flex-direction: column;
-        align-items: center;
-    }
+  .bodyemission .fiche-emission{
+    width: calc(100% - 24px);
+    padding: 1rem;
+    margin: 1rem auto;
+  }
 
-    .bodyemission .bloc-image img {
-        width: 100%;
-    }
+  .bodyemission .bloc-haut {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .bodyemission .bloc-texte {
-        text-align: center;
-    }
+  .bodyemission .bloc-image img {
+    width: min(320px, 100%);
+  }
 
-    .bodyemission h1 {
-        font-size: 20px;
-    }
+  .bodyemission .bloc-texte {
+    text-align: center;
+  }
 
-    .bodyemission .catemission img {
-        float: none;
-        display: block;
-        margin: 0 auto 20px auto;
-        width: 90%;
-    }
+  /* ✅ TABLE → en “cards” */
+  .bodyemission .table-infos thead{
+    display: none;
+  }
 
-    .bodyemission .catemission {
-        text-align: center;
-        overflow: visible;
-    }
+  .bodyemission .table-infos,
+  .bodyemission .table-infos tbody,
+  .bodyemission .table-infos tr,
+  .bodyemission .table-infos td{
+    display: block;
+    width: 100%;
+  }
 
-    .bodyemission .emission-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+  .bodyemission .table-infos tr{
+    border: 2px solid #E40039;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: #fff;
+  }
 
-    .bodyemission .emission-image img {
-        width: 100%;
-        height: auto;
-    }
+  .bodyemission .table-infos td{
+    border: none;
+    border-top: 1px solid #eee;
+    padding: 12px;
+  }
 
-    .bodyemission .emission-link {
-        margin-left: 0;
-        margin-top: 1rem;
-        align-self: stretch;
-    }
+  .bodyemission .table-infos td:first-child{
+    border-top: none;
+  }
 
-    .bodyemission .listen-link {
-        width: 100%;
-        text-align: center;
-    }
+  /* ✅ CATEGORIE : on enlève le float */
+  .bodyemission .catemission{
+    overflow: visible;
+    text-align: center;
+  }
+
+  .bodyemission .catemission img{
+    float: none;
+    margin: 10px auto 14px;
+    width: min(420px, 92%);
+  }
+
+  /* ✅ related emissions rows */
+  .bodyemission .emission-row{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bodyemission .emission-image img{
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .bodyemission .emission-content{
+    text-align: left;
+  }
+
+  .bodyemission .emission-link{
+    margin-left: 0;
+    margin-top: 10px;
+    align-self: stretch;
+  }
+
+  .bodyemission .listen-link{
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ✅ CATEGORIE : descriptif plus lisible en mobile */
+.bodyemission .catemission .descriptif{
+  margin: 12px 14px;     /* évite “collé au cadre” */
+  text-align: left;      /* au lieu de centré */
+  font-size: 0.95rem;    /* un peu plus petit */
+  line-height: 1.55;
 }
+
+/* Optionnel : si le H1 de catégorie est trop gros en mobile */
+.bodyemission .catemission .titre h1{
+  font-size: 1.25rem;
+  margin: 10px 0 6px;
+}
+
+/* ✅ ÉMISSION : descriptif non centré en mobile (optionnel) */
+.bodyemission .bloc-texte .descriptif{
+  text-align: left;
+  font-size: 0.95rem;
+  margin: 12px 0; /* au lieu de 15px partout */
+}
+
+.bodyemission #theme-filter-buttons{
+    margin-top: 12px;
+  }
+
+}
+
+/* Très petit */
+@media (max-width: 420px){
+  .bodyemission .bloc-texte h1{ font-size: 1.3rem; }
+  .bodyemission .descriptif{ margin: 10px 0; }
+  .bodyemission .emission-content .date{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
     </style>
     <div class="bodyemission">
-    <div class="top">
-        <img src="/images/bottom-header.gif">
-    </div>
 
     <div class="fiche-emission">
         <a href="{{ app.request.headers.get('referer') ?? '/' }}" class="btn-back">← Retour</a>
@@ -525,7 +532,7 @@
         </div> <!-- /.catemission -->
     </div> <!-- /.fiche-emission -->
 
-    <img class="bottom" src="{{ asset('images/top-content-dechire-D.gif') }}">
+    <img class="bottom" src="/images/top-content-dechire-D.gif">
 <div class="theme">
     {# On passe au composant la liste des IDs de thèmes du groupe #}
 {{ component('related_emissions', {

@@ -1,271 +1,311 @@
 {% extends 'base.html.twig' %}
-{% block title "Évènement : " ~ evenement.titre %}
+{% block title %}Évènement : {{ evenement.titre }}{% endblock %}
 {% block body %}
 
 <style>
-.evenement {
+  /* ====== Global ====== */
+  .evenement,
+  .evenement *{
+    box-sizing: border-box;
+  }
+
+  .evenement{
     background: linear-gradient(#E4013A, #B81C61);
-    background-size: 100%;
     width: 100%;
-    margin: 0%;
-    padding: 0%;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     font-family: "Montserrat Alternates", sans-serif;
     font-weight: 700;
     font-style: normal;
-    position: relative;
     color: white;
     line-height: 1.5em;
-}
+  }
 
-.evenement-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
+  /* ====== Card container ====== */
+  .evenement-container{
+    max-width: 900px;
+    width: calc(100% - 32px);
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background-color: #fff;     /* ✅ fond blanc */
+    color: #1C1C1A;             /* ✅ texte lisible */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .evenement-container img.evenement-image{
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
     border-radius: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-}
-.evenement-container img {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 8px;
-}
+    display: block;
+    cursor: zoom-in;
+    transition: transform 0.25s ease;
+  }
 
-.evenement-image {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 8px;
-}
+  .evenement-container img.evenement-image:hover{
+    transform: scale(1.01);
+  }
 
-.evenement-titre {
+  .evenement-titre{
     text-align: center;
-    font-size: 28px;
+    font-size: 1.7rem;
+    color: #E40039;
+    margin: 18px 0 0;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+  }
+
+  /* ====== Infos (2 colonnes desktop) ====== */
+  .evenement-infos{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+  .evenement-col{
+    min-width: 0;
+  }
+
+  .evenement-col p{
+    margin: 0 0 10px 0;
+    color: #1C1C1A;
+    overflow-wrap: anywhere;
+  }
+
+  /* ====== Sections ====== */
+  .evenement-section{
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 2px solid #eee;
+  }
+
+  .evenement-section h3{
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
     color: #333;
-    margin-top: 20px;
-}
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 900;
+  }
 
-.evenement-infos {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    color: black;
-}
+  .evenement-section p{
+    margin: 0;
+    color: #333;
+    overflow-wrap: anywhere;
+  }
 
-.evenement-col {
-    width: 48%;
-}
+  /* Liens dans le contenu (presentation raw) */
+  .evenement-container a{
+    color: #E40039;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .evenement-container a:hover{
+    color: #000;
+  }
 
-.evenement-section {
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 2px solid #ddd;
-}
-
-.evenement-section h3 {
-    font-size: 20px;
-    color: #444;
-}
-
-.evenement-actions {
+  /* ====== Actions ====== */
+  .evenement-actions{
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
-}
+    gap: 12px;
+    margin-top: 22px;
+  }
 
-.btn {
-    padding: 10px 20px;
-    border-radius: 5px;
+  .btn{
+    padding: 10px 16px;
+    border-radius: 8px;
     text-decoration: none;
     text-align: center;
-    background-color: #007bff;
-    color: white;
+    background-color: #6c757d;
+    color: #fff;
     font-size: 16px;
     cursor: pointer;
     border: none;
-}
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 800;
+    transition: transform 0.15s ease, opacity 0.2s ease, background-color 0.2s ease;
+  }
 
-.btn-danger {
-    background-color: #dc3545;
-}
+  .btn:hover{
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
 
-.btn:hover {
-    opacity: 0.9;
-}
-.btn-secondary {
+  .btn-secondary{
     background-color: #6c757d;
-    transition: background-color 0.3s ease;
-}
+  }
 
-.btn-secondary:hover {
+  .btn-secondary:hover{
     background-color: #5a6268;
-    opacity: 0.9;
-}
+  }
 
-/* Styles pour la modal */
-.evenement-container img {
-    cursor: zoom-in;
-    transition: transform 0.3s ease;
-}
-
-.evenement-container img:hover {
-    transform: scale(1.02);
-}
-.modal {
+  /* ====== Modal image ====== */
+  .modal{
     display: none;
     position: fixed;
     z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.9);
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
     pointer-events: none;
-}
+  }
 
-.modal-content {
-    max-width: 90%;
+  .modal-content{
+    max-width: 92%;
     max-height: 90vh;
     margin: auto;
     display: block;
     cursor: pointer;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
+    transform: scale(0.96);
+    transition: transform 0.2s ease;
+    border-radius: 10px;
+  }
 
-.modal.active {
+  .modal.active{
     display: flex;
     opacity: 1;
     pointer-events: auto;
-}
+  }
 
-.close {
+  .modal.active .modal-content{
+    transform: scale(1);
+  }
+
+  .close{
     position: absolute;
     top: 15px;
-    right: 35px;
-    color: #f1f1f1;
+    right: 20px;
+    color: #fff;
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s ease;
-}
-.close:hover {
+    transition: color 0.2s ease;
+    user-select: none;
+  }
+
+  .close:hover{
     color: #E40039;
-}
-.modal.active .modal-content {
-    transform: scale(1);
-}
+  }
 
-/* Rendre l'image cliquable */
-.evenement-container img {
-    cursor: pointer;
-}
-
-/* 📱 Responsive Design */
-@media (max-width: 768px) {
-    .evenement-details {
-        flex-direction: column;
-        align-items: center;
+  /* ====== Responsive ====== */
+  @media (max-width: 768px){
+    .evenement-container{
+      width: calc(100% - 24px);
+      margin: 1rem auto;
+      padding: 1rem;
     }
 
-    .evenement-thumbnail img {
-        max-width: 100%;
+    .evenement-container img.evenement-image{
+      max-height: 260px;
     }
 
-    .evenement-info {
-        text-align: center;
+    .evenement-titre{
+      font-size: 1.35rem;
+      margin-top: 14px;
     }
-}
 
-    
-    </style>
-    <div class="evenement">
+    .evenement-infos{
+      grid-template-columns: 1fr; /* ✅ 1 colonne */
+      gap: 8px;
+    }
 
-<div class="evenement-container">
+    .evenement-section h3{
+      font-size: 1.05rem;
+    }
 
-{% if evenement.thumbnail %}
-    <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" 
-         alt="Photo de {{ evenement.titre }}"
-         onclick="openModal(this.src)">
-{% endif %}
-    
+    .btn{
+      width: 100%;
+      max-width: 320px;
+    }
+  }
+</style>
+
+<div class="evenement">
+  <div class="evenement-container">
+
+    {% if evenement.thumbnail %}
+      <img
+        class="evenement-image"
+        src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}"
+        alt="Photo de {{ evenement.titre }}"
+        onclick="openModal(this.src)"
+      >
+    {% endif %}
+
     <h1 class="evenement-titre">{{ evenement.titre }}</h1>
 
     <div class="evenement-infos">
-        <div class="evenement-col">
-            <p><strong>Organisateur :</strong> {{ evenement.organisateur }}</p>
-            <p><strong>Lieu :</strong> {{ evenement.ville }} ({{ evenement.departement }})</p>
-            <p><strong>Adresse :</strong> {{ evenement.adresse }}</p>
-        </div>
-        <div class="evenement-col">
-            <p><strong>Date :</strong> Du {{ evenement.dateDebut|date('d/m/Y') }} au {{ evenement.dateFin|date('d/m/Y') }}</p>
-            <p><strong>Horaires :</strong> {{ evenement.horaire }}</p>
-            <p><strong>Prix :</strong> {{ evenement.prix }}</p>
-        </div>
+      <div class="evenement-col">
+        <p><strong>Organisateur :</strong> {{ evenement.organisateur }}</p>
+        <p><strong>Lieu :</strong> {{ evenement.ville }} ({{ evenement.departement }})</p>
+        <p><strong>Adresse :</strong> {{ evenement.adresse }}</p>
+      </div>
+
+      <div class="evenement-col">
+        <p><strong>Date :</strong> Du {{ evenement.dateDebut|date('d/m/Y') }} au {{ evenement.dateFin|date('d/m/Y') }}</p>
+        <p><strong>Horaires :</strong> {{ evenement.horaire }}</p>
+        <p><strong>Prix :</strong> {{ evenement.prix }}</p>
+      </div>
     </div>
 
     <div class="evenement-section">
-        <h3>Présentation</h3>
-        <p>{{ evenement.presentation| raw }}</p>
+      <h3>Présentation</h3>
+      <p>{{ evenement.presentation|raw }}</p>
     </div>
 
     <div class="evenement-section">
-        <h3>Informations supplémentaires</h3>
-        <p><strong>Type :</strong> {{ evenement.type }}</p>
-        
+      <h3>Informations supplémentaires</h3>
+      <p><strong>Type :</strong> {{ evenement.type }}</p>
     </div>
 
     <div class="evenement-section">
-        <h3>Contact</h3>
-        <p><strong>Email/Téléphone :</strong> {{ evenement.contact }}</p>
+      <h3>Contact</h3>
+      <p><strong>Email/Téléphone :</strong> {{ evenement.contact }}</p>
     </div>
 
     <div class="evenement-actions">
-        <a href="{{ path('admin.evenement.index') }}" class="btn btn-secondary">Retour</a>
+      <a href="{{ path('home') }}" class="btn btn-secondary">Retour</a>
     </div>
-</div>
-<div id="imageModal" class="modal">
+  </div>
+
+  <div id="imageModal" class="modal" aria-hidden="true">
     <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modalImage">
+    <img class="modal-content" id="modalImage" alt="">
+  </div>
 </div>
-    </div>
-</div>
-    <script>
-        function openModal(imgSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            modal.classList.add('active');
-            modalImg.src = imgSrc;
-        }
-    
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.remove('active');
-        }
-    
-        // Fermer la modal en cliquant en dehors de l'image
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-    
-        // Fermer la modal avec la touche Echap
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-    </script>
-  
-            {% endblock %}
-            
+
+<script>
+  function openModal(imgSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    modalImg.src = imgSrc;
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  document.getElementById('imageModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+{% endblock %}

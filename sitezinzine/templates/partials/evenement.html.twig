@@ -9,9 +9,9 @@
 
   .evenements-section{
     width: 100%;
-    background: #fff; /* ✅ bords blancs */
+    background: #fff;
     font-family: "Montserrat Alternates", sans-serif;
-    padding: 24px 0; /* air vertical (optionnel) */
+    padding: 24px 0;
   }
 
   /* =========================
@@ -21,39 +21,34 @@
     width: 100%;
     margin: 0 auto;
     max-width: 1400px;
-    padding: 0 60px;  /* desktop : remplace le padding de la grid */
+    padding: 0 60px;
     display: flex;
     flex-direction: column;
-
-    /* ❌ pas de min-height: 100vh dans un partial */
     min-height: auto;
   }
 
-  .bodyEvenement h1{
-    margin: 0;
-    font-weight: 900;
-    text-align: left;
-    font-size: 34pt;
-    color: #E40039;
-  }
-
-  .bodyEvenement h3{
-    margin: 8px 0 0 0;
-    font-weight: 300;
-    text-align: left;
-    font-size: 24pt;
-    color: #E40039;
-  }
-
   /* =========================
-     Header titre + illu
+     Header titre + illu (illu à gauche, titre responsive)
      ========================= */
-  .bodyEvenement .titreevenement{
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    gap: 32px;
-    padding: 20px 0; /* padding interne au container */
+.bodyEvenement .titreevenement{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  width: fit-content;        /* ✅ le bloc épouse son contenu */
+  max-width: 100%;           /* sécurité */
+  margin: 20px auto;         /* ✅ centrage horizontal réel */
+}
+
+
+
+  .bodyEvenement .titreevenement img{
+    all: unset;
+    display: block;
+    width: 120px;
+    max-width: 30vw;
+    height: auto;
+    flex: 0 0 auto;
   }
 
   .bodyEvenement .titreevenement .titrebloc{
@@ -61,38 +56,45 @@
     flex-direction: column;
     justify-content: center;
     min-width: 0;
+    flex: 1;
   }
 
-  .bodyEvenement .titreevenement img{
-    all: unset;
-    display: block;
-    height: 100%;
-    width: auto;
-    max-height: 140px;
-    object-fit: contain;
+  .bodyEvenement h1{
+    margin: 0;
+    font-weight: 900;
+    text-align: center;
+    font-size: clamp(22px, 4vw, 42px);
+    color: #E40039;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  .bodyEvenement h3{
+    margin: 6px 0 0 0;
+    font-weight: 300;
+    text-align: center;
+    font-size: clamp(14px, 2.4vw, 28px);
+    color: #E40039;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
   /* =========================
      Grid des évènements (desktop)
+     1er évènement pleine largeur, puis 2 colonnes
      ========================= */
   .bodyEvenement article.evenements{
     display: grid;
-    grid-template-areas:
-      "article1 article1"
-      "article2 article3";
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 60px;
-
-    /* ✅ plus de padding ici : c’est le container qui gère les bords */
     padding: 20px 0 40px 0;
     margin: 0;
     width: 100%;
   }
 
-  .bodyEvenement .evenement:nth-child(1){ grid-area: article1; }
-  .bodyEvenement .evenement:nth-child(2){ grid-area: article2; }
-  .bodyEvenement .evenement:nth-child(3){ grid-area: article3; }
-  .bodyEvenement .evenement:nth-child(n+4){ grid-column: span 1; }
+  .bodyEvenement article.evenements .evenement:first-child{
+    grid-column: 1 / -1;
+  }
 
   /* =========================
      Carte évènement
@@ -187,7 +189,7 @@
     }
 
     .bodyEvenement{
-      padding: 0 24px; /* ✅ bords gérés ici */
+      padding: 0 24px;
       max-width: none;
     }
 
@@ -197,32 +199,30 @@
     }
   }
 
-  /* <= 768px */
+  /* <= 768px : 1 colonne */
   @media (max-width: 768px){
     .bodyEvenement{
       padding: 0 16px;
     }
 
     .bodyEvenement .titreevenement{
-      gap: 16px;
+      gap: 12px;
       padding: 14px 0;
     }
 
     .bodyEvenement .titreevenement img{
-      max-height: 92px;
+      width: 84px;
+      max-width: 28vw;
     }
 
-    .bodyEvenement h1{ font-size: 24pt; }
-    .bodyEvenement h3{ font-size: 16pt; margin-top: 6px; }
-
     .bodyEvenement article.evenements{
-      grid-template-areas:
-        "article1"
-        "article2"
-        "article3";
       grid-template-columns: 1fr;
       gap: 24px;
       padding: 12px 0 24px 0;
+    }
+
+    .bodyEvenement article.evenements .evenement:first-child{
+      grid-column: auto;
     }
 
     .bodyEvenement .evenement{
@@ -246,7 +246,6 @@
   /* Landscape */
   @media (max-width: 1024px) and (orientation: landscape){
     .bodyEvenement article.evenements{
-      grid-template-areas: none;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
@@ -287,7 +286,8 @@
     }
 
     .bodyEvenement .titreevenement img{
-      max-height: 64px;
+      width: 72px;
+      max-width: 40vw;
     }
   }
 </style>
@@ -304,7 +304,7 @@
 
     <article class="evenements">
       {% for evenement in evenements %}
-        <div class="evenement evenement-{{ loop.index }}">
+        <div class="evenement">
           <div class="top">
             {% if evenement.thumbnail %}
               <img src="{{ vich_uploader_asset(evenement, 'thumbnailFile') }}" alt="Photo de {{ evenement.titre }}">
