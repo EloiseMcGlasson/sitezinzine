@@ -3,166 +3,278 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<style>    
-    .bodylogin {
-        background: linear-gradient(#E4013A, #B81C61);
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
+<style>
+.bodylogin {
+  background: linear-gradient(#E4013A, #B81C61);
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+
+  /* ✅ espace garanti à gauche / droite */
+  padding: 24px 12px;
+
+  font-family: "Montserrat Alternates", sans-serif;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+  .form {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.12);
+    color: #1C1C1A;
+  }
+
+  .form h1 {
+    text-align: center;
+    color: #E4013A;
+    font-size: 24px;
+    margin: 0 0 1.5rem 0;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+
+  .form label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    color: #333;
+    font-weight: 800;
+  }
+
+  .form input[type="text"],
+  .form input[type="password"]{
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px; /* ✅ évite le zoom iOS */
+    box-sizing: border-box;
+  }
+
+  .alert {
+    background-color: #ffe6e6;
+    border: 1px solid #ffcccc;
+    color: #cc0000;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .checkbox input[type="checkbox"] { margin: 0; }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #E4013A;
+    color: white;
+    border: none;
+    border-radius: 26px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+    font-weight: 900;
+  }
+
+  button[type="submit"]:hover { background-color: #b30021; }
+
+  .register-section {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+  }
+
+  .register-btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: white;
+    color: #E4013A;
+    text-decoration: none;
+    border: 2px solid #E4013A;
+    border-radius: 26px;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+    font-weight: 900;
+  }
+
+  .register-btn:hover {
+    background-color: #E4013A;
+    color: white;
+  }
+
+  /* ====== Password toggle ====== */
+  .password-field {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .password-field input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toggle-password {
+    flex: 0 0 auto;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #E4013A;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .toggle-password:hover {
+    background: #E4013A;
+    color: #fff;
+    border-color: #E4013A;
+  }
+
+  .forgot-password {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .forgot-password a {
+    color: #E4013A;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+
+  /* ✅ Mobile */
+  @media (max-width: 480px){
+    .bodylogin{
+      padding: 16px 0;
+      align-items: flex-start; /* ✅ plus confortable */
     }
 
-    .top img {
-        width: 100%;
-        display: block;
+    .form{
+      margin: 16px;
+      padding: 1.1rem;
+      border-radius: 12px;
     }
 
-    .form {
-        width: 90%;
-        max-width: 400px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .form h1{
+      font-size: 20px;
+      margin-bottom: 1.2rem;
     }
+  }
 
-    .form h1 {
-        text-align: center;
-        color: #E4013A;
-        font-size: 24px;
-        margin-bottom: 2rem;
-    }
-
-    .form label {
-        display: block;
-        margin: 1rem 0 0.5rem;
-        color: #333;
-        font-weight: bold;
-    }
-
-    .form input[type="text"],
-    .form input[type="password"] {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 1rem;
-    }
-
-    .checkbox {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 1rem 0;
-    }
-
-    .checkbox input[type="checkbox"] {
-        margin: 0;
-    }
-
-    .alert {
-        background-color: #ffe6e6;
-        border: 1px solid #ffcccc;
-        color: #cc0000;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 4px;
-    }
-
-    button[type="submit"] {
-        width: 100%;
-        padding: 0.8rem;
-        background-color: #E4013A;
-        color: white;
-        border: none;
-        border-radius: 26px;
-        font-size: 1.1rem;
-        cursor: pointer;
-        margin-top: 1rem;
-        transition: background-color 0.3s ease;
-    }
-
-    button[type="submit"]:hover {
-        background-color: #b30021;
-    }
-
-    .register-section {
-        text-align: center;
-        margin-top: 2rem;
-        color: #666;
-    }
-
-    .register-btn {
-        display: inline-block;
-        padding: 0.8rem 1.5rem;
-        background-color: white;
-        color: #E4013A;
-        text-decoration: none;
-        border: 2px solid #E4013A;
-        border-radius: 26px;
-        margin-top: 0.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .register-btn:hover {
-        background-color: #E4013A;
-        color: white;
-    }
-
-    @media (max-width: 768px) {
-        .form {
-            width: 95%;
-            padding: 1rem;
-        }
-    }
+  @media (max-width: 420px) {
+    .password-field { flex-direction: column; align-items: stretch; }
+    .toggle-password { width: 100%; }
+  }
 </style>
+
 <div class="bodylogin">
-  
-    
-    <div class="form">
-        <form method="post" data-turbo="false">
-            {% if error %}
-                <div class="alert">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
-
-            {% if app.user %}
-                <div class="alert">
-                    Vous êtes connecté en tant que {{ app.user.userIdentifier }}, 
-                    <a href="{{ path('app_logout') }}">Se déconnecter</a>
-                </div>
-            {% endif %}
-
-            <h1>Connectez-Vous</h1>
-            
-            <label for="username">Nom d'utilisateurice</label>
-            <input type="text" value="{{ last_username }}" name="_username" id="username" 
-                   autocomplete="username" required autofocus>
-            
-            <label for="password">Mot de passe</label>
-            <input type="password" name="_password" id="password" 
-                   autocomplete="current-password" required>
-
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-            <div class="checkbox">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Se rappeler de moi</label>
-            </div>
-
-            <button type="submit">Se connecter</button>
-        </form>
-
-        <div class="register-section">
-            <p>Pas encore de compte ?</p>
-           <a href="{{ path('app_register') }}" class="register-btn" data-turbo="false">
-                Créer un compte
-            </a>
+  <div class="form">
+    <form method="post" data-turbo="false">
+      {% if error %}
+        <div class="alert">
+          {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
+      {% endif %}
+
+      {% if app.user %}
+        <div class="alert">
+          Vous êtes connecté en tant que {{ app.user.userIdentifier }},
+          <a href="{{ path('app_logout') }}">Se déconnecter</a>
+        </div>
+      {% endif %}
+
+      <h1>Connectez-Vous</h1>
+
+      <label for="username">Nom d'utilisateurice</label>
+      <input
+        type="text"
+        value="{{ last_username }}"
+        name="_username"
+        id="username"
+        autocomplete="username"
+        required
+        autofocus
+      >
+
+      <label for="password">Mot de passe</label>
+      <div class="password-field">
+        <input
+          type="password"
+          name="_password"
+          id="password"
+          autocomplete="current-password"
+          required
+        >
+        <button
+          type="button"
+          class="toggle-password"
+          id="togglePassword"
+          aria-controls="password"
+          aria-pressed="false"
+        >
+          Afficher
+        </button>
+      </div>
+
+      <div class="forgot-password">
+        <a href="{{ path('app_forgot_password_request') }}" data-turbo="false">
+          Mot de passe oublié ?
+        </a>
+      </div>
+
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+      <div class="checkbox">
+        <input type="checkbox" name="_remember_me" id="_remember_me">
+        <label for="_remember_me">Se rappeler de moi</label>
+      </div>
+
+      <button type="submit">Se connecter</button>
+    </form>
+
+    <div class="register-section">
+      <p>Pas encore de compte ?</p>
+      <a href="{{ path('app_register') }}" class="register-btn" data-turbo="false">
+        Créer un compte
+      </a>
     </div>
+  </div>
 </div>
+
+<script>
+  (function () {
+    const input = document.getElementById('password');
+    const btn = document.getElementById('togglePassword');
+    if (!input || !btn) return;
+
+    btn.addEventListener('click', () => {
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.textContent = isPassword ? 'Masquer' : 'Afficher';
+      btn.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+    });
+  })();
+</script>
 {% endblock %}

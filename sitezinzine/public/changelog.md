@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.66] - 2025-12-30
+### Ajout
+- Gestion des mots de passe oubliés.
+- Possibilité d'afficher son mot de passe quand on le tape.
+- responsive sur ces pages.
+
+
 ## [1.0.65] - 2025-12-30
 ### Correction
 - Correction responsive et uniformisation des listes côté public, correction responsive d'évènements et du lecteur.
