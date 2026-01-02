@@ -3,81 +3,88 @@
 namespace App\Controller\Admin;
 
 use App\Entity\InviteOldAnimateur;
-use App\Repository\InviteOldAnimateurRepository;
 use App\Form\InviteOldAnimateurType;
+use App\Repository\InviteOldAnimateurRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Requirement\Requirement;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/admin/InviteOldAnimateur", name: 'admin.InviteOldAnimateur.')]
 #[IsGranted("ROLE_USER")]
 class InviteOldAnimateurController extends AbstractController
 {
-    #[Route('/', name: 'index')]
-    public function index(Request $request, InviteOldAnimateurRepository $InviteOldAnimateurRepository): Response
+    #[Route('/', name: 'index', methods: ['GET'])]
+    public function index(InviteOldAnimateurRepository $repo): Response
     {
-        $InviteOldAnimateur = $InviteOldAnimateurRepository->findAll();
+        $inviteOldAnimateurs = $repo->findAll();
+
         return $this->render('admin/InviteOldAnimateur/index.html.twig', [
-            'InviteOldAnimateurs' => $InviteOldAnimateur
+            'InviteOldAnimateurs' => $inviteOldAnimateurs,
         ]);
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    public function show(InviteOldAnimateur $InviteOldAnimateur, int $id, InviteOldAnimateurRepository $InviteOldAnimateurRepository)
+    public function show(InviteOldAnimateur $inviteOldAnimateur): Response
     {
-        $InviteOldAnimateur = $InviteOldAnimateurRepository->find($id);
         return $this->render('admin/InviteOldAnimateur/show.html.twig', [
-            'InviteOldAnimateur' => $InviteOldAnimateur,
-            
+            'InviteOldAnimateur' => $inviteOldAnimateur,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    public function edit(InviteOldAnimateur $InviteOldAnimateur, Request $request, EntityManagerInterface $em)
-    {
-        $form = $this->createForm(InviteOldAnimateurType::class, $InviteOldAnimateur);
+    public function edit(
+        InviteOldAnimateur $inviteOldAnimateur,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $form = $this->createForm(InviteOldAnimateurType::class, $inviteOldAnimateur);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-           
             $em->flush();
-            $this->addFlash('success', 'L\'InviteOldAnimateur a bien été modifié');
+
+            $this->addFlash('success', 'L\'invité·e a bien été modifié·e.');
             return $this->redirectToRoute('admin.InviteOldAnimateur.index');
         }
+
         return $this->render('admin/InviteOldAnimateur/edit.html.twig', [
-            'InviteOldAnimateur' => $InviteOldAnimateur,
-            'form' => $form
+            'InviteOldAnimateur' => $inviteOldAnimateur,
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em)
+    #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $InviteOldAnimateur = new InviteOldAnimateur();
-        $form = $this->createForm(InviteOldAnimateurType::class, $InviteOldAnimateur);
+        $inviteOldAnimateur = new InviteOldAnimateur();
+
+        $form = $this->createForm(InviteOldAnimateurType::class, $inviteOldAnimateur);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            $em->persist($InviteOldAnimateur);
+            $em->persist($inviteOldAnimateur);
             $em->flush();
-            $this->addFlash('success', 'L\'invité a été crée !');
+
+            $this->addFlash('success', 'L\'invité·e a été créé·e !');
             return $this->redirectToRoute('admin.InviteOldAnimateur.index');
         }
+
         return $this->render('admin/InviteOldAnimateur/create.html.twig', [
-            'form' => $form
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
-    public function remove(InviteOldAnimateur $InviteOldAnimateur, EntityManagerInterface $em)
+    public function remove(InviteOldAnimateur $inviteOldAnimateur, EntityManagerInterface $em): Response
     {
-        $em->remove($InviteOldAnimateur);
+        $em->remove($inviteOldAnimateur);
         $em->flush();
-        $this->addFlash('success', 'L\'invité a bien été supprimé');
+
+        $this->addFlash('success', 'L\'invité·e a bien été supprimé·e.');
         return $this->redirectToRoute('admin.InviteOldAnimateur.index');
     }
 }

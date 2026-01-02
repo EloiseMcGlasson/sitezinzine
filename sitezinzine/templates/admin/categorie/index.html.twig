@@ -109,11 +109,13 @@ a:hover {
    
     </style>
     <div>
-        <p class="create">
-            <a class="btn-create" href="{{ path('admin.categorie.create') }}">
-                Créer une nouvelle categorie
-            </a>
-        </p>
+        {% if is_granted('ROLE_ADMIN') %}
+            <p class="create">
+                <a class="btn-create" href="{{ path('admin.categorie.create') }}">
+                    Créer une nouvelle catégorie
+                </a>
+            </p>
+        {% endif %}
         <div class="pagination">
             {{ knp_pagination_render(categories) }}
         </div>
@@ -122,61 +124,62 @@ a:hover {
         </h1>
         <article>
             <div class="categorie">
-                
-                    {% for row in categories %}
-                        {% set categorie = row[0] %}
-                        {% set total = row.total %}
-                        {% if categorie.active %}
-                            <section>
-                            {% else %}
-                                <section style="background-color:gray">
-                                {% endif %}
-                                <div class="col1">
-                                    {% if categorie.thumbnail %}
-                                        <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col2">
-                                        <div class="titre">
-                                            <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
-                                                {{ categorie.titre }} - {{ categorie.user ? categorie.user.username : 'Utilisateur inconnu' }}
-                                            </a>
-                                        </div>
-                                        <div class="descriptif">
-                                            {{ categorie.descriptif | raw }}
-                                        </div>
-                                    </div>
-                                    <div class="col3">
-                                        {% if total > 1 %}
-                                            <p>
-                                                {{ total }}
-                                                émissions
-                                            </p>
-                                        {% elseif total == 1 %}
-                                            <p>
-                                                1 émission
-                                            </p>
-                                        {% else %}
-                                            <p>
-                                                Aucune émission
-                                            </p>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col4">
-                                        <a href="#" data-controller="return" data-return-url-value="{{ path('admin.categorie.edit', { id: categorie.id }) }}" data-action="click->return#redirectWithReturnTo">
-                                            Éditer
+                {% for row in categories %}
+                    {% set categorie = row[0] %}
+                    {% set total = row.total %}
+                    {% if categorie.active %}
+                        <section>
+                        {% else %}
+                            <section style="background-color:gray">
+                            {% endif %}
+                            <div class="col1">
+                                {% if categorie.thumbnail %}
+                                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ categorie.titre }}">
+                                    {% endif %}
+                                </div>
+                                <div class="col2">
+                                    <div class="titre">
+                                        <a href="{{ path('admin.categorie.show', {id: categorie.id }) }}">
+                                            {{ categorie.titre }}
+                                            -
+                                            {% set usernames = categorie.users|map(u => u.username)|join(', ') %}
+                                            {{ usernames ?: 'Utilisateur inconnu' }}
                                         </a>
-                                        <form action="{{ path('admin.categorie.softDelete', { id: categorie.id }) }}" method="post">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
-                                                    <button type="submit" class="btn-action btn-delete">
-                                                        Supprimer
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </section>
-                                    {% endfor %}
-                               
+                                    </div>
+                                    <div class="descriptif">
+                                        {{ categorie.descriptif | raw }}
+                                    </div>
+                                </div>
+                                <div class="col3">
+                                    {% if total > 1 %}
+                                        <p>
+                                            {{ total }}
+                                            émissions
+                                        </p>
+                                    {% elseif total == 1 %}
+                                        <p>
+                                            1 émission
+                                        </p>
+                                    {% else %}
+                                        <p>
+                                            Aucune émission
+                                        </p>
+                                    {% endif %}
+                                </div>
+                                <div class="col4">
+                                    <a href="#" data-controller="return" data-return-url-value="{{ path('admin.categorie.edit', { id: categorie.id }) }}" data-action="click->return#redirectWithReturnTo">
+                                        Éditer
+                                    </a>
+                                    <form action="{{ path('admin.categorie.softDelete', { id: categorie.id }) }}" method="post">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+                                                <button type="submit" class="btn-action btn-delete">
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </section>
+                                {% endfor %}
                             </div>
                         </article>
                         <div class="pagination">
