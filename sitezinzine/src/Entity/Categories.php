@@ -12,11 +12,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Entity\InviteOldAnimateur;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 
 
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 #[UniqueEntity('titre')]
 #[Vich\Uploadable()]
+#[Assert\Callback('validateAtLeastOneOwner')]
 class Categories
 {
     #[ORM\Id]
@@ -29,7 +33,7 @@ class Categories
     #[Groups(['categories.index', 'emissions.index'])]
     private string $titre = '';
 
-    #[ORM\Column( nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Groups(['categories.index'])]
     private ?int $oldid = null;
 
@@ -70,16 +74,27 @@ class Categories
     #[ORM\Column]
     private ?bool $softDelete = null;
 
-    #[ORM\ManyToOne(inversedBy: 'categories')]
-    private ?User $user = null;
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'categories')]
+    #[ORM\JoinTable(name: 'categories_user')]
+    private Collection $users;
 
-    public function __construct()
-    {
-        $this->emissions = new ArrayCollection();
-    }
+    /**
+     * @var Collection<int, InviteOldAnimateur>
+     */
+    #[ORM\ManyToMany(targetEntity: InviteOldAnimateur::class, inversedBy: 'categories')]
+    #[ORM\JoinTable(name: 'categories_invite_old_animateur')]
+    private Collection $inviteOldAnimateurs;
+
+public function __construct()
+{
+    $this->emissions = new ArrayCollection();
+    $this->users = new ArrayCollection();
+    $this->inviteOldAnimateurs = new ArrayCollection();
+}
 
 
-    
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -241,16 +256,65 @@ class Categories
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
+    /**
+ * @return Collection<int, User>
+ */
+public function getUsers(): Collection
+{
+    return $this->users;
+}
+
+public function addUser(User $user): static
+{
+    if (!$this->users->contains($user)) {
+        $this->users->add($user);
     }
 
-    public function setUser(?User $user): static
+    return $this;
+}
+
+public function removeUser(User $user): static
+{
+    $this->users->removeElement($user);
+
+    return $this;
+}
+
+ /**
+     * @return Collection<int, InviteOldAnimateur>
+     */
+    public function getInviteOldAnimateurs(): Collection
     {
-        $this->user = $user;
+        return $this->inviteOldAnimateurs;
+    }
+
+    public function addInviteOldAnimateur(InviteOldAnimateur $invite): static
+    {
+        if (!$this->inviteOldAnimateurs->contains($invite)) {
+            $this->inviteOldAnimateurs->add($invite);
+        }
 
         return $this;
     }
+
+    public function removeInviteOldAnimateur(InviteOldAnimateur $invite): static
+    {
+        $this->inviteOldAnimateurs->removeElement($invite);
+
+        return $this;
+    }
+
+    public function validateAtLeastOneOwner(ExecutionContextInterface $context): void
+{
+    $hasUsers = method_exists($this, 'getUsers') && $this->getUsers() && $this->getUsers()->count() > 0;
+    $hasInvites = method_exists($this, 'getInviteOldAnimateurs') && $this->getInviteOldAnimateurs() && $this->getInviteOldAnimateurs()->count() > 0;
+
+    if (!$hasUsers && !$hasInvites) {
+        $context->buildViolation('Vous devez sélectionner au moins un·e utilisateurice OU un·e ancien·ne animateur·ice.')
+            ->atPath('users') // ou 'inviteOldAnimateurs' si tu préfères
+            ->addViolation();
+    }
+}
+
 
 }

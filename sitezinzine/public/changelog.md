@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.67] - 2025-12-30
+### Ajout
+- Gestion de multiple propriétaires des catégories.
+### Correction
+- Modification des formulaires edit et create des catégories et ajout du responsive.
+- Modification des formulaires edit et create des invités et ancien·nes animateurices et ajout du responsive.
+- Seul le prénom est obligatoire pour les invités et ancien·nes animateurices dans les formulaires.
+
 ## [1.0.66] - 2025-12-30
 ### Ajout
 - Gestion des mots de passe oubliés.

@@ -57,8 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Categories>
      */
-    #[ORM\OneToMany(targetEntity: Categories::class, mappedBy: 'user')]
+    #[ORM\ManyToMany(targetEntity: Categories::class, mappedBy: 'users')]
     private Collection $categories;
+
 
     public function __construct()
     {
@@ -107,7 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->isVerified) {
             $roles[] = 'ROLE_VERIFIED';
         }
-        
+
 
         return array_unique($roles);
     }
@@ -239,24 +240,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function addCategory(Categories $category): static
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
-            $category->setUser($this);
-        }
-
-        return $this;
+{
+    if (!$this->categories->contains($category)) {
+        $this->categories->add($category);
+        $category->addUser($this);
     }
 
-    public function removeCategory(Categories $category): static
-    {
-        if ($this->categories->removeElement($category)) {
-            // set the owning side to null (unless already changed)
-            if ($category->getUser() === $this) {
-                $category->setUser(null);
-            }
-        }
+    return $this;
+}
 
-        return $this;
+public function removeCategory(Categories $category): static
+{
+    if ($this->categories->removeElement($category)) {
+        $category->removeUser($this);
     }
+
+    return $this;
+}
+
 }

@@ -19,18 +19,30 @@ class InviteOldAnimateurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('lastName', TextType::class, [
-                'label'=> 'Nom de l\'invité' ])
             ->add('firstName', TextType::class, [
-                'label'=> 'Prénom de l\'invité' ])
-            ->add('phoneNumber', TelType::class, [
-                'label'=> 'Téléphone de l\'invité',
-                'required' => false ])
+                'label' => 'Prénom*',
+                'required' => true,
+                
+            ])
+
+            ->add('lastName', TextType::class, [
+                'label' => 'Nom',
+                'required' => false,
+            ])
+
+            ->add('phoneNumber', TextType::class, [
+                'label' => 'Téléphone',
+                'required' => false,
+            ])
+
             ->add('mail', EmailType::class, [
-                'label'=> 'Adresse mail de l\'invité' ])
+                'label' => 'Email',
+                'required' => false,
+            ])
+
             ->add('ancienanimateur', CheckboxType::class, [
                 'required' => false,
-                'label'=>'Ancien·ne Animateurice'
+                'label' => 'Ancien·ne Animateurice'
             ])
 
             ->add('Sauvegarder', SubmitType::class)
