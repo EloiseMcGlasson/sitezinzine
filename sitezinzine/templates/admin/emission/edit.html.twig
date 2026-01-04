@@ -2,141 +2,344 @@
 {% block title 'Éditer l\'émission ' ~ emission.titre %}
 
 {% block body %}
-
-
 <style>
-
-
-
-    .tox-checklist > li:not(.tox-checklist--hidden) {
-    list-style: none;
-    margin: 0.25em 0;
-    position: relative;
-    }
-    .tox-checklist > li:not(.tox-checklist--hidden)::before {
-    content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-unchecked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2215%22%20height%3D%2215%22%20x%3D%22.5%22%20y%3D%22.5%22%20fill-rule%3D%22nonzero%22%20stroke%3D%22%234C4C4C%22%20rx%3D%222%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
-    cursor: pointer;
-    height: 1em;
-    margin-left: -1.5em;
-    margin-top: 0.125em;
-    position: absolute;
-    width: 1em;
-    }
-    .tox-checklist li:not(.tox-checklist--hidden).tox-checklist--checked::before {
-    content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cg%20id%3D%22checklist-checked%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20id%3D%22Rectangle%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%234099FF%22%20fill-rule%3D%22nonzero%22%20rx%3D%222%22%2F%3E%3Cpath%20id%3D%22Path%22%20fill%3D%22%23FFF%22%20fill-rule%3D%22nonzero%22%20d%3D%22M11.5703186%2C3.14417309%20C11.8516238%2C2.73724603%2012.4164781%2C2.62829933%2012.83558%2C2.89774797%20C13.260121%2C3.17069355%2013.3759736%2C3.72932262%2013.0909105%2C4.14168582%20L7.7580587%2C11.8560195%20C7.43776896%2C12.3193404%206.76483983%2C12.3852142%206.35607322%2C11.9948725%20L3.02491697%2C8.8138662%20C2.66090143%2C8.46625845%202.65798871%2C7.89594698%203.01850234%2C7.54483354%20C3.373942%2C7.19866177%203.94940006%2C7.19592841%204.30829608%2C7.5386474%20L6.85276923%2C9.9684299%20L11.5703186%2C3.14417309%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A");
-    }
-    
-input[type=text], select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  input[type=submit] {
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  input[type=submit]:hover {
-    background-color: #45a049;
-  }
-  
-  form {
-    padding: 50px;
-  }
-  div.mb-3 {
-    margin: 15px;
-    width: 100%;
-  }
-  label {
-    margin-bottom: 15px;
-  }
-  
-  #mceu_14 {
-    margin: 15px 0;
-  }
-  
-  textarea {
-    width: auto;
-  }
-  .form-label { color:white;
-  font-family: "Montserrat Alternates", sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  
-  font-size: 16pt;
-  }
-  input {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
- 
-
-  .imageemission{
-    width: 300px;
-    margin: auto;
-  }
- .ligne1, .ligne2, .ligne4 {
-  display: flex;
-  flex-direction: row;
+/* scope strict, MAIS on exclut TinyMCE */
+.main-content .em-form,
+.main-content .em-form *:not(.tox):not(.tox *){
+  box-sizing: border-box;
 }
-.ligne3 {
+
+/* TinyMCE: empêche les styles globaux de transformer la toolbar */
+.main-content .em-form .tox button,
+.main-content .em-form .tox .tox-tbtn,
+.main-content .em-form .tox .tox-mbtn{
+  background: initial !important;
+  color: inherit !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: initial !important;
+  margin: initial !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* card blanche */
+.main-content .em-form{
+  font-family: "Montserrat Alternates", sans-serif;
+  max-width: 1080px;
+  margin: 18px auto 28px;
+  padding: 16px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  color: #1C1C1A;
+}
+
+.main-content .em-form h1{
+  margin: 0 0 12px 0;
+  text-align: center;
+  color: #E4013A;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.main-content .em-form .preview{
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  margin: 10px 0 14px;
+}
+.main-content .em-form img.emedit{
+  width: min(320px, 100%);
+  border-radius: 10px;
+  display: block;
+}
+
+/* form layout */
+.main-content .em-form form{
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.main-content .em-form .grid-4{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
   width: 100%;
 }
 
- </style>
-   
-    <div>
-     
-    <h1>{{ "Modifier " ~ emission.titre }}</h1>
+.main-content .em-form .grid-3{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
 
-    {% if emission.thumbnail %}
-    <img class="imageemission" src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-    {% endif %}
+.main-content .em-form .grid-2{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
 
-    {{ form_start (formEmission) }}
-      <div class="ligne1">
-        {{ form_row (formEmission.categorie) }}
-        {{ form_row (formEmission.theme) }}
-        {# TODO rajouter un if pour préremplir la durée de l'émission avec celle de la catégorie #}
-        {{ form_row (formEmission.duree) }}
-        {{ form_row (formEmission.editeur) }}
+.main-content .em-form .field{
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
 
-      </div>
-      <div class="ligne2">
-      {{ form_row (formEmission.titre) }}
-      {{ form_row (formEmission.keyword) }}
-      {{ form_row (formEmission.ref) }}
-      {{ form_row (formEmission.InviteOldAnimateurs) }}
-      </div>
-      <div class="ligne3" data-controller="tinymce">
-      {{ form_row (formEmission.descriptif) }}
-      </div>
-      <div class="ligne4">
-      {{ form_row (formEmission.thumbnailFile) }}
-      {{ form_row (formEmission.thumbnailFileMp3) }}
-      {{ form_row (formEmission.url) }}
+.main-content .em-form label{
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  color: #333;
+  font-size: 14px;
+}
+
+/* évite les décalages quand un label est plus long (ex: "Ancien·nes...") */
+.main-content .em-form .grid-3 label{
+  min-height: 34px;
+  line-height: 1.15;
+}
+
+.main-content .em-form input[type="text"],
+.main-content .em-form input[type="number"],
+.main-content .em-form input[type="file"],
+.main-content .em-form select,
+.main-content .em-form textarea{
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.main-content .em-form input[type="file"]{
+  padding: 8px 10px;
+}
+
+.main-content .em-form textarea{ min-height: 140px; }
+
+.main-content .em-form input:focus,
+.main-content .em-form select:focus,
+.main-content .em-form textarea:focus{
+  outline: none;
+  border-color: #E4013A;
+  box-shadow: 0 0 0 3px rgba(228, 1, 58, 0.15);
+}
+
+/* submit */
+.main-content .em-form button,
+.main-content .em-form input[type="submit"]{
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 26px;
+  background: #E4013A;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+.main-content .em-form button:hover,
+.main-content .em-form input[type="submit"]:hover{
+  background: #b30021;
+}
+
+/* TinyMCE: arrondis */
+.main-content .em-form .tinymce-wrap .tox{
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* multi-select confort */
+.main-content .em-form select[multiple]{
+  min-height: 160px;
+}
+
+/* checkline (utilisée pour suppression image) */
+.main-content .em-form .checkline{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.main-content .em-form .thumb-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.main-content .em-form .delete-row{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.main-content .em-form .delete-left{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main-content .em-form .thumb-mini{
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+/* responsive */
+@media (max-width: 960px){
+  .main-content .em-form{
+    margin: 14px 12px 22px;
+    padding: 14px 12px;
+  }
+
+  .main-content .em-form .grid-4{ grid-template-columns: 1fr; }
+  .main-content .em-form .grid-3{ grid-template-columns: 1fr; }
+  .main-content .em-form .grid-2{ grid-template-columns: 1fr; }
+
+  .main-content .em-form img.emedit{
+    width: min(260px, 100%);
+  }
+
+  .main-content .em-form .thumb-row{
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 420px){
+  .main-content .em-form{
+    margin: 10px 8px 16px;
+    padding: 12px 10px;
+    border-radius: 10px;
+  }
+
+  .main-content .em-form h1{ font-size: 18px; }
+  .main-content .em-form label{ font-size: 13px; }
+
+  .main-content .em-form input[type="text"],
+  .main-content .em-form input[type="number"],
+  .main-content .em-form input[type="file"],
+  .main-content .em-form select,
+  .main-content .em-form textarea{
+    padding: 9px 10px;
+    font-size: 14px;
+  }
+
+  .main-content .em-form select[multiple]{ min-height: 130px; }
+}
+
+@media (max-height: 520px) and (orientation: landscape){
+  .main-content .em-form{
+    margin: 10px 12px 14px;
+    padding: 12px 12px;
+  }
+
+  .main-content .em-form .preview{ margin: 6px 0 10px; }
+  .main-content .em-form img.emedit{ width: min(220px, 100%); }
+
+  .main-content .em-form select[multiple]{ min-height: 120px; }
+  .main-content .em-form textarea{ min-height: 110px; }
+
+  .main-content .em-form button,
+  .main-content .em-form input[type="submit"]{
+    padding: 10px 12px;
+    border-radius: 22px;
+  }
+}
+</style>
+
+<div class="em-form">
+  <h1>{{ "Modifier " ~ emission.titre }}</h1>
+
+  {% if emission.thumbnail %}
+    <div class="preview">
+      <img class="emedit" src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
+    </div>
+  {% endif %}
+
+  {{ form_start(formEmission, { attr: { 'data-turbo': 'false' } }) }}
+
+  {# Ligne 1 : Catégorie / Thème / Durée / Éditeur #}
+  <div class="grid-4">
+    <div class="field">{{ form_row(formEmission.categorie) }}</div>
+    <div class="field">{{ form_row(formEmission.theme) }}</div>
+    <div class="field">{{ form_row(formEmission.duree) }}</div>
+    <div class="field">{{ form_row(formEmission.editeur) }}</div>
+  </div>
+
+  {# Ligne 2 : Titre / Keyword / Ref #}
+  <div class="grid-3">
+    <div class="field">{{ form_row(formEmission.titre) }}</div>
+    <div class="field">{{ form_row(formEmission.keyword) }}</div>
+    <div class="field">{{ form_row(formEmission.ref) }}</div>
+  </div>
+
+  {# Ligne 3 : Users / Invités / Anciens animateurs (3 sur une ligne) #}
+  <div class="grid-3">
+    <div class="field">{{ form_row(formEmission.users) }}</div>
+  <div class="field">{{ form_row(formEmission.anciensAnimateurs) }}</div>
+<div class="field">{{ form_row(formEmission.invites) }}</div>
+  </div>
+
+  <small style="opacity:.7; display:block; margin-top: -6px;">
+    Maintenez Ctrl (ou Cmd sur Mac) pour ajouter ou retirer une sélection
+  </small>
+
+  {# Descriptif TinyMCE #}
+  <div class="tinymce-wrap" data-controller="tinymce">
+    {{ form_row(formEmission.descriptif) }}
+  </div>
+
+  {# --- Image : upload + suppression + miniature --- #}
+  <div class="thumb-row">
+    <div class="field">
+      {{ form_label(formEmission.thumbnailFile) }}
+      {{ form_widget(formEmission.thumbnailFile) }}
     </div>
 
-    {{ form_end (formEmission) }}
+    {% if emission.thumbnail %}
+      <div class="field">
+        <div class="checkline">
+          <div class="delete-row">
+            <div class="delete-left">
+              <input type="checkbox" id="delete_thumbnail" name="delete_thumbnail" value="1">
+              <label for="delete_thumbnail" style="margin:0;">
+                Supprimer l’image actuelle
+              </label>
+            </div>
 
-    
+            <img class="thumb-mini"
+                 src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}"
+                 alt="Miniature de {{ emission.titre }}"
+                 loading="lazy">
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  {# --- Mp3 + Url --- #}
+  <div class="grid-2">
+    <div class="field">{{ form_row(formEmission.thumbnailFileMp3) }}</div>
+    <div class="field">{{ form_row(formEmission.url) }}</div>
+  </div>
+
+  {{ form_end(formEmission) }}
+</div>
 
 {% endblock %}

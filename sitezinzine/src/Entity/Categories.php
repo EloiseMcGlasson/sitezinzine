@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 #[UniqueEntity('titre')]
 #[Vich\Uploadable()]
-#[Assert\Callback('validateAtLeastOneOwner')]
 class Categories
 {
     #[ORM\Id]
@@ -85,12 +84,12 @@ class Categories
     #[ORM\JoinTable(name: 'categories_invite_old_animateur')]
     private Collection $inviteOldAnimateurs;
 
-public function __construct()
-{
-    $this->emissions = new ArrayCollection();
-    $this->users = new ArrayCollection();
-    $this->inviteOldAnimateurs = new ArrayCollection();
-}
+    public function __construct()
+    {
+        $this->emissions = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->inviteOldAnimateurs = new ArrayCollection();
+    }
 
 
 
@@ -257,30 +256,30 @@ public function __construct()
     }
 
     /**
- * @return Collection<int, User>
- */
-public function getUsers(): Collection
-{
-    return $this->users;
-}
-
-public function addUser(User $user): static
-{
-    if (!$this->users->contains($user)) {
-        $this->users->add($user);
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
     }
 
-    return $this;
-}
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
 
-public function removeUser(User $user): static
-{
-    $this->users->removeElement($user);
+        return $this;
+    }
 
-    return $this;
-}
+    public function removeUser(User $user): static
+    {
+        $this->users->removeElement($user);
 
- /**
+        return $this;
+    }
+
+    /**
      * @return Collection<int, InviteOldAnimateur>
      */
     public function getInviteOldAnimateurs(): Collection
@@ -303,16 +302,25 @@ public function removeUser(User $user): static
 
         return $this;
     }
-
-    public function validateAtLeastOneOwner(ExecutionContextInterface $context): void
+   
+#[Assert\Callback(groups: ['admin'])]
+public function validateAtLeastOneOwner(ExecutionContextInterface $context): void
 {
-    $hasUsers = method_exists($this, 'getUsers') && $this->getUsers() && $this->getUsers()->count() > 0;
-    $hasInvites = method_exists($this, 'getInviteOldAnimateurs') && $this->getInviteOldAnimateurs() && $this->getInviteOldAnimateurs()->count() > 0;
+    $hasUsers = !$this->getUsers()->isEmpty();
 
-    if (!$hasUsers && !$hasInvites) {
-        $context->buildViolation('Vous devez sélectionner au moins un·e utilisateurice OU un·e ancien·ne animateur·ice.')
-            ->atPath('users') // ou 'inviteOldAnimateurs' si tu préfères
-            ->addViolation();
+    $hasAnciens = !$this->getInviteOldAnimateurs()
+        ->filter(fn($a) => (bool) $a->isAncienanimateur())
+        ->isEmpty();
+
+    if (!$hasUsers && !$hasAnciens) {
+        $message = 'Vous devez sélectionner au moins un·e utilisateurice OU un·e ancien·ne animateur·ice.';
+
+        // erreur globale (bandeau)
+        $context->buildViolation($message)->addViolation();
+
+        // erreurs sous les champs
+        $context->buildViolation($message)->atPath('users')->addViolation();
+        $context->buildViolation($message)->atPath('inviteOldAnimateurs')->addViolation();
     }
 }
 

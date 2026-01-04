@@ -6,6 +6,8 @@ use App\Entity\Categories;
 use App\Entity\User;
 use App\Entity\InviteOldAnimateur;
 use App\Repository\CategoriesRepository;
+use App\Repository\InviteOldAnimateurRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -17,6 +19,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class CategorieType extends AbstractType
 {
@@ -32,6 +36,17 @@ class CategorieType extends AbstractType
         foreach ($editeursRaw as $row) {
             $editeursChoices[$row['name']] = (int) $row['id'];
         }
+
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData() ?? [];
+
+            // si l'utilisateur ne sélectionne rien, le navigateur n'envoie pas la clé
+            $data['users'] = $data['users'] ?? [];
+            $data['inviteOldAnimateurs'] = $data['inviteOldAnimateurs'] ?? [];
+
+            $event->setData($data);
+        });
 
         $builder
             ->add('titre', TextType::class, [
@@ -64,6 +79,7 @@ class CategorieType extends AbstractType
                 'choice_label' => 'username',
                 'multiple' => true,
                 'required' => false,
+                'error_bubbling' => false,
                 'label' => 'Utilisateur·ices (comptes)',
             ])
 
@@ -72,8 +88,15 @@ class CategorieType extends AbstractType
                 'class' => InviteOldAnimateur::class,
                 'multiple' => true,
                 'required' => false,
+                'error_bubbling' => false,
                 'label' => 'Ancien·nes animateur·ices',
+                'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
+                'query_builder' => fn(InviteOldAnimateurRepository $repo): QueryBuilder
+                => $repo->createQueryBuilder('a')
+                    ->andWhere('a.ancienanimateur = 1')
+                    ->orderBy('a.lastName', 'ASC'),
             ])
+
 
             ->add('thumbnailFile', FileType::class, [
                 'required' => false,
@@ -92,6 +115,7 @@ class CategorieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Categories::class,
+            'validation_groups' => ['Default', 'admin'],
         ]);
     }
 }

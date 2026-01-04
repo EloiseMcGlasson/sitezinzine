@@ -16,6 +16,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\SecurityBundle\Security;
 use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
 use Vich\UploaderBundle\Storage\StorageInterface;
+use App\Repository\EmissionRepository;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 
 
@@ -39,18 +42,36 @@ class CategorieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    public function show(Categories $categorie): Response
-    {
-        if ($categorie->isSoftDelete()) {
-            $this->addFlash('warning', 'Cette catégorie a été supprimée.');
-            return $this->redirectToRoute('admin.categorie.index');
-        }
-
-        return $this->render('admin/categorie/show.html.twig', [
-            'categorie' => $categorie,
-        ]);
+#[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+public function show(
+    Categories $categorie,
+    Request $request,
+    EmissionRepository $emissionRepository,
+    PaginatorInterface $paginator
+): Response {
+    if ($categorie->isSoftDelete()) {
+        $this->addFlash('warning', 'Cette catégorie a été supprimée.');
+        return $this->redirectToRoute('admin.categorie.index');
     }
+
+    $page  = $request->query->getInt('page', 1);
+    $limit = 12;
+
+    $qb = $emissionRepository->createQueryBuilder('e')
+        ->andWhere('e.categorie = :categorie')
+        ->setParameter('categorie', $categorie)
+        ->orderBy('e.datepub', 'DESC');
+
+    $emissions = $paginator->paginate($qb, $page, $limit);
+
+    return $this->render('admin/categorie/show.html.twig', [
+        'categorie' => $categorie,
+        'emissions' => $emissions, // ✅ KNP PaginationInterface
+    ]);
+}
+
+
+
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
 public function edit(

@@ -12,12 +12,12 @@ use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
 
 #[ORM\Entity(repositoryClass: EmissionRepository::class)]
 #[ORM\Table(name: 'emission')]
-#[ORM\Index(name: 'idx_emission_user', columns: ['user_id'])]
 #[ORM\Index(name: 'idx_emission_url', columns: ['url'])]
 #[ORM\Index(name: 'idx_emission_titre', columns: ['titre'])]
 #[ORM\Index(name: 'idx_emission_theme', columns: ['theme_id'])]
@@ -189,13 +189,12 @@ class Emission
     private ?Theme $theme = null;
 
     /**
-     * @var User|null
-     * This field is used to store the user who created the emission.
-     * It is a many-to-one relationship with the User entity.
-     * It is used to track the creator of the emission for administrative purposes.
+     * @var Collection<int, User>
      */
-    #[ORM\ManyToOne(inversedBy: 'emissions')]
-    private ?User $user = null;
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'emissions')]
+    #[ORM\JoinTable(name: 'emission_user')]
+    private Collection $users;
+
 
     /**
      * @var Editeur|null
@@ -218,7 +217,9 @@ class Emission
      * It is used to manage the relationship between emissions and animators.
      */
     #[ORM\ManyToMany(targetEntity: InviteOldAnimateur::class, inversedBy: 'emissions')]
-    private Collection $InviteOldAnimateurs;
+    #[ORM\JoinTable(name: 'emission_invite_old_animateur')]
+    private Collection $inviteOldAnimateurs;
+
 
     /**
      * @var Collection<int, Diffusion>
@@ -261,14 +262,16 @@ class Emission
 
     /**
      * Emission constructor.
-     * Initializes the collections for InviteOldAnimateurs and diffusions.
+     * Initializes the collections for InviteOldAnimateurs users and diffusions.
      * This ensures that these collections are always ready to be used without needing to check for null.
      */
     public function __construct()
     {
-        $this->InviteOldAnimateurs = new ArrayCollection();
+        $this->inviteOldAnimateurs = new ArrayCollection();
         $this->diffusions = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
+
 
 
     /**
@@ -564,24 +567,48 @@ class Emission
     }
 
     /**
-     * Get the user who created the emission.
-     *
-     * @return User|null The user who created the emission, or null if not set.
+     * @return Collection<int, User>
      */
-    public function getUser(): ?User
+    public function getUsers(): Collection
     {
-        return $this->user;
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        $this->users->removeElement($user);
+
+        return $this;
     }
 
     /**
-     * Set the user who created the emission.
-     *
-     * @param User|null $user The user to set.
-     * @return static Returns the current instance for method chaining.
+     * Compat legacy : retourne le premier user (ou null).
+     */
+    public function getUser(): ?User
+    {
+        return $this->users->first() ?: null;
+    }
+
+    /**
+     * Compat legacy :
+     * - si $user est null => vide la collection
+     * - sinon => remplace la collection par un seul user
      */
     public function setUser(?User $user): static
     {
-        $this->user = $user;
+        $this->users->clear();
+        if ($user !== null) {
+            $this->users->add($user);
+        }
 
         return $this;
     }
@@ -618,7 +645,7 @@ class Emission
      */
     public function getInviteOldAnimateurs(): Collection
     {
-        return $this->InviteOldAnimateurs;
+        return $this->inviteOldAnimateurs;
     }
 
     /**
@@ -629,8 +656,8 @@ class Emission
      */
     public function addInviteOldAnimateur(InviteOldAnimateur $InviteOldAnimateur): static
     {
-        if (!$this->InviteOldAnimateurs->contains($InviteOldAnimateur)) {
-            $this->InviteOldAnimateurs->add($InviteOldAnimateur);
+        if (!$this->inviteOldAnimateurs->contains($InviteOldAnimateur)) {
+            $this->inviteOldAnimateurs->add($InviteOldAnimateur);
         }
 
         return $this;
@@ -644,7 +671,7 @@ class Emission
      */
     public function removeInviteOldAnimateur(InviteOldAnimateur $InviteOldAnimateur): static
     {
-        $this->InviteOldAnimateurs->removeElement($InviteOldAnimateur);
+        $this->inviteOldAnimateurs->removeElement($InviteOldAnimateur);
 
         return $this;
     }
@@ -814,5 +841,27 @@ class Emission
     {
         $this->nextDiffusion = $date;
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateOwnerOrFormerHost(ExecutionContextInterface $context): void
+    {
+        $hasUser = !$this->users->isEmpty();
+
+        $hasAncienAnimateur = false;
+        foreach ($this->inviteOldAnimateurs as $person) {
+            if ($person->isAncienanimateur()) {
+                $hasAncienAnimateur = true;
+                break;
+            }
+        }
+
+        if (!$hasUser && !$hasAncienAnimateur) {
+            $context->buildViolation(
+                'Il faut sélectionner au moins un·e utilisateur·ice ou un·e ancien·ne animateur·ice.'
+            )
+                ->atPath('users') // ou 'inviteOldAnimateurs' si tu préfères afficher l’erreur sur l’autre champ
+                ->addViolation();
+        }
     }
 }

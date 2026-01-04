@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Emission;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -45,8 +46,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Emission>
      */
-    #[ORM\OneToMany(targetEntity: Emission::class, mappedBy: 'user')]
+    #[ORM\ManyToMany(targetEntity: Emission::class, mappedBy: 'users')]
     private Collection $emissions;
+
 
     /**
      * @var Collection<int, Evenement>
@@ -180,26 +182,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function addEmission(Emission $emission): static
-    {
-        if (!$this->emissions->contains($emission)) {
-            $this->emissions->add($emission);
-            $emission->setUser($this);
-        }
-
-        return $this;
+{
+    if (!$this->emissions->contains($emission)) {
+        $this->emissions->add($emission);
+        $emission->addUser($this); // <-- important : cohérence bidirectionnelle
     }
 
-    public function removeEmission(Emission $emission): static
-    {
-        if ($this->emissions->removeElement($emission)) {
-            // set the owning side to null (unless already changed)
-            if ($emission->getUser() === $this) {
-                $emission->setUser(null);
-            }
-        }
+    return $this;
+}
 
-        return $this;
+public function removeEmission(Emission $emission): static
+{
+    if ($this->emissions->removeElement($emission)) {
+        $emission->removeUser($this);
     }
+
+    return $this;
+}
+
 
     /**
      * @return Collection<int, Evenement>
@@ -240,22 +240,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function addCategory(Categories $category): static
-{
-    if (!$this->categories->contains($category)) {
-        $this->categories->add($category);
-        $category->addUser($this);
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->addUser($this);
+        }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function removeCategory(Categories $category): static
+    {
+        if ($this->categories->removeElement($category)) {
+            $category->removeUser($this);
+        }
 
-public function removeCategory(Categories $category): static
-{
-    if ($this->categories->removeElement($category)) {
-        $category->removeUser($this);
+        return $this;
     }
-
-    return $this;
-}
-
 }

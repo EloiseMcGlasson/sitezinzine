@@ -171,10 +171,21 @@
                                                 <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
                                                     {{ emission.titre }}
                                                     -
-                                                    {% if emission.user is null %}
-                                                        pas de user
+                                                    {% set usernames = emission.users|map(u => u.username)|join(', ') %}
+                                                    {% set anciens = emission.inviteOldAnimateurs
+                                                        |filter(a => a.ancienanimateur)
+                                                        |map(a => a ~ '')
+                                                        |join(', ') %}
+                                                    {% if usernames %}
+                                                        {{ usernames }}
+                                                        {% if anciens %}
+                                                            ,
+                                                            {{ anciens }}
+                                                        {% endif %}
+                                                    {% elseif anciens %}
+                                                        {{ anciens }}
                                                     {% else %}
-                                                        {{ emission.user.username }}
+                                                        Utilisateur inconnu
                                                     {% endif %}
                                                 </a>
                                             </div>

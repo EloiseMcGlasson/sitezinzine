@@ -18,6 +18,14 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Form\EmissionSearchType;
 use App\Controller\Traits\ReturnToTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Vich\UploaderBundle\Storage\StorageInterface;
+use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
+use App\Entity\User;
+
+
+
+
 
 #[Route('/admin/emission', name: 'admin.emission.')]
 #[IsGranted('ROLE_USER')]
@@ -48,96 +56,155 @@ class EmissionController extends AbstractController
 
 
 
+
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    public function show(Emission $emission): Response
-    {
-        return $this->render('admin/emission/show.html.twig', [
-            'emission' => $emission,
-        ]);
-    }
+    public function show(
+        Emission $emission,
+        EmissionRepository $emissionRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
 
-    #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em, Security $security): Response
-    {
-        $emission = new Emission();
-        $form = $this->createForm(EmissionType::class, $emission);
-        $form->handleRequest($request);
+        $emissions = null;
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $now = new \DateTime();
-            $user = $security->getUser();
+        if ($emission->getCategorie() !== null) {
+            $query = $emissionRepository->createQueryBuilder('e')
+                ->where('e.categorie = :categorie')
+                ->andWhere('e != :current')
+                ->setParameter('categorie', $emission->getCategorie())
+                ->setParameter('current', $emission)
+                ->orderBy('e.datepub', 'DESC')
+                ->getQuery();
 
-            // Si ref est vide, on met le username du user connecté
-            if (empty($emission->getRef()) && $user) {
-                $emission->setRef($user->getUserIdentifier());
-            }
-
-            $emission
-                ->setDatepub($now)
-                ->setUpdatedat($now)
-                ->setUser($user);
-
-            $em->persist($emission);
-            $em->flush();
-
-            $this->addFlash('success', 'L\'émission a été créée !');
-
-            return $this->redirectToRoute('admin.emission.index');
+            $emissions = $paginator->paginate(
+                $query,
+                $request->query->getInt('page', 1),
+                10
+            );
         }
 
-        return $this->render('admin/emission/create.html.twig', [
-            'form' => $form,
+        return $this->render('admin/emission/show.html.twig', [
+            'emission'  => $emission,
+            'emissions' => $emissions,
         ]);
     }
+
+
+#[Route('/create', name: 'create')]
+public function create(Request $request, EntityManagerInterface $em, Security $security): Response
+{
+    $emission = new Emission();
+
+    /** @var User|null $user */
+    $user = $security->getUser();
+
+    $form = $this->createForm(EmissionType::class, $emission, [
+        'current_user_identifier' => $user?->getUserIdentifier(),
+    ]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $now = new \DateTime();
+
+        // Si ref est vide, on met le username du user connecté
+        if (empty($emission->getRef()) && $user) {
+            $emission->setRef($user->getUserIdentifier());
+        }
+
+        // Si aucun user n'est sélectionné, on ajoute le user connecté par défaut
+        if ($user && $emission->getUsers()->isEmpty()) {
+            $emission->addUser($user);
+        }
+
+        $emission
+            ->setDatepub($now)
+            ->setUpdatedat($now);
+
+        $em->persist($emission);
+        $em->flush();
+
+        $this->addFlash('success', 'L\'émission a été créée !');
+
+        return $this->redirectToRoute('admin.emission.index');
+    }
+
+    return $this->render('admin/emission/create.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
 
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    public function edit(
-        Request $request,
-        Emission $emission,
-        EntityManagerInterface $em,
-        Security $security,
-        SessionInterface $session,
-        UrlGeneratorInterface $urlGenerator
-    ): Response {
-        $user = $security->getUser();
+public function edit(
+    Request $request,
+    Emission $emission,
+    EntityManagerInterface $em,
+    Security $security,
+    SessionInterface $session,
+    UrlGeneratorInterface $urlGenerator,
+    StorageInterface $storage,
+    PropertyMappingFactory $mappingFactory
+): Response {
+    $user = $security->getUser();
 
-        // Vérifie si l'utilisateur est admin/super_admin ou l'auteur de l'émission
-        if (
-            !$this->isGranted('ROLE_ADMIN') &&
-            !$this->isGranted('ROLE_SUPER_ADMIN') &&
-            $emission->getUser() !== $user
-        ) {
-            throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
+    // Vérifie si l'utilisateur est admin/super_admin ou lié à l'émission
+    if (
+        !$this->isGranted('ROLE_ADMIN') &&
+        !$this->isGranted('ROLE_SUPER_ADMIN') &&
+        (!$user || !$emission->getUsers()->contains($user))
+    ) {
+        throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
+    }
+
+    // Enregistre returnTo si présent
+    $this->storeReturnTo($request, $session);
+
+    // Création et gestion du formulaire (envoie le username au form)
+    $form = $this->createForm(EmissionType::class, $emission, [
+        'current_user_identifier' => $user?->getUserIdentifier(),
+    ]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+
+        // ✅ suppression image si demandée (copie du pattern Catégorie)
+        if ($request->request->getBoolean('delete_thumbnail')) {
+
+            $mappings = $mappingFactory->fromObject($emission);
+            $thumbnailMapping = null;
+
+            foreach ($mappings as $m) {
+                if (method_exists($m, 'getPropertyName') && $m->getPropertyName() === 'thumbnailFile') {
+                    $thumbnailMapping = $m;
+                    break;
+                }
+            }
+
+            if (null !== $thumbnailMapping) {
+                $storage->remove($emission, $thumbnailMapping);
+            }
+
+            // on nettoie aussi le nom de fichier en BDD
+            $emission->setThumbnail(null);
         }
 
-        // Enregistre returnTo si présent
-        $this->storeReturnTo($request, $session);
+        $emission->setUpdatedat(new \DateTime());
+        $em->flush();
 
-        // Création et gestion du formulaire (envoie le username au form)
-        $form = $this->createForm(EmissionType::class, $emission, [
-            'current_user_identifier' => $user?->getUserIdentifier(),
-        ]);
-        $form->handleRequest($request);
+        $this->addFlash('success', 'L\'émission a bien été modifiée.');
 
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $emission->setUpdatedat(new \DateTime());
-            $em->flush();
-
-            $this->addFlash('success', 'L\'émission a bien été modifiée.');
-
-            // Redirection intelligente
-            return $this->redirectToReturnTo($session, $urlGenerator, 'admin.emission.index', [
-                'page' => $session->get('previous_page_emission', 1),
-            ]);
-        }
-
-        return $this->render('admin/emission/edit.html.twig', [
-            'emission' => $emission,
-            'formEmission' => $form->createView(),
+        // Redirection intelligente
+        return $this->redirectToReturnTo($session, $urlGenerator, 'admin.emission.index', [
+            'page' => $session->get('previous_page_emission', 1),
         ]);
     }
+
+    return $this->render('admin/emission/edit.html.twig', [
+        'emission' => $emission,
+        'formEmission' => $form->createView(),
+    ]);
+}
+
 
 
 
