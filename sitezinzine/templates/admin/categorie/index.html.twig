@@ -143,7 +143,21 @@ a:hover {
                                             {{ categorie.titre }}
                                             -
                                             {% set usernames = categorie.users|map(u => u.username)|join(', ') %}
-                                            {{ usernames ?: 'Utilisateur inconnu' }}
+                                            {% set anciens = categorie.inviteOldAnimateurs
+                                                |filter(a => a.ancienanimateur)
+                                                |map(a => a ~ '')
+                                                |join(', ') %}
+                                            {% if usernames %}
+                                                {{ usernames }}
+                                                {% if anciens %}
+                                                    ,
+                                                    {{ anciens }}
+                                                {% endif %}
+                                            {% elseif anciens %}
+                                                {{ anciens }}
+                                            {% else %}
+                                                Utilisateur inconnu
+                                            {% endif %}
                                         </a>
                                     </div>
                                     <div class="descriptif">

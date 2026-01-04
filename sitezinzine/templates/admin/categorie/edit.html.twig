@@ -1,383 +1,379 @@
 {% extends 'admin/admin.html.twig' %}
+{% form_theme form 'form_div_layout.html.twig' %}
+
 {% block title 'Éditer la catégorie ' ~ categorie.titre %}
+
 {% block body %}
   <style>
-/* scope strict, MAIS on exclut TinyMCE */
-.main-content .cat-form,
-.main-content .cat-form *:not(.tox):not(.tox *){
-  box-sizing: border-box;
-}
+    /* scope strict, MAIS on exclut TinyMCE */
+    .main-content .cat-form,
+    .main-content .cat-form *:not(.tox):not(.tox *){ box-sizing:border-box; }
 
-/* TinyMCE: empêche les styles globaux de transformer la toolbar */
-.main-content .cat-form .tox button,
-.main-content .cat-form .tox .tox-tbtn,
-.main-content .cat-form .tox .tox-mbtn{
-  background: initial !important;
-  color: inherit !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  padding: initial !important;
-  margin: initial !important;
-  width: auto !important;
-  height: auto !important;
-}
-
-
-  /* card blanche, mais on respecte le fond gradient du layout */
-  .main-content .cat-form{
-    font-family: "Montserrat Alternates", sans-serif;
-    max-width: 1080px;
-    margin: 18px auto 28px;
-    padding: 16px 16px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    color: #1C1C1A;
-  }
-
-  /* on neutralise le h1 du layout admin (blanc centré) uniquement ici */
-  .main-content .cat-form h1{
-    margin: 0 0 12px 0;
-    text-align: center;
-    color: #E4013A;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 900;
-    font-size: 22px;
-    line-height: 1.2;
-    overflow-wrap: anywhere;
-  }
-
-  .main-content .cat-form .preview{
-    display: flex;
-    justify-content: center;
-    margin: 10px 0 14px;
-  }
-  .main-content .cat-form img.catedit{
-    width: min(320px, 100%);
-    border-radius: 10px;
-    display: block;
-  }
-
-  .main-content .cat-form form{
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px; /* compact */
-  }
-
-  .main-content .cat-form .grid{
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    width: 100%;
-  }
-
-  .main-content .cat-form .field{
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .main-content .cat-form label{
-    margin: 0 0 6px 0;
-    font-weight: 800;
-    color: #333;
-    font-size: 14px;
-  }
-
-  .main-content .cat-form input[type="text"],
-  .main-content .cat-form input[type="number"],
-  .main-content .cat-form input[type="file"],
-  .main-content .cat-form select,
-  .main-content .cat-form textarea{
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 15px;
-    background: #fff;
-  }
-  .main-content .cat-form input[type="file"]{
-  padding: 8px 10px;
-}
-
-
-  .main-content .cat-form textarea{ min-height: 140px; }
-
-  .main-content .cat-form input:focus,
-  .main-content .cat-form select:focus,
-  .main-content .cat-form textarea:focus{
-    outline: none;
-    border-color: #E4013A;
-    box-shadow: 0 0 0 3px rgba(228, 1, 58, 0.15);
-  }
-
-  .main-content .cat-form .checkline{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background: #fafafa;
-  }
-
-  .main-content .cat-form .checkline input[type="checkbox"]{
-    width: 18px;
-    height: 18px;
-    margin: 0;
-    accent-color: #E4013A;
-  }
-
-  /* submit Symfony : garde ton style, mais compact + cohérent */
-  .main-content .cat-form button,
-  .main-content .cat-form input[type="submit"]{
-    width: 100%;
-    padding: 12px 14px;
-    border: 0;
-    border-radius: 26px;
-    background: #E4013A;
-    color: #fff;
-    font-weight: 900;
-    cursor: pointer;
-    transition: background-color .2s ease;
-  }
-  .main-content .cat-form button:hover,
-  .main-content .cat-form input[type="submit"]:hover{
-    background: #b30021;
-  }
-
-  /* TinyMCE: arrondis uniquement */
-  .main-content .cat-form .tinymce-wrap .tox{
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  /* Bas du formulaire : 2 colonnes pour les 2 listes */
-.main-content .cat-form .grid-2{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
-}
-
-/* Pour que les <select multiple> soient un peu plus agréables */
-.main-content .cat-form select[multiple]{
-  min-height: 160px;
-}
-
-/* Ligne suppression image + miniature à droite */
-/* Ligne suppression image + miniature sur UNE ligne */
-.main-content .cat-form .delete-row{
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-/* Bloc checkbox + texte */
-.main-content .cat-form .delete-left{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Miniature compacte */
-.main-content .cat-form .thumb-mini{
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  flex-shrink: 0;
-}
-
-/* Upload + suppression parfaitement alignés verticalement */
-.main-content .cat-form .thumb-row{
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: center; /* ⭐ clé du centrage vertical */
-}
-
-/* Le bloc suppression garde sa taille naturelle */
-.main-content .cat-form .thumb-row .checkline{
-  padding: 10px 12px;
-  width: fit-content;
-}
-
-
-
-
-
-/* Centrage de la checkline "active" */
-.main-content .cat-form .checkline.centered{
-  justify-content: center;
-}
-
-  /* Responsive */
-  @media (max-width: 960px){
-    .main-content .cat-form{
-      margin: 14px 12px 22px;
-      padding: 14px 12px;
+    /* TinyMCE: empêche les styles globaux de transformer la toolbar */
+    .main-content .cat-form .tox button,
+    .main-content .cat-form .tox .tox-tbtn,
+    .main-content .cat-form .tox .tox-mbtn{
+      background:initial !important;
+      color:inherit !important;
+      border-radius:0 !important;
+      box-shadow:none !important;
+      padding:initial !important;
+      margin:initial !important;
+      width:auto !important;
+      height:auto !important;
     }
 
+    .main-content .cat-form{
+      font-family:"Montserrat Alternates",sans-serif;
+      max-width:1080px;
+      margin:18px auto 28px;
+      padding:16px 16px;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      color:#1C1C1A;
+    }
+
+    .main-content .cat-form h1{
+      margin:0 0 12px 0;
+      text-align:center;
+      color:#E4013A;
+      font-family:"Montserrat Alternates",sans-serif;
+      font-weight:900;
+      font-size:22px;
+      line-height:1.2;
+      overflow-wrap:anywhere;
+    }
+
+    .main-content .cat-form .preview{
+      display:flex;
+      justify-content:center;
+      margin:10px 0 14px;
+    }
+    .main-content .cat-form img.catedit{
+      width:min(320px, 100%);
+      border-radius:10px;
+      display:block;
+    }
+
+    .main-content .cat-form form{
+      margin:0;
+      padding:0;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .main-content .cat-form .grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+      width:100%;
+    }
+
+    .main-content .cat-form .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+      width:100%;
+    }
+
+    .main-content .cat-form .field{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+
+    .main-content .cat-form label{
+      margin:0 0 6px 0;
+      font-weight:800;
+      color:#333;
+      font-size:14px;
+    }
+
+    .main-content .cat-form input[type="text"],
+    .main-content .cat-form input[type="number"],
+    .main-content .cat-form input[type="file"],
+    .main-content .cat-form select,
+    .main-content .cat-form textarea{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid #ddd;
+      border-radius:8px;
+      font-size:15px;
+      background:#fff;
+    }
+    .main-content .cat-form input[type="file"]{ padding:8px 10px; }
+    .main-content .cat-form textarea{ min-height:140px; }
+
+    .main-content .cat-form input:focus,
+    .main-content .cat-form select:focus,
+    .main-content .cat-form textarea:focus{
+      outline:none;
+      border-color:#E4013A;
+      box-shadow:0 0 0 3px rgba(228, 1, 58, 0.15);
+    }
+
+    .main-content .cat-form .checkline{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid #ddd;
+      border-radius:10px;
+      background:#fafafa;
+    }
+    .main-content .cat-form .checkline input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      margin:0;
+      accent-color:#E4013A;
+    }
+    .main-content .cat-form .checkline.centered{ justify-content:center; }
+
+    .main-content .cat-form button,
+    .main-content .cat-form input[type="submit"]{
+      width:100%;
+      padding:12px 14px;
+      border:0;
+      border-radius:26px;
+      background:#E4013A;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      transition:background-color .2s ease;
+    }
+    .main-content .cat-form button:hover,
+    .main-content .cat-form input[type="submit"]:hover{
+      background:#b30021;
+    }
+
+    .main-content .cat-form .tinymce-wrap .tox{
+      border-radius:10px;
+      overflow:hidden;
+    }
+
+    .main-content .cat-form select[multiple]{ min-height:160px; }
+
     .main-content .cat-form .thumb-row{
-    grid-template-columns: 1fr;
-    align-items: stretch;
-  }
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:16px;
+      align-items:center;
+    }
+    .main-content .cat-form .thumb-row .checkline{
+      padding:10px 12px;
+      width:fit-content;
+    }
 
-  .main-content .cat-form .thumb-row .checkline{
-    width: 100%;
-  }
-    .main-content .cat-form .grid{ grid-template-columns: 1fr; }
+    .main-content .cat-form .delete-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .main-content .cat-form .delete-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .main-content .cat-form .thumb-mini{
+      width:56px;
+      height:56px;
+      object-fit:cover;
+      border-radius:8px;
+      border:1px solid #ddd;
+      flex-shrink:0;
+    }
 
-    .main-content .cat-form .grid-2{ grid-template-columns: 1fr; }
+    .main-content .cat-form .form-errors{
+      padding:10px 12px;
+      border:1px solid #e11d48;
+      background:rgba(225, 29, 72, 0.08);
+      border-radius:10px;
+      color:#9f1239;
+      font-weight:700;
+    }
+    .main-content .cat-form .form-errors ul{
+      margin:0;
+      padding-left:18px;
+    }
 
-.main-content .cat-form img.catedit{
-  width: min(260px, 100%);
-}
+    .main-content .cat-form .field-error{
+      margin-top:6px;
+      padding:8px 10px;
+      border:1px solid #e11d48;
+      background:rgba(225, 29, 72, 0.08);
+      border-radius:10px;
+      color:#9f1239;
+      font-weight:700;
+    }
 
-  }
+    @media (max-width:960px){
+      .main-content .cat-form{
+        margin:14px 12px 22px;
+        padding:14px 12px;
+      }
+      .main-content .cat-form .grid{ grid-template-columns:1fr; }
+      .main-content .cat-form .grid-2{ grid-template-columns:1fr; }
 
-  @media (max-width: 420px){
-  .main-content .cat-form{
-    margin: 10px 8px 16px;
-    padding: 12px 10px;
-    border-radius: 10px;
-  }
+      .main-content .cat-form img.catedit{ width:min(260px, 100%); }
 
-  .main-content .cat-form h1{
-    font-size: 18px;
-  }
+      .main-content .cat-form .thumb-row{
+        grid-template-columns:1fr;
+        align-items:stretch;
+      }
+      .main-content .cat-form .thumb-row .checkline{ width:100%; }
+    }
 
-  .main-content .cat-form label{
-    font-size: 13px;
-  }
+    @media (max-width:420px){
+      .main-content .cat-form{
+        margin:10px 8px 16px;
+        padding:12px 10px;
+        border-radius:10px;
+      }
+      .main-content .cat-form h1{ font-size:18px; }
+      .main-content .cat-form label{ font-size:13px; }
 
-  .main-content .cat-form input[type="text"],
-  .main-content .cat-form input[type="number"],
-  .main-content .cat-form input[type="file"],
-  .main-content .cat-form select,
-  .main-content .cat-form textarea{
-    padding: 9px 10px;
-    font-size: 14px;
-  }
+      .main-content .cat-form input[type="text"],
+      .main-content .cat-form input[type="number"],
+      .main-content .cat-form input[type="file"],
+      .main-content .cat-form select,
+      .main-content .cat-form textarea{
+        padding:9px 10px;
+        font-size:14px;
+      }
 
-  .main-content .cat-form .checkline{
-    padding: 9px 10px;
-  }
+      .main-content .cat-form .checkline{ padding:9px 10px; }
+      .main-content .cat-form .thumb-mini{ width:48px; height:48px; }
+      .main-content .cat-form select[multiple]{ min-height:130px; }
+    }
 
-  .main-content .cat-form .thumb-mini{
-    width: 48px;
-    height: 48px;
-  }
+    @media (max-height:520px) and (orientation: landscape){
+      .main-content .cat-form{
+        margin:10px 12px 14px;
+        padding:12px 12px;
+      }
+      .main-content .cat-form .preview{ margin:6px 0 10px; }
+      .main-content .cat-form img.catedit{ width:min(220px, 100%); }
+      .main-content .cat-form select[multiple]{ min-height:120px; }
+      .main-content .cat-form textarea{ min-height:110px; }
+      .main-content .cat-form button,
+      .main-content .cat-form input[type="submit"]{
+        padding:10px 12px;
+        border-radius:22px;
+      }
+    }
+  </style>
 
-  .main-content .cat-form select[multiple]{
-    min-height: 130px;
-  }
-}
-
-@media (max-height: 520px) and (orientation: landscape){
-  .main-content .cat-form{
-    margin: 10px 12px 14px;
-    padding: 12px 12px;
-  }
-
-  .main-content .cat-form .preview{
-    margin: 6px 0 10px;
-  }
-
-  .main-content .cat-form img.catedit{
-    width: min(220px, 100%);
-  }
-
-  /* On évite que les listes prennent tout l’écran */
-  .main-content .cat-form select[multiple]{
-    min-height: 120px;
-  }
-
-  /* TinyMCE est souvent le plus gros bloc : on limite un peu */
-  .main-content .cat-form textarea{
-    min-height: 110px;
-  }
-
-  /* Le bouton reste accessible mais moins haut */
-  .main-content .cat-form button,
-  .main-content .cat-form input[type="submit"]{
-    padding: 10px 12px;
-    border-radius: 22px;
-  }
-}
-
-</style>
   <div class="cat-form">
-    <h1>
-      {{ "Modifier " ~ categorie.titre }}
-    </h1>
+    <h1>{{ "Modifier " ~ categorie.titre }}</h1>
+
     {% if categorie.thumbnail %}
       <div class="preview">
-        <img class="catedit" src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}"></div>
-      {% endif %}
-      {{ form_start(form) }}
-      <div class="grid">
-        <div class="field">
-          {{ form_label(form.titre) }}
-          {{ form_widget(form.titre) }}
-        </div>
-        <div class="field">
-          {{ form_label(form.editeur) }}
-          {{ form_widget(form.editeur) }}
-        </div>
-        <div class="field">
-          {{ form_label(form.duree) }}
-          {{ form_widget(form.duree) }}
-        </div>
+        <img class="catedit"
+             src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}"
+             alt="Photo de {{ categorie.titre }}">
       </div>
-      <div class="tinymce-wrap" data-controller="tinymce">
-        {{ form_row(form.descriptif) }}
+    {% endif %}
+
+    {{ form_start(form) }}
+
+    {# erreurs globales uniquement après submit #}
+    {% if form.vars.submitted and not form.vars.valid %}
+      <div class="form-errors" role="alert">
+        {{ form_errors(form) }}
       </div>
-      {# --- Image : upload à gauche, suppression + miniature à droite --- #}
-      <div class="thumb-row">
+    {% endif %}
+
+    <div class="grid">
+      <div class="field">
+        {{ form_label(form.titre) }}
+        {{ form_widget(form.titre) }}
+        {{ form_errors(form.titre) }}
+      </div>
+
+      <div class="field">
+        {{ form_label(form.editeur) }}
+        {{ form_widget(form.editeur) }}
+        {{ form_errors(form.editeur) }}
+      </div>
+
+      <div class="field">
+        {{ form_label(form.duree) }}
+        {{ form_widget(form.duree) }}
+        {{ form_errors(form.duree) }}
+      </div>
+    </div>
+
+    <div class="tinymce-wrap" data-controller="tinymce">
+      {{ form_row(form.descriptif) }}
+    </div>
+
+    {# Image : upload à gauche, suppression + miniature à droite #}
+    <div class="thumb-row">
+      <div class="field">
+        {{ form_label(form.thumbnailFile) }}
+        {{ form_widget(form.thumbnailFile) }}
+        {{ form_errors(form.thumbnailFile) }}
+      </div>
+
+      {% if categorie.thumbnail %}
         <div class="field">
-          {{ form_label(form.thumbnailFile) }}
-          {{ form_widget(form.thumbnailFile) }}
-        </div>
-        {% if categorie.thumbnail %}
-          <div class="field">
-            <div class="checkline">
-              <div class="delete-row">
-                <div class="delete-left">
-                  <input type="checkbox" id="delete_thumbnail" name="delete_thumbnail" value="1">
-                    <label for="delete_thumbnail" style="margin:0;">
-                      Supprimer l’image actuelle
-                    </label>
-                  </div>
-                  <img class="thumb-mini" src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Miniature de {{ categorie.titre }}" loading="lazy"></div>
-                </div>
+          <div class="checkline">
+            <div class="delete-row">
+              <div class="delete-left">
+                <input type="checkbox" id="delete_thumbnail" name="delete_thumbnail" value="1">
+                <label for="delete_thumbnail" style="margin:0;">Supprimer l’image actuelle</label>
               </div>
-            {% endif %}
-          </div>
-          {# --- 2 listes sur la même ligne --- #}
-          <div class="grid-2">
-            <div class="field">
-              {{ form_row(form.users) }}
-            </div>
-            <div class="field">
-              {{ form_row(form.inviteOldAnimateurs) }}
+
+              <img class="thumb-mini"
+                   src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}"
+                   alt="Miniature de {{ categorie.titre }}"
+                   loading="lazy">
             </div>
           </div>
-          <small style="opacity:.7; display:block; margin-top: -6px;">
-            Maintenez Ctrl (ou Cmd sur Mac) pour ajouter ou retirer une sélection
-          </small>
-          {# --- Active en dessous, avant le bouton --- #}
-          <div class="field">
-            <div class="checkline centered">
-              {{ form_widget(form.active) }}
-              {{ form_label(form.active) }}
-            </div>
-          </div>
-          {{ form_end(form) }}
         </div>
-      {% endblock %}
-      
+      {% endif %}
+    </div>
+
+    {# 2 listes sur la même ligne #}
+    <div class="grid-2">
+      <div class="field">
+        {{ form_label(form.users) }}
+        {{ form_widget(form.users) }}
+
+        {% if form.vars.submitted %}
+          {% for error in form.users.vars.errors %}
+            <div class="field-error" role="alert">{{ error.message }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="field">
+        {{ form_label(form.inviteOldAnimateurs) }}
+        {{ form_widget(form.inviteOldAnimateurs) }}
+
+        {% if form.vars.submitted %}
+          {% for error in form.inviteOldAnimateurs.vars.errors %}
+            <div class="field-error" role="alert">{{ error.message }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <small style="opacity:.7; display:block; margin-top:-6px;">
+      Maintenez Ctrl (ou Cmd sur Mac) pour ajouter ou retirer une sélection.
+    </small>
+
+    {# Active #}
+    <div class="field">
+      <div class="checkline centered">
+        {{ form_widget(form.active) }}
+        {{ form_label(form.active) }}
+      </div>
+      {{ form_errors(form.active) }}
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+{% endblock %}

@@ -1,12 +1,25 @@
 # Changelog
 
-## [1.0.67] - 2025-12-30
+## [1.0.68] - 2026-01-04
+### Ajout
+- Gestion de multiple propriétaires des émissions.
+- Gestion des erreurs de formulaire pour catégorie et émission.
+- Ajout d'une ancre pour la recherche côté public (échec, mais renfort du formulaire car les contraintes de catégorie s'appliquaient sur la recherche par erreur).
+### Correction
+- Modification de admin/categorie/show sur le modèle du public.
+- Modification de admin/emission/show sur le modèle du public.
+- Modification des formulaires edit et create des émissions et ajout du responsive.
+- Modification de la navbar admin pour intégrer le responsive.
+
+
+## [1.0.67] - 2026-01-02
 ### Ajout
 - Gestion de multiple propriétaires des catégories.
 ### Correction
 - Modification des formulaires edit et create des catégories et ajout du responsive.
 - Modification des formulaires edit et create des invités et ancien·nes animateurices et ajout du responsive.
 - Seul le prénom est obligatoire pour les invités et ancien·nes animateurices dans les formulaires.
+
 
 ## [1.0.66] - 2025-12-30
 ### Ajout

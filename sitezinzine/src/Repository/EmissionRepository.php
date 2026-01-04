@@ -47,14 +47,16 @@ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $use
     $qb = $this->createQueryBuilder('e')
         ->select('e', 'c', '(SELECT MAX(d2.horaireDiffusion) FROM App\Entity\Diffusion d2 WHERE d2.emission = e) AS HIDDEN lastDiffusion')
         ->leftJoin('e.categorie', 'c')
-        ->andWhere('(e.url != :excludeUrl) OR (e.url = :excludeUrl AND e.user IS NOT NULL)') 
+        ->andWhere('(e.url != :excludeUrl) OR (e.url = :excludeUrl AND SIZE(e.users) > 0)')
         ->andWhere('c.id != 0')
         ->setParameter('excludeUrl', $excludeUrl)
         ->orderBy('lastDiffusion', 'DESC');
 
     if ($user && !$isAdmin) {
-        $qb->andWhere('e.user = :user')
-           ->setParameter('user', $user);
+        $qb->innerJoin('e.users', 'u_filter')
+            ->andWhere('u_filter = :user')
+            ->setParameter('user', $user)
+            ->distinct();
     }
 
     /** @var PaginationInterface $pagination */
@@ -65,7 +67,6 @@ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $use
 
     // Hydrate manuellement la propriété lastDiffusion
     foreach ($pagination as $row) {
-        // Pour chaque $row (qui est un Emission)
         $lastDiffusion = $this->createQueryBuilder('e2')
             ->select('MAX(d.horaireDiffusion)')
             ->leftJoin('e2.diffusions', 'd')
@@ -79,6 +80,7 @@ public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $use
 
     return $pagination;
 }
+
 
 
 

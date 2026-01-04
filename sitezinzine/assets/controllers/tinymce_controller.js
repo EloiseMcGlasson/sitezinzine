@@ -37,22 +37,40 @@ export default class extends Controller {
     uploadUrl: String         // ✅ nouveau (optionnel)
   };
 
-  connect() {
-    this.reloadEditor = this.init.bind(this);
-    this.element.addEventListener("tinymce:reload", this.reloadEditor);
+connect() {
+  this.reloadEditor = this.init.bind(this);
+  this.element.addEventListener("tinymce:reload", this.reloadEditor);
 
-    // ✅ Turbo : évite les états bizarres quand Turbo met en cache
-    this.beforeCache = () => this._removeEditor();
-    document.addEventListener("turbo:before-cache", this.beforeCache);
+  // ✅ Turbo : évite les états bizarres quand Turbo met en cache
+  this.beforeCache = () => this._removeEditor();
+  document.addEventListener("turbo:before-cache", this.beforeCache);
 
-    setTimeout(() => this.init(), 0);
+  // ✅ IMPORTANT : copie le contenu TinyMCE dans le <textarea> avant submit
+  this.form = this.element.closest("form");
+  this.onSubmit = () => {
+    if (window.tinymce) {
+      window.tinymce.triggerSave();
+    }
+  };
+  if (this.form) {
+    this.form.addEventListener("submit", this.onSubmit);
   }
 
-  disconnect() {
-    this._removeEditor();
-    this.element.removeEventListener("tinymce:reload", this.reloadEditor);
-    document.removeEventListener("turbo:before-cache", this.beforeCache);
+  setTimeout(() => this.init(), 0);
+}
+
+
+disconnect() {
+  // 🔴 IMPORTANT : retirer le listener submit
+  if (this.form && this.onSubmit) {
+    this.form.removeEventListener("submit", this.onSubmit);
   }
+
+  this._removeEditor();
+  this.element.removeEventListener("tinymce:reload", this.reloadEditor);
+  document.removeEventListener("turbo:before-cache", this.beforeCache);
+}
+
 
   _removeEditor() {
     const textarea = this.element.querySelector("textarea");

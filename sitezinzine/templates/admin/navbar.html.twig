@@ -1,153 +1,362 @@
 <style>
-    nav {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: "Montserrat Alternates", sans-serif;
-        font-size: 1.6em;
-        background-color: white;
-    }
+  /* ===== base ===== */
+  nav.admin-nav{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-family:"Montserrat Alternates",sans-serif;
+    background:#fff;
+    padding:10px 20px;
+    box-sizing:border-box;
+    margin:0;
+  }
 
-    nav ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+  nav.admin-nav img{ display:block; }
 
-    nav li {
-        position: relative;
-    }
+  .admin-nav .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:0 0 auto;
+    min-width:0;
+  }
 
-    nav a, nav .dropbtn {
-        padding: 14px 16px;
-        color: #1C1C1A;
-        text-decoration: none;
-        font-weight: 800;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 1em;
-    }
+  .admin-nav .brand img.logo{ height:60px; width:auto; }
 
-    nav a:hover, nav .dropbtn:hover {
-        color: #E40039;
-    }
+  .admin-nav .burger{
+    display:none;
+    flex-direction:column;
+    cursor:pointer;
+    padding:10px;
+    border:0;
+    background:transparent;
+  }
+  .admin-nav .burger span{
+    height:3px;
+    width:26px;
+    background:#E40039;
+    margin:4px 0;
+    border-radius:2px;
+  }
 
-    
+  .admin-nav ul.nav-menu{
+    list-style:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    flex:1 1 auto;
+    font-size:1.15em;
+  }
+  .admin-nav ul.nav-menu li{ display:flex; align-items:center; }
 
-    nav .dropdown-content {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: white;
-        min-width: 220px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        flex-direction: column;
-        text-align: left;
-    }
+  .admin-nav a,
+  .admin-nav button.dropbtn{
+    padding:10px 12px;
+    color:#1C1C1A;
+    text-decoration:none;
+    font-weight:800;
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:1em;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+  }
+  .admin-nav a:hover,
+  .admin-nav button.dropbtn:hover{ color:#E40039; }
 
-    nav .dropdown-content a {
-        padding: 10px 16px;
-        display: block;
-        color: #1C1C1A;
-        font-weight: normal;
-    }
+  .admin-nav a.active{ color:#E40039 !important; }
 
-    nav .dropdown-content a:hover {
-        background-color: #f0f0f0;
-    }
+  .admin-nav li.sep img{
+    width:5px;
+    height:5px;
+  }
 
-    nav .dropdown:hover .dropdown-content {
-        display: flex;
+  /* ===== dropdown desktop (hover) ===== */
+  .admin-nav li.dropdown{ position:relative; }
+  .admin-nav .dropdown-content{
+    display:none;
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    background:#fff;
+    min-width:240px;
+    box-shadow:0 4px 6px rgba(0,0,0,.1);
+    z-index:1000;
+    flex-direction:column;
+    text-align:left;
+    border-radius:10px;
+    overflow:hidden;
+    padding:6px 0;
+  }
+  .admin-nav .dropdown-content a{
+    padding:10px 14px;
+    display:block;
+    color:#1C1C1A;
+    font-weight:700;
+    white-space:normal;
+  }
+  .admin-nav .dropdown-content a:hover{ background:#f0f0f0; }
+
+  .admin-nav li.dropdown:hover .dropdown-content{
+    display:flex;
+  }
+
+  /* ===== mobile ===== */
+  @media (max-width:900px){
+  nav.admin-nav{
+    padding:10px 12px;
+  }
+
+  .admin-nav .brand{
+    flex:1 1 auto;
+    gap:8px;
+  }
+  .admin-nav .brand img.logo{ height:44px; }
+
+  .admin-nav .burger{ display:flex; }
+
+  /* menu fermé */
+  .admin-nav ul.nav-menu{
+    display:none;
+    width:100%;
+    font-size:1em;
+    padding:10px 12px;
+    border-top:1px solid #eee;
+    order:99;
+    flex:0 0 100%;
+  }
+
+  /* menu ouvert : 2 colonnes */
+  .admin-nav ul.nav-menu.active{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:10px 12px;
+    align-items:stretch;
+  }
+
+  .admin-nav ul.nav-menu li{
+    padding:0;
+    margin:0;
+    display:flex;
+    min-width:0;
+  }
+
+  .admin-nav ul.nav-menu a,
+  .admin-nav ul.nav-menu button.dropbtn{
+    width:100%;
+    justify-content:center;
+    text-align:center;
+    border-radius:6px;
+    white-space:normal;
+  }
+
+  .admin-nav li.sep{ display:none !important; }
+
+  /* ✅ IMPORTANT : le dropdown prend toute la largeur du menu en grid
+     => le sous-menu sera forcément en dessous, jamais "sur la droite" */
+  .admin-nav ul.nav-menu.active li.dropdown{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    grid-column: 1 / -1;
+  }
+
+  /* dropdown en mobile : on désactive le hover */
+  .admin-nav li.dropdown:hover .dropdown-content{ display:none; }
+
+  /* ✅ dropdown-content en dessous (dans le flux) */
+  .admin-nav li.dropdown .dropdown-content{
+    position:static;
+    top:auto;
+    left:auto;
+    transform:none;
+
+    width:100%;
+    min-width:0;
+
+    display:none;              /* fermé */
+    flex-direction:column;
+
+    box-shadow:none;
+    border:1px solid #eee;
+    border-radius:10px;
+    background:#fff;
+
+    margin-top:8px;
+    padding:6px;
+    text-align:center;
+  }
+
+  /* ✅ ouvert au clic */
+  .admin-nav li.dropdown.open .dropdown-content{
+    display:flex;
+  }
+
+  .admin-nav li.dropdown .dropdown-content a{
+    border-radius:8px;
+  }
+}
+
+
+  /* très petit : 1 colonne */
+  @media (max-width:420px){
+    .admin-nav ul.nav-menu.active{
+      grid-template-columns:1fr;
     }
+  }
+
+  /* landscape mobile : menu scrollable */
+  @media (max-width: 900px) and (orientation: landscape){
+    nav.admin-nav{
+      padding:6px 10px;
+      gap:8px;
+    }
+    .admin-nav .brand img.logo{ height:42px; }
+    .admin-nav .burger{ padding:8px; }
+
+    .admin-nav ul.nav-menu.active{
+      max-height:60vh;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+  }
 </style>
-<nav>
-    <a href="https://eloisemcglasson.ovh/" target="_blank">
-        <img src="/images/logo.gif" alt="Logo"></a>
-        <ul>
-            <li>
-                <a class="nav-link {{ app.request.get('_route') == 'admin.' ? 'active' : '' }}" href="{{ path('admin.index') }}">
-                    Accueil
-                </a>
-            </li>
-            <li>
-                <img src="/images/puce-rond-rouge.gif" alt="">
-            </li>
-                <li class="dropdown">
-                    <button class="dropbtn">
-                        Gestion des émissions
-                    </button>
-                    <div class="dropdown-content">
-                        <a class="nav-link {{ app.request.get('_route') starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
-                            Émissions
-                        </a>
-                        <a class="nav-link {{ app.request.get('_route') starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
-                            Invité/animateur
-                        </a>
-                        <a class="nav-link {{ app.request.get('_route') starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
-                            Catégories
-                        </a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a class="nav-link {{ app.request.get('_route') starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
-                                Thèmes
-                            </a>
-                            <a class="nav-link {{ app.request.get('_route') starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
-                                Éditeurs
-                            </a>
-                        {% endif %}
-                    </div>
-                </li>
-                {% if is_granted('ROLE_EDITOR') %}
-                    <li>
-                        <img src="/images/puce-rond-rouge.gif" alt="">
-                        <li>
-                            <a class="nav-link {{ app.request.get('_route') starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
-                                Annonces
-                            </a>
-                        </li>
-                        <li>
-                            <img src="/images/puce-rond-rouge.gif"></li>
-                            <li>
-                                <a class="nav-link {{ app.request.get('_route') starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
-                                    Évènements
-                                </a>
-                            </li>
-                            <li>
-                            <img src="/images/puce-rond-rouge.gif"></li>
-                            <li>
-                                <a class="nav-link {{ app.request.get('_route') starts with 'admin.page.' ? 'active' : '' }}" href="{{ path('admin.page.index') }}">
-                                    Pages
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <li>
-                                <img src="/images/puce-rond-rouge.gif"></li>
-                                <li>
-                                    <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
-                                        Utilisateurices
-                                    </a>
-                                </li>
-                            <li>
-                            <img src="/images/puce-rond-rouge.gif"></li>
-                            <li>
-                                <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}" href="{{ path('admin.grille.index') }}">
-                                    Grille
-                                </a>
-                            </li>
-                            {% endif %}
-                            <li>
-                                <img src="/images/puce-rond-rouge.gif"></li>
-                                <a href="{{ path('admin.emission.rechercheadmin') }}" class="{{ app.request.get('_route') == 'admin.emission.rechercheadmin' ? 'active' : '' }}">
-                                    <img src="/images/ico-recherche.gif" alt="Icône de recherche"></a>
-                                </ul>
-                            </nav>
-                            
+
+<nav class="admin-nav">
+  <div class="brand">
+    <a href="https://eloisemcglasson.ovh/" target="_blank" rel="noopener">
+      <img class="logo" src="/images/logo.gif" alt="Logo">
+    </a>
+  </div>
+
+  <button class="burger" type="button"
+    aria-label="Ouvrir/fermer le menu"
+    aria-expanded="false"
+    aria-controls="adminMenu"
+    onclick="
+      const nav = this.closest('nav');
+      const menu = nav.querySelector('#adminMenu');
+      const isOpen = menu.classList.toggle('active');
+      this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    ">
+    <span></span><span></span><span></span>
+  </button>
+
+  <ul class="nav-menu" id="adminMenu">
+    <li>
+      <a class="nav-link {{ app.request.get('_route') == 'admin.index' ? 'active' : '' }}"
+         href="{{ path('admin.index') }}">
+        Accueil
+      </a>
+    </li>
+
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li class="dropdown">
+      <button class="dropbtn" type="button"
+        aria-expanded="false"
+        onclick="
+          const li = this.closest('li.dropdown');
+          const isOpen = li.classList.toggle('open');
+          this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        ">
+        Gestion des émissions
+      </button>
+
+      <div class="dropdown-content">
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.emission.' ? 'active' : '' }}"
+           href="{{ path('admin.emission.index') }}">
+          Émissions
+        </a>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}"
+           href="{{ path('admin.InviteOldAnimateur.index') }}">
+          Invité/animateur
+        </a>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.categorie.' ? 'active' : '' }}"
+           href="{{ path('admin.categorie.index') }}">
+          Catégories
+        </a>
+
+        {% if is_granted('ROLE_ADMIN') %}
+          <a class="nav-link {{ app.request.get('_route') starts with 'admin.theme.' ? 'active' : '' }}"
+             href="{{ path('admin.theme.index') }}">
+            Thèmes
+          </a>
+          <a class="nav-link {{ app.request.get('_route') starts with 'admin.editeur.' ? 'active' : '' }}"
+             href="{{ path('admin.editeur.index') }}">
+            Éditeurs
+          </a>
+        {% endif %}
+      </div>
+    </li>
+
+    {% if is_granted('ROLE_EDITOR') %}
+      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+      <li>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.annonce.' ? 'active' : '' }}"
+           href="{{ path('admin.annonce.index') }}">
+          Annonces
+        </a>
+      </li>
+
+      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+      <li>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.evenement.' ? 'active' : '' }}"
+           href="{{ path('admin.evenement.index') }}">
+          Évènements
+        </a>
+      </li>
+
+      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+      <li>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.page.' ? 'active' : '' }}"
+           href="{{ path('admin.page.index') }}">
+          Pages
+        </a>
+      </li>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+      <li>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}"
+           href="{{ path('admin.user.index') }}">
+          Utilisateurices
+        </a>
+      </li>
+
+      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+      <li>
+        <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}"
+           href="{{ path('admin.grille.index') }}">
+          Grille
+        </a>
+      </li>
+    {% endif %}
+
+    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+
+    <li>
+      <a class="{{ app.request.get('_route') == 'admin.emission.rechercheadmin' ? 'active' : '' }}"
+         href="{{ path('admin.emission.rechercheadmin') }}">
+        <img src="/images/ico-recherche.gif" alt="Recherche">
+      </a>
+    </li>
+  </ul>
+</nav>

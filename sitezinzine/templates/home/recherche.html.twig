@@ -162,7 +162,11 @@
       Recherche d'émissions
     </h1>
     <div class="form" data-controller="reset-form" data-reset-form-url-value="{{ path('emission.recherche') }}">
-      {{ form_start(form, { attr: { 'data-reset-form-target': 'form' } }) }}
+      {{ form_start(form, {
+  action: path('emission.recherche') ~ '#resultats',
+  attr: { 'data-reset-form-target': 'form' }
+}) }}
+
       <div class="search-row">
         <div>
           {{ form_row(form.titre) }}
@@ -190,13 +194,17 @@
     </div>
     <img class="imgbottom" src="/images/top-content-dechire-D.gif" alt=""></div>
     {# ✅ Tout ce qui concerne l'affichage des émissions est externalisé #}
-    {% include 'partials/_emission_results.html.twig' with {
-      emissions: emissions,
-      searchTerm: searchTerm,
-      showNoResults: form.vars.submitted,
-      resultsTitle: 'Résultats de la recherche :',
-      noResultsText: 'Aucune émission trouvée pour les critères de recherche.'
-    } %}
+<div id="resultats"></div>
+
+{% include 'partials/_emission_results.html.twig' with {
+  emissions: emissions,
+  searchTerm: searchTerm,
+  showNoResults: form.vars.submitted,
+  resultsTitle: 'Résultats de la recherche :',
+  noResultsText: 'Aucune émission trouvée pour les critères de recherche.',
+  resultsAnchor: 'resultats'
+} %}
+
     <script>
   window.addEventListener('load', () => {
     const docW = document.documentElement.clientWidth;

@@ -230,7 +230,7 @@
 <div class="cat-form">
   <h1>Créer une nouvelle catégorie</h1>
 
-  {{ form_start(form) }}
+  {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
 
   <div class="grid">
     <div class="field">

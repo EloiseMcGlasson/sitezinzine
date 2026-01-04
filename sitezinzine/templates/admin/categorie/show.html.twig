@@ -1,171 +1,222 @@
 {% extends 'admin/admin.html.twig' %}
-{% block title "Catégorie : " ~ categorie.titre %}
+{% block title %}Catégorie : {{ categorie.titre }}{% endblock %}
+
 {% block body %}
-    <style>
+<style>
+  /* ✅ Spécifique admin : force full-width malgré le padding du layout */
+  .admin-fullbleed{
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
 
-.titre {
-    text-align: center;
-    margin: 10px;
-}
+  /* ====== Layout global ====== */
+  .catblock,
+  .catblock *{
+    box-sizing: border-box;
+  }
 
-.emissionsdelacategorie {
-    background-color: white;
-    min-height: 100vh;
-}
-article{
-    border: solid;
-    border-collapse: collapse;
-    display: grid;
-    grid-template-columns: 1fr 4fr 1fr;
-    margin: 0 80px;
-}
-.col1 {
-    width: 150px;
-    margin: auto;
+  .catblock{
+    background: linear-gradient(#E4013A, #B81C61);
+    width: 100%;
+    margin: 0;
+    padding: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.col1 img {
-        width: 150px;
-        margin: 10px;
-    }
-    
-    .col2 {
-       margin: 20px;
-    }
-    .col3 {
-        
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    grid-template-rows: 1fr; 
-    gap: 0px 0px; 
-    grid-template-areas: 
-      "ecoute dl"; 
-    align-items: center;
-    justify-self: center;
-    }
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    color: white;
+    line-height: 1.5em;
+  }
 
-.catdescriptif {
+  .top img{
+    width: 100%;
+    display: block;
+  }
+
+  /* ====== Fiche catégorie ====== */
+  .fiche-emission{
+    max-width: 900px;
+    width: calc(100% - 32px);
+    margin: 2rem auto;
+    background-color: #fff;
+    color: #1C1C1A;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    font-family: "Montserrat Alternates", sans-serif;
+  }
+
+  .bloc-haut{
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .bloc-image img{
+    width: 200px;
+    border-radius: 6px;
+    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .bloc-texte{
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bloc-texte h1{
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: #E40039;
+    overflow-wrap: anywhere;
+  }
+
+  .descriptif{
+    font-size: 1rem;
+    line-height: 1.6;
     margin: 15px;
-}
+    overflow-wrap: anywhere;
+  }
 
+  .btn-back{
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #E40039;
+    font-weight: bold;
+    text-decoration: none;
+  }
 
+  .btn-back:hover{
+    text-decoration: underline;
+  }
 
-.bottom img {
+  .bottom img{
     width: 100%;
     display: block;
     margin: 0;
     padding: 0;
-}
-.catemission img {
-    width: 150px;
-}
-.catimg img {
-    float: left;
-    margin: 10px;
-    width: 250px;
-}
-.ecoute img {
-        width: 40px;
-        height: 40px;
-        align-content: right;
-    }
-    
-    a {
-        padding: 14px 16px;
-        color: black;
-        text-decoration: none;
-        font-weight: 800;
+  }
+
+  /* ====== Section émissions (fond blanc sans “double wrapper”) ====== */
+  .emissionsdelacategorie{
+    background: #fff;
+    color: #1C1C1A;
+    padding: 24px 0 10px;
+  }
+
+  .emissionsdelacategorie .results{
+    background: transparent;
+    padding: 0;
+  }
+
+  .emissionsdelacategorie .results-inner{
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .more-link{
+    text-align: center;
+    padding: 0 16px 24px;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .more-link a{
+    color: #E40039;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .more-link a:hover{
+    color: #000;
+  }
+
+  /* ====== Responsive ====== */
+  @media (max-width: 768px){
+    .fiche-emission{
+      width: calc(100% - 24px);
+      padding: 1rem;
+      margin: 1rem auto;
     }
 
-    a:hover {
-        padding: 14px 16px;
-        color: #E40039;
-        text-decoration: none;
-        font-weight: 800; 
+    .bloc-haut{
+      flex-direction: column;
+      align-items: center;
     }
 
+    .bloc-image img{
+      width: min(320px, 100%);
+    }
 
+    .bloc-texte{
+      text-align: center;
+    }
+
+    .bloc-texte .descriptif{
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin: 12px 0;
+    }
+
+    .bloc-texte h1{
+      font-size: 1.3rem;
+    }
+  }
 </style>
-    <div>
-        <div class="catblock">
-            <div class="titre">
-                <h1>
-                    {{ categorie.titre }}
-                </h1>
-            </div>
-            <div class="catimg">
-                {% if categorie.thumbnail %}
-                    <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Photo de {{ categorie.titre }}">
-                    {% endif %}
-                </div>
-                <div class="catdescriptif">
-                    {{ categorie.descriptif | raw }}
-                </div>
-                <div class="bottom">
-                    <img src="/images/top-content-dechire-D.gif"></div>
-                </div>
-            </div>
-            <div class="emissionsdelacategorie">
-                <div class="titre">
-                    <h2>
-                        Toutes les émissions de cette catégorie :
-                    </h2>
-                </div>
-                <div class="catemission">
-                    {% if categorie.emissions is empty %}
-                        <p>
-                            Aucune émission disponible dans cette catégorie.
-                        </p>
-                    {% endif %}
-                    {% for emission in categorie.emissions | sort((a, b) => b.datepub <=> a.datepub) %}
-                        <article>
-                            <div class="col1">
-                                {% if emission.thumbnail %}
-                                    <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                    {% endif %}
-                                </div>
-                                <div class="col2">
-                                    <h2>
-                                        {{ emission.titre }}
-                                    </h2>
-                                    <p>
-                                        {{ emission.datepub|date('d-m-Y') }}
-                                        {{ emission.descriptif | raw }}
-                                    </p>
-                                </div>
-                                <div class="col3">
-                                    {% if emission.url %}
-                                        <div class='ecoute'>
-                                            <a href="{{ emission.url }}">
-                                                <img src="/images/lecteur.png" alt="écoutez l'émission"></a>
-                                            </div>
-                                        {% else %}
-                                            <p>
-                                                <div class='ecoute'>
-                                                    Pas de fichier audio disponible
-                                                </div>
-                                            </p>
-                                        {% endif %}
-                                        {# Lien d'édition #}
-                                        <a class="btn btn-primary btn-sm" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
-                                            Éditer
-                                        </a>
-                                        {# Suppression (si condition remplie) #}
-                                        {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                            <form action="{{ path('admin.emission.delete', { id: emission.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emission.id) }}">
-                                                        <button type="submit" class="btn-action btn-delete">
-                                                            Supprimer
-                                                        </button>
-                                                    </form>
-                                                {% endif %}
-                                            </div>
-                                        </article>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endblock %}
-                        
+
+{# ✅ Full-width pour compenser le layout admin #}
+<div class="admin-fullbleed">
+  <div class="catblock">
+    <div class="fiche-emission">
+      <a href="{{ app.request.headers.get('referer') ?? path('admin.categorie.index') }}" class="btn-back">← Retour</a>
+
+      <div class="bloc-haut">
+        <div class="bloc-image">
+          {% if categorie.thumbnail %}
+            <img src="{{ vich_uploader_asset(categorie, 'thumbnailFile') }}" alt="Image de la catégorie {{ categorie.titre }}">
+          {% else %}
+            <img src="/images/emission-zinzine.jpg" alt="Image par défaut">
+          {% endif %}
+        </div>
+
+        <div class="bloc-texte">
+          <h1>{{ categorie.titre }}</h1>
+          <div class="descriptif">
+            {{ categorie.descriptif | raw }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <img src="/images/top-content-dechire-D.gif" alt="">
+    </div>
+  </div>
+
+  <div class="emissionsdelacategorie">
+    {% include 'partials/_emission_results.html.twig' with {
+      emissions: emissions,
+      showNoResults: true,
+      resultsTitle: 'Toutes les émissions de cette catégorie :',
+      noResultsText: 'Aucune émission trouvée dans cette catégorie.',
+      useKnpPagination: true,
+      useLivePagination: false,
+      searchTerm: null
+    } only %}
+
+    <div class="more-link">
+      <a href="{{ path('admin.emission.index') }}">Voir toutes les émissions (admin)</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

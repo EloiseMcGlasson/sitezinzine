@@ -499,7 +499,25 @@
                     <tr>
                         <td>
                             <strong>Thème :</strong> {{ emission.theme.name }}<br>
-                            <strong>Référent·es :</strong> {{ emission.ref }}
+                            <strong>
+                              Animateur·rice·s :
+                            </strong>
+                            {% set usernames = emission.users|map(u => u.username)|join(', ') %}
+                            {% set anciens = emission.inviteOldAnimateurs
+                              |filter(a => a.ancienanimateur)
+                              |map(a => a ~ '')
+                              |join(', ') %}
+                            {% if usernames %}
+                              {{ usernames }}
+                              {% if anciens %}
+                                ,
+                                {{ anciens }}
+                              {% endif %}
+                            {% elseif anciens %}
+                              {{ anciens }}
+                            {% else %}
+                              Utilisateur inconnu
+                            {% endif %}
                         </td>
                         <td>
                             {{ emission.datepub|format_datetime('long', 'none', locale='fr') }}
