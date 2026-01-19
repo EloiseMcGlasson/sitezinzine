@@ -138,10 +138,16 @@ class Emission
      * It is managed by VichUploaderBundle and has validation constraints for image dimensions.
      */
     #[Vich\UploadableField(mapping: 'emissions', fileNameProperty: 'thumbnail')]
-    #[Assert\Image(
-        maxWidth: 650,
-        maxHeight: 500,
-    )]
+#[Assert\Image(
+    maxWidth: 650,
+    maxHeight: 500,
+    maxSize: '2M',
+    mimeTypes: ['image/jpeg','image/png','image/webp'],
+    maxWidthMessage: 'Image trop large ({{ width }}px). Largeur max : {{ max_width }}px.',
+    maxHeightMessage: 'Image trop haute ({{ height }}px). Hauteur max : {{ max_height }}px.',
+    maxSizeMessage: 'Fichier trop lourd ({{ size }}). Taille max : {{ limit }}.',
+    mimeTypesMessage: 'Format non autorisé. Formats acceptés : JPEG, PNG, WEBP.'
+)]
     #[Groups(['emissions.index', 'emissions.create'])]
     private ?File $thumbnailFile = null;
 
@@ -843,25 +849,36 @@ class Emission
         return $this;
     }
 
-    #[Assert\Callback]
-    public function validateOwnerOrFormerHost(ExecutionContextInterface $context): void
-    {
-        $hasUser = !$this->users->isEmpty();
+#[Assert\Callback]
+public function validateOwnerOrFormerHost(ExecutionContextInterface $context): void
+{
+    $hasUser = !$this->users->isEmpty();
 
-        $hasAncienAnimateur = false;
-        foreach ($this->inviteOldAnimateurs as $person) {
-            if ($person->isAncienanimateur()) {
-                $hasAncienAnimateur = true;
-                break;
-            }
-        }
-
-        if (!$hasUser && !$hasAncienAnimateur) {
-            $context->buildViolation(
-                'Il faut sélectionner au moins un·e utilisateur·ice ou un·e ancien·ne animateur·ice.'
-            )
-                ->atPath('users') // ou 'inviteOldAnimateurs' si tu préfères afficher l’erreur sur l’autre champ
-                ->addViolation();
+    $hasAncienAnimateur = false;
+    foreach ($this->inviteOldAnimateurs as $person) {
+        if ($person->isAncienanimateur()) {
+            $hasAncienAnimateur = true;
+            break;
         }
     }
+
+    if ($hasUser || $hasAncienAnimateur) {
+        return;
+    }
+
+    $message = 'Il faut sélectionner au moins un·e utilisateur·ice ou un·e ancien·ne animateur·ice.';
+
+    // ✅ 1 violation sous "users"
+    $context->buildViolation($message)
+        ->atPath('users')
+        ->addViolation();
+
+    // ✅ 1 violation sous "inviteOldAnimateurs"
+    $context->buildViolation($message)
+        ->atPath('inviteOldAnimateurs')
+        ->addViolation();
+
+    // ❌ ne mets PAS de violation globale si tu ne veux pas de doublon
+    // (donc pas de ->addViolation() sans atPath)
+}
 }
