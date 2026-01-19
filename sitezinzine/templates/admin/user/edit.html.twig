@@ -1,6 +1,7 @@
 {% extends 'admin/admin.html.twig' %}
 
-{% block title %}Édition de l'utilisateur·e {{ user.username }}{% endblock %}
+{% block title %}Édition de l'utilisateur·e {{ app.user.displayName
+ }}{% endblock %}
 
 {% block body %}
 <style>
@@ -206,7 +207,8 @@
 </style>
 <div class="edit-container">
     <div class="edit-header">
-        <h2>Édition de l'utilisateurice : {{ user.username }}</h2>
+        <h2>Édition de l'utilisateurice : {{ app.user.displayName
+ }}</h2>
     </div>
     
     <div class="edit-content">

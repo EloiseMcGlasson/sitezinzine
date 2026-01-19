@@ -200,6 +200,24 @@
   flex-shrink: 0;
 }
 
+    .main-content .em-form .field-error{
+  margin-top:6px;
+  padding:8px 10px;
+  border:1px solid #e11d48;
+  background:rgba(225, 29, 72, 0.08);
+  border-radius:10px;
+  color:#9f1239;
+  font-weight:700;
+  font-size:14px;        /* ✅ lisible */
+  line-height:1.2;
+}
+
+/* si jamais un thème te remet un <ul><li> */
+.main-content .em-form .field-error ul{
+  margin:0;
+  padding-left:18px;
+}
+
 /* responsive */
 @media (max-width: 960px){
   .main-content .em-form{
@@ -273,6 +291,8 @@
   {% endif %}
 
   {{ form_start(formEmission, { attr: { 'data-turbo': 'false' } }) }}
+  {# erreurs globales uniquement après submit #}
+
 
   {# Ligne 1 : Catégorie / Thème / Durée / Éditeur #}
   <div class="grid-4">
@@ -290,11 +310,33 @@
   </div>
 
   {# Ligne 3 : Users / Invités / Anciens animateurs (3 sur une ligne) #}
-  <div class="grid-3">
-    <div class="field">{{ form_row(formEmission.users) }}</div>
-  <div class="field">{{ form_row(formEmission.anciensAnimateurs) }}</div>
-<div class="field">{{ form_row(formEmission.invites) }}</div>
+
+<div class="grid-3">
+  <div class="field">
+    {{ form_label(formEmission.users) }}
+    {{ form_widget(formEmission.users) }}
+    {% if formEmission.vars.submitted %}
+      {% for error in formEmission.users.vars.errors %}
+        <div class="field-error" role="alert">{{ error.message }}</div>
+      {% endfor %}
+    {% endif %}
   </div>
+
+  <div class="field">
+    {{ form_label(formEmission.inviteOldAnimateurs) }}
+    {{ form_widget(formEmission.inviteOldAnimateurs) }}
+    {% if formEmission.vars.submitted %}
+      {% for error in formEmission.inviteOldAnimateurs.vars.errors %}
+        <div class="field-error" role="alert">{{ error.message }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="field">
+    {{ form_row(formEmission.invites) }}
+  </div>
+</div>
+
 
   <small style="opacity:.7; display:block; margin-top: -6px;">
     Maintenez Ctrl (ou Cmd sur Mac) pour ajouter ou retirer une sélection
@@ -310,6 +352,11 @@
     <div class="field">
       {{ form_label(formEmission.thumbnailFile) }}
       {{ form_widget(formEmission.thumbnailFile) }}
+      {% if formEmission.vars.submitted %}
+    {% for error in formEmission.thumbnailFile.vars.errors %}
+      <div class="field-error" role="alert">{{ error.message }}</div>
+    {% endfor %}
+  {% endif %}
     </div>
 
     {% if emission.thumbnail %}

@@ -293,13 +293,18 @@
 
 <div class="admin-dashboard container mt-4">
     <div class="alert alert-info">
-        Bonjour {{ user.username ?? 'utilisateur' }} !
+        Bonjour {{ app.user ? app.user.displayName : 'utilisateur' }} !
+<a href="{{ path('app_profile_edit') }}" class="btn btn-danger">
+  Mon profil
+</a>
+
         <a href="{{ path('app_logout') }}" class="btn btn-danger">
             <i class="fas fa-sign-out-alt"></i> Déconnexion
         </a>
         <div class="mt-2">
             Vos rôles :
-            {% for role in user.roles %}
+            {% for role in app.user ? app.user.roles : [] %}
+
                 <span class="badge bg-primary">
                     {{ role|replace({'ROLE_': ''}) |title }}
                 </span>
@@ -387,7 +392,7 @@
     <!-- Ajoute ton script pour charger le changelog -->
     <script src="https://cdn.jsdelivr.net/npm/marked@3.0.0/lib/marked.min.js"></script>
 
-    <defer>
+
     <script>
         // Fonction pour récupérer le fichier markdown et l'afficher dans l'encart
         fetch('{{ asset('changelog.md') }}')  // Remplace par le chemin vers ton fichier changelog.md

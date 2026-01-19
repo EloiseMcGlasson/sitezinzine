@@ -90,6 +90,40 @@ min-height: 420px;
 
 
 /* ✅ Mobile/tablette : vertical (et on réduit le padding global) */
+/* ===== petit desktop (ex: 14") ===== */
+@media (min-width: 1024px) and (max-width: 1400px){
+  .vagues{
+    min-height: 360px; /* un peu moins haut si besoin */
+  }
+
+  .vagues .blocks{
+    max-width: 1100px;      /* évite de chercher 1400px sur un écran 1366 */
+    padding: 40px 32px;     /* moins large */
+    gap: 60px;              /* au lieu de 200px */
+    justify-content: center;/* plus stable que space-between quand ça serre */
+  }
+
+  .vagues .blocdon,
+  .vagues .blocannonces,
+  .vagues .blocaide{
+    width: 260px;           /* optionnel : un peu plus compact */
+    flex: 0 1 260px;
+    padding: 22px;
+  }
+
+  .vagues .blocdon h1,
+  .vagues .blocannonces h1,
+  .vagues .blocaide h1{
+    font-size: 20px;
+  }
+
+  .vagues .blocdon h2,
+  .vagues .blocannonces h2,
+  .vagues .blocaide h2{
+    font-size: 15px;
+  }
+}
+
 @media (max-width: 900px){
   .vagues{
    position:relative;

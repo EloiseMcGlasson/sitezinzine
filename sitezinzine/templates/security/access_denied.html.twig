@@ -19,7 +19,8 @@
                     </p>
                     {% if app.user %}
                         <p class="text-center">
-                            Vous êtes connecté en tant que : <strong>{{ app.user.username }}</strong>
+                            Vous êtes connecté en tant que : <strong>{{ app.app.user.displayName
+ }}</strong>
                         </p>
                         <p class="text-center">
                             Vos rôles actuels :

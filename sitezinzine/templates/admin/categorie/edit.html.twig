@@ -276,7 +276,7 @@
       </div>
     {% endif %}
 
-    {{ form_start(form) }}
+    {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
 
     {# erreurs globales uniquement après submit #}
     {% if form.vars.submitted and not form.vars.valid %}

@@ -183,7 +183,7 @@
 }
 
 /* =========================
-   Flèches (desktop uniquement)
+   Flèches (desktop)
    ========================= */
 .bodyondes .glide__arrows{
   position: absolute;
@@ -199,14 +199,24 @@
   border: none;
   cursor: pointer;
   pointer-events: auto;
+  z-index: 5; /* au-dessus des slides */
 }
 
-.bodyondes .glide__arrow--left{ left: -80px; }
-.bodyondes .glide__arrow--right{ right: -80px; }
+/* ✅ au lieu de valeurs négatives */
+.bodyondes .glide__arrow--left{ left: 10px; }
+.bodyondes .glide__arrow--right{ right: 10px; }
 
 .bodyondes .glide__arrow img{
   width: 70px;
 }
+
+/* Ajustement pour petits desktops (14", etc.) */
+@media (max-width: 1440px){
+  .bodyondes .glide__arrow--left{ left: 6px; }
+  .bodyondes .glide__arrow--right{ right: 6px; }
+  .bodyondes .glide__arrow img{ width: 56px; }
+}
+
 
 /* =========================
    Responsive

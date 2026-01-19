@@ -4,146 +4,224 @@
 
 {% block body %}
 <style>
-    .bodyregister {
-        background: linear-gradient(#E4013A, #B81C61);
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        font-family: "Montserrat Alternates", sans-serif;
-    }
+  .bodyregister {
+    background: linear-gradient(#E4013A, #B81C61);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Montserrat Alternates", sans-serif;
+  }
 
-    .top img {
-        width: 100%;
-        display: block;
-    }
+  .top img {
+    width: 100%;
+    display: block;
+  }
 
+  .form {
+    width: 90%;
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .form h1 {
+    text-align: center;
+    color: #E4013A;
+    font-size: 24px;
+    margin-bottom: 2rem;
+    font-weight: 900;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 800;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px; /* évite zoom iOS */
+    box-sizing: border-box;
+  }
+
+  .alert {
+    background-color: #ffe6e6;
+    border: 1px solid #ffcccc;
+    color: #cc0000;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    margin: 0;
+  }
+
+  .btn-register {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #E4013A;
+    color: white;
+    border: none;
+    border-radius: 26px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+    font-weight: 900;
+  }
+
+  .btn-register:hover {
+    background-color: #b30021;
+  }
+
+  .form-error {
+    color: #cc0000;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+
+  /* ====== Password toggle (comme login) ====== */
+  .password-field {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .password-field .form-control {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toggle-password {
+    flex: 0 0 auto;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #E4013A;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .toggle-password:hover {
+    background: #E4013A;
+    color: #fff;
+    border-color: #E4013A;
+  }
+
+  @media (max-width: 768px) {
     .form {
-        width: 90%;
-        max-width: 400px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      padding: 1rem;
     }
+  }
 
-    .form h1 {
-        text-align: center;
-        color: #E4013A;
-        font-size: 24px;
-        margin-bottom: 2rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: #333;
-        font-weight: bold;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 1rem;
-    }
-
-    .alert {
-        background-color: #ffe6e6;
-        border: 1px solid #ffcccc;
-        color: #cc0000;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 4px;
-    }
-
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 1rem 0;
-    }
-
-    .checkbox-group input[type="checkbox"] {
-        margin: 0;
-    }
-
-    .btn-register {
-        width: 100%;
-        padding: 0.8rem;
-        background-color: #E4013A;
-        color: white;
-        border: none;
-        border-radius: 26px;
-        font-size: 1.1rem;
-        cursor: pointer;
-        margin-top: 1rem;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-register:hover {
-        background-color: #b30021;
-    }
-
-    .form-error {
-        color: #cc0000;
-        font-size: 0.9rem;
-        margin-top: 0.3rem;
-    }
-
-    @media (max-width: 768px) {
-        .form {
-            width: 95%;
-            padding: 1rem;
-        }
-    }
+  @media (max-width: 420px) {
+    .password-field { flex-direction: column; align-items: stretch; }
+    .toggle-password { width: 100%; }
+  }
 </style>
 
 <div class="bodyregister">
- 
+  <div class="form">
+    <h1>S'inscrire</h1>
 
-    <div class="form">
-        <h1>S'inscrire</h1>
+    {% for flash_error in app.flashes('verify_email_error') %}
+      <div class="alert" role="alert">{{ flash_error }}</div>
+    {% endfor %}
 
-        {% for flash_error in app.flashes('verify_email_error') %}
-            <div class="alert" role="alert">{{ flash_error }}</div>
-        {% endfor %}
+    {{ form_start(registrationForm, {'attr': {'data-turbo': 'false'}}) }}
 
-        {{ form_start(registrationForm, {'attr': {'data-turbo': 'false'}}) }}
+      <div class="form-group">
+        {{ form_label(registrationForm.username, 'Nom d\'utilisateurice', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(registrationForm.username, {'attr': {'class': 'form-error'}}) }}
+      </div>
 
-            <div class="form-group">
-                {{ form_label(registrationForm.username, 'Nom d\'utilisateurice', {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.username, {'attr': {'class': 'form-error'}}) }}
-            </div>
+      <div class="form-group">
+        {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(registrationForm.email, {'attr': {'class': 'form-error'}}) }}
+      </div>
 
-            <div class="form-group">
-                {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.email, {'attr': {'class': 'form-error'}}) }}
-            </div>
+      <div class="form-group">
+        {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
 
-            <div class="form-group">
-                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.plainPassword, {'attr': {'class': 'form-error'}}) }}
-            </div>
+        <div class="password-field">
+          {# On force un id stable si possible, sinon le JS le retrouve quand même #}
+          {{ form_widget(registrationForm.plainPassword, {
+            'attr': {
+              'class': 'form-control',
+              'id': 'register_password'
+            }
+          }) }}
 
-            <div class="checkbox-group">
-                {{ form_widget(registrationForm.agreeTerms) }}
-                {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation') }}
-                {{ form_errors(registrationForm.agreeTerms) }}
-            </div>
+          <button
+            type="button"
+            class="toggle-password"
+            id="toggleRegisterPassword"
+            aria-controls="register_password"
+            aria-pressed="false"
+          >
+            Afficher
+          </button>
+        </div>
 
-          
-        {{ form_end(registrationForm) }}
-    </div>
+        {{ form_errors(registrationForm.plainPassword, {'attr': {'class': 'form-error'}}) }}
+      </div>
+
+      <div class="checkbox-group">
+        {{ form_widget(registrationForm.agreeTerms) }}
+        {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation') }}
+        {{ form_errors(registrationForm.agreeTerms) }}
+      </div>
+
+      {# Si ton form contient déjà le bouton submit, Symfony l’affichera via form_end #}
+    {{ form_end(registrationForm) }}
+  </div>
 </div>
+
+<script>
+  (function () {
+    // On préfère l’id forcé, sinon on tente l’id Symfony par défaut
+    const input =
+      document.getElementById('register_password')
+      || document.getElementById('registration_form_plainPassword');
+
+    const btn = document.getElementById('toggleRegisterPassword');
+    if (!input || !btn) return;
+
+    btn.addEventListener('click', () => {
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.textContent = isPassword ? 'Masquer' : 'Afficher';
+      btn.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+    });
+  })();
+</script>
 {% endblock %}

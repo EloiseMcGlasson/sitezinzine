@@ -196,7 +196,8 @@
                                             {{ emission.titre }}
                                             {% if emission.user %}
                                                 -
-                                                {{ emission.user.username }}
+                                                {{ emission.app.user.displayName
+ }}
                                             {% endif %}
                                         </a>
                                     </div>
