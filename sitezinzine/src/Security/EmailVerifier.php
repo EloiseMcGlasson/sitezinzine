@@ -16,16 +16,24 @@ class EmailVerifier
         private VerifyEmailHelperInterface $verifyEmailHelper,
         private MailerInterface $mailer,
         private EntityManagerInterface $entityManager
-    ) {
-    }
+    ) {}
 
-    public function sendEmailConfirmation(string $verifyEmailRouteName, User $user, TemplatedEmail $email): void
-    {
-        file_put_contents('/tmp/test_mail.log', "sendEmailConfirmation\n", FILE_APPEND);
+    /**
+     * @param string|null $emailToVerify L’email qui doit être signé/validé.
+     *                                  Si null, on utilise $user->getEmail() (comportement actuel).
+     */
+    public function sendEmailConfirmation(
+        string $verifyEmailRouteName,
+        User $user,
+        TemplatedEmail $email,
+        ?string $emailToVerify = null
+    ): void {
+        $emailToVerify = $emailToVerify ?? $user->getEmail();
+
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             $verifyEmailRouteName,
             (string) $user->getId(),
-            $user->getEmail()
+            $emailToVerify
         );
 
         $context = $email->getContext();
@@ -41,9 +49,15 @@ class EmailVerifier
     /**
      * @throws VerifyEmailExceptionInterface
      */
-    public function handleEmailConfirmation(Request $request, User $user): void
+    public function handleEmailConfirmation(Request $request, User $user, ?string $emailToVerify = null): void
     {
-        $this->verifyEmailHelper->validateEmailConfirmationFromRequest($request, (string) $user->getId(), $user->getEmail());
+        $emailToVerify = $emailToVerify ?? $user->getEmail();
+
+        $this->verifyEmailHelper->validateEmailConfirmationFromRequest(
+            $request,
+            (string) $user->getId(),
+            $emailToVerify
+        );
 
         $user->setVerified(true);
 

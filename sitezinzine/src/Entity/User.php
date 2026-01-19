@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
@@ -37,11 +38,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
+
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $pendingEmail = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\Column(nullable: true, unique: true)]
+    #[Assert\Length(min: 2, max: 60)]
+    #[Assert\Regex(pattern: '/^[\p{L}\p{N} _.-]+$/u', message: 'Le pseudo contient des caractères non autorisés.')]
+    private ?string $pseudo = null;
 
     /**
      * @var Collection<int, Emission>
@@ -182,23 +192,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function addEmission(Emission $emission): static
-{
-    if (!$this->emissions->contains($emission)) {
-        $this->emissions->add($emission);
-        $emission->addUser($this); // <-- important : cohérence bidirectionnelle
+    {
+        if (!$this->emissions->contains($emission)) {
+            $this->emissions->add($emission);
+            $emission->addUser($this); // <-- important : cohérence bidirectionnelle
+        }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function removeEmission(Emission $emission): static
+    {
+        if ($this->emissions->removeElement($emission)) {
+            $emission->removeUser($this);
+        }
 
-public function removeEmission(Emission $emission): static
-{
-    if ($this->emissions->removeElement($emission)) {
-        $emission->removeUser($this);
+        return $this;
     }
-
-    return $this;
-}
 
 
     /**
@@ -255,6 +265,37 @@ public function removeEmission(Emission $emission): static
             $category->removeUser($this);
         }
 
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(?string $pseudo): self
+    {
+        $this->pseudo = $pseudo !== null ? trim($pseudo) : null;
+        return $this;
+    }
+
+    /**
+     * Valeur à afficher “partout”.
+     * (pseudo si défini, sinon username)
+     */
+    public function getDisplayName(): string
+    {
+        return $this->pseudo ?: $this->username;
+    }
+
+    public function getPendingEmail(): ?string
+    {
+        return $this->pendingEmail;
+    }
+
+    public function setPendingEmail(?string $pendingEmail): static
+    {
+        $this->pendingEmail = $pendingEmail !== null ? trim($pendingEmail) : null;
         return $this;
     }
 }

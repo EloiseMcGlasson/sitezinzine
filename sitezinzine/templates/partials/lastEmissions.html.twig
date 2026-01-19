@@ -239,6 +239,31 @@
   margin: 0;
 }
 
+/* ===== petit desktop (ex: 14") : on évite le débordement ===== */
+@media screen and (min-width: 1024px) and (max-width: 1400px){
+  .bodylast article{
+    grid-template-columns: repeat(2, minmax(0, 350px));
+    justify-content: center;
+    gap: 28px 40px;      /* réduit l’écart horizontal */
+    padding: 18px 16px 44px;
+  }
+
+  .bodylast .carte{
+    width: 350px;
+    height: 300px;
+  }
+
+  .bodylast .titrelast{
+    padding: 18px 14px 10px;
+    gap: 14px;
+  }
+
+  .bodylast .titrelast img{
+    width: 100px;        /* un peu plus petit que 120 */
+  }
+}
+
+
 /* Mobile : un peu plus compact */
 @media (max-width: 480px){
   .bodylast .titre{ font-size: 20px; }

@@ -1,0 +1,20 @@
+{% extends 'admin/admin.html.twig' %}
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+  <div style="max-width: 520px; margin: 24px auto; padding: 16px;">
+    <h1>Mon profil</h1>
+
+    {% for msg in app.flashes('success') %}
+      <div style="padding:10px;border:1px solid #b8f5cd;background:#e6ffef;border-radius:8px;margin:10px 0;">
+        {{ msg }}
+      </div>
+    {% endfor %}
+
+    {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
+      {{ form_row(form.pseudo) }}
+      {{ form_row(form.newEmail) }}
+      <button type="submit">Enregistrer</button>
+    {{ form_end(form) }}
+  </div>
+{% endblock %}

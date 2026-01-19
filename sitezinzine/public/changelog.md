@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.70] - 2026-01-19
+### Ajout
+- Ajout de la visibilité des mots de passes sur les formulaire de création de compte et de reset de mot de passe.
+- Ajout de la page profil qui permet aux utilisateurs d'utiliser un nom au lieu de son identifiant de compte et de changer son email si besoin.
+### Correction
+- Correction des flèches du carrousel qui avaient disparues en mode desktop.
+- Modification du mailer_DNS avec mailjet (vrai envoi de mail) mais ça ne fonctionne pas en local, à voir en prod ce que ça donne puisqu'il y a un rebuild du container.
+
+
+
+## [1.0.69] - 2026-01-04
+### Correction
+- Correction de la gestion des erreurs de formulaire pour catégorie
+
+
 ## [1.0.68] - 2026-01-04
 ### Ajout
 - Gestion de multiple propriétaires des émissions.

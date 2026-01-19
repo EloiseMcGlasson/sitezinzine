@@ -4,7 +4,7 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
     gap:12px;
     font-family:"Montserrat Alternates",sans-serif;
     background:#fff;
@@ -71,19 +71,20 @@
     margin:0 !important;
     padding:0 !important;
     padding-left:0 !important;
-  }
-  .site-nav ul.nav-menu li{
-    list-style:none !important;
-  }
-
-  .site-nav ul.nav-menu{
+    flex-wrap: nowrap;              /* ✅ pas de retour ligne dans le menu */
+    white-space: nowrap;            /* ✅ pas de retour ligne */
+    min-width: 0;
     display:flex;
     align-items:center;
     justify-content:center;
     gap:14px;
     flex:1 1 auto;
-    font-size:21pt;
+    font-size:21pt;     
   }
+  .site-nav ul.nav-menu li{
+    list-style:none !important;
+  }
+
   .site-nav ul.nav-menu li{
     display:flex;
     align-items:center;
@@ -96,6 +97,7 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
+    white-space: nowrap; 
   }
   .site-nav ul.nav-menu a:hover{ color:#E40039; }
   .site-nav ul.nav-menu a.active{ color:#E40039 !important; }
@@ -112,6 +114,49 @@
   }
 
   /* ===== mobile ===== */
+  /* ===== petit desktop (ex: 14") ===== */
+@media (max-width: 1200px){
+  nav.site-nav{
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .site-nav .brand{
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+
+  .site-nav .brand img.logo{
+    height: 50px;
+  }
+
+  .site-nav .don-btn{
+    padding: 7px 9px;
+    font-size: 11px;
+    min-height: 32px;
+    border-radius: 7px;
+  }
+
+  .site-nav ul.nav-menu{
+    gap: 8px;
+    font-size: 16pt;          /* ✅ baisse plus */
+  }
+
+  .site-nav ul.nav-menu a{
+    padding: 7px 8px;         /* ✅ liens plus compacts */
+  }
+
+  .site-nav .nav-link-icon img{
+    height: 20px;
+  }
+
+  .site-nav li.sep img{
+    width: 4px;
+    height: 4px;
+  }
+}
+
+
   @media (max-width:900px){
     nav.site-nav{
       padding:10px 12px;
