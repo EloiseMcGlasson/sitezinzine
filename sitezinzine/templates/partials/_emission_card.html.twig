@@ -222,7 +222,8 @@
     <div class="titre">
       <a href="{{ path('emission.show', { id: emission.id }) }}">
         {{ emission.titre }}
-        {% if emission.user %} - {{ emission.user.username }}{% endif %}
+        {% if emission.user %} - {{ emission.app.user.displayName
+ }}{% endif %}
       </a>
     </div>
 
