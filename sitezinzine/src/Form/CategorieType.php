@@ -10,6 +10,7 @@ use App\Repository\InviteOldAnimateurRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -25,7 +26,8 @@ use Symfony\Component\Form\FormEvents;
 class CategorieType extends AbstractType
 {
     public function __construct(
-        private CategoriesRepository $categoriesRepository
+        private CategoriesRepository $categoriesRepository,
+        private Security $security,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -36,7 +38,15 @@ class CategorieType extends AbstractType
         foreach ($editeursRaw as $row) {
             $editeursChoices[$row['name']] = (int) $row['id'];
         }
+                /** @var Categories|null $categorie */
+        $categorie = $builder->getData();
+        $isEdit = $categorie && $categorie->getId() !== null;
 
+        $isSuperAdmin = $this->security->isGranted('ROLE_SUPER_ADMIN');
+
+        // En create: tout le monde peut saisir le slug
+        // En edit: seul super admin peut modifier
+        $slugDisabled = $isEdit && !$isSuperAdmin;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $data = $event->getData() ?? [];
@@ -52,6 +62,18 @@ class CategorieType extends AbstractType
             ->add('titre', TextType::class, [
                 'empty_data' => 'Nouvelle catégorie',
                 'label' => 'Titre de la catégorie',
+            ])
+
+            ->add('slug', TextType::class, [
+                'required' => false, // BDD nullable pour l’instant
+                'label' => 'Code catégorie (3 lettres)',
+                'disabled' => $slugDisabled,
+                'attr' => [
+                    'maxlength' => 3,
+                    'style' => 'text-transform: uppercase;',
+                    'autocomplete' => 'off',
+                ],
+                'help' => 'Ex: SOC, ECO, POL… Utilisé pour ranger les MP3 : /uploads/mp3/<CODE>/<YYYY>/<MM>/',
             ])
 
             ->add('editeur', ChoiceType::class, [
