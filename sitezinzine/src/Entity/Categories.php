@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 #[UniqueEntity('titre')]
+#[UniqueEntity('slug')]
 #[Vich\Uploadable()]
 class Categories
 {
@@ -66,6 +67,14 @@ class Categories
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['categories.index'])]
     private ?\DateTime $updatedAt = null;
+
+    #[ORM\Column(length: 3, nullable: true)]
+    #[Assert\NotBlank(message: 'Le code catégorie est obligatoire.')]
+    #[Assert\Regex(
+        pattern: '/^[A-Z]{3}$/',
+        message: 'Le code doit contenir exactement 3 lettres majuscules.'
+    )]
+    private ?string $slug = null;
 
     #[ORM\Column]
     private ?bool $active = null;
@@ -302,27 +311,38 @@ class Categories
 
         return $this;
     }
-   
-#[Assert\Callback(groups: ['admin'])]
-public function validateAtLeastOneOwner(ExecutionContextInterface $context): void
-{
-    $hasUsers = !$this->getUsers()->isEmpty();
 
-    $hasAnciens = !$this->getInviteOldAnimateurs()
-        ->filter(fn($a) => (bool) $a->isAncienanimateur())
-        ->isEmpty();
+    #[Assert\Callback(groups: ['admin'])]
+    public function validateAtLeastOneOwner(ExecutionContextInterface $context): void
+    {
+        $hasUsers = !$this->getUsers()->isEmpty();
 
-    if (!$hasUsers && !$hasAnciens) {
-        $message = 'Vous devez sélectionner au moins un·e utilisateurice OU un·e ancien·ne animateur·ice.';
+        $hasAnciens = !$this->getInviteOldAnimateurs()
+            ->filter(fn($a) => (bool) $a->isAncienanimateur())
+            ->isEmpty();
 
-        // erreur globale (bandeau)
-        $context->buildViolation($message)->addViolation();
+        if (!$hasUsers && !$hasAnciens) {
+            $message = 'Vous devez sélectionner au moins un·e utilisateurice OU un·e ancien·ne animateur·ice.';
 
-        // erreurs sous les champs
-        $context->buildViolation($message)->atPath('users')->addViolation();
-        $context->buildViolation($message)->atPath('inviteOldAnimateurs')->addViolation();
+            // erreur globale (bandeau)
+            $context->buildViolation($message)->addViolation();
+
+            // erreurs sous les champs
+            $context->buildViolation($message)->atPath('users')->addViolation();
+            $context->buildViolation($message)->atPath('inviteOldAnimateurs')->addViolation();
+        }
     }
-}
 
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
 
+    public function setSlug(?string $slug): static
+    {
+        $slug = $slug !== null ? strtoupper(trim($slug)) : null;
+        $this->slug = ($slug === '') ? null : $slug;
+
+        return $this;
+    }
 }

@@ -9,7 +9,6 @@
 - Modification du mailer_DNS avec mailjet (vrai envoi de mail) mais ça ne fonctionne pas en local, à voir en prod ce que ça donne puisqu'il y a un rebuild du container.
 
 
-
 ## [1.0.69] - 2026-01-04
 ### Correction
 - Correction de la gestion des erreurs de formulaire pour catégorie
