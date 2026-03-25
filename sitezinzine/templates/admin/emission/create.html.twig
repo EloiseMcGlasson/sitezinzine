@@ -264,7 +264,9 @@
         {{ form_row(form.thumbnailFile) }}
       </div>
       <div class="field">
-        {{ form_row(form.thumbnailFileMp3) }}
+        {% if form.thumbnailFileMp3 is defined %}
+          {{ form_row(form.thumbnailFileMp3) }}
+        {% endif %}
       </div>
       <div class="field">
         {{ form_row(form.url) }}

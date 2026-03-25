@@ -53,6 +53,9 @@ RUN a2enmod rewrite
 # Apache config
 COPY ./docker/prod/apache/apache.conf /etc/apache2/sites-available/000-default.conf
 
+# Config PHP uploads
+COPY ./docker/prod/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 WORKDIR /var/www/html
 
 # Code Symfony

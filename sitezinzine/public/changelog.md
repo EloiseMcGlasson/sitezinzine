@@ -1,8 +1,14 @@
 # Changelog
 
+## [1.0.72] - 2026-03-25
+### Ajout
+- Prise en charge de l'écriture des tags sur les fichiers Mp3 uploadés (sauf imageTags).
+
+
 ## [1.0.71] - 2026-01-24
 ### Correction
 - Réparation du formulaire de création des émissions.
+
 
 ## [1.0.70] - 2026-01-19
 ### Ajout

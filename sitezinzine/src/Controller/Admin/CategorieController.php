@@ -73,7 +73,7 @@ public function show(
 
 
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+#[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
 public function edit(
     Categories $categorie,
     Request $request,
@@ -82,50 +82,52 @@ public function edit(
     StorageInterface $storage,
     PropertyMappingFactory $mappingFactory
 ): Response {
-
+    // 1) Catégorie supprimée => pas modifiable
     if ($categorie->isSoftDelete()) {
         $this->addFlash('warning', 'Impossible de modifier une catégorie supprimée.');
         return $this->redirectToRoute('admin.categorie.index');
     }
 
-    // 🔐 Vérifie les droits (admin/super_admin OK) sinon il faut être dans categorie.users
-    if (
-        !$this->isGranted('ROLE_ADMIN') &&
-        !$this->isGranted('ROLE_SUPER_ADMIN') &&
-        !$categorie->getUsers()->contains($this->getUser())
-    ) {
+    // 2) Droits : admin/super_admin OK, sinon il faut appartenir à categorie.users
+    $user = $this->getUser();
+    $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SUPER_ADMIN');
+
+    if (!$isAdmin && (!$user || !$categorie->getUsers()->contains($user))) {
         throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cette catégorie.');
     }
 
+    // 3) Gestion du returnTo
     $returnTo = $request->query->get('returnTo');
-    if ($returnTo) {
+    if (is_string($returnTo) && $returnTo !== '') {
         $session->set('return_to_url', $returnTo);
     }
 
+    // 4) Verrou serveur du slug : seuls les super-admin peuvent le modifier
+    $originalSlug = $categorie->getSlug();
+
+    // 5) Form
     $form = $this->createForm(CategorieType::class, $categorie);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
 
-        // ✅ suppression image si demandée
-        if ($request->request->getBoolean('delete_thumbnail')) {
+        // 🔒 Empêche toute modification du slug si pas super-admin
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $categorie->setSlug($originalSlug);
+        }
 
+        // ✅ suppression image si demandée (Vich)
+        if ($request->request->getBoolean('delete_thumbnail')) {
             $mappings = $mappingFactory->fromObject($categorie);
-            $thumbnailMapping = null;
 
             foreach ($mappings as $m) {
-                // Vich PropertyMapping expose en général getPropertyName()
                 if (method_exists($m, 'getPropertyName') && $m->getPropertyName() === 'thumbnailFile') {
-                    $thumbnailMapping = $m;
+                    $storage->remove($categorie, $m);
                     break;
                 }
             }
 
-            if (null !== $thumbnailMapping) {
-                $storage->remove($categorie, $thumbnailMapping);
-            }
-
-            // on nettoie aussi le nom de fichier en BDD
+            // Nettoyage du nom de fichier en BDD
             $categorie->setThumbnail(null);
         }
 
@@ -134,21 +136,24 @@ public function edit(
 
         $this->addFlash('success', 'La catégorie a bien été modifiée.');
 
+        // Redirection prioritaire : returnTo
         if ($session->has('return_to_url')) {
             $url = $session->get('return_to_url');
             $session->remove('return_to_url');
             return $this->redirect($url);
         }
 
+        // Sinon retour à l’index + page précédente
         $previousPage = $session->get('previous_page', 1);
         return $this->redirectToRoute('admin.categorie.index', ['page' => $previousPage]);
     }
 
     return $this->render('admin/categorie/edit.html.twig', [
         'categorie' => $categorie,
-        'form' => $form->createView()
+        'form' => $form->createView(),
     ]);
 }
+
 
 
 #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
