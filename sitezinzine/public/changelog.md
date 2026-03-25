@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.71] - 2026-01-19
+### Ajout
+- Prise en charge de l'écriture des tags sur les fichiers Mp3 uploadés (sauf imageTags).
+
 ## [1.0.70] - 2026-01-19
 ### Ajout
 - Ajout de la visibilité des mots de passes sur les formulaire de création de compte et de reset de mot de passe.

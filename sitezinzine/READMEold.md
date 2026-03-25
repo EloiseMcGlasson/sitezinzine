@@ -199,3 +199,5 @@ régler le soucis de tinymce forcer l'installation de stimulus
 npm install webpack-cli@5.1.4
 npm install stimulus@3
 
+tags mp3
+composer require james-heinrich/getid3

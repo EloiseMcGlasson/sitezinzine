@@ -1,5 +1,5 @@
 <?php
-// src/Service/Mp3Processor.php
+
 
 namespace App\Service;
 
@@ -13,6 +13,7 @@ final class Mp3Processor
         private StorageInterface $storage,
         private Filesystem $fs,
         private string $mp3BaseDir, // ex: '%kernel.project_dir%/public/uploads/mp3'
+        private string $mp3PublicBaseUrl,
     ) {}
 
     public function process(Emission $emission): void
@@ -24,51 +25,74 @@ final class Mp3Processor
             throw new \RuntimeException("Categorie.slug manquant/invalide : impossible de ranger le MP3.");
         }
 
-        // Chemin réel du fichier uploadé par Vich (après flush)
-        $sourcePath = $this->storage->resolvePath($emission, 'thumbnailFileMp3');
-        if (!$sourcePath || !is_file($sourcePath)) {
-            throw new \RuntimeException("Fichier MP3 introuvable après upload.");
+        $currentFilename = $emission->getThumbnailMp3();
+
+        if (!$currentFilename) {
+            throw new \RuntimeException("Aucun nom de fichier MP3 n'a été enregistré par Vich.");
+        }
+
+        $sourcePath = rtrim($this->mp3BaseDir, '/\\') . DIRECTORY_SEPARATOR . ltrim($currentFilename, '/\\');
+
+        if (!is_file($sourcePath)) {
+            throw new \RuntimeException("Fichier source introuvable : " . $sourcePath);
         }
 
         $date = $emission->getDatepub() ?? new \DateTime();
         $yyyy = $date->format('Y');
-        $mm   = $date->format('m');
+       
 
-        $destDir = rtrim($this->mp3BaseDir, '/\\') . DIRECTORY_SEPARATOR . $code . DIRECTORY_SEPARATOR . $yyyy . DIRECTORY_SEPARATOR . $mm;
+        $destDir = rtrim($this->mp3BaseDir, '/\\') . DIRECTORY_SEPARATOR . $code . DIRECTORY_SEPARATOR . $yyyy;
         $this->fs->mkdir($destDir);
 
-        // Nom de fichier final (tu peux ajuster la convention)
-        $safeTitle = $this->slugifyFilename($emission->getTitre());
+        $safeTitle = $this->formatTitleCamelCase($emission->getTitre());
         $idPart = $emission->getId() ? (string) $emission->getId() : 'noid';
-        $baseName = sprintf('%s_%s_%s_%s', $code, $date->format('Y-m-d'), $idPart, $safeTitle);
+
+        $baseName = sprintf('%s_%s_%s_%s', $code, $date->format('Ymd'), $idPart, $safeTitle);
         $finalName = $this->uniqueName($destDir, $baseName, 'mp3');
 
         $destPath = $destDir . DIRECTORY_SEPARATOR . $finalName;
 
-        // 1) écriture tags (sur le fichier source, avant déplacement)
         $this->writeTags($sourcePath, $emission);
-
-        // 2) move + rename
         $this->fs->rename($sourcePath, $destPath, true);
 
-        // 3) enregistrer le chemin relatif en BDD
-        $relative = $code . '/' . $yyyy . '/' . $mm . '/' . $finalName;
+        $relative = $code . '/' . $yyyy . '/' . $finalName;
         $emission->setThumbnailMp3($relative);
+        $emission->setUrl(rtrim($this->mp3PublicBaseUrl, '/') . '/' . $relative);
     }
 
     private function slugifyFilename(string $s): string
     {
-        // filename safe minimal (ASCII, tirets)
         $s = trim($s);
         $s = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $s) ?: $s;
         $s = preg_replace('/[^A-Za-z0-9]+/', '-', $s) ?? '';
         $s = trim($s, '-');
+
         return $s !== '' ? strtolower($s) : 'emission';
+    }
+
+    private function formatTitleCamelCase(string $s): string
+    {
+        $s = trim($s);
+
+        // translittération (é → e, etc.)
+        $s = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $s) ?: $s;
+
+        // remplace tout ce qui n’est pas lettre/chiffre par espace
+        $s = preg_replace('/[^A-Za-z0-9]+/', ' ', $s) ?? '';
+
+        // met en mots
+        $words = explode(' ', strtolower($s));
+
+        // met en CamelCase
+        $words = array_map(fn($w) => ucfirst($w), $words);
+
+        return substr(implode('', $words), 0, 50) ?: 'Emission';
     }
 
     private function uniqueName(string $dir, string $base, string $ext): string
     {
         $i = 0;
+
         do {
             $suffix = $i === 0 ? '' : '-' . $i;
             $name = $base . $suffix . '.' . $ext;
@@ -80,30 +104,45 @@ final class Mp3Processor
 
     private function writeTags(string $filePath, Emission $emission): void
     {
-        // getID3 : include + getid3_writetags (cf demos)
-        // IMPORTANT: adapte le chemin si ton autoload ne charge pas ces fichiers
-        $getId3Root = \dirname(__DIR__, 2) . '/vendor/james-heinrich/getid3/getid3';
+        $projectDir = \dirname(__DIR__, 2);
 
-        require_once $getId3Root . '/getid3.php';
-        require_once $getId3Root . '/write.php';
+        $getId3Php = $projectDir . '/vendor/james-heinrich/getid3/getid3/getid3.php';
+        $writePhp  = $projectDir . '/vendor/james-heinrich/getid3/getid3/write.php';
+
+        if (!is_file($getId3Php)) {
+            throw new \RuntimeException('getid3.php introuvable : ' . $getId3Php);
+        }
+
+        if (!is_file($writePhp)) {
+            throw new \RuntimeException('write.php introuvable : ' . $writePhp);
+        }
+
+        require_once $getId3Php;
+        require_once $writePhp;
+
+        if (!class_exists('getid3_writetags')) {
+            throw new \RuntimeException('La classe getid3_writetags n’a pas été chargée.');
+        }
 
         $tagwriter = new \getid3_writetags();
         $tagwriter->filename = $filePath;
-        $tagwriter->tagformats = ['id3v2.3']; // standard très compatible
+        $tagwriter->tagformats = ['id3v2.3'];
         $tagwriter->overwrite_tags = true;
+        $tagwriter->remove_other_tags = false;
         $tagwriter->tag_encoding = 'UTF-8';
 
         $cat = $emission->getCategorie();
 
-        $data = [
-            'title'  => [$emission->getTitre()],
-            'artist' => [$emission->getRef() ?? 'Radio Zinzine'],
-            'album'  => [$cat?->getTitre() ?? 'Radio Zinzine'],
-            'year'   => [$emission->getDatepub()?->format('Y') ?? (new \DateTime())->format('Y')],
-            'comment'=> [$this->trimComment($emission->getDescriptif())],
+        $tagwriter->tag_data = [
+            'title'   => [$emission->getTitre() ?? ''],
+            'artist' => [$this->buildArtist($emission)],
+            'album'   => [$cat?->getTitre() ?? 'Radio Zinzine'],
+            'year'    => [$emission->getDatepub()?->format('Y') ?? (new \DateTime())->format('Y')],
+            'comment' => [$this->trimComment($emission->getDescriptif() ?? '')],
+            'genre'   => ['Podcast'],
+            'publisher' => [$emission->getEditeur()?->getName() ?? 'Radio Zinzine'],
+            'language' => ['fr'],
         ];
-
-        $tagwriter->tag_data = $data;
 
         if (!$tagwriter->WriteTags()) {
             $errors = $tagwriter->errors ?? [];
@@ -113,8 +152,39 @@ final class Mp3Processor
 
     private function trimComment(string $htmlOrText): string
     {
-        $text = trim(strip_tags($htmlOrText));
-        // commentaire court pour éviter de gonfler les tags
+        $text = strip_tags($htmlOrText);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace('/\s+/u', ' ', $text) ?? '';
+        $text = trim($text);
+
         return mb_substr($text, 0, 500);
     }
+
+    private function buildArtist(Emission $emission): string
+{
+    // 1. users
+    if (!$emission->getUsers()->isEmpty()) {
+        $names = [];
+
+        foreach ($emission->getUsers() as $user) {
+            $names[] = $user->getUsername(); // ou getNom() selon ton modèle
+        }
+
+        return implode(', ', $names);
+    }
+
+    // 2. invités / anciens animateurs
+    if (!$emission->getInviteOldAnimateurs()->isEmpty()) {
+        $names = [];
+
+        foreach ($emission->getInviteOldAnimateurs() as $person) {
+            $names[] = (string) $person; // tu as déjà un __toString normalement
+        }
+
+        return implode(', ', $names);
+    }
+
+    // 3. fallback ref
+    return $emission->getRef() ?? 'Radio Zinzine';
+}
 }

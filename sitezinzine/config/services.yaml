@@ -4,6 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # app.mp3_base_dir: '%kernel.project_dir%/public/uploads/mp3'
+    app.mp3_base_dir: '%kernel.project_dir%/public/uploads/emissionsMp3'
+    app.mp3_public_base_url: 'https://eloisemcglasson.ovh/uploads/emissionsMp3'
 
 services:
     # default configuration for services in *this* file
@@ -26,3 +29,8 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Service\SafeFilenameNamer:
         public: true
+
+    App\Service\Mp3Processor:
+        arguments:
+            $mp3BaseDir: '%app.mp3_base_dir%'
+            $mp3PublicBaseUrl: '%app.mp3_public_base_url%'

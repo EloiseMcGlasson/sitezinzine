@@ -27,9 +27,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 use App\Repository\UserRepository;
 
-
-
-
 class EmissionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -62,7 +59,6 @@ class EmissionType extends AbstractType
                 'label' => 'Éditeur'
             ])
 
-            // ✅ 2 listes séparées (non mappées)
             ->add('invites', EntityType::class, [
                 'class' => InviteOldAnimateur::class,
                 'mapped' => false,
@@ -72,9 +68,9 @@ class EmissionType extends AbstractType
                 'label' => 'Invité·es',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
                 'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                => $er->createQueryBuilder('i')
-                    ->andWhere('i.ancienanimateur = 0 OR i.ancienanimateur IS NULL')
-                    ->orderBy('i.lastName', 'ASC'),
+                    => $er->createQueryBuilder('i')
+                        ->andWhere('i.ancienanimateur = 0 OR i.ancienanimateur IS NULL')
+                        ->orderBy('i.lastName', 'ASC'),
             ])
             ->add('inviteOldAnimateurs', EntityType::class, [
                 'class' => InviteOldAnimateur::class,
@@ -85,9 +81,9 @@ class EmissionType extends AbstractType
                 'label' => 'Ancien·nes animateur·ices',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
                 'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                => $er->createQueryBuilder('i')
-                    ->andWhere('i.ancienanimateur = 1')
-                    ->orderBy('i.lastName', 'ASC'),
+                    => $er->createQueryBuilder('i')
+                        ->andWhere('i.ancienanimateur = 1')
+                        ->orderBy('i.lastName', 'ASC'),
             ])
 
             ->add('titre', TextType::class, [
@@ -110,7 +106,7 @@ class EmissionType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'query_builder' => fn(UserRepository $ur): QueryBuilder
-                => $ur->createQueryBuilder('u')->orderBy('u.username', 'ASC'),
+                    => $ur->createQueryBuilder('u')->orderBy('u.username', 'ASC'),
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée (obligatoire)'
@@ -130,15 +126,17 @@ class EmissionType extends AbstractType
                 'required' => false,
                 'label' => 'Ajouter une image :',
                 'upload_max_size_message' => fn () => 'Fichier trop lourd. Taille max : {{ limit }} {{ suffix }}.',
-            ])
-            ->add('thumbnailFileMp3', FileType::class, [
-                'required' => false,
-                'label' => 'Ajouter un Mp3 :'
-            ])
-            ->add('Sauvegarder', SubmitType::class)
-        ;
+            ]);
 
-        // ✅ pré-remplir les 2 listes à partir de la relation réelle
+        if ($options['with_mp3']) {
+            $builder->add('thumbnailFileMp3', FileType::class, [
+                'required' => false,
+                'label' => 'Ajouter un Mp3 :',
+            ]);
+        }
+
+        $builder->add('Sauvegarder', SubmitType::class);
+
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
             $emission = $event->getData();
             $form = $event->getForm();
@@ -162,7 +160,6 @@ class EmissionType extends AbstractType
             $form->get('inviteOldAnimateurs')->setData($anciens);
         });
 
-        // ✅ fusionner les 2 champs vers la relation réelle
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
             $emission = $event->getData();
             $form = $event->getForm();
@@ -186,7 +183,6 @@ class EmissionType extends AbstractType
             }
         });
 
-        // tes listeners existants
         $builder->addEventListener(FormEvents::PRE_SUBMIT, $this->autoKeyword(...));
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $data = $event->getData();
@@ -197,7 +193,6 @@ class EmissionType extends AbstractType
         });
     }
 
-
     public function autoKeyword(PreSubmitEvent $event): void
     {
         $data = $event->getData();
@@ -207,15 +202,15 @@ class EmissionType extends AbstractType
         }
     }
 
-
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Emission::class,
             'allow_extra_fields' => true,
             'current_user_identifier' => null,
-
+            'with_mp3' => false,
         ]);
+
+        $resolver->setAllowedTypes('with_mp3', 'bool');
     }
 }
