@@ -26,6 +26,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class EmissionType extends AbstractType
 {
@@ -68,9 +69,9 @@ class EmissionType extends AbstractType
                 'label' => 'Invité·es',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
                 'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                    => $er->createQueryBuilder('i')
-                        ->andWhere('i.ancienanimateur = 0 OR i.ancienanimateur IS NULL')
-                        ->orderBy('i.lastName', 'ASC'),
+                => $er->createQueryBuilder('i')
+                    ->andWhere('i.ancienanimateur = 0 OR i.ancienanimateur IS NULL')
+                    ->orderBy('i.lastName', 'ASC'),
             ])
             ->add('inviteOldAnimateurs', EntityType::class, [
                 'class' => InviteOldAnimateur::class,
@@ -81,9 +82,9 @@ class EmissionType extends AbstractType
                 'label' => 'Ancien·nes animateur·ices',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
                 'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                    => $er->createQueryBuilder('i')
-                        ->andWhere('i.ancienanimateur = 1')
-                        ->orderBy('i.lastName', 'ASC'),
+                => $er->createQueryBuilder('i')
+                    ->andWhere('i.ancienanimateur = 1')
+                    ->orderBy('i.lastName', 'ASC'),
             ])
 
             ->add('titre', TextType::class, [
@@ -106,7 +107,7 @@ class EmissionType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'query_builder' => fn(UserRepository $ur): QueryBuilder
-                    => $ur->createQueryBuilder('u')->orderBy('u.username', 'ASC'),
+                => $ur->createQueryBuilder('u')->orderBy('u.username', 'ASC'),
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée (obligatoire)'
@@ -125,14 +126,20 @@ class EmissionType extends AbstractType
             ->add('thumbnailFile', FileType::class, [
                 'required' => false,
                 'label' => 'Ajouter une image :',
-                'upload_max_size_message' => fn () => 'Fichier trop lourd. Taille max : {{ limit }} {{ suffix }}.',
+                'upload_max_size_message' => fn() => 'Fichier trop lourd. Taille max : {{ limit }} {{ suffix }}.',
             ]);
 
         if ($options['with_mp3']) {
-            $builder->add('thumbnailFileMp3', FileType::class, [
-                'required' => false,
-                'label' => 'Ajouter un Mp3 :',
-            ]);
+            $builder
+                ->add('thumbnailFileMp3', FileType::class, [
+                    'required' => false,
+                    'label' => 'Ajouter un Mp3 :',
+                ])
+                ->add('deleteMp3', CheckboxType::class, [
+                    'required' => false,
+                    'mapped' => false,
+                    'label' => 'Supprimer le fichier MP3 actuel',
+                ]);
         }
 
         $builder->add('Sauvegarder', SubmitType::class);

@@ -218,6 +218,192 @@
   padding-left:18px;
 }
 
+.field-mp3 {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.current-mp3-card {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.current-mp3-title {
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: #1C1C1A;
+}
+
+.current-mp3-name {
+    margin: 0 0 14px;
+    color: #555;
+    word-break: break-word;
+}
+
+.current-mp3-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+/* styles pour les boutons de lecture et suppression du MP3 */
+.field-full {
+    grid-column: 1 / -1;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.current-mp3-card {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.current-mp3-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.current-mp3-title {
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: #1C1C1A;
+}
+
+.current-mp3-name {
+    margin: 0;
+    color: #555;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.current-mp3-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+}
+
+.delete-mp3-form {
+    margin: 0;
+}
+
+.btn-listen-mp3,
+.btn-download-mp3,
+.btn-delete-mp3 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    text-decoration: none;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.btn-listen-mp3 {
+    background: #222;
+    color: #fff;
+}
+
+.btn-listen-mp3:hover {
+    background: #000;
+}
+
+.btn-download-mp3 {
+    background: #666;
+    color: #fff;
+}
+
+.btn-download-mp3:hover {
+    background: #444;
+}
+
+.btn-delete-mp3 {
+    background: #c62828;
+    color: #fff;
+}
+
+.btn-delete-mp3:hover {
+    background: #8e0000;
+}
+
+@media (max-width: 768px) {
+    .field-full {
+        margin-top: 12px;
+        margin-bottom: 12px;
+    }
+
+    .current-mp3-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .current-mp3-actions {
+        justify-content: stretch;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-listen-mp3,
+    .btn-download-mp3,
+    .btn-delete-mp3 {
+        width: 100%;
+        text-align: center;
+    }
+}
+@media (max-width: 768px) {
+    .current-mp3-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .current-mp3-actions {
+        justify-content: stretch;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-listen-mp3,
+    .btn-download-mp3,
+    .btn-delete-mp3 {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .current-mp3-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-listen-mp3,
+    .btn-delete-mp3 {
+        width: 100%;
+        text-align: center;
+    }
+}
+
 /* responsive */
 @media (max-width: 960px){
   .main-content .em-form{
@@ -381,10 +567,56 @@
   </div>
 
   {# --- Mp3 + Url --- #}
-  <div class="grid-2">
-    <div class="field">{{ form_row(formEmission.thumbnailFileMp3) }}</div>
-    <div class="field">{{ form_row(formEmission.url) }}</div>
-  </div>
+<div class="grid-2">
+    <div class="field">
+        {% if formEmission.thumbnailFileMp3 is defined %}
+            {{ form_row(formEmission.thumbnailFileMp3) }}
+        {% endif %}
+    </div>
+
+    <div class="field">
+        {{ form_row(formEmission.url) }}
+    </div>
+
+    {% if emission.thumbnailMp3 and emission.url %}
+        <div class="field field-full">
+            <div class="current-mp3-card">
+                <div class="current-mp3-content">
+                    <p class="current-mp3-title">Fichier MP3 actuel</p>
+
+                    <p class="current-mp3-name">
+                        {{ emission.thumbnailMp3|split('/')|last }}
+                    </p>
+                </div>
+
+                <div class="current-mp3-actions">
+                    <a
+                        href="{{ emission.url }}"
+                        target="_blank"
+                        rel="noopener"
+                        class="btn-listen-mp3"
+                    >
+                        Lecture
+                    </a>
+
+                    <a
+                        href="{{ emission.url }}"
+                        download
+                        class="btn-download-mp3"
+                    >
+                        Télécharger
+                    </a>
+                </div>
+
+                {% if formEmission.deleteMp3 is defined %}
+                    <div class="delete-mp3-check">
+                        {{ form_row(formEmission.deleteMp3) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
 
   {{ form_end(formEmission) }}
 </div>

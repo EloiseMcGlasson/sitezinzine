@@ -1,0 +1,551 @@
+{% extends 'admin/admin.html.twig' %}
+
+
+{% block title %}
+    Images de tags annuelles
+{% endblock %}
+{% block body %}
+    <div class="bodyTagImages">
+        <div class="page-header">
+            <h1>
+                Images de tags annuelles
+            </h1>
+            <a href="{{ path('admin_categorieTagImage_create') }}" class="btn-create">
+                Ajouter une image
+            </a>
+        </div>
+        {% for message in app.flashes('success') %}
+            <div class="flash flash-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% if categorieTagImages is not empty %}
+            <div class="table-wrapper">
+                <table class="tag-image-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Catégorie
+                            </th>
+                            <th>
+                                Année
+                            </th>
+                            <th>
+                                Image
+                            </th>
+                            <th>
+                                Mise à jour
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    {% for categorieTagImage in categorieTagImages %}
+        <tr class="{{ not categorieTagImage.categorie.active ? 'inactive-row' : '' }}">
+            <td data-label="Catégorie">
+                {{ categorieTagImage.categorie.titre }}
+                {% if not categorieTagImage.categorie.active %}
+                    <span class="badge-inactive">(inactive)</span>
+                {% endif %}
+            </td>
+
+            <td data-label="Année">
+                {{ categorieTagImage.annee }}
+            </td>
+
+            <td data-label="Image">
+                {% if categorieTagImage.image %}
+                    <img
+                        src="{{ asset('uploads/tag-images/' ~ categorieTagImage.image) }}"
+                        alt="Image {{ categorieTagImage.categorie.titre }} {{ categorieTagImage.annee }}"
+                        class="thumb"
+                    >
+                {% else %}
+                    <span class="empty">Aucune image</span>
+                {% endif %}
+            </td>
+
+            <td data-label="Mise à jour">
+                {% if categorieTagImage.updatedAt %}
+                    {{ categorieTagImage.updatedAt|date('d/m/Y H:i') }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td data-label="Actions" class="actions">
+                <a href="{{ path('admin_categorieTagImage_edit', {id: categorieTagImage.id}) }}" class="btn-action">
+                    Modifier
+                </a>
+
+                <form
+                    method="post"
+                    action="{{ path('admin_categorieTagImage_delete', {id: categorieTagImage.id}) }}"
+                    onsubmit="return confirm('Supprimer cette image annuelle ?');"
+                    class="inline-delete-form"
+                >
+                    <input
+                        type="hidden"
+                        name="_token"
+                        value="{{ csrf_token('delete_categorie_tag_image_' ~ categorieTagImage.id) }}"
+                    >
+                    <button type="submit" class="btn-delete-inline">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>
+                            Aucune image annuelle n’a encore été enregistrée.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+<style>
+    .bodyTagImages {
+        width: 100%;
+        max-width: 1200px;
+        min-width: 0;
+        margin: 24px auto;
+        padding: 0 12px 24px;
+        font-family: "Montserrat Alternates", sans-serif;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .page-header {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        line-height: 1.2;
+        min-width: 0;
+    }
+
+    .btn-create {
+        display: inline-block;
+        background: #E4013A;
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-weight: 700;
+        transition: background 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .btn-create:hover {
+        background: #b8002e;
+    }
+
+    .flash {
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    .flash-success {
+        background: #e8f5e9;
+        color: #1b5e20;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
+    }
+
+    .tag-image-table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+    }
+
+    .tag-image-table th,
+    .tag-image-table td {
+        padding: 14px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
+
+    .tag-image-table th {
+        background: #fafafa;
+        font-size: 0.95rem;
+    }
+
+    .thumb {
+        display: block;
+        width: 90px;
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .empty {
+        color: #777;
+        font-style: italic;
+    }
+
+    .badge-inactive {
+        margin-left: 6px;
+        font-size: 0.85em;
+        color: #999;
+        font-weight: 600;
+    }
+
+    .actions {
+        white-space: nowrap;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .inline-delete-form {
+        margin: 0;
+    }
+
+    .btn-action,
+    .btn-delete-inline {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.92rem;
+        border: none;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .btn-action {
+        background: #222;
+    }
+
+    .btn-action:hover {
+        background: #000;
+    }
+
+    .btn-delete-inline {
+        background: #c62828;
+        cursor: pointer;
+    }
+
+    .btn-delete-inline:hover {
+        background: #8e0000;
+    }
+
+    .empty-state {
+        background: #fff;
+        padding: 28px 18px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* === Ligne inactive desktop === */
+    .tag-image-table tr.inactive-row td {
+        color: #999;
+        opacity: 0.75;
+    }
+
+    .tag-image-table tr.inactive-row .badge-inactive {
+        color: #999;
+    }
+
+    .tag-image-table tr.inactive-row .thumb {
+        filter: grayscale(70%);
+    }
+
+    @media (max-width: 768px) {
+        .bodyTagImages {
+            margin: 20px auto;
+            padding: 0 8px 20px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .page-header h1 {
+            width: 100%;
+            max-width: 220px;
+            min-width: 0;
+            margin: 0 auto;
+            font-size: 1.45rem;
+            line-height: 1.2;
+            text-align: center;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .btn-create {
+            display: inline-block;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px 16px;
+            text-align: center;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .table-wrapper {
+            overflow: visible;
+            background: transparent;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .tag-image-table {
+            min-width: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .tag-image-table thead {
+            display: none;
+        }
+
+        .tag-image-table,
+        .tag-image-table tbody,
+        .tag-image-table tr,
+        .tag-image-table td {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .tag-image-table tr {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 16px;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        .tag-image-table td {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            text-align: center;
+            white-space: normal;
+            font-size: 0.92rem;
+        }
+
+        .tag-image-table td:last-child {
+            border-bottom: none;
+        }
+
+        .tag-image-table td::before {
+            content: attr(data-label);
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .thumb {
+            width: 72px;
+            margin: 0 auto;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            white-space: normal;
+        }
+
+        .inline-delete-form {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-action,
+        .btn-delete-inline {
+            width: fit-content;
+            min-width: 140px;
+            text-align: center;
+            font-size: 0.86rem;
+            padding: 7px 10px;
+        }
+
+        /* === Carte inactive mobile === */
+        .tag-image-table tr.inactive-row {
+            background: #f3f3f3;
+            opacity: 0.82;
+        }
+
+        .tag-image-table tr.inactive-row td {
+            color: #888;
+        }
+
+        .tag-image-table tr.inactive-row td::before {
+            color: #888;
+        }
+
+        .tag-image-table tr.inactive-row .badge-inactive {
+            color: #888;
+        }
+
+        .tag-image-table tr.inactive-row .thumb {
+            filter: grayscale(70%);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .bodyTagImages {
+            margin: 16px auto;
+            padding: 0 6px 16px;
+        }
+
+        .page-header h1 {
+            max-width: 190px;
+            font-size: 1.2rem;
+        }
+
+        .btn-create {
+            font-size: 0.9rem;
+            padding: 9px 14px;
+        }
+
+        .flash {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .tag-image-table tr {
+            padding: 9px 10px;
+            border-radius: 14px;
+        }
+
+        .tag-image-table td {
+            padding: 9px 0;
+            font-size: 0.84rem;
+        }
+
+        .tag-image-table td::before {
+            font-size: 0.78rem;
+        }
+
+        .thumb {
+            width: 60px;
+        }
+
+        .badge-inactive {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 0.78em;
+        }
+
+        .actions {
+            gap: 6px;
+        }
+
+        .btn-action,
+        .btn-delete-inline {
+            font-size: 0.8rem;
+            padding: 6px 8px;
+        }
+
+        .empty-state {
+            padding: 18px 12px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .bodyTagImages {
+            padding: 0 4px 12px;
+        }
+
+        .page-header h1 {
+            max-width: 165px;
+            font-size: 1.02rem;
+        }
+
+        .btn-create {
+            font-size: 0.8rem;
+            padding: 8px 12px;
+        }
+
+        .flash {
+            padding: 8px 10px;
+            font-size: 0.82rem;
+        }
+
+        .tag-image-table tr {
+            padding: 8px 9px;
+            border-radius: 12px;
+        }
+
+        .tag-image-table td {
+            padding: 8px 0;
+            font-size: 0.76rem;
+        }
+
+        .tag-image-table td::before {
+            font-size: 0.72rem;
+        }
+
+        .thumb {
+            width: 52px;
+        }
+
+        .btn-action,
+        .btn-delete-inline {
+            font-size: 0.72rem;
+            padding: 5px 7px;
+        }
+
+        .empty-state {
+            padding: 14px 8px;
+            font-size: 0.82rem;
+        }
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) {
+        .table-wrapper {
+            max-height: 68vh;
+            overflow: auto;
+        }
+    }
+</style>
+        {% endblock %}
+        

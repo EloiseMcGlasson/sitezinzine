@@ -1,9 +1,9 @@
 <?php
 
-
 namespace App\Service;
 
 use App\Entity\Emission;
+use App\Repository\CategorieTagImageRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
@@ -12,8 +12,10 @@ final class Mp3Processor
     public function __construct(
         private StorageInterface $storage,
         private Filesystem $fs,
+        private CategorieTagImageRepository $categorieTagImageRepository,
         private string $mp3BaseDir, // ex: '%kernel.project_dir%/public/uploads/mp3'
         private string $mp3PublicBaseUrl,
+        private string $projectDir,
     ) {}
 
     public function process(Emission $emission): void
@@ -39,15 +41,13 @@ final class Mp3Processor
 
         $date = $emission->getDatepub() ?? new \DateTime();
         $yyyy = $date->format('Y');
-       
 
         $destDir = rtrim($this->mp3BaseDir, '/\\') . DIRECTORY_SEPARATOR . $code . DIRECTORY_SEPARATOR . $yyyy;
         $this->fs->mkdir($destDir);
 
         $safeTitle = $this->formatTitleCamelCase($emission->getTitre());
-        $idPart = $emission->getId() ? (string) $emission->getId() : 'noid';
 
-        $baseName = sprintf('%s_%s_%s_%s', $code, $date->format('Ymd'), $idPart, $safeTitle);
+        $baseName = sprintf('%s%s%s', $code, $date->format('Ymd'), $safeTitle);
         $finalName = $this->uniqueName($destDir, $baseName, 'mp3');
 
         $destPath = $destDir . DIRECTORY_SEPARATOR . $finalName;
@@ -83,8 +83,11 @@ final class Mp3Processor
         // met en mots
         $words = explode(' ', strtolower($s));
 
+        // supprime les valeurs vides éventuelles
+        $words = array_filter($words, static fn($w) => $w !== '');
+
         // met en CamelCase
-        $words = array_map(fn($w) => ucfirst($w), $words);
+        $words = array_map(static fn($w) => ucfirst($w), $words);
 
         return substr(implode('', $words), 0, 50) ?: 'Emission';
     }
@@ -103,51 +106,99 @@ final class Mp3Processor
     }
 
     private function writeTags(string $filePath, Emission $emission): void
+{
+    $getId3Php = $this->projectDir . '/vendor/james-heinrich/getid3/getid3/getid3.php';
+    $writePhp  = $this->projectDir . '/vendor/james-heinrich/getid3/getid3/write.php';
+
+    if (!is_file($getId3Php)) {
+        throw new \RuntimeException('getid3.php introuvable : ' . $getId3Php);
+    }
+
+    if (!is_file($writePhp)) {
+        throw new \RuntimeException('write.php introuvable : ' . $writePhp);
+    }
+
+    require_once $getId3Php;
+    require_once $writePhp;
+
+    if (!class_exists('getid3_writetags')) {
+        throw new \RuntimeException('La classe getid3_writetags n’a pas été chargée.');
+    }
+
+    $tagwriter = new \getid3_writetags();
+    $tagwriter->filename = $filePath;
+    $tagwriter->tagformats = ['id3v2.3'];
+    $tagwriter->overwrite_tags = true;
+    $tagwriter->remove_other_tags = false;
+    $tagwriter->tag_encoding = 'UTF-8';
+
+    $cat = $emission->getCategorie();
+    $code = $cat?->getSlug() ?? 'XXX';
+
+    $date = $emission->getDatepub() ?? new \DateTime();
+    $dateStr = $date->format('Ymd');
+
+    $titre = trim($emission->getTitre() ?? '');
+    $fullTitle = trim(sprintf('%s%s %s', $code, $dateStr, $titre));
+
+    $tagData = [
+        'title'     => [$fullTitle],
+        'artist'    => [$this->buildArtist($emission)],
+        'album'     => [$cat?->getTitre() ?? 'Radio Zinzine'],
+        'year'      => [$date->format('Y')],
+        'comment'   => [$this->trimComment($emission->getDescriptif() ?? '')],
+        'genre'     => ['Podcast'],
+        'publisher' => [$emission->getEditeur()?->getName() ?? 'Radio Zinzine'],
+        'language'  => ['fr'],
+    ];
+
+    $coverPath = $this->resolveCoverPath($emission);
+
+    if ($coverPath !== null) {
+        $imageData = @file_get_contents($coverPath);
+
+        if ($imageData !== false) {
+            $mime = mime_content_type($coverPath) ?: 'image/jpeg';
+
+            $tagData['attached_picture'][0] = [
+                'data'          => $imageData,
+                'picturetypeid' => 0x03,
+                'description'   => 'Cover',
+                'mime'          => $mime,
+            ];
+        }
+    }
+
+    $tagwriter->tag_data = $tagData;
+
+    if (!$tagwriter->WriteTags()) {
+        $errors = $tagwriter->errors ?? [];
+        throw new \RuntimeException('Écriture des tags impossible : ' . implode(' | ', $errors));
+    }
+}
+
+    private function resolveCoverPath(Emission $emission): ?string
     {
-        $projectDir = \dirname(__DIR__, 2);
+        $categorie = $emission->getCategorie();
+        $datepub = $emission->getDatepub();
 
-        $getId3Php = $projectDir . '/vendor/james-heinrich/getid3/getid3/getid3.php';
-        $writePhp  = $projectDir . '/vendor/james-heinrich/getid3/getid3/write.php';
+        if ($categorie && $datepub) {
+            $annee = (int) $datepub->format('Y');
 
-        if (!is_file($getId3Php)) {
-            throw new \RuntimeException('getid3.php introuvable : ' . $getId3Php);
+            $tagImage = $this->categorieTagImageRepository->findOneByCategorieAndYear($categorie, $annee);
+
+            if ($tagImage !== null) {
+                $path = $this->storage->resolvePath($tagImage, 'imageFile');
+
+                if ($path && is_file($path)) {
+                    return $path;
+                }
+            }
         }
 
-        if (!is_file($writePhp)) {
-            throw new \RuntimeException('write.php introuvable : ' . $writePhp);
-        }
+        $fallback = $this->projectDir . '/public/images/default-mp3-cover.jpg';
 
-        require_once $getId3Php;
-        require_once $writePhp;
-
-        if (!class_exists('getid3_writetags')) {
-            throw new \RuntimeException('La classe getid3_writetags n’a pas été chargée.');
-        }
-
-        $tagwriter = new \getid3_writetags();
-        $tagwriter->filename = $filePath;
-        $tagwriter->tagformats = ['id3v2.3'];
-        $tagwriter->overwrite_tags = true;
-        $tagwriter->remove_other_tags = false;
-        $tagwriter->tag_encoding = 'UTF-8';
-
-        $cat = $emission->getCategorie();
-
-        $tagwriter->tag_data = [
-            'title'   => [$emission->getTitre() ?? ''],
-            'artist' => [$this->buildArtist($emission)],
-            'album'   => [$cat?->getTitre() ?? 'Radio Zinzine'],
-            'year'    => [$emission->getDatepub()?->format('Y') ?? (new \DateTime())->format('Y')],
-            'comment' => [$this->trimComment($emission->getDescriptif() ?? '')],
-            'genre'   => ['Podcast'],
-            'publisher' => [$emission->getEditeur()?->getName() ?? 'Radio Zinzine'],
-            'language' => ['fr'],
-        ];
-
-        if (!$tagwriter->WriteTags()) {
-            $errors = $tagwriter->errors ?? [];
-            throw new \RuntimeException('Écriture des tags impossible : ' . implode(' | ', $errors));
-        }
+        return is_file($fallback) ? $fallback : null;
     }
 
     private function trimComment(string $htmlOrText): string
@@ -161,30 +212,48 @@ final class Mp3Processor
     }
 
     private function buildArtist(Emission $emission): string
+    {
+        // 1. users
+        if (!$emission->getUsers()->isEmpty()) {
+            $names = [];
+
+            foreach ($emission->getUsers() as $user) {
+                $names[] = $user->getUsername(); // ou getNom() selon ton modèle
+            }
+
+            return implode(', ', $names);
+        }
+
+        // 2. invités / anciens animateurs
+        if (!$emission->getInviteOldAnimateurs()->isEmpty()) {
+            $names = [];
+
+            foreach ($emission->getInviteOldAnimateurs() as $person) {
+                $names[] = (string) $person; // tu as déjà un __toString normalement
+            }
+
+            return implode(', ', $names);
+        }
+
+        // 3. fallback ref
+        return $emission->getRef() ?? 'Radio Zinzine';
+    }
+
+    public function delete(Emission $emission): void
 {
-    // 1. users
-    if (!$emission->getUsers()->isEmpty()) {
-        $names = [];
+    $currentMp3 = $emission->getThumbnailMp3();
 
-        foreach ($emission->getUsers() as $user) {
-            $names[] = $user->getUsername(); // ou getNom() selon ton modèle
-        }
-
-        return implode(', ', $names);
+    if (!$currentMp3) {
+        return;
     }
 
-    // 2. invités / anciens animateurs
-    if (!$emission->getInviteOldAnimateurs()->isEmpty()) {
-        $names = [];
+    $fullPath = rtrim($this->mp3BaseDir, '/\\') . DIRECTORY_SEPARATOR . ltrim($currentMp3, '/\\');
 
-        foreach ($emission->getInviteOldAnimateurs() as $person) {
-            $names[] = (string) $person; // tu as déjà un __toString normalement
-        }
-
-        return implode(', ', $names);
+    if (is_file($fullPath)) {
+        $this->fs->remove($fullPath);
     }
 
-    // 3. fallback ref
-    return $emission->getRef() ?? 'Radio Zinzine';
+    $emission->setThumbnailMp3(null);
+    $emission->setUrl(null);
 }
 }

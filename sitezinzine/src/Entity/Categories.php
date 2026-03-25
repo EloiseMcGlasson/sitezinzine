@@ -93,11 +93,16 @@ class Categories
     #[ORM\JoinTable(name: 'categories_invite_old_animateur')]
     private Collection $inviteOldAnimateurs;
 
+    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: CategorieTagImage::class, orphanRemoval: true)]
+    private Collection $tagImages;
+
+
     public function __construct()
     {
         $this->emissions = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->inviteOldAnimateurs = new ArrayCollection();
+        $this->tagImages = new ArrayCollection();
     }
 
 
@@ -345,4 +350,30 @@ class Categories
 
         return $this;
     }
+
+    public function getTagImages(): Collection
+{
+    return $this->tagImages;
+}
+
+public function addTagImage(CategorieTagImage $tagImage): static
+{
+    if (!$this->tagImages->contains($tagImage)) {
+        $this->tagImages->add($tagImage);
+        $tagImage->setCategorie($this);
+    }
+
+    return $this;
+}
+
+public function removeTagImage(CategorieTagImage $tagImage): static
+{
+    if ($this->tagImages->removeElement($tagImage)) {
+        if ($tagImage->getCategorie() === $this) {
+            $tagImage->setCategorie(null);
+        }
+    }
+
+    return $this;
+}
 }

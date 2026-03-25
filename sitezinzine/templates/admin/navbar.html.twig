@@ -330,25 +330,38 @@
       </li>
     {% endif %}
 
-    {% if is_granted('ROLE_ADMIN') %}
-      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+{% if is_granted('ROLE_ADMIN') %}
+  <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
 
-      <li>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}"
-           href="{{ path('admin.user.index') }}">
-          Utilisateurices
-        </a>
-      </li>
+  <li class="dropdown">
+    <button class="dropbtn" type="button"
+      aria-expanded="false"
+      onclick="
+        const li = this.closest('li.dropdown');
+        const isOpen = li.classList.toggle('open');
+        this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      ">
+      Administration
+    </button>
 
-      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
+    <div class="dropdown-content">
+      <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}"
+         href="{{ path('admin.user.index') }}">
+        Utilisateurices
+      </a>
 
-      <li>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}"
-           href="{{ path('admin.grille.index') }}">
-          Grille
-        </a>
-      </li>
-    {% endif %}
+      <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}"
+         href="{{ path('admin.grille.index') }}">
+        Grille
+      </a>
+
+      <a class="nav-link {{ app.request.get('_route') starts with 'admin_categorieTagImage_' ? 'active' : '' }}"
+         href="{{ path('admin_categorieTagImage_index') }}">
+        Images tags MP3
+      </a>
+    </div>
+  </li>
+{% endif %}
 
     <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.73] - 2026-03-26
+### Ajout
+- Rajout des imagesTags (entity, form, controller, repository, twig index/create/edit/form responsive).
+- Ajout de la suppression du fichier mp3 de la fiche émission.
+### Correction
+- Modification de la navbar admin pour intégrer les imagesTags.
+- Modification de la structure du tag titre pour correspondre à la charte RZ.
+- Modification de la structure de l'url pour correspondre à la charte RZ.
+
+
 ## [1.0.72] - 2026-03-25
 ### Ajout
 - Prise en charge de l'écriture des tags sur les fichiers Mp3 uploadés (sauf imageTags).

@@ -27,7 +27,6 @@ use App\Service\Mp3Processor;
 
 
 
-
 #[Route('/admin/emission', name: 'admin.emission.')]
 #[IsGranted('ROLE_USER')]
 class EmissionController extends AbstractController
@@ -91,135 +90,51 @@ class EmissionController extends AbstractController
     }
 
 
-    #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em, Security $security): Response
-    {
-        $emission = new Emission();
+#[Route('/create', name: 'create')]
+public function create(Request $request, EntityManagerInterface $em, Security $security): Response
+{
+    $emission = new Emission();
 
-        /** @var User|null $user */
-        $user = $security->getUser();
+    /** @var User|null $user */
+    $user = $security->getUser();
 
-        $form = $this->createForm(EmissionType::class, $emission, [
-            'current_user_identifier' => $user?->getUserIdentifier(),
-            'with_mp3' => false,
-        ]);
-        $form->handleRequest($request);
+    $form = $this->createForm(EmissionType::class, $emission, [
+        'current_user_identifier' => $user?->getUserIdentifier(),
+    ]);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $now = new \DateTime();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $now = new \DateTime();
 
-            // Si ref est vide, on met le username du user connecté
-            if (empty($emission->getRef()) && $user) {
-                $emission->setRef($user->getUserIdentifier());
-            }
-
-            // Si aucun user n'est sélectionné, on ajoute le user connecté par défaut
-            if ($user && $emission->getUsers()->isEmpty()) {
-                $emission->addUser($user);
-            }
-
-            $emission
-                ->setDatepub($now)
-                ->setUpdatedat($now);
-
-            $em->persist($emission);
-            $em->flush();
-
-            $this->addFlash('success', 'L\'émission a été créée !');
-
-            return $this->redirectToRoute('admin.emission.index');
+        // Si ref est vide, on met le username du user connecté
+        if (empty($emission->getRef()) && $user) {
+            $emission->setRef($user->getUserIdentifier());
         }
 
-        return $this->render('admin/emission/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        // Si aucun user n'est sélectionné, on ajoute le user connecté par défaut
+        if ($user && $emission->getUsers()->isEmpty()) {
+            $emission->addUser($user);
+        }
+
+        $emission
+            ->setDatepub($now)
+            ->setUpdatedat($now);
+
+        $em->persist($emission);
+        $em->flush();
+
+        $this->addFlash('success', 'L\'émission a été créée !');
+
+        return $this->redirectToRoute('admin.emission.index');
     }
 
-
-/*     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    public function edit(
-        Request $request,
-        Emission $emission,
-        EntityManagerInterface $em,
-        Security $security,
-        SessionInterface $session,
-        UrlGeneratorInterface $urlGenerator,
-        StorageInterface $storage,
-        PropertyMappingFactory $mappingFactory,
-        Mp3Processor $mp3Processor
-    ): Response {
-        $user = $security->getUser();
-
-        if (
-            !$this->isGranted('ROLE_ADMIN') &&
-            !$this->isGranted('ROLE_SUPER_ADMIN') &&
-            (!$user || !$emission->getUsers()->contains($user))
-        ) {
-            throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
-        }
-
-        $this->storeReturnTo($request, $session);
-
-        $form = $this->createForm(EmissionType::class, $emission, [
-            'current_user_identifier' => $user?->getUserIdentifier(),
-            'with_mp3' => true,
-        ]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $hasNewMp3 = null !== $emission->getThumbnailFileMp3();
-
-            if ($request->request->getBoolean('delete_thumbnail')) {
-                $mappings = $mappingFactory->fromObject($emission);
-                $thumbnailMapping = null;
-
-                foreach ($mappings as $m) {
-                    if (method_exists($m, 'getPropertyName') && $m->getPropertyName() === 'thumbnailFile') {
-                        $thumbnailMapping = $m;
-                        break;
-                    }
-                }
-
-                if (null !== $thumbnailMapping) {
-                    $storage->remove($emission, $thumbnailMapping);
-                }
-
-                $emission->setThumbnail(null);
-            }
-
-            $emission->setUpdatedat(new \DateTime());
-
-            try {
-                $em->flush();
-
-                if ($hasNewMp3) {
-                    $mp3Processor->process($emission);
-                    $emission->setThumbnailFileMp3(null);
-                    $em->flush();
-                }
-            } catch (\Throwable $e) {
-                $this->addFlash('error', 'La modification a été enregistrée, mais le traitement du MP3 a échoué : ' . $e->getMessage());
-
-                return $this->redirectToReturnTo($session, $urlGenerator, 'admin.emission.index', [
-                    'page' => $session->get('previous_page_emission', 1),
-                ]);
-            }
-
-            $this->addFlash('success', 'L\'émission a bien été modifiée.');
-
-            return $this->redirectToReturnTo($session, $urlGenerator, 'admin.emission.index', [
-                'page' => $session->get('previous_page_emission', 1),
-            ]);
-        }
-
-        return $this->render('admin/emission/edit.html.twig', [
-            'emission' => $emission,
-            'formEmission' => $form->createView(),
-        ]);
-    } */
+    return $this->render('admin/emission/create.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
 
 
-#[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+  #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
 public function edit(
     Request $request,
     Emission $emission,
@@ -233,6 +148,7 @@ public function edit(
 ): Response {
     $user = $security->getUser();
 
+    // Vérifie si l'utilisateur est admin/super_admin ou lié à l'émission
     if (
         !$this->isGranted('ROLE_ADMIN') &&
         !$this->isGranted('ROLE_SUPER_ADMIN') &&
@@ -241,8 +157,10 @@ public function edit(
         throw $this->createAccessDeniedException('Vous n\'avez pas les droits pour modifier cette émission.');
     }
 
+    // Enregistre returnTo si présent
     $this->storeReturnTo($request, $session);
 
+    // Création et gestion du formulaire
     $form = $this->createForm(EmissionType::class, $emission, [
         'current_user_identifier' => $user?->getUserIdentifier(),
         'with_mp3' => true,
@@ -250,9 +168,10 @@ public function edit(
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        $hasNewMp3 = null !== $emission->getThumbnailFileMp3();
 
+        // ✅ suppression image si demandée
         if ($request->request->getBoolean('delete_thumbnail')) {
+
             $mappings = $mappingFactory->fromObject($emission);
             $thumbnailMapping = null;
 
@@ -270,14 +189,22 @@ public function edit(
             $emission->setThumbnail(null);
         }
 
+        // ✅ gestion MP3
+        $deleteMp3 = $form->has('deleteMp3') ? (bool) $form->get('deleteMp3')->getData() : false;
+        $newMp3Uploaded = $form->has('thumbnailFileMp3') && $form->get('thumbnailFileMp3')->getData() !== null;
+
+        // Si suppression demandée sans nouvel upload
+        if ($deleteMp3 && !$newMp3Uploaded) {
+            $mp3Processor->delete($emission);
+        }
+
         $emission->setUpdatedat(new \DateTime());
         $em->flush();
 
-        if ($hasNewMp3) {
+        // Si un nouveau MP3 est envoyé, on le traite après flush
+        if ($newMp3Uploaded) {
             $mp3Processor->process($emission);
-
-            // évite de rejouer l’upload Vich au 2e flush
-            $emission->setThumbnailFileMp3(null);
+            $emission->setUpdatedat(new \DateTime());
             $em->flush();
         }
 
@@ -293,6 +220,9 @@ public function edit(
         'formEmission' => $form->createView(),
     ]);
 }
+
+
+
 
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
@@ -344,4 +274,31 @@ public function edit(
             'searchTerm' => $form->get('titre')->getData() // ✅ Récupère la valeur du champ "titre"
         ]);
     }
+#[Route('/{id}/delete-mp3', name: 'delete_mp3', methods: ['POST'], requirements: ['id' => '\d+'])]
+public function deleteMp3(
+    Emission $emission,
+    Request $request,
+    EntityManagerInterface $em,
+    Mp3Processor $mp3Processor
+): Response {
+    if (!$this->isCsrfTokenValid('delete_mp3_' . $emission->getId(), $request->request->get('_token'))) {
+        $this->addFlash('error', 'Jeton CSRF invalide.');
+
+        return $this->redirectToRoute('admin.emission.edit', ['id' => $emission->getId()]);
+    }
+
+    if (!$emission->getThumbnailMp3()) {
+        $this->addFlash('error', 'Aucun fichier MP3 à supprimer.');
+
+        return $this->redirectToRoute('admin.emission.edit', ['id' => $emission->getId()]);
+    }
+
+    $mp3Processor->delete($emission);
+    $em->flush();
+
+    $this->addFlash('success', 'Le fichier MP3 a bien été supprimé.');
+
+    return $this->redirectToRoute('admin.emission.edit', ['id' => $emission->getId()]);
+}
+
 }

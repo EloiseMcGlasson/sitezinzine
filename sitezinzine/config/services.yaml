@@ -34,3 +34,4 @@ services:
         arguments:
             $mp3BaseDir: '%app.mp3_base_dir%'
             $mp3PublicBaseUrl: '%app.mp3_public_base_url%'
+            $projectDir: '%kernel.project_dir%'
