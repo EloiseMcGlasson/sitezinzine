@@ -19,6 +19,7 @@ docker/xdebug.ini
 ### Asset Mapper
 /public/assets/
 /assets/vendor/
+/public/uploads/emissionsMp3/
 
 ### Tests (optionnel si pas requis en prod)
 tests/
