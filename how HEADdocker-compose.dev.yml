@@ -1,0 +1,15 @@
+[33mcommit 3d3ff96f1a3d9ec7ae507e067ed5ac3ae24a8c4b[m
+Author: EloiseMcGlasson <mc.glasson@free.fr>
+Date:   Mon Apr 21 00:43:22 2025 +0200
+
+    Ignore les fichiers spécifiques à dev en prod
+
+D	sitezinzine/docker-compose.dev.yml
+
+[33mcommit 5eaab7335c43448d185335f41b011e5c63e8c238[m
+Author: EloiseMcGlasson <mc.glasson@free.fr>
+Date:   Mon Apr 21 00:29:31 2025 +0200
+
+    correction bug tests et differenciation dev et main avec gitattribute
+
+A	sitezinzine/docker-compose.dev.yml
