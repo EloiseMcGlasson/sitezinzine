@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\DiffusionRepository;
 
-// src/Controller/Admin/GrilleController.php
+
 
 #[Route("/admin/grille", name: 'admin.grille.')]
 #[IsGranted("ROLE_ADMIN")]

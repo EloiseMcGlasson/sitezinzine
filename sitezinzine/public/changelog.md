@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.74] - 2026-03-XX
+### Ajout
+
+
+
+
 ## [1.0.73] - 2026-03-26
 ### Ajout
 - Rajout des imagesTags (entity, form, controller, repository, twig index/create/edit/form responsive).

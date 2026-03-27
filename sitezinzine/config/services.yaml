@@ -7,6 +7,7 @@ parameters:
     # app.mp3_base_dir: '%kernel.project_dir%/public/uploads/mp3'
     app.mp3_base_dir: '%kernel.project_dir%/public/uploads/emissionsMp3'
     app.mp3_public_base_url: 'https://eloisemcglasson.ovh/uploads/emissionsMp3'
+    libretime_week_info_url: '%env(LIBRETIME_WEEK_INFO_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -35,3 +36,7 @@ services:
             $mp3BaseDir: '%app.mp3_base_dir%'
             $mp3PublicBaseUrl: '%app.mp3_public_base_url%'
             $projectDir: '%kernel.project_dir%'
+
+    App\Service\LibreTime\LibreTimeWeekInfoClient:
+        arguments:
+            $weekInfoUrl: '%libretime_week_info_url%'
