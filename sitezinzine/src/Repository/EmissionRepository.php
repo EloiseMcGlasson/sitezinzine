@@ -475,30 +475,29 @@ LIMIT 6
     }
 
     // Recherche texte robuste : mots entiers sur titre / descriptif / ref
-    if (!empty($criteria['titre'])) {
-        $search = trim((string) $criteria['titre']);
-        $words = preg_split('/\s+/', mb_strtolower($search));
+if (!empty($criteria['titre'])) {
+    $search = trim((string) $criteria['titre']);
+    $words = preg_split('/\s+/', mb_strtolower($search));
 
-        foreach ($words as $index => $word) {
-            $word = trim($word);
+    foreach ($words as $index => $word) {
+        $word = trim($word);
 
-            // Ignore les mots vides et trop courts
-            if ($word === '' || mb_strlen($word) < 2) {
-                continue;
-            }
-
-            $paramName = 'searchRegex' . $index;
-            $regex = '(^|[[:space:][:punct:]])' . preg_quote($word, '/') . '($|[[:space:][:punct:]])';
-
-            $qb->andWhere(
-                $qb->expr()->orX(
-                    "LOWER(e.titre) REGEXP :$paramName",
-                    "LOWER(e.descriptif) REGEXP :$paramName",
-                    "LOWER(e.ref) REGEXP :$paramName"
-                )
-            )->setParameter($paramName, $regex);
+        if ($word === '' || mb_strlen($word) < 3) {
+            continue;
         }
+
+        $paramName = 'searchRegex' . $index;
+        $regex = '(^|[[:space:][:punct:]])' . preg_quote($word) . '($|[[:space:][:punct:]])';
+
+        $qb->andWhere(
+            $qb->expr()->orX(
+                "REGEXP(LOWER(e.titre), :$paramName) = 1",
+                "REGEXP(LOWER(e.descriptif), :$paramName) = 1",
+                "REGEXP(LOWER(e.ref), :$paramName) = 1"
+            )
+        )->setParameter($paramName, $regex);
     }
+}
 
     if (($criteria['categorie'] ?? null) instanceof Categories) {
         $qb->andWhere('c.id = :categorieId')
@@ -611,37 +610,29 @@ LIMIT 6
     }
 
     // Recherche texte robuste : mots entiers sur titre / descriptif / ref
-    if (!empty($criteria['titre'])) {
-        $search = trim((string) $criteria['titre']);
-        $words = preg_split('/\s+/', mb_strtolower($search));
+if (!empty($criteria['titre'])) {
+    $search = trim((string) $criteria['titre']);
+    $words = preg_split('/\s+/', mb_strtolower($search));
 
-        $validWordCount = 0;
+    foreach ($words as $index => $word) {
+        $word = trim($word);
 
-        foreach ($words as $index => $word) {
-            $word = trim($word);
-
-            // Ignore les mots vides et trop courts
-            if ($word === '' || mb_strlen($word) < 2) {
-                continue;
-            }
-
-            $paramName = 'searchRegex' . $index;
-            $regex = '(^|[[:space:][:punct:]])' . preg_quote($word, '/') . '($|[[:space:][:punct:]])';
-
-            $qb->andWhere(
-                $qb->expr()->orX(
-                    "LOWER(e.titre) REGEXP :$paramName",
-                    "LOWER(e.descriptif) REGEXP :$paramName",
-                    "LOWER(e.ref) REGEXP :$paramName"
-                )
-            )->setParameter($paramName, $regex);
-
-            $validWordCount++;
+        if ($word === '' || mb_strlen($word) < 3) {
+            continue;
         }
 
-        // Si l'utilisateur n'a saisi que des mots trop courts, on ne filtre pas
-        // Exemples : "de", "la", "le"
+        $paramName = 'searchRegex' . $index;
+        $regex = '(^|[[:space:][:punct:]])' . preg_quote($word) . '($|[[:space:][:punct:]])';
+
+        $qb->andWhere(
+            $qb->expr()->orX(
+                "REGEXP(LOWER(e.titre), :$paramName) = 1",
+                "REGEXP(LOWER(e.descriptif), :$paramName) = 1",
+                "REGEXP(LOWER(e.ref), :$paramName) = 1"
+            )
+        )->setParameter($paramName, $regex);
     }
+}
 
     if (($criteria['categorie'] ?? null) instanceof Categories) {
         $qb->andWhere('c.id = :categorieId')

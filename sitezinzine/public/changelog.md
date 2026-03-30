@@ -1,6 +1,12 @@
 # Changelog
 
-## [1.0.74] - 2026-03-31
+## [1.0.75] - 2026-03-31
+### Ajout
+- Ajout de la fonction regexpFunction.php pour la gestion des regex sur la recherche d'émission.
+### Correction
+- Correction de la recherche sur le champs ref.
+
+## [1.0.74] - 2026-03-30
 ### Ajout
 - Ajout de la possibilité de recherche sur un user ou ancien animateurice (public et admin).
 ### Correction
