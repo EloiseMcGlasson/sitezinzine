@@ -219,13 +219,17 @@
   </div>
 
   <div class="col2">
-    <div class="titre">
-      <a href="{{ path('emission.show', { id: emission.id }) }}">
-        {{ emission.titre }}
-        {% if emission.user %} - {{ emission.app.user.displayName
- }}{% endif %}
-      </a>
-    </div>
+<div class="titre">
+  <a href="{{ path('emission.show', { id: emission.id }) }}">
+    {{ emission.titre }}
+    {% if emission.users|length > 0 %}
+      -
+      {% for user in emission.users %}
+        {{ user.displayName }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    {% endif %}
+  </a>
+</div>
 
     <div class="cat">
       <p>{{ emission.categorie.titre }}</p>

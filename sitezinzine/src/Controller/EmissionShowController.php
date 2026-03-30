@@ -80,35 +80,33 @@ public function show(
 
 
 
-    #[Route('/recherche', name: 'recherche')]
-    public function search(Request $request, EmissionRepository $emissionRepository): Response
-    {
-        $form = $this->createForm(EmissionSearchType::class);
-        $form->handleRequest($request);
+   #[Route('/recherche', name: 'recherche')]
+public function search(Request $request, EmissionRepository $emissionRepository): Response
+{
+    $form = $this->createForm(EmissionSearchType::class);
+    $form->handleRequest($request);
 
-        $emissions = [];
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $criteria = $form->getData();
-            $page = $request->query->getInt('page', 1);
-        }else{
-            $criteria = [];
-            $page = $request->query->getInt('page', 1);
-        }
-
-            $emissions = $emissionRepository->findBySearch($criteria, $page);
-            foreach ($emissions as $emission) {
-                $lastDate = $emissionRepository->findLastDiffusionDate($emission->getId());
-                if ($lastDate) {
-                    $emission->setLastDiffusion($lastDate);
-                }
-            }
-        
-
-        return $this->render('home/recherche.html.twig', [
-            'form' => $form->createView(),
-            'emissions' => $emissions,
-            'searchTerm' => $form->get('titre')->getData() // ✅ Récupère la valeur du champ "titre"
-        ]);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $criteria = $form->getData();
+        $page = $request->query->getInt('page', 1);
+    } else {
+        $criteria = [];
+        $page = $request->query->getInt('page', 1);
     }
+
+    $emissions = $emissionRepository->findBySearch($criteria, $page);
+
+    foreach ($emissions as $emission) {
+        $lastDate = $emissionRepository->findLastDiffusionDate($emission->getId());
+        if ($lastDate) {
+            $emission->setLastDiffusion($lastDate);
+        }
+    }
+
+    return $this->render('home/recherche.html.twig', [
+        'form' => $form->createView(),
+        'emissions' => $emissions,
+        'searchTerm' => $form->get('titre')->getData(),
+    ]);
+}
 }

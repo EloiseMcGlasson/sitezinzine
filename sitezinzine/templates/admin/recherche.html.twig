@@ -126,72 +126,6 @@ button[type=reset]:hover {
     color: #E4013A;
 }
 
-   .results {
-    width: 100%;
-    padding: 20px;
-    min-height: 42vh;
-    background-color: white;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.results section {
-    max-width: 1000px;
-    width: 100%;
-}
-
-    .results h2 {
-    color: #E4013A;
-    font-size: 24px;
-    margin-bottom: 30px;
-    text-align: center;
-}
-.col3 img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-}
-
-
-    section {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
-        padding: 20px;
-        display: flex;
-        gap: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-    .col1 {
-        flex: 0 0 150px;
-    }
-
-    .col1 img {
-        width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .col2 {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .col2 p {
-        margin: 5px 0;
-        padding-left: 15px;
-    }
     .titre a {
     color: #E4013A;
     font-size: 20px;
@@ -220,13 +154,6 @@ button[type=reset]:hover {
     margin-top: auto;
 }
 
-/* Message "aucun résultat" */
-.no-results {
-    text-align: center;
-    color: #666;
-    padding: 30px;
-    font-style: italic;
-}
 
     .highlight {
     background-color: yellow;
@@ -245,33 +172,8 @@ button[type=reset]:hover {
     flex: 1;
 }
 
-.pagination {
-    background-color: transparent;
-    margin: auto;
-    padding: 10px;
-}
 
-.pagination a:hover {
-    padding: 14px 16px;
-    color: grey;
-    text-decoration: none;
-    font-weight: 800;
-}
 
-.col3 {
-    flex: 0 0 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-    justify-content: space-between;
-}
-.col3 .actions-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-}
 
 .actions-buttons .btn-action {
     padding: 8px 12px;
@@ -301,18 +203,7 @@ button[type=reset]:hover {
         flex-direction: column;
         gap: 10px;
     }
-    section {
-        flex-direction: column;
-        align-items: center;
-    }
 
-    .col1 {
-        flex: 0 0 auto;
-    }
-
-    .col2 {
-        text-align: center;
-    }
 }
 </style>
     <div class="recherche">
@@ -333,16 +224,15 @@ button[type=reset]:hover {
                 </div>
             </div>
             <div class="date-range">
-                {{ form_row(form.dateDebut, {
-    attr: {
-      'data-controller': 'flatpickr'
-    }
-}) }}
-                {{ form_row(form.dateFin, {
-    attr: {
-      'data-controller': 'flatpickr'
-    }
-}) }}
+                <div>
+                    {{ form_row(form.dateDebut, { attr: { 'data-controller': 'flatpickr' } }) }}
+                </div>
+                <div>
+                    {{ form_row(form.dateFin, { attr: { 'data-controller': 'flatpickr' } }) }}
+                </div>
+                <div>
+                    {{ form_row(form.personne) }}
+                </div>
             </div>
             <div class="button-group">
                 <button type="submit">
@@ -354,102 +244,18 @@ button[type=reset]:hover {
             </div>
             {{ form_end (form) }}
         </div>
-        <img class="imgbottom" src="{{ asset('images/top-content-dechire-D.gif') }}"></div>
-        <div class="results">
-            {% if emissions is not empty %}
-                <h2>
-                    Résultats de la recherche :
-                </h2>
-                <div class="pagination">
-                    {{ knp_pagination_render(emissions) }}
-                </div>
-                {% for emission in emissions %}
-                    <section>
-                        <div class="col1">
-                            {% set hasImage = false %}
-                            {% if emission.thumbnail is defined and emission.thumbnail is not empty %}
-                                {% set hasImage = true %}
-                                <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                {% endif %}
-                                {% if not hasImage and emission.categorie is defined and emission.categorie.thumbnail is defined and emission.categorie.thumbnail is not empty %}
-                                    {% set hasImage = true %}
-                                    <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile', 'App\\Entity\\Categories') }}" alt="Photo de {{ emission.titre }}">
-                                    {% endif %}
-                                    {% if not hasImage and emission.theme is defined and emission.theme.thumbnail is defined and emission.theme.thumbnail is not empty %}
-                                        {% set hasImage = true %}
-                                        <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile', 'App\\Entity\\Theme') }}" alt="Photo de {{ emission.titre }}">
-                                        {% endif %}
-                                        {% if not hasImage %}
-                                            <img src="/images/emission-zinzine.jpg" alt="Image par défaut pour {{ emission.titre }}">
-                                            {% endif %}
-                                        </div>
-                                        <div class="col2">
-                                            <div class="titre">
-                                                <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
-                                                    {{ emission.titre|highlight(searchTerm) }}
-                                                </a>
-                                            </div>
-                                            <div class="cat">
-                                                <p>
-                                                    {{ emission.categorie.titre }}
-                                                    {% if emission.theme.name is defined %}
-                                                        {{ " - " ~ emission.theme.name }}
-                                                    {% endif %}
-                                                </p>
-                                            </div>
-                                            <div class="descriptif">
-                                                <p>
-                                                    {{ emission.descriptif|highlight(searchTerm|default(''))|raw }}
-                                                </p>
-                                            </div>
-                                            <p>
-                                                {{ 'Dernière diffusion : ' ~ (emission.lastDiffusion ? emission.lastDiffusion|format_datetime('medium', 'short', locale = 'fr') : 'Aucune') }}
-                                            </p>
-                                        </div>
-                                        <div class="col3">
-                                            <div class='ecoute'>
-                                                {% if emission.url %}
-                                                    <a href="{{ emission.url }}">
-                                                        <img src="/images/lecteur.png" alt="écoutez l'émission"></a>
-                                                    {% else %}
-                                                        Pas de fichier audio disponible
-                                                    {% endif %}
-                                                </div>
-                                                <div class="actions-buttons">
-                                                    {% if is_granted('ROLE_ADMIN') or emission.user == app.user %}
-                                                        <a class="btn-action"
-                                                            href="{{ path('admin.emission.edit', { id: emission.id }) }}"
-                                                            data-controller="return"
-                                                            data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}"
-                                                            data-action="click->return#redirectWithReturnTo"
-                                                            class="btn btn-primary"
-                                                        >
-                                                            Modifier
-                                                        </a>
-                                                    {% endif %}
-                                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                                         <form action="{{ path('admin.emission.delete', { id: emission.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
-                                                            <input type="hidden" name="_method" value="DELETE">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emission.id) }}">
-                                                                    <button type="submit" class="btn-action btn-delete">
-                                                                        Supprimer
-                                                                    </button>
-                                                                </form>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        {% endfor %}
-                                        <div class="pagination">
-                                            {{ knp_pagination_render(emissions) }}
-                                        </div>
-                                    {% elseif form.vars.submitted %}
-                                        <p>
-                                            Aucune émission trouvée pour les critères de recherche.
-                                        </p>
-                                    {% endif %}
-                                </div>
-                                <script>
+        <img class="imgbottom" src="/images/top-content-dechire-D.gif"></div>
+<div id="resultats"></div>
+
+{% include 'partials/_emission_results.html.twig' with {
+  emissions: emissions,
+  searchTerm: searchTerm,
+  showNoResults: form.vars.submitted,
+  resultsTitle: 'Résultats de la recherche :',
+  noResultsText: 'Aucune émission trouvée pour les critères de recherche.',
+  resultsAnchor: 'resultats'
+} %}
+                                    <script>
     // Fonction pour réinitialiser le formulaire et rediriger vers la page de recherche
     function resetForm() {
         // Réinitialiser les champs du formulaire
@@ -468,5 +274,5 @@ button[type=reset]:hover {
     }
     
 </script>
-                            {% endblock %}
-                            
+                                {% endblock %}
+                                

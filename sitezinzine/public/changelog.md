@@ -1,9 +1,12 @@
 # Changelog
 
-## [1.0.74] - 2026-03-XX
+## [1.0.74] - 2026-03-31
 ### Ajout
-
-
+- Ajout de la possibilité de recherche sur un user ou ancien animateurice (public et admin).
+### Correction
+- Correction du css de la pagination admin.
+- Correction de la recherche de mot court.
+- Optimisation de la recherche lors de plusieurs mots.
 
 
 ## [1.0.73] - 2026-03-26

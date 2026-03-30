@@ -166,7 +166,6 @@
   action: path('emission.recherche') ~ '#resultats',
   attr: { 'data-reset-form-target': 'form' }
 }) }}
-
       <div class="search-row">
         <div>
           {{ form_row(form.titre) }}
@@ -179,8 +178,15 @@
         </div>
       </div>
       <div class="date-range">
-        {{ form_row(form.dateDebut, { attr: { 'data-controller': 'flatpickr' } }) }}
-        {{ form_row(form.dateFin,   { attr: { 'data-controller': 'flatpickr' } }) }}
+        <div>
+          {{ form_row(form.dateDebut, { attr: { 'data-controller': 'flatpickr' } }) }}
+        </div>
+        <div>
+          {{ form_row(form.dateFin, { attr: { 'data-controller': 'flatpickr' } }) }}
+        </div>
+        <div>
+          {{ form_row(form.personne) }}
+        </div>
       </div>
       <div class="button-group">
         <button type="submit">
@@ -194,9 +200,8 @@
     </div>
     <img class="imgbottom" src="/images/top-content-dechire-D.gif" alt=""></div>
     {# ✅ Tout ce qui concerne l'affichage des émissions est externalisé #}
-<div id="resultats"></div>
-
-{% include 'partials/_emission_results.html.twig' with {
+    <div id="resultats"></div>
+    {% include 'partials/_emission_results.html.twig' with {
   emissions: emissions,
   searchTerm: searchTerm,
   showNoResults: form.vars.submitted,
@@ -204,7 +209,6 @@
   noResultsText: 'Aucune émission trouvée pour les critères de recherche.',
   resultsAnchor: 'resultats'
 } %}
-
     <script>
   window.addEventListener('load', () => {
     const docW = document.documentElement.clientWidth;
