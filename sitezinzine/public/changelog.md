@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.76] - 2026-04-01
+### Correction
+- Correction des liens titre des émission sur la page de recherche admin.
+- Correction du CSS des listes d'émissions côté admin et ajout des bouton modifier en supprimer.
+
+
 ## [1.0.75] - 2026-03-31
 ### Ajout
 - Ajout de la fonction regexpFunction.php pour la gestion des regex sur la recherche d'émission.

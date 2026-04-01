@@ -1,9 +1,14 @@
+{# =========================================================
+   1. CSS DE LA CARD ÉMISSION
+   ========================================================= #}
 <style>
-  /* ============== Base ============== */
+  /* =========================================================
+     1. CONTENEUR GÉNÉRAL DE LA LISTE
+     ========================================================= */
   .emission-list{
     width: 100%;
     margin: 0 auto;
-    padding: 0; /* ✅ le padding doit être sur .results */
+    padding: 0;
   }
 
   .emission-list,
@@ -11,16 +16,22 @@
     box-sizing: border-box;
   }
 
+  /* =========================================================
+     2. CARTE D’UNE ÉMISSION
+     ========================================================= */
   .emission-list section{
+    width: 100%;
+    margin: 0 auto 30px;
+    padding: 20px;
+
+    display: flex;
+    gap: 20px;
+
     background: #fff;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    margin: 0 auto 30px;
-    padding: 20px;
-    display: flex;
-    gap: 20px;
+
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 100%;
   }
 
   .emission-list section:hover{
@@ -28,67 +39,100 @@
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
   }
 
-  .emission-list .col1{ flex: 0 0 150px; }
+  /* =========================================================
+     3. COLONNES DE LA CARTE
+     ========================================================= */
+
+  /* Colonne image */
+  .emission-list .col1{
+    flex: 0 0 150px;
+  }
 
   .emission-list .col1 img{
+    display: block;
     width: 150px;
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: block;
   }
 
+  /* Colonne contenu */
   .emission-list .col2{
     flex: 1;
+    min-width: 0;
+
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-width: 0; /* ✅ shrink en flex */
   }
 
-  .emission-list .col2 p{ margin: 0; }
-  .emission-list .horaire{ margin-top: 6px; }
+  .emission-list .col2 p{
+    margin: 0;
+  }
 
+  .emission-list .horaire{
+    margin-top: 6px;
+  }
+
+  /* Colonne actions */
+  .emission-list .col3{
+    flex: 0 0 170px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
+
+    font-family: "Montserrat", sans-serif;
+  }
+
+  /* =========================================================
+     4. TYPOGRAPHIE / CONTENU
+     ========================================================= */
   .emission-list .titre a{
+    display: block;
+    margin-bottom: 5px;
+
     color: #E4013A;
+    font-family: "Montserrat Alternates", sans-serif;
     font-size: 20px;
     font-weight: 700;
     text-decoration: none;
-    margin-bottom: 5px;
-    display: block;
-    font-family: "Montserrat Alternates", sans-serif;
 
     overflow-wrap: anywhere;
     word-break: break-word;
   }
 
-  .emission-list .titre a:hover{ color: #B81C61; }
+  .emission-list .titre a:hover{
+    color: #B81C61;
+  }
 
   .emission-list .cat{
     color: #666;
+    font-family: "Montserrat", sans-serif;
     font-size: 14px;
     font-style: italic;
-    font-family: "Montserrat", sans-serif;
   }
 
   .emission-list .descriptif-content{
-    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+
     color: #333;
     font-family: "Montserrat", sans-serif;
+    line-height: 1.5;
 
     overflow-wrap: anywhere;
     word-break: break-word;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .emission-list .descriptif-content.expanded{
-    -webkit-line-clamp: unset;
     display: block;
+    -webkit-line-clamp: unset;
   }
 
   .emission-list .descriptif-toggle-btn{
@@ -96,39 +140,32 @@
     padding: 8px 12px;
   }
 
-  /* ✅ COL3 : même largeur des boutons en desktop */
-  .emission-list .col3{
-    flex: 0 0 170px;              /* un poil plus large que 150 => "Télécharger" respire */
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: center;
-    align-items: stretch;         /* ✅ les liens prennent la même largeur */
-    font-family: "Montserrat", sans-serif;
-  }
-
+  /* =========================================================
+     5. BOUTONS AUDIO (ÉCOUTER / TÉLÉCHARGER)
+     ========================================================= */
   .emission-list .action-link{
-    display: flex;                /* (ok aussi en inline-flex, mais flex aide le stretch) */
+    display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 8px;
 
-    width: 100%;                  /* ✅ même largeur */
+    width: 100%;
     height: 44px;
-    line-height: 1;
+    padding: 8px 12px;
 
-    text-decoration: none;
-    color: #000;
-
-    padding: 8px 12px;            /* ✅ un padding cohérent (moins de “gros bloc”) */
-    border-radius: 8px;
-    font-weight: 500;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, color 0.2s ease;
     background: #fff;
-
+    color: #000;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    line-height: 1;
     white-space: nowrap;
-    min-width: 0;
+
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    transition: transform 0.2s ease, color 0.2s ease;
   }
 
   .emission-list .action-link:hover{
@@ -137,13 +174,81 @@
   }
 
   .emission-list .action-link img{
-    width: 34px;                  /* ✅ un peu plus petit pour éviter les boutons “trop hauts” */
-    height: 34px;
-    flex: 0 0 auto;
     display: block;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
   }
 
-  /* ============== Responsive ============== */
+    /* =========================================================
+     6. BOUTONS ADMIN (MODIFIER / SUPPRIMER)
+     ========================================================= */
+
+  .emission-list .actions-buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .emission-list .actions-buttons form{
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .emission-list .actions-buttons > a.btn-action,
+  .emission-list .actions-buttons > form > button.btn-action{
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 44px;
+
+    margin: 0;
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .emission-list .actions-buttons > a.btn-action:hover,
+  .emission-list .actions-buttons > form > button.btn-action:hover{
+    transform: translateY(-2px);
+    opacity: 0.95;
+    color: #fff;
+  }
+
+  .emission-list .actions-buttons > a.btn-edit{
+    background-color: #666;
+  }
+
+  .emission-list .actions-buttons > form > button.btn-delete{
+    background-color: #E4013A;
+  }
+
+  /* =========================================================
+     7. RESPONSIVE
+     ========================================================= */
   @media (max-width: 768px){
 
     .emission-list{
@@ -164,35 +269,41 @@
       gap: 14px;
     }
 
-    .emission-list .col2{
-      width: 100%;
-      min-width: 0;
-    }
-
     .emission-list .col1{
       width: 100%;
       display: flex;
       justify-content: center;
     }
 
-    /* ✅ MOBILE : col3 ne force PAS de hauteur => plus d’étirement */
+    .emission-list .col2{
+      width: 100%;
+      min-width: 0;
+    }
+
     .emission-list .col3{
       width: 100%;
       flex: none;
-      height: auto;               /* ✅ important */
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
+      height: auto;
       margin-top: 6px;
+
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      gap: 10px;
     }
 
-    .emission-list .action-link{
-      width: auto;                /* ✅ en row, on laisse prendre la place nécessaire */
+    /* Même hauteur / padding pour tous les boutons en mobile */
+    .emission-list .action-link,
+    .emission-list .btn-action{
+      width: 100%;
       height: 40px;
       padding: 6px 10px;
       font-size: 14px;
       border-radius: 10px;
+    }
+
+    /* En mobile, on centre aussi le contenu des boutons audio */
+    .emission-list .action-link{
       justify-content: center;
     }
 
@@ -200,39 +311,85 @@
       width: 28px;
       height: 28px;
     }
+
+    .emission-list .actions-buttons > a.btn-action,
+    .emission-list .actions-buttons > form > button.btn-action{
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      height: 40px;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
   }
 </style>
 
+{# =========================================================
+   2. VARIABLES DE CONTEXTE
+   ========================================================= #}
+{% set showRoute = showRoute|default('emission.show') %}
+{% set isAdmin = isAdmin|default(false) %}
+{% set showAdminActions = showAdminActions|default(false) %}
+{% set editRoute = editRoute|default(null) %}
+{% set deleteRoute = deleteRoute|default(null) %}
 {% set lastDiffusion = emission.lastDiffusion ?? null %}
 
+{# =========================================================
+   3. DÉTERMINER SI L’UTILISATEUR CONNECTÉ EST PROPRIÉTAIRE
+   ========================================================= #}
+{% set isOwner = false %}
+{% if app.user and emission.users is defined and emission.users|length > 0 %}
+  {% for linkedUser in emission.users %}
+    {% if linkedUser == app.user %}
+      {% set isOwner = true %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# =========================================================
+   4. CARTE ÉMISSION
+   ========================================================= #}
 <section>
+
+  {# ---------------------------------------------------------
+     4.1 IMAGE
+     --------------------------------------------------------- #}
   <div class="col1">
     {% if emission.thumbnail %}
       <img src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
     {% elseif emission.categorie.thumbnail %}
       <img src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-    {% elseif emission.theme is defined and emission.theme.thumbnail is defined %}
+    {% elseif emission.theme is defined and emission.theme and emission.theme.thumbnail is defined and emission.theme.thumbnail %}
       <img src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
     {% else %}
       <img src="/images/emission-zinzine.jpg" alt="Image par défaut pour {{ emission.titre }}">
     {% endif %}
   </div>
 
+  {# ---------------------------------------------------------
+     4.2 CONTENU TEXTE
+     --------------------------------------------------------- #}
   <div class="col2">
-<div class="titre">
-  <a href="{{ path('emission.show', { id: emission.id }) }}">
-    {{ emission.titre }}
-    {% if emission.users|length > 0 %}
-      -
-      {% for user in emission.users %}
-        {{ user.displayName }}{% if not loop.last %}, {% endif %}
-      {% endfor %}
-    {% endif %}
-  </a>
-</div>
+    <div class="titre">
+      <a href="{{ path(showRoute, { id: emission.id }) }}">
+        {{ emission.titre }}
+        {% if emission.users|length > 0 %}
+          -
+          {% for user in emission.users %}
+            {{ user.displayName }}{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        {% endif %}
+      </a>
+    </div>
 
     <div class="cat">
-      <p>{{ emission.categorie.titre }}</p>
+      <p>
+        {{ emission.categorie.titre }}
+        {% if emission.theme is defined and emission.theme and emission.theme.name is defined and emission.theme.name %}
+          - {{ emission.theme.name }}
+        {% endif %}
+      </p>
     </div>
 
     <div data-controller="descriptif">
@@ -259,7 +416,12 @@
     </p>
   </div>
 
+  {# ---------------------------------------------------------
+     4.3 ACTIONS
+     --------------------------------------------------------- #}
   <div class="col3">
+
+    {# -------- Boutons audio -------- #}
     {% if emission.url %}
       <a href="{{ emission.url }}" target="_blank" class="action-link">
         <img src="/images/lecteur.png" alt="Écouter {{ emission.titre }}">
@@ -270,6 +432,40 @@
         <img src="/images/telecharger.png" alt="Télécharger {{ emission.titre }}">
         Télécharger
       </a>
+    {% endif %}
+
+    {# -------- Boutons admin -------- #}
+    {% if isAdmin and showAdminActions %}
+      <div class="actions-buttons">
+
+        {% if editRoute and (is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN') or isOwner) %}
+          <a
+            href="{{ path(editRoute, { id: emission.id }) }}"
+            class="btn-action btn-edit"
+            data-controller="return"
+            data-return-url-value="{{ path(editRoute, { id: emission.id }) }}"
+            data-action="click->return#redirectWithReturnTo"
+          >
+            Modifier
+          </a>
+        {% endif %}
+
+        {% if deleteRoute and is_granted('ROLE_SUPER_ADMIN') %}
+          <form
+            action="{{ path(deleteRoute, { id: emission.id }) }}"
+            method="post"
+            data-controller="return"
+            data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo"
+          >
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emission.id) }}">
+            <button type="submit" class="btn-action btn-delete">
+              Supprimer
+            </button>
+          </form>
+        {% endif %}
+
+      </div>
     {% endif %}
   </div>
 </section>
