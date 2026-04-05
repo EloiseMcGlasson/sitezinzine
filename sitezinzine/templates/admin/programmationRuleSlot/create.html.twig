@@ -1,0 +1,11 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Créer un créneau de programmation{% endblock %}
+
+{% block body %}
+  {% include 'admin/programmationRuleSlot/_form.html.twig' with {
+    form: form,
+    rule: rule,
+    form_title: 'Créer un créneau'
+  } only %}
+{% endblock %}

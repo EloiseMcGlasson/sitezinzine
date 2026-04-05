@@ -1,0 +1,10 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Modifier une règle de programmation{% endblock %}
+
+{% block body %}
+  {% include 'admin/programmationRule/_form.html.twig' with {
+    form: form,
+    form_title: 'Modifier une règle de programmation'
+  } only %}
+{% endblock %}

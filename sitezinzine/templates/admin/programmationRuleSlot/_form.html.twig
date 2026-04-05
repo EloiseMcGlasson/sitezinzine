@@ -1,0 +1,225 @@
+<style>
+.main-content .programmation-rule-form,
+.main-content .programmation-rule-form *{
+  box-sizing: border-box;
+}
+
+.main-content .programmation-rule-form{
+  font-family: "Montserrat Alternates", sans-serif;
+  max-width: 1080px;
+  margin: 18px auto 28px;
+  padding: 16px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  color: #1C1C1A;
+}
+
+.main-content .programmation-rule-form h1{
+  margin: 0 0 12px 0;
+  text-align: center;
+  color: #E4013A;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.main-content .programmation-rule-form .rule-context{
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fafafa;
+  border: 1px solid #ececec;
+  font-size: 14px;
+}
+
+.main-content .programmation-rule-form form{
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.main-content .programmation-rule-form .grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.main-content .programmation-rule-form .field{
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.main-content .programmation-rule-form label{
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  color: #333;
+  font-size: 14px;
+}
+
+.main-content .programmation-rule-form input[type="number"],
+.main-content .programmation-rule-form input[type="time"],
+.main-content .programmation-rule-form select{
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.main-content .programmation-rule-form input:focus,
+.main-content .programmation-rule-form select:focus{
+  outline: none;
+  border-color: #E4013A;
+  box-shadow: 0 0 0 3px rgba(228, 1, 58, 0.15);
+}
+
+.main-content .programmation-rule-form .field ul{
+  margin: 6px 0 0 0;
+  padding-left: 18px;
+  color: #b30021;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.main-content .programmation-rule-form .field small{
+  display: block;
+  margin-top: 6px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.main-content .programmation-rule-form .checkline{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.main-content .programmation-rule-form .checkline input[type="checkbox"]{
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #E4013A;
+}
+
+.main-content .programmation-rule-form .actions{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.main-content .programmation-rule-form button,
+.main-content .programmation-rule-form input[type="submit"],
+.main-content .programmation-rule-form .btn-back{
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 26px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+
+.main-content .programmation-rule-form button,
+.main-content .programmation-rule-form input[type="submit"]{
+  background: #E4013A;
+  color: #fff;
+}
+
+.main-content .programmation-rule-form button:hover,
+.main-content .programmation-rule-form input[type="submit"]:hover{
+  background: #b30021;
+}
+
+.main-content .programmation-rule-form .btn-back{
+  background: #f3f3f3;
+  color: #1C1C1A;
+}
+
+.main-content .programmation-rule-form .btn-back:hover{
+  background: #e2e2e2;
+}
+
+@media (max-width: 960px){
+  .main-content .programmation-rule-form{
+    margin: 14px 12px 22px;
+    padding: 14px 12px;
+  }
+
+  .main-content .programmation-rule-form .grid{
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<div class="programmation-rule-form">
+  <h1>{{ form_title }}</h1>
+
+  <div class="rule-context">
+    <strong>Catégorie :</strong> {{ rule.category ? rule.category.titre : '—' }}
+  </div>
+
+  {{ form_start(form) }}
+
+  <div class="grid">
+    <div class="field">
+      {{ form_label(form.dayOfWeek) }}
+      {{ form_widget(form.dayOfWeek) }}
+      {{ form_errors(form.dayOfWeek) }}
+    </div>
+
+    <div class="field">
+      {{ form_label(form.startTime) }}
+      {{ form_widget(form.startTime) }}
+      {{ form_errors(form.startTime) }}
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      {{ form_label(form.durationMinutes) }}
+      {{ form_widget(form.durationMinutes) }}
+      {{ form_errors(form.durationMinutes) }}
+    </div>
+
+    <div class="field">
+      {{ form_label(form.broadcastRank) }}
+      {{ form_widget(form.broadcastRank) }}
+      {{ form_errors(form.broadcastRank) }}
+      {% if form.broadcastRank.vars.help %}
+        <small>{{ form.broadcastRank.vars.help }}</small>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="checkline">
+      {{ form_widget(form.isActive) }}
+      {{ form_label(form.isActive) }}
+    </div>
+    {{ form_errors(form.isActive) }}
+  </div>
+
+  {{ form_widget(form._token) }}
+
+  <div class="actions">
+    {{ form_widget(form.Sauvegarder) }}
+    <a href="{{ path('admin_programmationRuleSlot_index', {ruleId: rule.id}) }}" class="btn-back">Retour aux créneaux</a>
+  </div>
+
+  {{ form_end(form, { render_rest: false }) }}
+</div>

@@ -1,0 +1,328 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Gestion des créneaux{% endblock %}
+
+{% block body %}
+<style>
+.main-content .programmation-rule-slot-index,
+.main-content .programmation-rule-slot-index *{
+  box-sizing: border-box;
+}
+
+.main-content .programmation-rule-slot-index{
+  font-family: "Montserrat Alternates", sans-serif;
+  max-width: 1280px;
+  margin: 18px auto 28px;
+  padding: 16px;
+  color: #1C1C1A;
+}
+
+.main-content .programmation-rule-slot-index .page-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.main-content .programmation-rule-slot-index h1{
+  margin: 0;
+  color: #E4013A;
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.main-content .programmation-rule-slot-index .context{
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.main-content .programmation-rule-slot-index .top-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.main-content .programmation-rule-slot-index .btn-create,
+.main-content .programmation-rule-slot-index .btn-back{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 26px;
+  text-decoration: none;
+  font-weight: 900;
+  transition: background-color .2s ease;
+}
+
+.main-content .programmation-rule-slot-index .btn-create{
+  background: #E4013A;
+  color: #fff;
+}
+
+.main-content .programmation-rule-slot-index .btn-create:hover{
+  background: #b30021;
+}
+
+.main-content .programmation-rule-slot-index .btn-back{
+  background: #f3f3f3;
+  color: #1C1C1A;
+}
+
+.main-content .programmation-rule-slot-index .btn-back:hover{
+  background: #e2e2e2;
+}
+
+.main-content .programmation-rule-slot-index .table-wrap{
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.main-content .programmation-rule-slot-index table{
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.main-content .programmation-rule-slot-index th,
+.main-content .programmation-rule-slot-index td{
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.main-content .programmation-rule-slot-index th{
+  background: #fafafa;
+  font-size: 14px;
+  color: #333;
+  font-weight: 900;
+}
+
+.main-content .programmation-rule-slot-index td{
+  font-size: 14px;
+}
+
+.main-content .programmation-rule-slot-index .badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.main-content .programmation-rule-slot-index .badge-active{
+  background: #e7f8ec;
+  color: #1d7a37;
+}
+
+.main-content .programmation-rule-slot-index .badge-inactive{
+  background: #f5f5f5;
+  color: #666;
+}
+
+.main-content .programmation-rule-slot-index .actions{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.main-content .programmation-rule-slot-index .btn-edit,
+.main-content .programmation-rule-slot-index .btn-delete{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.main-content .programmation-rule-slot-index .btn-edit{
+  background: #f3f3f3;
+  color: #1C1C1A;
+}
+
+.main-content .programmation-rule-slot-index .btn-edit:hover{
+  background: #e2e2e2;
+}
+
+.main-content .programmation-rule-slot-index .btn-delete{
+  background: #E4013A;
+  color: #fff;
+}
+
+.main-content .programmation-rule-slot-index .btn-delete:hover{
+  background: #b30021;
+}
+
+.main-content .programmation-rule-slot-index .empty{
+  padding: 24px 16px;
+  text-align: center;
+  color: #666;
+  font-weight: 700;
+}
+
+.main-content .programmation-rule-slot-index .mobile-cards{
+  display: none;
+}
+
+@media (max-width: 960px){
+  .main-content .programmation-rule-slot-index{
+    margin: 14px 12px 22px;
+    padding: 0;
+  }
+
+  .main-content .programmation-rule-slot-index .table-wrap{
+    display: none;
+  }
+
+  .main-content .programmation-rule-slot-index .mobile-cards{
+    display: grid;
+    gap: 12px;
+  }
+
+  .main-content .programmation-rule-slot-index .card{
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    padding: 14px 12px;
+  }
+
+  .main-content .programmation-rule-slot-index .card h2{
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #E4013A;
+  }
+
+  .main-content .programmation-rule-slot-index .card p{
+    margin: 6px 0;
+    font-size: 14px;
+  }
+}
+</style>
+
+<div class="programmation-rule-slot-index">
+  <div class="page-header">
+    <h1>Créneaux de programmation</h1>
+
+    <div class="top-actions">
+      <a href="{{ path('admin_programmationRuleSlot_create', {ruleId: rule.id}) }}" class="btn-create">Créer un créneau</a>
+      <a href="{{ path('admin_programmationRule_index') }}" class="btn-back">Retour aux règles</a>
+    </div>
+  </div>
+
+  {% set days = {
+    1: 'Lundi',
+    2: 'Mardi',
+    3: 'Mercredi',
+    4: 'Jeudi',
+    5: 'Vendredi',
+    6: 'Samedi',
+    7: 'Dimanche'
+  } %}
+
+  <div class="context">
+<strong>Catégorie :</strong> {{ rule.category ? rule.category.titre : '—' }}
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Rang</th>
+          <th>Libellé diffusion</th>
+          <th>Jour</th>
+          <th>Heure</th>
+          <th>Durée</th>
+          <th>Actif</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for slot in slots %}
+        <tr>
+          <td>{{ slot.broadcastRank }}</td>
+          <td>{{ slot.broadcastLabel }}</td>
+          <td>{{ days[slot.dayOfWeek] ?? slot.dayOfWeek }}</td>
+          <td>{{ slot.startTime ? slot.startTime|date('H:i') : '—' }}</td>
+          <td>{{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}</td>
+          <td>
+            {% if slot.isActive %}
+              <span class="badge badge-active">Oui</span>
+            {% else %}
+              <span class="badge badge-inactive">Non</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="actions">
+              <a href="{{ path('admin_programmationRuleSlot_edit', {ruleId: rule.id, id: slot.id}) }}" class="btn-edit">Modifier</a>
+
+              <form method="post"
+                    action="{{ path('admin_programmationRuleSlot_delete', {ruleId: rule.id, id: slot.id}) }}"
+                    onsubmit="return confirm('Supprimer ce créneau ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_slot_' ~ slot.id) }}">
+                <button type="submit" class="btn-delete">Supprimer</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="7" class="empty">Aucun créneau pour cette règle.</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mobile-cards">
+    {% for slot in slots %}
+      <div class="card">
+        <h2>{{ slot.broadcastLabel }}</h2>
+        <p><strong>Rang :</strong> {{ slot.broadcastRank }}</p>
+        <p><strong>Jour :</strong> {{ days[slot.dayOfWeek] ?? slot.dayOfWeek }}</p>
+        <p><strong>Heure :</strong> {{ slot.startTime ? slot.startTime|date('H:i') : '—' }}</p>
+        <p><strong>Durée :</strong> {{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}</p>
+        <p>
+          <strong>Actif :</strong>
+          {% if slot.isActive %}
+            <span class="badge badge-active">Oui</span>
+          {% else %}
+            <span class="badge badge-inactive">Non</span>
+          {% endif %}
+        </p>
+
+        <div class="actions">
+          <a href="{{ path('admin_programmationRuleSlot_edit', {ruleId: rule.id, id: slot.id}) }}" class="btn-edit">Modifier</a>
+
+          <form method="post"
+                action="{{ path('admin_programmationRuleSlot_delete', {ruleId: rule.id, id: slot.id}) }}"
+                onsubmit="return confirm('Supprimer ce créneau ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_slot_' ~ slot.id) }}">
+            <button type="submit" class="btn-delete">Supprimer</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="card">
+        <p class="empty">Aucun créneau pour cette règle.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

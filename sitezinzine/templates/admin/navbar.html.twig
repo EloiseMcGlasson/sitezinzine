@@ -359,6 +359,10 @@
          href="{{ path('admin_categorieTagImage_index') }}">
         Images tags MP3
       </a>
+            <a class="nav-link {{ app.request.get('_route') starts with 'admin_programmationRule_' ? 'active' : '' }}"
+         href="{{ path('admin_programmationRule_index') }}">
+        Règles de programmation
+      </a>
     </div>
   </li>
 {% endif %}
