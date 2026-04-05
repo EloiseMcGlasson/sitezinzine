@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.81] - 2026-04-06
+### Ajout
+- Ajout récurrence bimestrielle et bimensuelle pour la programmation prévisionnelle.
+
+
+
 ## [1.0.80] - 2026-04-05 quar
 ### Ajout
 - Ajout de la récurrence mensuelle pour la programmation prévisionnelle + controller.js correspondant.

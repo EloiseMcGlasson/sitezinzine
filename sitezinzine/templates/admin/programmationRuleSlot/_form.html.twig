@@ -62,6 +62,25 @@
   font-size: 14px;
 }
 
+.programmation-rule-form .time-inline{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+}
+
+.programmation-rule-form .time-inline select{
+  flex:1 1 0;
+  min-width:0;
+}
+
+.programmation-rule-form .time-separator{
+  flex:0 0 auto;
+  font-weight:700;
+  font-size:1.1rem;
+  line-height:1;
+}
+
 .main-content .programmation-rule-form input[type="number"],
 .main-content .programmation-rule-form input[type="time"],
 .main-content .programmation-rule-form select{
@@ -192,112 +211,128 @@
   }
 }
 </style>
-<div class="programmation-rule-form" data-controller="programmation-rule-slot">
-    <h1>{{ form_title }}</h1>
-
-    <div class="rule-context">
-        <strong>Catégorie :</strong> {{ rule.category ? rule.category.titre : '—' }}
-    </div>
-
-    {{ form_start(form) }}
-
-    <div class="grid">
-        <div class="field">
-            {{ form_label(form.recurrenceType) }}
-            {{ form_widget(form.recurrenceType, {
+<div class="programmation-rule-form">
+  <h1>
+    {{ form_title }}
+  </h1>
+  <div class="rule-context">
+    <strong>
+      Catégorie :
+    </strong>
+    {{ rule.category ? rule.category.titre : '—' }}
+  </div>
+  {{ form_start(form, {
+        attr: {
+            'data-controller': 'programmation-rule-slot'
+        }
+    }) }}
+  <div class="grid">
+    <div class="field">
+      {{ form_label(form.recurrenceType) }}
+      {{ form_widget(form.recurrenceType, {
                 attr: {
                     'data-programmation-rule-slot-target': 'recurrenceType',
                     'data-action': 'change->programmation-rule-slot#toggleRecurrenceFields'
                 }
             }) }}
-            {{ form_errors(form.recurrenceType) }}
-        </div>
-
-        <div class="field" data-programmation-rule-slot-target="monthlyOccurrenceWrapper">
-            {{ form_label(form.monthlyOccurrence) }}
-            {{ form_widget(form.monthlyOccurrence, {
+      {{ form_errors(form.recurrenceType) }}
+    </div>
+    <div class="field" data-programmation-rule-slot-target="monthlyOccurrenceWrapper">
+      {{ form_label(form.monthlyOccurrence) }}
+      {{ form_widget(form.monthlyOccurrence, {
                 attr: {
                     'data-programmation-rule-slot-target': 'monthlyOccurrence'
                 }
             }) }}
-            {{ form_errors(form.monthlyOccurrence) }}
-            {% if form.monthlyOccurrence.vars.help %}
-                <small>{{ form.monthlyOccurrence.vars.help }}</small>
-            {% endif %}
-        </div>
+      {{ form_errors(form.monthlyOccurrence) }}
+      {% if form.monthlyOccurrence.vars.help %}
+        <small>
+          {{ form.monthlyOccurrence.vars.help }}
+        </small>
+      {% endif %}
     </div>
-
-    <div class="field" data-programmation-rule-slot-target="monthIntervalWrapper">
-        {{ form_label(form.monthInterval) }}
-        {{ form_widget(form.monthInterval, {
+  </div>
+  <div class="field" data-programmation-rule-slot-target="monthIntervalWrapper">
+    {{ form_label(form.monthInterval) }}
+    {{ form_widget(form.monthInterval, {
             attr: {
                 'data-programmation-rule-slot-target': 'monthInterval'
             }
         }) }}
-        {{ form_errors(form.monthInterval) }}
-        {% if form.monthInterval.vars.help %}
-            <small>{{ form.monthInterval.vars.help }}</small>
-        {% endif %}
+    {{ form_errors(form.monthInterval) }}
+    {% if form.monthInterval.vars.help %}
+      <small>
+        {{ form.monthInterval.vars.help }}
+      </small>
+    {% endif %}
+  </div>
+  <div class="grid">
+    <div class="field">
+      {{ form_label(form.dayOfWeek) }}
+      {{ form_widget(form.dayOfWeek) }}
+      {{ form_errors(form.dayOfWeek) }}
+      {% if form.dayOfWeek.vars.help %}
+        <small>
+          {{ form.dayOfWeek.vars.help }}
+        </small>
+      {% endif %}
     </div>
-
-    <div class="grid">
-        <div class="field">
-            {{ form_label(form.dayOfWeek) }}
-            {{ form_widget(form.dayOfWeek) }}
-            {{ form_errors(form.dayOfWeek) }}
-        </div>
-
-        <div class="field">
-            {{ form_label(form.startTime) }}
-            {{ form_widget(form.startTime) }}
-            {{ form_errors(form.startTime) }}
-        </div>
+    <div class="field">
+      {{ form_label(form.startTime) }}
+      <div class="time-inline">
+        {{ form_widget(form.startTime.hour) }}
+        <span class="time-separator">
+          :
+        </span>
+        {{ form_widget(form.startTime.minute) }}
+      </div>
+      {{ form_errors(form.startTime) }}
     </div>
-
-    <div class="grid">
-        <div class="field">
-            {{ form_label(form.durationMinutes) }}
-            {{ form_widget(form.durationMinutes) }}
-            {{ form_errors(form.durationMinutes) }}
-        </div>
-
-        <div class="field">
-            {{ form_label(form.broadcastRank) }}
-            {{ form_widget(form.broadcastRank) }}
-            {{ form_errors(form.broadcastRank) }}
-            {% if form.broadcastRank.vars.help %}
-                <small>{{ form.broadcastRank.vars.help }}</small>
-            {% endif %}
-        </div>
+  </div>
+  <div class="grid">
+    <div class="field">
+      {{ form_label(form.durationMinutes) }}
+      {{ form_widget(form.durationMinutes) }}
+      {{ form_errors(form.durationMinutes) }}
     </div>
-
-    <div class="field" data-programmation-rule-slot-target="weekOffsetWrapper">
-        {{ form_label(form.weekOffset) }}
-        {{ form_widget(form.weekOffset, {
+    <div class="field">
+      {{ form_label(form.broadcastRank) }}
+      {{ form_widget(form.broadcastRank) }}
+      {{ form_errors(form.broadcastRank) }}
+      {% if form.broadcastRank.vars.help %}
+        <small>
+          {{ form.broadcastRank.vars.help }}
+        </small>
+      {% endif %}
+    </div>
+  </div>
+  <div class="field" data-programmation-rule-slot-target="weekOffsetWrapper">
+    {{ form_label(form.weekOffset) }}
+    {{ form_widget(form.weekOffset, {
             attr: {
                 'data-programmation-rule-slot-target': 'weekOffset'
             }
         }) }}
-        {{ form_errors(form.weekOffset) }}
-        {% if form.weekOffset.vars.help %}
-            <small>{{ form.weekOffset.vars.help }}</small>
-        {% endif %}
+    {{ form_errors(form.weekOffset) }}
+    {% if form.weekOffset.vars.help %}
+      <small>
+        {{ form.weekOffset.vars.help }}
+      </small>
+    {% endif %}
+  </div>
+  <div class="field">
+    <div class="checkline">
+      {{ form_widget(form.isActive) }}
+      {{ form_label(form.isActive) }}
     </div>
-
-    <div class="field">
-        <div class="checkline">
-            {{ form_widget(form.isActive) }}
-            {{ form_label(form.isActive) }}
-        </div>
-        {{ form_errors(form.isActive) }}
-    </div>
-
-    {{ form_widget(form._token) }}
-
-    <div class="actions">
-        {{ form_widget(form.Sauvegarder) }}
-        <a href="{{ path('admin_programmationRuleSlot_index', { ruleId: rule.id }) }}" class="btn-back">Retour aux créneaux</a>
-    </div>
-
-    {{ form_end(form, { render_rest: false }) }}
+    {{ form_errors(form.isActive) }}
+  </div>
+  {{ form_widget(form._token) }}
+  <div class="actions">
+    {{ form_widget(form.Sauvegarder) }}
+    <a href="{{ path('admin_programmationRuleSlot_index', { ruleId: rule.id }) }}" class="btn-back">
+      Retour aux créneaux
+    </a>
+  </div>
+  {{ form_end(form, { render_rest: false }) }}
 </div>

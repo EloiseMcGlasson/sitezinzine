@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ProgrammationRuleSlotType extends AbstractType
 {
@@ -23,10 +24,22 @@ class ProgrammationRuleSlotType extends AbstractType
                     'Hebdomadaire' => ProgrammationRuleSlot::RECURRENCE_WEEKLY,
                     'Mensuelle' => ProgrammationRuleSlot::RECURRENCE_MONTHLY,
                 ],
+                'placeholder' => false,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Choice([
+                        'choices' => [
+                            ProgrammationRuleSlot::RECURRENCE_WEEKLY,
+                            ProgrammationRuleSlot::RECURRENCE_MONTHLY,
+                        ],
+                    ]),
+                ],
             ])
 
             ->add('monthlyOccurrence', ChoiceType::class, [
                 'label' => 'Position dans le mois',
+                'required' => false,
+                'placeholder' => 'Choisir une occurrence',
                 'choices' => [
                     '1er' => ProgrammationRuleSlot::MONTHLY_FIRST,
                     '2e' => ProgrammationRuleSlot::MONTHLY_SECOND,
@@ -34,22 +47,26 @@ class ProgrammationRuleSlotType extends AbstractType
                     '4e' => ProgrammationRuleSlot::MONTHLY_FOURTH,
                     'Dernier' => ProgrammationRuleSlot::MONTHLY_LAST,
                 ],
-                'required' => false,
-                'placeholder' => 'Non applicable (hebdomadaire)',
-                'help' => 'Utilisé uniquement pour les programmations mensuelles.',
             ])
 
-            ->add('monthInterval', IntegerType::class, [
-                'label' => 'Intervalle mensuel',
-                'attr' => [
-                    'min' => 1,
-                    'placeholder' => '1 = tous les mois',
+            ->add('monthInterval', ChoiceType::class, [
+                'label' => 'Rythme mensuel',
+                'required' => false,
+                'placeholder' => false,
+                'choices' => [
+                    'Tous les mois' => 1,
+                    'Tous les 2 mois' => 2,
+                    'Tous les 3 mois' => 3,
+                    'Tous les 4 mois' => 4,
                 ],
-                'help' => 'Utilisé uniquement pour les programmations mensuelles. 1 = tous les mois, 2 = tous les 2 mois…',
+                'empty_data' => '1',
             ])
 
             ->add('dayOfWeek', ChoiceType::class, [
                 'label' => 'Jour',
+                'placeholder' => 'Choisir un jour',
+                // Ordre d’affichage = semaine radio mardi -> lundi
+                // Valeurs stockées inchangées : 1=lundi ... 7=dimanche
                 'choices' => [
                     'Mardi' => 2,
                     'Mercredi' => 3,
@@ -59,49 +76,85 @@ class ProgrammationRuleSlotType extends AbstractType
                     'Dimanche' => 7,
                     'Lundi' => 1,
                 ],
-                'placeholder' => 'Choisir un jour',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Range([
+                        'min' => 1,
+                        'max' => 7,
+                    ]),
+                ],
+                'help' => 'Affichage en semaine radio : mardi → lundi.',
             ])
 
             ->add('startTime', TimeType::class, [
                 'label' => 'Heure de début',
-                'widget' => 'single_text',
                 'input' => 'datetime_immutable',
+                'widget' => 'choice',
                 'with_seconds' => false,
+                'minutes' => [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
 
             ->add('durationMinutes', IntegerType::class, [
                 'label' => 'Durée (minutes)',
                 'attr' => [
                     'min' => 1,
-                    'placeholder' => 'Ex. 60',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Positive(),
                 ],
             ])
 
-            ->add('broadcastRank', IntegerType::class, [
+            ->add('broadcastRank', ChoiceType::class, [
                 'label' => 'Ordre de diffusion',
-                'attr' => [
-                    'min' => 1,
+                'placeholder' => false,
+                'choices' => [
+                    '1re diffusion' => 1,
+                    'Rediffusion 1' => 2,
+                    'Rediffusion 2' => 3,
+                    'Rediffusion 3' => 4,
                 ],
-                'help' => '1 = 1re diffusion, 2 = rediffusion 1, 3 = rediffusion 2…',
+                'help' => 'Choisis s’il s’agit de la diffusion principale ou d’une rediffusion.',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Positive(),
+                    new Assert\Choice([
+                        'choices' => [1, 2, 3, 4],
+                    ]),
+                ],
             ])
 
-            ->add('weekOffset', IntegerType::class, [
-                'label' => 'Décalage de semaine radio',
-                'attr' => [
-                    'min' => 0,
-                    'placeholder' => '0 = même semaine',
+            ->add('weekOffset', ChoiceType::class, [
+                'label' => 'Décalage en semaines radio',
+                'placeholder' => false,
+                'choices' => [
+                    'Même semaine radio' => 0,
+                    'Semaine radio suivante' => 1,
+                    '2 semaines radio plus tard' => 2,
+                    '3 semaines radio plus tard' => 3,
+                    '4 semaines radio plus tard' => 4,
                 ],
-                'help' => '0 = même semaine radio, 1 = semaine suivante, 2 = deux semaines plus tard…',
+                'help' => 'Choisis à combien de semaines radio de distance cette diffusion doit être placée.',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Choice([
+                        'choices' => [0, 1, 2, 3, 4],
+                    ]),
+                ],
             ])
 
             ->add('isActive', CheckboxType::class, [
-                'label' => 'Créneau actif',
+                'label' => 'Actif',
                 'required' => false,
             ])
 
             ->add('Sauvegarder', SubmitType::class, [
                 'label' => 'Sauvegarder',
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

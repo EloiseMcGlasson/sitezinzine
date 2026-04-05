@@ -6,6 +6,7 @@ use App\Entity\ProgrammationRule;
 use App\Entity\ProgrammationRuleSlot;
 use App\Form\ProgrammationRuleSlotType;
 use App\Repository\ProgrammationRuleSlotRepository;
+use App\Repository\ProgrammationRuleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -21,10 +22,10 @@ class ProgrammationRuleSlotController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(
         int $ruleId,
-        ProgrammationRuleSlotRepository $slotRepository,
-        EntityManagerInterface $em
+        ProgrammationRuleRepository $programmationRuleRepository,
+        ProgrammationRuleSlotRepository $slotRepository
     ): Response {
-        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+        $programmationRule = $programmationRuleRepository->find($ruleId);
 
         if (!$programmationRule || $programmationRule->isDeleted()) {
             throw $this->createNotFoundException('Règle de programmation introuvable.');
@@ -40,9 +41,10 @@ class ProgrammationRuleSlotController extends AbstractController
     public function create(
         int $ruleId,
         Request $request,
+        ProgrammationRuleRepository $programmationRuleRepository,
         EntityManagerInterface $em
     ): Response {
-        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+        $programmationRule = $programmationRuleRepository->find($ruleId);
 
         if (!$programmationRule || $programmationRule->isDeleted()) {
             throw $this->createNotFoundException('Règle de programmation introuvable.');
@@ -70,8 +72,9 @@ class ProgrammationRuleSlotController extends AbstractController
         }
 
         return $this->render('admin/programmationRuleSlot/create.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
             'rule' => $programmationRule,
+            'form_title' => 'Créer un créneau',
         ]);
     }
 
@@ -80,9 +83,10 @@ class ProgrammationRuleSlotController extends AbstractController
         int $ruleId,
         ProgrammationRuleSlot $programmationRuleSlot,
         Request $request,
+        ProgrammationRuleRepository $programmationRuleRepository,
         EntityManagerInterface $em
     ): Response {
-        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+        $programmationRule = $programmationRuleRepository->find($ruleId);
 
         if (!$programmationRule || $programmationRule->isDeleted()) {
             throw $this->createNotFoundException('Règle de programmation introuvable.');
@@ -118,9 +122,10 @@ class ProgrammationRuleSlotController extends AbstractController
         }
 
         return $this->render('admin/programmationRuleSlot/edit.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
             'rule' => $programmationRule,
             'slot' => $programmationRuleSlot,
+            'form_title' => 'Modifier un créneau',
         ]);
     }
 
@@ -171,46 +176,49 @@ class ProgrammationRuleSlotController extends AbstractController
     }
 
     private function validateSlotForm($form, ProgrammationRuleSlot $programmationRuleSlot): void
-{
-    if (
-        $programmationRuleSlot->getRecurrenceType() === ProgrammationRuleSlot::RECURRENCE_MONTHLY
-        && $programmationRuleSlot->getMonthlyOccurrence() === null
-    ) {
-        $form->get('monthlyOccurrence')->addError(
-            new FormError('Ce champ est obligatoire pour une programmation mensuelle.')
-        );
-    }
+    {
+        $recurrenceType = $programmationRuleSlot->getRecurrenceType();
+        $monthlyOccurrence = $programmationRuleSlot->getMonthlyOccurrence();
+        $monthInterval = $programmationRuleSlot->getMonthInterval();
+        $weekOffset = $programmationRuleSlot->getWeekOffset();
+        $broadcastRank = $programmationRuleSlot->getBroadcastRank();
+        $durationMinutes = $programmationRuleSlot->getDurationMinutes();
 
-    if ($programmationRuleSlot->getRecurrenceType() === ProgrammationRuleSlot::RECURRENCE_WEEKLY) {
-        $programmationRuleSlot->setMonthlyOccurrence(null);
-        $programmationRuleSlot->setMonthInterval(1);
-    }
+        if ($recurrenceType === ProgrammationRuleSlot::RECURRENCE_WEEKLY) {
+            $programmationRuleSlot->setMonthlyOccurrence(null);
+            $programmationRuleSlot->setMonthInterval(1);
+        }
 
-    if (
-        $programmationRuleSlot->getRecurrenceType() === ProgrammationRuleSlot::RECURRENCE_MONTHLY
-        && $programmationRuleSlot->getMonthInterval() < 1
-    ) {
-        $form->get('monthInterval')->addError(
-            new FormError('L’intervalle mensuel doit être supérieur ou égal à 1.')
-        );
-    }
+        if ($recurrenceType === ProgrammationRuleSlot::RECURRENCE_MONTHLY) {
+            if ($monthlyOccurrence === null) {
+                $form->get('monthlyOccurrence')->addError(
+                    new FormError('Ce champ est obligatoire pour une programmation mensuelle.')
+                );
+            }
 
-    if ($programmationRuleSlot->getWeekOffset() < 0) {
-        $form->get('weekOffset')->addError(
-            new FormError('Le décalage de semaine doit être positif ou nul.')
-        );
-    }
+            if ($monthInterval < 1) {
+                $form->get('monthInterval')->addError(
+                    new FormError('L’intervalle mensuel doit être supérieur ou égal à 1.')
+                );
+            }
+        }
 
-    if ($programmationRuleSlot->getBroadcastRank() < 1) {
-        $form->get('broadcastRank')->addError(
-            new FormError('L’ordre de diffusion doit être supérieur ou égal à 1.')
-        );
-    }
+        if (!in_array($weekOffset, [0, 1, 2, 3, 4], true)) {
+            $form->get('weekOffset')->addError(
+                new FormError('Le décalage en semaines radio sélectionné est invalide.')
+            );
+        }
 
-    if ($programmationRuleSlot->getDurationMinutes() !== null && $programmationRuleSlot->getDurationMinutes() < 1) {
-        $form->get('durationMinutes')->addError(
-            new FormError('La durée doit être supérieure à 0.')
-        );
+        if (!in_array($broadcastRank, [1, 2, 3, 4], true)) {
+            $form->get('broadcastRank')->addError(
+                new FormError('L’ordre de diffusion sélectionné est invalide.')
+            );
+        }
+
+        if ($durationMinutes === null || $durationMinutes < 1) {
+            $form->get('durationMinutes')->addError(
+                new FormError('La durée doit être supérieure à 0.')
+            );
+        }
     }
-}
 }
