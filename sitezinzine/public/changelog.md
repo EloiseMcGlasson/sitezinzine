@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.80] - 2026-04-05 quar
+### Ajout
+- Ajout de la récurrence mensuelle pour la programmation prévisionnelle + controller.js correspondant.
+
 ## [1.0.79] - 2026-04-05 ter
 ### Ajout
 - Ajout de la programmation récurante prévisionnelle (entity, repository, controller et twig).

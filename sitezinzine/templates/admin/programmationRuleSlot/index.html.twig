@@ -226,18 +226,18 @@
     </div>
   </div>
 
-  {% set days = {
-    1: 'Lundi',
+  {% set radioDays = {
     2: 'Mardi',
     3: 'Mercredi',
     4: 'Jeudi',
     5: 'Vendredi',
     6: 'Samedi',
-    7: 'Dimanche'
+    7: 'Dimanche',
+    1: 'Lundi'
   } %}
 
   <div class="context">
-<strong>Catégorie :</strong> {{ rule.category ? rule.category.titre : '—' }}
+    <strong>Catégorie :</strong> {{ rule.category ? rule.category.titre : '—' }}
   </div>
 
   <div class="table-wrap">
@@ -246,6 +246,10 @@
         <tr>
           <th>Rang</th>
           <th>Libellé diffusion</th>
+          <th>Récurrence</th>
+          <th>Occurrence</th>
+          <th>Intervalle mensuel</th>
+          <th>Décalage semaine</th>
           <th>Jour</th>
           <th>Heure</th>
           <th>Durée</th>
@@ -258,7 +262,11 @@
         <tr>
           <td>{{ slot.broadcastRank }}</td>
           <td>{{ slot.broadcastLabel }}</td>
-          <td>{{ days[slot.dayOfWeek] ?? slot.dayOfWeek }}</td>
+          <td>{{ slot.recurrenceLabel }}</td>
+          <td>{{ slot.monthlyOccurrenceLabel ?: '—' }}</td>
+          <td>{{ slot.isMonthly ? slot.monthIntervalLabel : '—' }}</td>
+          <td>{{ slot.weekOffsetLabel }}</td>
+          <td>{{ radioDays[slot.dayOfWeek] ?? slot.dayLabel }}</td>
           <td>{{ slot.startTime ? slot.startTime|date('H:i') : '—' }}</td>
           <td>{{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}</td>
           <td>
@@ -283,7 +291,7 @@
         </tr>
       {% else %}
         <tr>
-          <td colspan="7" class="empty">Aucun créneau pour cette règle.</td>
+          <td colspan="11" class="empty">Aucun créneau pour cette règle.</td>
         </tr>
       {% endfor %}
       </tbody>
@@ -295,7 +303,11 @@
       <div class="card">
         <h2>{{ slot.broadcastLabel }}</h2>
         <p><strong>Rang :</strong> {{ slot.broadcastRank }}</p>
-        <p><strong>Jour :</strong> {{ days[slot.dayOfWeek] ?? slot.dayOfWeek }}</p>
+        <p><strong>Récurrence :</strong> {{ slot.recurrenceLabel }}</p>
+        <p><strong>Occurrence :</strong> {{ slot.monthlyOccurrenceLabel ?: '—' }}</p>
+        <p><strong>Intervalle mensuel :</strong> {{ slot.isMonthly ? slot.monthIntervalLabel : '—' }}</p>
+        <p><strong>Décalage semaine :</strong> {{ slot.weekOffsetLabel }}</p>
+        <p><strong>Jour :</strong> {{ radioDays[slot.dayOfWeek] ?? slot.dayLabel }}</p>
         <p><strong>Heure :</strong> {{ slot.startTime ? slot.startTime|date('H:i') : '—' }}</p>
         <p><strong>Durée :</strong> {{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}</p>
         <p>

@@ -9,10 +9,23 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'programmation_rule_slot')]
 #[ORM\Index(columns: ['day_of_week'], name: 'idx_programmation_rule_slot_day')]
 #[ORM\Index(columns: ['broadcast_rank'], name: 'idx_programmation_rule_slot_rank')]
+#[ORM\Index(columns: ['week_offset'], name: 'idx_programmation_rule_slot_week_offset')]
+#[ORM\Index(columns: ['recurrence_type'], name: 'idx_programmation_rule_slot_recurrence')]
+#[ORM\Index(columns: ['monthly_occurrence'], name: 'idx_programmation_rule_slot_monthly_occurrence')]
+#[ORM\Index(columns: ['month_interval'], name: 'idx_programmation_rule_slot_month_interval')]
 #[ORM\Index(columns: ['is_active'], name: 'idx_programmation_rule_slot_active')]
 #[ORM\Index(columns: ['deleted_at'], name: 'idx_programmation_rule_slot_deleted')]
 class ProgrammationRuleSlot
 {
+    public const RECURRENCE_WEEKLY = 'weekly';
+    public const RECURRENCE_MONTHLY = 'monthly';
+
+    public const MONTHLY_FIRST = 1;
+    public const MONTHLY_SECOND = 2;
+    public const MONTHLY_THIRD = 3;
+    public const MONTHLY_FOURTH = 4;
+    public const MONTHLY_LAST = -1;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,6 +56,38 @@ class ProgrammationRuleSlot
     #[ORM\Column(name: 'broadcast_rank')]
     private int $broadcastRank = 1;
 
+    /**
+     * Décalage en semaines radio par rapport au cycle principal.
+     * 0 = même semaine radio
+     * 1 = semaine radio suivante
+     * 2 = deux semaines plus tard
+     */
+    #[ORM\Column(name: 'week_offset')]
+    private int $weekOffset = 0;
+
+    #[ORM\Column(name: 'recurrence_type', length: 20)]
+    private string $recurrenceType = self::RECURRENCE_WEEKLY;
+
+    /**
+     * Utilisé seulement si recurrenceType = monthly
+     * 1 = 1er
+     * 2 = 2e
+     * 3 = 3e
+     * 4 = 4e
+     * -1 = dernier
+     */
+    #[ORM\Column(name: 'monthly_occurrence', nullable: true)]
+    private ?int $monthlyOccurrence = null;
+
+    /**
+     * Utilisé seulement si recurrenceType = monthly
+     * 1 = tous les mois
+     * 2 = tous les 2 mois
+     * 3 = tous les 3 mois
+     */
+    #[ORM\Column(name: 'month_interval')]
+    private int $monthInterval = 1;
+
     #[ORM\Column]
     private bool $isActive = true;
 
@@ -65,8 +110,9 @@ class ProgrammationRuleSlot
     public function __toString(): string
     {
         return sprintf(
-            '%s - %s %s',
+            '%s - %s - %s %s',
             $this->getBroadcastLabel(),
+            $this->getRecurrenceLabel(),
             $this->getDayLabel(),
             $this->startTime?->format('H:i') ?? '--:--'
         );
@@ -152,6 +198,103 @@ class ProgrammationRuleSlot
         $this->touch();
 
         return $this;
+    }
+
+    public function getWeekOffset(): int
+    {
+        return $this->weekOffset;
+    }
+
+    public function setWeekOffset(int $weekOffset): static
+    {
+        if ($weekOffset < 0) {
+            throw new \InvalidArgumentException('weekOffset doit être supérieur ou égal à 0.');
+        }
+
+        $this->weekOffset = $weekOffset;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getRecurrenceType(): string
+    {
+        return $this->recurrenceType;
+    }
+
+    public function setRecurrenceType(string $recurrenceType): static
+{
+    $allowed = [
+        self::RECURRENCE_WEEKLY,
+        self::RECURRENCE_MONTHLY,
+    ];
+
+    if (!in_array($recurrenceType, $allowed, true)) {
+        throw new \InvalidArgumentException('recurrenceType invalide.');
+    }
+
+    $this->recurrenceType = $recurrenceType;
+
+    if ($recurrenceType === self::RECURRENCE_WEEKLY) {
+        $this->monthlyOccurrence = null;
+        $this->monthInterval = 1;
+    }
+
+    $this->touch();
+
+    return $this;
+}
+
+    public function getMonthlyOccurrence(): ?int
+    {
+        return $this->monthlyOccurrence;
+    }
+
+    public function setMonthlyOccurrence(?int $monthlyOccurrence): static
+    {
+        $allowed = [
+            self::MONTHLY_FIRST,
+            self::MONTHLY_SECOND,
+            self::MONTHLY_THIRD,
+            self::MONTHLY_FOURTH,
+            self::MONTHLY_LAST,
+            null,
+        ];
+
+        if (!in_array($monthlyOccurrence, $allowed, true)) {
+            throw new \InvalidArgumentException('monthlyOccurrence invalide.');
+        }
+
+        $this->monthlyOccurrence = $monthlyOccurrence;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getMonthInterval(): int
+    {
+        return $this->monthInterval;
+    }
+
+    public function setMonthInterval(int $monthInterval): static
+    {
+        if ($monthInterval < 1) {
+            throw new \InvalidArgumentException('monthInterval doit être supérieur ou égal à 1.');
+        }
+
+        $this->monthInterval = $monthInterval;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getMonthIntervalLabel(): string
+    {
+        return match ($this->monthInterval) {
+            1 => 'Tous les mois',
+            2 => 'Tous les 2 mois',
+            default => sprintf('Tous les %d mois', $this->monthInterval),
+        };
     }
 
     public function isActive(): bool
@@ -247,6 +390,40 @@ class ProgrammationRuleSlot
         };
     }
 
+    public function getWeekOffsetLabel(): string
+    {
+        return match ($this->weekOffset) {
+            0 => 'Même semaine radio',
+            1 => 'Semaine radio suivante',
+            default => sprintf('%d semaines radio plus tard', $this->weekOffset),
+        };
+    }
+
+    public function getRecurrenceLabel(): string
+    {
+        return match ($this->recurrenceType) {
+            self::RECURRENCE_WEEKLY => 'Hebdomadaire',
+            self::RECURRENCE_MONTHLY => 'Mensuelle',
+            default => 'Inconnue',
+        };
+    }
+
+    public function getMonthlyOccurrenceLabel(): ?string
+    {
+        if ($this->monthlyOccurrence === null) {
+            return null;
+        }
+
+        return match ($this->monthlyOccurrence) {
+            self::MONTHLY_FIRST => '1er',
+            self::MONTHLY_SECOND => '2e',
+            self::MONTHLY_THIRD => '3e',
+            self::MONTHLY_FOURTH => '4e',
+            self::MONTHLY_LAST => 'Dernier',
+            default => null,
+        };
+    }
+
     public function getDayLabel(): string
     {
         return match ($this->dayOfWeek) {
@@ -261,6 +438,20 @@ class ProgrammationRuleSlot
         };
     }
 
+    public function getRadioDayLabel(): string
+    {
+        return match ($this->dayOfWeek) {
+            2 => 'Mardi',
+            3 => 'Mercredi',
+            4 => 'Jeudi',
+            5 => 'Vendredi',
+            6 => 'Samedi',
+            7 => 'Dimanche',
+            1 => 'Lundi',
+            default => 'Jour inconnu',
+        };
+    }
+
     public function getEndTime(): ?\DateTimeImmutable
     {
         if ($this->startTime === null || $this->durationMinutes === null) {
@@ -268,6 +459,16 @@ class ProgrammationRuleSlot
         }
 
         return $this->startTime->modify(sprintf('+%d minutes', $this->durationMinutes));
+    }
+
+    public function isWeekly(): bool
+    {
+        return $this->recurrenceType === self::RECURRENCE_WEEKLY;
+    }
+
+    public function isMonthly(): bool
+    {
+        return $this->recurrenceType === self::RECURRENCE_MONTHLY;
     }
 
     private function touch(): void

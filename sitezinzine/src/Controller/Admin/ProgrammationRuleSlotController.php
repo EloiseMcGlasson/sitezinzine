@@ -8,6 +8,7 @@ use App\Form\ProgrammationRuleSlotType;
 use App\Repository\ProgrammationRuleSlotRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -23,15 +24,15 @@ class ProgrammationRuleSlotController extends AbstractController
         ProgrammationRuleSlotRepository $slotRepository,
         EntityManagerInterface $em
     ): Response {
-        $rule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
 
-        if (!$rule || $rule->isDeleted()) {
-            throw $this->createNotFoundException();
+        if (!$programmationRule || $programmationRule->isDeleted()) {
+            throw $this->createNotFoundException('Règle de programmation introuvable.');
         }
 
         return $this->render('admin/programmationRuleSlot/index.html.twig', [
-            'rule' => $rule,
-            'slots' => $slotRepository->findNotDeletedByRule($rule),
+            'rule' => $programmationRule,
+            'slots' => $slotRepository->findNotDeletedByRule($programmationRule),
         ]);
     }
 
@@ -41,84 +42,175 @@ class ProgrammationRuleSlotController extends AbstractController
         Request $request,
         EntityManagerInterface $em
     ): Response {
-        $rule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
 
-        if (!$rule || $rule->isDeleted()) {
-            throw $this->createNotFoundException();
+        if (!$programmationRule || $programmationRule->isDeleted()) {
+            throw $this->createNotFoundException('Règle de programmation introuvable.');
         }
 
-        $slot = new ProgrammationRuleSlot();
-        $slot->setRule($rule);
+        $programmationRuleSlot = new ProgrammationRuleSlot();
+        $programmationRuleSlot->setRule($programmationRule);
 
-        $form = $this->createForm(ProgrammationRuleSlotType::class, $slot);
+        $form = $this->createForm(ProgrammationRuleSlotType::class, $programmationRuleSlot);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($slot);
-            $em->flush();
+        if ($form->isSubmitted()) {
+            $this->validateSlotForm($form, $programmationRuleSlot);
 
-            $this->addFlash('success', 'Créneau ajouté.');
+            if ($form->isValid()) {
+                $em->persist($programmationRuleSlot);
+                $em->flush();
 
-            return $this->redirectToRoute('admin_programmationRuleSlot_index', [
-                'ruleId' => $ruleId,
-            ]);
+                $this->addFlash('success', 'Le créneau a bien été créé.');
+
+                return $this->redirectToRoute('admin_programmationRuleSlot_index', [
+                    'ruleId' => $programmationRule->getId(),
+                ]);
+            }
         }
 
         return $this->render('admin/programmationRuleSlot/create.html.twig', [
             'form' => $form,
-            'rule' => $rule,
+            'rule' => $programmationRule,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(
         int $ruleId,
-        ProgrammationRuleSlot $slot,
+        ProgrammationRuleSlot $programmationRuleSlot,
         Request $request,
         EntityManagerInterface $em
     ): Response {
-        if ($slot->isDeleted()) {
-            return $this->redirectToRoute('admin_programmationRuleSlot_index', ['ruleId' => $ruleId]);
+        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+
+        if (!$programmationRule || $programmationRule->isDeleted()) {
+            throw $this->createNotFoundException('Règle de programmation introuvable.');
         }
 
-        $form = $this->createForm(ProgrammationRuleSlotType::class, $slot);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-
-            $this->addFlash('success', 'Créneau modifié.');
+        if ($programmationRuleSlot->isDeleted()) {
+            $this->addFlash('danger', 'Ce créneau a été supprimé.');
 
             return $this->redirectToRoute('admin_programmationRuleSlot_index', [
                 'ruleId' => $ruleId,
             ]);
         }
 
+        if ($programmationRuleSlot->getRule()?->getId() !== $programmationRule->getId()) {
+            throw $this->createNotFoundException('Ce créneau n’appartient pas à cette règle.');
+        }
+
+        $form = $this->createForm(ProgrammationRuleSlotType::class, $programmationRuleSlot);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $this->validateSlotForm($form, $programmationRuleSlot);
+
+            if ($form->isValid()) {
+                $em->flush();
+
+                $this->addFlash('success', 'Le créneau a bien été modifié.');
+
+                return $this->redirectToRoute('admin_programmationRuleSlot_index', [
+                    'ruleId' => $programmationRule->getId(),
+                ]);
+            }
+        }
+
         return $this->render('admin/programmationRuleSlot/edit.html.twig', [
             'form' => $form,
-            'rule' => $slot->getRule(),
-            'slot' => $slot,
+            'rule' => $programmationRule,
+            'slot' => $programmationRuleSlot,
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(
         int $ruleId,
-        ProgrammationRuleSlot $slot,
+        ProgrammationRuleSlot $programmationRuleSlot,
         Request $request,
         EntityManagerInterface $em
     ): Response {
-        if (!$this->isCsrfTokenValid('delete_slot_' . $slot->getId(), $request->request->get('_token'))) {
-            return $this->redirectToRoute('admin_programmationRuleSlot_index', ['ruleId' => $ruleId]);
+        $programmationRule = $em->getRepository(ProgrammationRule::class)->find($ruleId);
+
+        if (!$programmationRule || $programmationRule->isDeleted()) {
+            throw $this->createNotFoundException('Règle de programmation introuvable.');
         }
 
-        $slot->softDelete();
+        if ($programmationRuleSlot->getRule()?->getId() !== $programmationRule->getId()) {
+            throw $this->createNotFoundException('Ce créneau n’appartient pas à cette règle.');
+        }
+
+        if (!$this->isCsrfTokenValid(
+            'delete_slot_' . $programmationRuleSlot->getId(),
+            (string) $request->request->get('_token')
+        )) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
+
+            return $this->redirectToRoute('admin_programmationRuleSlot_index', [
+                'ruleId' => $programmationRule->getId(),
+            ]);
+        }
+
+        if ($programmationRuleSlot->isDeleted()) {
+            $this->addFlash('warning', 'Ce créneau est déjà supprimé.');
+
+            return $this->redirectToRoute('admin_programmationRuleSlot_index', [
+                'ruleId' => $programmationRule->getId(),
+            ]);
+        }
+
+        $programmationRuleSlot->softDelete();
         $em->flush();
 
-        $this->addFlash('success', 'Créneau supprimé.');
+        $this->addFlash('success', 'Le créneau a bien été supprimé.');
 
         return $this->redirectToRoute('admin_programmationRuleSlot_index', [
-            'ruleId' => $ruleId,
+            'ruleId' => $programmationRule->getId(),
         ]);
     }
+
+    private function validateSlotForm($form, ProgrammationRuleSlot $programmationRuleSlot): void
+{
+    if (
+        $programmationRuleSlot->getRecurrenceType() === ProgrammationRuleSlot::RECURRENCE_MONTHLY
+        && $programmationRuleSlot->getMonthlyOccurrence() === null
+    ) {
+        $form->get('monthlyOccurrence')->addError(
+            new FormError('Ce champ est obligatoire pour une programmation mensuelle.')
+        );
+    }
+
+    if ($programmationRuleSlot->getRecurrenceType() === ProgrammationRuleSlot::RECURRENCE_WEEKLY) {
+        $programmationRuleSlot->setMonthlyOccurrence(null);
+        $programmationRuleSlot->setMonthInterval(1);
+    }
+
+    if (
+        $programmationRuleSlot->getRecurrenceType() === ProgrammationRuleSlot::RECURRENCE_MONTHLY
+        && $programmationRuleSlot->getMonthInterval() < 1
+    ) {
+        $form->get('monthInterval')->addError(
+            new FormError('L’intervalle mensuel doit être supérieur ou égal à 1.')
+        );
+    }
+
+    if ($programmationRuleSlot->getWeekOffset() < 0) {
+        $form->get('weekOffset')->addError(
+            new FormError('Le décalage de semaine doit être positif ou nul.')
+        );
+    }
+
+    if ($programmationRuleSlot->getBroadcastRank() < 1) {
+        $form->get('broadcastRank')->addError(
+            new FormError('L’ordre de diffusion doit être supérieur ou égal à 1.')
+        );
+    }
+
+    if ($programmationRuleSlot->getDurationMinutes() !== null && $programmationRuleSlot->getDurationMinutes() < 1) {
+        $form->get('durationMinutes')->addError(
+            new FormError('La durée doit être supérieure à 0.')
+        );
+    }
+}
 }
