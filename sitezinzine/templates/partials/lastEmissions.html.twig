@@ -1,65 +1,79 @@
 <style>
 /* =========================
-   ÉMISSIONS RÉCENTES
+   SECTION : ÉMISSIONS RÉCENTES
    ========================= */
 
 .bodylast{
-  background: linear-gradient(#E4013A, #B81C61);
-  font-family: "Montserrat Alternates", sans-serif;
-  font-weight: 700;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 700;
+  background: linear-gradient(#E4013A, #B81C61);
+}
+
+.bodylast a{
+  text-decoration: none;
 }
 
 .bodylast .bottom{
+  display: block;
   width: 100%;
-  display: block; /* évite les petits décalages inline */
-  margin-bottom: -1px; /* évite un petit espace blanc sous l'image */
+  margin-bottom: -1px;
 }
 
-/* ===== Header titre ===== */
+
+/* =========================
+   EN-TÊTE
+   ========================= */
+
 .bodylast .titrelast{
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 18px;
   padding: 20px 16px 10px;
 }
 
 .bodylast .titrelast img{
+  display: block;
   width: 120px;
   height: auto;
-  display:block;
 }
 
-.bodylast h1, .bodylast h3{
+.bodylast h1,
+.bodylast h3{
+  margin: 0;
   color: #fff;
   text-align: left;
-  margin: 0;
 }
 
 .bodylast h1{
-  font-weight: 900;
   font-size: clamp(24px, 3.2vw, 36px);
+  font-weight: 900;
   line-height: 1.05;
 }
 
 .bodylast h3{
-  font-weight: 700;
-  font-size: clamp(14px, 2vw, 24px);
   margin-top: 6px;
+  font-size: clamp(14px, 2vw, 24px);
+  font-weight: 700;
   line-height: 1.1;
 }
 
-/* ===== Grid desktop ===== */
-@media screen and (min-width: 1024px){
+
+/* =========================
+   GRILLE DES CARTES
+   ========================= */
+
+/* Desktop large */
+@media screen and (min-width: 1401px){
   .bodylast article{
     display: grid;
     grid-template-columns: repeat(3, 350px);
     justify-content: center;
-    gap: 60px 100px; /* <-- comme toi, bien aéré */
+    gap: 60px 100px;
     padding: 20px 20px 50px;
     margin: 0 auto;
   }
@@ -70,10 +84,36 @@
   }
 }
 
-/* ===== Grid tablette/mobile ===== */
+/* Petit desktop / laptop */
+@media screen and (min-width: 1024px) and (max-width: 1400px){
+  .bodylast article{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 350px));
+    justify-content: center;
+    gap: 28px 40px;
+    padding: 18px 16px 44px;
+    margin: 0 auto;
+  }
+
+  .bodylast .carte{
+    width: 350px;
+    height: 300px;
+  }
+
+  .bodylast .titrelast{
+    gap: 14px;
+    padding: 18px 14px 10px;
+  }
+
+  .bodylast .titrelast img{
+    width: 100px;
+  }
+}
+
+/* Tablette / mobile */
 @media screen and (max-width: 1023px){
   .bodylast article{
-    display:grid;
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     justify-content: center;
     gap: 26px;
@@ -83,142 +123,140 @@
   .bodylast .carte{
     width: 100%;
     max-width: 350px;
-    height: 300px; /* on garde la “vibe” desktop */
+    height: 300px;
     margin: 0 auto;
   }
 
   .bodylast .titrelast{
-    justify-content:flex-start;
+    justify-content: flex-start;
     max-width: 720px;
     margin: 0 auto;
   }
- @media (max-width: 480px){
-  .bodylast .titrelast img{
-    height: 55px;
-    width: 55px;
-  }
 }
 
-}
 
-/* ===== Carte ===== */
+/* =========================
+   CARTE
+   ========================= */
+
 .bodylast .carte{
   position: relative;
   overflow: hidden;
-  background-color: #000;
   border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,.45);
-  transition: transform .2s ease, box-shadow .2s ease;
-
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-color: #000;
   background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .bodylast .carte:hover{
   transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
-.bodylast a{ text-decoration:none; }
 
-/* Bandeau thème en haut */
+/* =========================
+   BANDEAU THÈME EN HAUT
+   ========================= */
+
 .bodylast .theme{
-  background-color: #7E4095;
-  font-family: "Source Code Pro", monospace;
-  text-align: center;
-  font-size: 15px;
   margin: 0;
   padding: 10px 12px;
-  color: white;
+  font-family: "Source Code Pro", monospace;
+  font-size: 15px;
+  text-align: center;
+  color: #fff;
+  background-color: #7E4095;
   -webkit-text-stroke-width: 0.5px;
   -webkit-text-stroke-color: black;
 }
 
-/* ===== Voile “transparent” RECTANGULAIRE en bas, plein largeur ===== */
-/* ===== Voile : commence au milieu du bandeau catégorie ===== */
+
+/* =========================
+   VOILE BAS DE CARTE
+   ========================= */
+
 .bodylast .transparent{
   position: absolute;
-  left: 0;
   right: 0;
   bottom: 0;
-
-  height: 37%;                  /* hauteur du voile */
- 
-
-  background: rgba(163,163,142,0.55);
+  left: 0;
+  height: 37%;
+  background: rgba(163, 163, 142, 0.55);
   z-index: 1;
   pointer-events: none;
 }
 
-/* Le contenu texte reste au-dessus du voile */
+
+/* =========================
+   CONTENU BAS DE CARTE
+   ========================= */
+
 .bodylast .content{
   position: absolute;
-  left: 0;
   right: 0;
   bottom: 0;
-  padding: 10px 12px 12px;
+  left: 0;
   z-index: 2;
+  padding: 0 12px 12px;
 }
 
+/* Cartouche catégorie fixé à la même hauteur */
 .bodylast .categorie{
-  background-color: #35BAC0;
-  font-family: "Source Code Pro", monospace;
-  font-weight: 600;
-  font-size: 16px;
-  color: white;
-
-  margin: 0 10px;
-  margin-top: -10px;
+  position: absolute;
+  top: -18px;
+  right: 22px;
+  left: 22px;
+  z-index: 3;
   padding: 6px 10px;
-
-  text-align: center;
   border-radius: 8px;
-
-  position: relative;
-  z-index: 2; /* au-dessus du voile */
+  font-family: "Source Code Pro", monospace;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+  background-color: #35BAC0;
 }
 
-/* le voile est en dessous du contenu, mais on veut que son "début"
-   soit à mi-hauteur du bandeau catégorie : on le remonte de 50% de la hauteur du bandeau */
-.bodylast .content .categorie{
-  /* rien ici, c’est juste pour le sélecteur si tu veux plus tard */
-}
-
-.bodylast .content:has(.categorie) ~ .transparent{
-  /* ne marche pas partout (has) -> on ne l'utilise pas */
+/* Réserve la place du cartouche dans le bloc texte */
+.bodylast .infos{
+  padding-top: 42px;
 }
 
 .bodylast .titre{
-  font-family: "Montserrat", sans-serif;
-  font-weight: 600;
-  font-size: 22px;
-  color: white;
-  margin: 10px 18px 6px;
+  margin: 0 18px 6px;
   padding: 0;
-  
-  line-height: 1.15;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  font-family: "Montserrat", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #fff;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: calc(2 * 1.15em);
 }
 
 .bodylast .date{
-  font-family: "Montserrat Alternates", sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  color: white;
   margin: 0 18px 0;
+  font-size: 18px;
+  font-weight: 400;
+  color: #fff;
 }
 
-/* ===== Bouton écoute : au-dessus de tout (et sans “réserver” de place) ===== */
+
+/* =========================
+   BOUTON ÉCOUTE
+   ========================= */
+
 .bodylast .ecoute{
   position: absolute;
-  bottom: 10px;
   right: 10px;
+  bottom: 10px;
   z-index: 5;
 }
 
@@ -228,10 +266,16 @@
 }
 
 .bodylast .ecoute img{
+  display: block;
   width: 40px;
   height: 40px;
-  display:block;
 }
+
+
+/* =========================
+   RESET DES <p> INTERNES
+   ========================= */
+
 .bodylast .theme p,
 .bodylast .categorie p,
 .bodylast .titre p,
@@ -239,49 +283,43 @@
   margin: 0;
 }
 
-/* ===== petit desktop (ex: 14") : on évite le débordement ===== */
-@media screen and (min-width: 1024px) and (max-width: 1400px){
-  .bodylast article{
-    grid-template-columns: repeat(2, minmax(0, 350px));
-    justify-content: center;
-    gap: 28px 40px;      /* réduit l’écart horizontal */
-    padding: 18px 16px 44px;
-  }
 
-  .bodylast .carte{
-    width: 350px;
-    height: 300px;
-  }
+/* =========================
+   AJUSTEMENTS MOBILE
+   ========================= */
 
-  .bodylast .titrelast{
-    padding: 18px 14px 10px;
-    gap: 14px;
-  }
-
-  .bodylast .titrelast img{
-    width: 100px;        /* un peu plus petit que 120 */
-  }
-}
-
-
-/* Mobile : un peu plus compact */
 @media (max-width: 480px){
-  .bodylast .titre{ font-size: 20px; }
-  .bodylast .date{ font-size: 16px; }
-  .bodylast .categorie{ font-size: 14px; }
+  .bodylast .titrelast img{
+    width: 55px;
+    height: 55px;
+  }
+
+  .bodylast .titre{
+    font-size: 20px;
+  }
+
+  .bodylast .date{
+    font-size: 16px;
+  }
+
+  .bodylast .categorie{
+    font-size: 14px;
+  }
 }
 
-/* Mobile en paysage : hauteur faible, on compacte */
-@media (max-width: 900px) and (orientation: landscape) {
 
-  /* BODYLAST : titres + grille plus compacts */
+/* =========================
+   MOBILE EN PAYSAGE
+   ========================= */
+
+@media (max-width: 900px) and (orientation: landscape){
   .bodylast .titrelast{
-    padding: 12px 12px 6px;
     gap: 12px;
+    padding: 12px 12px 6px;
   }
 
   .bodylast .titrelast img{
-    width: 80px; /* au lieu de 120 */
+    width: 80px;
   }
 
   .bodylast article{
@@ -289,16 +327,18 @@
     padding: 12px 10px 24px;
   }
 
-  /* Cartes un peu moins hautes en paysage (hauteur écran limitée) */
   .bodylast .carte{
     height: 240px;
   }
 
-  /* Textes un poil plus petits pour éviter les collisions */
-  .bodylast .titre{ font-size: 20px; }
-  .bodylast .date{ font-size: 16px; }
-}
+  .bodylast .titre{
+    font-size: 20px;
+  }
 
+  .bodylast .date{
+    font-size: 16px;
+  }
+}
 </style>
 <div class="bodylast">
         <div class="titrelast">
@@ -329,22 +369,27 @@
                         {# lien vers la page émission (zone texte + voile) #}
                         <a href="{{ path('emission.show', {id: lastEmissionByGroupTheme.emission_id}) }}" aria-label="Voir l'émission">
                         <div class="content">
-                                <div class="categorie">
-                                    <p>
-                                        {{ lastEmissionByGroupTheme.categorie_titre|upper }}
-                                    </p>
-                                </div>
-                                <div class="titre">
-                                    <p>
-                                        {{ lastEmissionByGroupTheme.emission_titre }}
-                                    </p>
-                                </div>
-                                <div class="date">
-                                    <p>
-                                        Le
-                                        {{ lastEmissionByGroupTheme.last_diffusion|format_datetime('medium','short', locale='fr') }}
-                                    </p>
-                                </div>
+                                <div class="content">
+    <div class="categorie">
+        <p>
+            {{ lastEmissionByGroupTheme.categorie_titre|upper }}
+        </p>
+    </div>
+
+    <div class="infos">
+        <div class="titre">
+            <p>
+                {{ lastEmissionByGroupTheme.emission_titre }}
+            </p>
+        </div>
+        <div class="date">
+            <p>
+                Le
+                {{ lastEmissionByGroupTheme.last_diffusion|format_datetime('medium','short', locale='fr') }}
+            </p>
+        </div>
+    </div>
+</div>
                             </div>
                         </a>
                         {# bouton écoute séparé (reste cliquable) #}

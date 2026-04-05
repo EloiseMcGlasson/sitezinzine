@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.77] - 2026-04-05
+### Correction
+- Correction du css des cartes émission de lastEmission.
+
+
 ## [1.0.76] - 2026-04-01
 ### Correction
 - Correction des liens titre des émission sur la page de recherche admin.
