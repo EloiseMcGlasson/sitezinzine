@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.78] - 2026-04-05 bis
+### Correction
+- Ajustement du css des cartes émission de lastEmission.
+
+
 ## [1.0.77] - 2026-04-05
 ### Correction
 - Correction du css des cartes émission de lastEmission.

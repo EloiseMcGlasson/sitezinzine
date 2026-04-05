@@ -180,10 +180,10 @@
 
 .bodylast .transparent{
   position: absolute;
+  left: 0;
   right: 0;
   bottom: 0;
-  left: 0;
-  height: 37%;
+  top: calc(100% - 110px);
   background: rgba(163, 163, 142, 0.55);
   z-index: 1;
   pointer-events: none;
@@ -196,33 +196,49 @@
 
 .bodylast .content{
   position: absolute;
+  left: 0;
   right: 0;
   bottom: 0;
-  left: 0;
   z-index: 2;
   padding: 0 12px 12px;
 }
 
-/* Cartouche catégorie fixé à la même hauteur */
 .bodylast .categorie{
   position: absolute;
-  top: -18px;
-  right: 22px;
+  top: -20px;
   left: 22px;
+  right: 22px;
   z-index: 3;
-  padding: 6px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 56px;
+  padding: 6px 12px;
   border-radius: 8px;
+  box-sizing: border-box;
+
+  background-color: #35BAC0;
+  color: white;
+  text-align: center;
   font-family: "Source Code Pro", monospace;
   font-size: 16px;
   font-weight: 600;
-  text-align: center;
-  color: #fff;
-  background-color: #35BAC0;
+  line-height: 1.2;
+}
+
+.bodylast .categorie p{
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 /* Réserve la place du cartouche dans le bloc texte */
 .bodylast .infos{
-  padding-top: 42px;
+  padding-top: 48px;
 }
 
 .bodylast .titre{
