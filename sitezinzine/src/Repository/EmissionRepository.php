@@ -762,4 +762,19 @@ if (!empty($criteria['titre'])) {
             ->setParameter('catId', $categoryId)
             ->orderBy('e.id', 'DESC'); // ou e.datepub si tu as un champ date fiable
     }
+
+    public function findAssignableForCategory(Categories $category): array
+{
+    return $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->andWhere('e.categorie = :category')
+        ->andWhere('c.active = :active')
+        ->andWhere('c.softDelete = :softDelete')
+        ->setParameter('category', $category)
+        ->setParameter('active', true)
+        ->setParameter('softDelete', false)
+        ->orderBy('e.titre', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 }

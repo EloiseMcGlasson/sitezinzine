@@ -129,7 +129,64 @@
     background:var(--postit);color:#fff;border:1px solid var(--postit-border);
     padding:6px 8px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab;user-select:none
   }
+.sidebar-section{
+  background:#fff;
+  border:1px solid #e6e6e6;
+  border-radius:8px;
+  padding:12px;
+  margin-bottom:16px;
+}
 
+.sidebar-section h3{
+  margin:0 0 10px;
+  font-size:15px;
+  color:#1c1c1a;
+}
+
+#slot-selection-empty{
+  background:#fff;
+  border:1px dashed #d0d0d0;
+  border-radius:8px;
+  padding:14px;
+  font-size:14px;
+  color:#555;
+}
+
+.slot-summary{
+  font-size:14px;
+  line-height:1.5;
+  color:#222;
+}
+
+.slot-summary .label{
+  font-weight:700;
+}
+
+.emission-card{
+  background:var(--postit);
+  color:#fff;
+  border:1px solid var(--postit-border);
+  padding:8px 10px;
+  border-radius:6px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  user-select:none;
+  margin-bottom:8px;
+}
+
+.emission-card small{
+  display:block;
+  margin-top:4px;
+  font-weight:400;
+  opacity:.95;
+}
+
+.postit.is-selected{
+  outline:2px solid #1c1c1a;
+  outline-offset:-2px;
+  z-index:5;
+}
   /* Tooltip custom (si tu veux revenir plus tard) */
   .custom-tooltip{
     position:fixed;display:none;background:rgba(0,0,0,.85);color:#fff;
@@ -192,10 +249,7 @@
             {# Post-its existants #}
             {% for seg in (daySegments[dayIndex] ?? []) %}
               {% set slots = (seg.duration / 15)|round(0, 'ceil') %}
-              {% set h = (seg.startIndex // 4) %}
-              {% set m = (seg.startIndex % 4) * 15 %}
-              <div class="postit" style="top: calc({{ seg.startIndex }} * var(--slot-h));
-              height: calc({{ slots }} * var(--slot-h));" data-slots="{{ slots }}" data-duration="{{ seg.duration }}" title="🎙 {{ seg.title }} • {{ seg.duration }} min" {# tooltip natif #} draggable="true">
+              <div class="postit" style="top: calc({{ seg.startIndex }} * var(--slot-h)); height: calc({{ slots }} * var(--slot-h));" data-slots="{{ slots }}" data-duration="{{ seg.duration }}" data-rule-id="{{ seg.ruleId|default('') }}" data-slot-id="{{ seg.slotId|default('') }}" data-broadcast-rank="{{ seg.broadcastRank|default('') }}" data-starts-at="{{ seg.startsAt|default('') }}" data-category-title="{{ seg.title|default('Catégorie inconnue') }}" data-action="click->grid#selectSlot" title="🎙 {{ seg.title }} • {{ seg.duration }} min" draggable="true">
                 🎙
                 {{ seg.title }}
                 •
@@ -211,7 +265,23 @@
       <h2>
         Émissions disponibles
       </h2>
-      <div id="emissions-pool"></div>
+      <div id="slot-selection-empty" data-grid-target="emptyState">
+        Sélectionne un créneau dans la grille pour afficher les émissions compatibles.
+      </div>
+      <div id="slot-selection-panel" data-grid-target="sidebarPanel" style="display:none;">
+        <div class="sidebar-section">
+          <h3>
+            Créneau sélectionné
+          </h3>
+          <div class="slot-summary" data-grid-target="slotSummary"></div>
+        </div>
+        <div class="sidebar-section">
+          <h3>
+            Émissions suggérées
+          </h3>
+          <div id="emissions-pool" data-grid-target="emissionsList"></div>
+        </div>
+      </div>
     </aside>
   </div>
   <div id="tooltip" class="custom-tooltip"></div>

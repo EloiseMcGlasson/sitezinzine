@@ -2,86 +2,100 @@
 
 namespace App\Controller\Admin;
 
+use App\Service\ProgrammationGridBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Repository\DiffusionRepository;
-
-
+use App\Entity\ProgrammationRuleSlot;
+use App\Repository\EmissionRepository;
+use App\Repository\ProgrammationRuleSlotRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route("/admin/grille", name: 'admin.grille.')]
 #[IsGranted("ROLE_ADMIN")]
 class GrilleController extends AbstractController
 {
-#[Route('/{startOfWeek?}', name: 'index')]
-public function index(?string $startOfWeek, DiffusionRepository $diffusionRepo): Response
-{
-    // 1) Date point de départ (ta logique "mardi 00:00")
-    $startDate = $startOfWeek
-        ? \DateTime::createFromFormat('Y-m-d', $startOfWeek)
-        : new \DateTime();
+    #[Route(
+    '/{startOfWeek}',
+    name: 'index',
+    methods: ['GET'],
+    requirements: ['startOfWeek' => '\d{4}-\d{2}-\d{2}'],
+    defaults: ['startOfWeek' => null]
+)]
+    public function index(?string $startOfWeek, ProgrammationGridBuilder $programmationGridBuilder): Response
+    {
+        $startDate = $startOfWeek
+            ? \DateTime::createFromFormat('Y-m-d', $startOfWeek)
+            : new \DateTime();
 
-    // Aligner sur mardi 00:00
-    $startOfWeekDate = (clone $startDate)->modify('this week')->modify('+1 day')->setTime(0, 0, 0);
-    $endOfWeekDate   = (clone $startOfWeekDate)->modify('+7 days');
+        $startOfWeekDate = (clone $startDate)->modify('this week')->modify('+1 day')->setTime(0, 0, 0);
+        $endOfWeekDate = (clone $startOfWeekDate)->modify('+7 days');
 
-    // 2) Génère les 7 jours (mardi → lundi)
-    $jours = [];
-    for ($i = 0; $i < 7; $i++) {
-        $jours[] = (clone $startOfWeekDate)->modify("+$i days");
-    }
+        $jours = [];
+        for ($i = 0; $i < 7; $i++) {
+            $jours[] = (clone $startOfWeekDate)->modify("+$i days");
+        }
 
-    // 3) Récupère les diffusions de la semaine
-    $diffusions = $diffusionRepo->findByWeek($startOfWeekDate, $endOfWeekDate);
-
-    // 4) Construit la structure attendue par le Twig "post-it"
-    // daySegments[dayIndex][] = [ title, duration (min), startIndex (0..95) ]
-    $daySegments = array_fill(0, 7, []);
-
-    foreach ($diffusions as $diffusion) {
-        $start = (clone $diffusion->getHoraireDiffusion())->setTime(
-            (int) $diffusion->getHoraireDiffusion()->format('H'),
-            (int) $diffusion->getHoraireDiffusion()->format('i'),
-            0
+        $daySegments = $programmationGridBuilder->buildForWeek(
+            \DateTimeImmutable::createFromMutable($startOfWeekDate),
+            \DateTimeImmutable::createFromMutable($endOfWeekDate)
         );
 
-        // Ignore hors semaine (sécurité si la requête en renvoie)
-        if ($start < $startOfWeekDate || $start >= $endOfWeekDate) {
-            continue;
-        }
+        return $this->render('admin/grille/index.html.twig', [
+            'startOfWeek' => $startOfWeekDate,
+            'jours' => $jours,
+            'daySegments' => $daySegments,
+        ]);
+    }
 
-        // Calcule l'index du jour (0..6) par rapport au mardi 00:00
-        $interval = $startOfWeekDate->diff($start);
-        $dayIndex = (int) $interval->days;
-        if ($dayIndex < 0 || $dayIndex > 6) {
-            continue;
-        }
+   #[Route('/candidates', name: 'candidates', methods: ['GET'])]
+public function candidates(
+    Request $request,
+    ProgrammationRuleSlotRepository $slotRepository,
+    EmissionRepository $emissionRepository
+): JsonResponse {
+    $slotId = $request->query->get('slotId');
 
-        // Index de quart d'heure de début (0..95)
-        $hour    = (int) $start->format('H');
-        $minute  = (int) $start->format('i');
-        $startIndex = $hour * 4 + intdiv($minute, 15);
-        if ($startIndex < 0)   { $startIndex = 0; }
-        if ($startIndex > 95)  { $startIndex = 95; }
+    if (!$slotId) {
+        return $this->json(['items' => []], 400);
+    }
 
-        $emission = $diffusion->getEmission();
-        // Durée en minutes (min 1 min => on plafonne visuel à au moins 1 slot)
-        $duration = max(1, (int) $emission->getDuree());
+    $slot = $slotRepository->find($slotId);
 
-        $daySegments[$dayIndex][] = [
-            'title'      => $emission->getTitre(),
-            'duration'   => $duration,      // p.ex. 72 → height = ceil(72/15)*8px en CSS/JS
-            'startIndex' => $startIndex,    // 0..95
+    if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
+        return $this->json(['items' => []], 404);
+    }
+
+    $rule = $slot->getRule();
+    $category = $rule?->getCategory();
+
+    if ($category === null) {
+        return $this->json(['items' => []]);
+    }
+
+    if ($category->isActive() !== true) {
+        return $this->json(['items' => []]);
+    }
+
+    if ($category->isSoftDelete() !== false) {
+        return $this->json(['items' => []]);
+    }
+
+    $emissions = $emissionRepository->findAssignableForCategory($category);
+
+    $items = [];
+    foreach ($emissions as $emission) {
+        $items[] = [
+            'id' => $emission->getId(),
+            'title' => $emission->getTitre(),
+            'meta' => sprintf('%d min', $emission->getDuree() ?? 0),
         ];
     }
 
-    return $this->render('admin/grille/index.html.twig', [
-        'startOfWeek' => $startOfWeekDate,
-        'jours'       => $jours,
-        'daySegments' => $daySegments,
+    return $this->json([
+        'items' => $items,
     ]);
 }
-
 }
-

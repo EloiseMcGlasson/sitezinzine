@@ -1,28 +1,25 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['day','emission']  // plus besoin de 'slot'
+  static targets = ['day', 'emptyState', 'sidebarPanel', 'slotSummary', 'emissionsList']
 
   connect() {
-    // 1 slot = 15 min ; 1 slot = 8px
     this.CELL_MIN = 15
     this.CELL_H   = 8
 
     this.dragged = null
     this.fromDay = null
     this.fromStartIndex = null
+    this.selectedPostit = null
 
-    // rendre draggables : post-its déjà en grille (et plus tard ceux du pool)
     this.element.querySelectorAll('.postit').forEach(el => this.makeDraggable(el, 'grid'))
 
-    // colonnes “jour” (drop global)
     this.dayTargets.forEach(day => {
       day.addEventListener('dragover', e => { e.preventDefault(); day.classList.add('drag-over') })
       day.addEventListener('dragleave', () => day.classList.remove('drag-over'))
       day.addEventListener('drop', e => this.dropOnDay(e, day))
     })
 
-    // pool (optionnel, prêt pour plus tard)
     const pool = this.element.querySelector('#emissions-pool')
     if (pool) {
       pool.addEventListener('dragover', e => { e.preventDefault(); pool.classList.add('drop-pool-hover') })
@@ -31,15 +28,23 @@ export default class extends Controller {
     }
   }
 
-  // helpers durée
-  durationToCells(d){ d=parseInt(d||'15',10); return Math.max(1, Math.ceil(d/this.CELL_MIN)) }
-  durationToPx(d){ d=parseInt(d||'15',10); return (d/this.CELL_MIN)*this.CELL_H }
+  durationToCells(d) {
+    d = parseInt(d || '15', 10)
+    return Math.max(1, Math.ceil(d / this.CELL_MIN))
+  }
+
+  durationToPx(d) {
+    d = parseInt(d || '15', 10)
+    return (d / this.CELL_MIN) * this.CELL_H
+  }
 
   makeDraggable(el, source) {
-    el.setAttribute('draggable','true')
+    el.setAttribute('draggable', 'true')
     el.dataset.source = source
+
     el.addEventListener('dragstart', () => {
       this.dragged = el
+
       if (source === 'grid') {
         this.fromDay = el.closest('.day-col')
         const top = parseFloat(el.style.top || '0')
@@ -51,30 +56,25 @@ export default class extends Controller {
     })
   }
 
-  // place/replace un post-it dans une colonne jour
   placePostIt(dayEl, startIndex) {
     const duration = parseInt(this.dragged.dataset.duration || '15', 10)
     const heightPx = this.durationToPx(duration)
-    const cells    = this.durationToCells(duration)
+    const cells = this.durationToCells(duration)
 
-    // clamp en bas de journée
     if (startIndex + cells > 96) startIndex = 96 - cells
     if (startIndex < 0) startIndex = 0
 
-    // si vient du pool, rattacher à la colonne
     if (this.dragged.dataset.source === 'pool') {
       dayEl.appendChild(this.dragged)
       this.dragged.dataset.source = 'grid'
     }
 
-    // style/position
     this.dragged.classList.add('postit')
-    this.dragged.style.top    = `${startIndex * this.CELL_H}px`
-    this.dragged.style.left   = '4px'
-    this.dragged.style.right  = '4px'
+    this.dragged.style.top = `${startIndex * this.CELL_H}px`
+    this.dragged.style.left = '4px'
+    this.dragged.style.right = '4px'
     this.dragged.style.height = `${heightPx}px`
 
-    // mémoriser
     this.fromDay = dayEl
     this.fromStartIndex = startIndex
   }
@@ -89,7 +89,6 @@ export default class extends Controller {
     this.placePostIt(dayEl, startIndex)
   }
 
-  // retour au pool (quand tu activeras la colonne droite)
   dropBackToPool(e, pool) {
     e.preventDefault()
     pool.classList.remove('drop-pool-hover')
@@ -103,5 +102,69 @@ export default class extends Controller {
     this.dragged = null
     this.fromDay = null
     this.fromStartIndex = null
+  }
+
+  async selectSlot(event) {
+    const postit = event.currentTarget
+
+    if (this.selectedPostit) {
+      this.selectedPostit.classList.remove('is-selected')
+    }
+
+    this.selectedPostit = postit
+    this.selectedPostit.classList.add('is-selected')
+
+    const categoryTitle = postit.dataset.categoryTitle || 'Catégorie inconnue'
+    const duration = postit.dataset.duration || ''
+    const startsAt = postit.dataset.startsAt || ''
+    const broadcastRank = postit.dataset.broadcastRank || ''
+    const ruleId = postit.dataset.ruleId || ''
+    const slotId = postit.dataset.slotId || ''
+
+    this.emptyStateTarget.style.display = 'none'
+    this.sidebarPanelTarget.style.display = 'block'
+
+    this.slotSummaryTarget.innerHTML = `
+      <div><span class="label">Catégorie :</span> ${categoryTitle}</div>
+      <div><span class="label">Début :</span> ${startsAt}</div>
+      <div><span class="label">Durée :</span> ${duration} min</div>
+      <div><span class="label">Rang :</span> ${broadcastRank}</div>
+    `
+
+    this.emissionsListTarget.innerHTML = '<div>Chargement…</div>'
+
+    try {
+      const url = `/admin/grille/candidates?ruleId=${encodeURIComponent(ruleId)}&slotId=${encodeURIComponent(slotId)}&startsAt=${encodeURIComponent(startsAt)}`
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Réponse invalide')
+      }
+
+      const data = await response.json()
+      this.renderEmissions(data)
+    } catch (error) {
+      this.emissionsListTarget.innerHTML = '<div>Impossible de charger les émissions.</div>'
+    }
+  }
+
+  renderEmissions(data) {
+    const items = Array.isArray(data.items) ? data.items : []
+
+    if (items.length === 0) {
+      this.emissionsListTarget.innerHTML = '<div>Aucune émission compatible pour le moment.</div>'
+      return
+    }
+
+    this.emissionsListTarget.innerHTML = items.map(item => `
+      <div class="emission-card" data-emission-id="${item.id}">
+        ${item.title}
+        <small>${item.meta ?? ''}</small>
+      </div>
+    `).join('')
   }
 }

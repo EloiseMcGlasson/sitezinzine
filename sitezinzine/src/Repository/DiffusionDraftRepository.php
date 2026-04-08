@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\DiffusionDraft;
+use App\Entity\ProgrammationRuleSlot;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+class DiffusionDraftRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, DiffusionDraft::class);
+    }
+
+    public function findOneBySlotAndHoraire(
+        ProgrammationRuleSlot $slot,
+        \DateTimeImmutable $horaireDiffusion
+    ): ?DiffusionDraft {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.slot = :slot')
+            ->andWhere('d.horaireDiffusion = :horaire')
+            ->setParameter('slot', $slot)
+            ->setParameter('horaire', $horaireDiffusion)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findByWeek(\DateTimeImmutable $start, \DateTimeImmutable $end): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.horaireDiffusion >= :start')
+            ->andWhere('d.horaireDiffusion < :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->orderBy('d.horaireDiffusion', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+}

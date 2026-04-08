@@ -19,7 +19,7 @@ class HomeController extends AbstractController
     #[Route("/", name: "home")]
     public function index(EmissionRepository $emissionRepository, EvenementRepository $evenementRepository): Response
     {
-        $date = new \DateTime('2025-06-25');
+        $date = new \DateTime('2026-04-07');
 
         $emissions = $emissionRepository->findEmissionsByDate($date);
 

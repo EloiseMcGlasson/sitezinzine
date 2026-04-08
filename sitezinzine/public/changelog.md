@@ -1,14 +1,23 @@
 # Changelog
 
+## [1.0.82] - 2026-04-xx
+### Ajout
+- Ajout du générateur de programmation.
+- Ajout de la liste des émissions possible quand on clic sur un créneau.
+- Ajout de la grille temporaire diffusionDraft.
+### Correction
+- Mise à jour de la base de données le 7 avril 2026.
+
+
 ## [1.0.81] - 2026-04-06
 ### Ajout
 - Ajout récurrence bimestrielle et bimensuelle pour la programmation prévisionnelle.
 
 
-
 ## [1.0.80] - 2026-04-05 quar
 ### Ajout
 - Ajout de la récurrence mensuelle pour la programmation prévisionnelle + controller.js correspondant.
+
 
 ## [1.0.79] - 2026-04-05 ter
 ### Ajout
