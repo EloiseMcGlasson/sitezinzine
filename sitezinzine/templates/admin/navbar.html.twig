@@ -232,148 +232,113 @@
     }
   }
 </style>
-
 <nav class="admin-nav">
   <div class="brand">
     <a href="https://eloisemcglasson.ovh/" target="_blank" rel="noopener">
-      <img class="logo" src="/images/logo.gif" alt="Logo">
-    </a>
-  </div>
-
-  <button class="burger" type="button"
-    aria-label="Ouvrir/fermer le menu"
-    aria-expanded="false"
-    aria-controls="adminMenu"
-    onclick="
-      const nav = this.closest('nav');
-      const menu = nav.querySelector('#adminMenu');
-      const isOpen = menu.classList.toggle('active');
-      this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    ">
-    <span></span><span></span><span></span>
-  </button>
-
-  <ul class="nav-menu" id="adminMenu">
-    <li>
-      <a class="nav-link {{ app.request.get('_route') == 'admin.index' ? 'active' : '' }}"
-         href="{{ path('admin.index') }}">
-        Accueil
-      </a>
-    </li>
-
-    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
-
-    <li class="dropdown">
-      <button class="dropbtn" type="button"
-        aria-expanded="false"
-        onclick="
-          const li = this.closest('li.dropdown');
-          const isOpen = li.classList.toggle('open');
-          this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        ">
-        Gestion des émissions
-      </button>
-
-      <div class="dropdown-content">
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.emission.' ? 'active' : '' }}"
-           href="{{ path('admin.emission.index') }}">
-          Émissions
-        </a>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}"
-           href="{{ path('admin.InviteOldAnimateur.index') }}">
-          Invité/animateur
-        </a>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.categorie.' ? 'active' : '' }}"
-           href="{{ path('admin.categorie.index') }}">
-          Catégories
-        </a>
-
-        {% if is_granted('ROLE_ADMIN') %}
-          <a class="nav-link {{ app.request.get('_route') starts with 'admin.theme.' ? 'active' : '' }}"
-             href="{{ path('admin.theme.index') }}">
-            Thèmes
-          </a>
-          <a class="nav-link {{ app.request.get('_route') starts with 'admin.editeur.' ? 'active' : '' }}"
-             href="{{ path('admin.editeur.index') }}">
-            Éditeurs
-          </a>
-        {% endif %}
-      </div>
-    </li>
-
-    {% if is_granted('ROLE_EDITOR') %}
-      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
-
-      <li>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.annonce.' ? 'active' : '' }}"
-           href="{{ path('admin.annonce.index') }}">
-          Annonces
-        </a>
-      </li>
-
-      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
-
-      <li>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.evenement.' ? 'active' : '' }}"
-           href="{{ path('admin.evenement.index') }}">
-          Évènements
-        </a>
-      </li>
-
-      <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
-
-      <li>
-        <a class="nav-link {{ app.request.get('_route') starts with 'admin.page.' ? 'active' : '' }}"
-           href="{{ path('admin.page.index') }}">
-          Pages
-        </a>
-      </li>
-    {% endif %}
-
-{% if is_granted('ROLE_ADMIN') %}
-  <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
-
-  <li class="dropdown">
-    <button class="dropbtn" type="button"
-      aria-expanded="false"
-      onclick="
-        const li = this.closest('li.dropdown');
-        const isOpen = li.classList.toggle('open');
+      <img class="logo" src="/images/logo.gif" alt="Logo"></a>
+    </div>
+    <button class="burger" type="button" aria-label="Ouvrir/fermer le menu" aria-expanded="false" aria-controls="adminMenu" onclick="
+        const nav = this.closest('nav');
+        const menu = nav.querySelector('#adminMenu');
+        const isOpen = menu.classList.toggle('active');
         this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       ">
-      Administration
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
-
-    <div class="dropdown-content">
-      <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}"
-         href="{{ path('admin.user.index') }}">
-        Utilisateurices
-      </a>
-
-      <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}"
-         href="{{ path('admin.grille.index') }}">
-        Grille
-      </a>
-
-      <a class="nav-link {{ app.request.get('_route') starts with 'admin_categorieTagImage_' ? 'active' : '' }}"
-         href="{{ path('admin_categorieTagImage_index') }}">
-        Images tags MP3
-      </a>
-            <a class="nav-link {{ app.request.get('_route') starts with 'admin_programmationRule_' ? 'active' : '' }}"
-         href="{{ path('admin_programmationRule_index') }}">
-        Règles de programmation
-      </a>
-    </div>
-  </li>
-{% endif %}
-
-    <li class="sep" aria-hidden="true"><img src="/images/puce-rond-rouge.gif" alt=""></li>
-
-    <li>
-      <a class="{{ app.request.get('_route') == 'admin.emission.rechercheadmin' ? 'active' : '' }}"
-         href="{{ path('admin.emission.rechercheadmin') }}">
-        <img src="/images/ico-recherche.gif" alt="Recherche">
-      </a>
-    </li>
-  </ul>
-</nav>
+    <ul class="nav-menu" id="adminMenu">
+      <li>
+        <a class="nav-link {{ app.request.get('_route') == 'admin.index' ? 'active' : '' }}" href="{{ path('admin.index') }}">
+          Accueil
+        </a>
+      </li>
+      <li class="sep" aria-hidden="true">
+        <img src="/images/puce-rond-rouge.gif" alt=""></li>
+        <li class="dropdown">
+          <button class="dropbtn" type="button" aria-expanded="false" onclick="
+              const li = this.closest('li.dropdown');
+              const isOpen = li.classList.toggle('open');
+              this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            ">
+            Gestion des émissions
+          </button>
+          <div class="dropdown-content">
+            <a class="nav-link {{ app.request.get('_route') starts with 'admin.emission.' ? 'active' : '' }}" href="{{ path('admin.emission.index') }}">
+              Émissions
+            </a>
+            <a class="nav-link {{ app.request.get('_route') starts with 'admin.InviteOldAnimateur.' ? 'active' : '' }}" href="{{ path('admin.InviteOldAnimateur.index') }}">
+              Invité/animateur
+            </a>
+            <a class="nav-link {{ app.request.get('_route') starts with 'admin.categorie.' ? 'active' : '' }}" href="{{ path('admin.categorie.index') }}">
+              Catégories
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+              <a class="nav-link {{ app.request.get('_route') starts with 'admin.theme.' ? 'active' : '' }}" href="{{ path('admin.theme.index') }}">
+                Thèmes
+              </a>
+              <a class="nav-link {{ app.request.get('_route') starts with 'admin.editeur.' ? 'active' : '' }}" href="{{ path('admin.editeur.index') }}">
+                Éditeurs
+              </a>
+            {% endif %}
+          </div>
+        </li>
+        {% if is_granted('ROLE_EDITOR') %}
+          <li class="sep" aria-hidden="true">
+            <img src="/images/puce-rond-rouge.gif" alt=""></li>
+            <li>
+              <a class="nav-link {{ app.request.get('_route') starts with 'admin.annonce.' ? 'active' : '' }}" href="{{ path('admin.annonce.index') }}">
+                Annonces
+              </a>
+            </li>
+            <li class="sep" aria-hidden="true">
+              <img src="/images/puce-rond-rouge.gif" alt=""></li>
+              <li>
+                <a class="nav-link {{ app.request.get('_route') starts with 'admin.evenement.' ? 'active' : '' }}" href="{{ path('admin.evenement.index') }}">
+                  Évènements
+                </a>
+              </li>
+              <li class="sep" aria-hidden="true">
+                <img src="/images/puce-rond-rouge.gif" alt=""></li>
+                <li>
+                  <a class="nav-link {{ app.request.get('_route') starts with 'admin.page.' ? 'active' : '' }}" href="{{ path('admin.page.index') }}">
+                    Pages
+                  </a>
+                </li>
+              {% endif %}
+              {% if is_granted('ROLE_ADMIN') %}
+                <li class="sep" aria-hidden="true">
+                  <img src="/images/puce-rond-rouge.gif" alt=""></li>
+                  <li class="dropdown">
+                    <button class="dropbtn" type="button" aria-expanded="false" onclick="
+                        const li = this.closest('li.dropdown');
+                        const isOpen = li.classList.toggle('open');
+                        this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                      ">
+                      Administration
+                    </button>
+                    <div class="dropdown-content">
+                      <a class="nav-link {{ app.request.get('_route') starts with 'admin.user.' ? 'active' : '' }}" href="{{ path('admin.user.index') }}">
+                        Utilisateurices
+                      </a>
+                      <a class="nav-link {{ app.request.get('_route') starts with 'admin.grille.' ? 'active' : '' }}" href="{{ path('admin.grille.index_current') }}">
+                        Grille
+                      </a>
+                      <a class="nav-link {{ app.request.get('_route') starts with 'admin_categorieTagImage_' ? 'active' : '' }}" href="{{ path('admin_categorieTagImage_index') }}">
+                        Images tags MP3
+                      </a>
+                      <a class="nav-link {{ app.request.get('_route') starts with 'admin_programmationRule_' ? 'active' : '' }}" href="{{ path('admin_programmationRule_index') }}">
+                        Règles de programmation
+                      </a>
+                    </div>
+                  </li>
+                {% endif %}
+                <li class="sep" aria-hidden="true">
+                  <img src="/images/puce-rond-rouge.gif" alt=""></li>
+                  <li>
+                    <a class="{{ app.request.get('_route') == 'admin.emission.rechercheadmin' ? 'active' : '' }}" href="{{ path('admin.emission.rechercheadmin') }}">
+                      <img src="/images/ico-recherche.gif" alt="Recherche"></a>
+                    </li>
+                  </ul>
+                </nav>
+                

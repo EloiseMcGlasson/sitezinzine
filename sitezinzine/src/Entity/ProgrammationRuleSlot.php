@@ -223,27 +223,27 @@ class ProgrammationRuleSlot
     }
 
     public function setRecurrenceType(string $recurrenceType): static
-{
-    $allowed = [
-        self::RECURRENCE_WEEKLY,
-        self::RECURRENCE_MONTHLY,
-    ];
+    {
+        $allowed = [
+            self::RECURRENCE_WEEKLY,
+            self::RECURRENCE_MONTHLY,
+        ];
 
-    if (!in_array($recurrenceType, $allowed, true)) {
-        throw new \InvalidArgumentException('recurrenceType invalide.');
+        if (!in_array($recurrenceType, $allowed, true)) {
+            throw new \InvalidArgumentException('recurrenceType invalide.');
+        }
+
+        $this->recurrenceType = $recurrenceType;
+
+        if ($recurrenceType === self::RECURRENCE_WEEKLY) {
+            $this->monthlyOccurrence = null;
+            $this->monthInterval = 1;
+        }
+
+        $this->touch();
+
+        return $this;
     }
-
-    $this->recurrenceType = $recurrenceType;
-
-    if ($recurrenceType === self::RECURRENCE_WEEKLY) {
-        $this->monthlyOccurrence = null;
-        $this->monthInterval = 1;
-    }
-
-    $this->touch();
-
-    return $this;
-}
 
     public function getMonthlyOccurrence(): ?int
     {
@@ -384,9 +384,9 @@ class ProgrammationRuleSlot
     {
         return match ($this->broadcastRank) {
             1 => '1re diffusion',
-            2 => 'Rediffusion 1',
-            3 => 'Rediffusion 2',
-            default => 'Rediffusion ' . ($this->broadcastRank - 1),
+            2 => '1re rediffusion',
+            3 => '2e rediffusion',
+            default => 'Diffusion inconnue',
         };
     }
 

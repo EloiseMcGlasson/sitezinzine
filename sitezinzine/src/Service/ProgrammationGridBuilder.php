@@ -24,10 +24,6 @@ class ProgrammationGridBuilder
                 continue;
             }
 
-            if (!$rule->isCurrentlyValid($startOfWeek)) {
-                continue;
-            }
-
             foreach ($rule->getSlots() as $slot) {
                 if (!$slot->isActive() || $slot->isDeleted()) {
                     continue;
@@ -70,6 +66,7 @@ class ProgrammationGridBuilder
         foreach ($daySegments as &$segments) {
             usort($segments, static fn(array $a, array $b) => $a['startIndex'] <=> $b['startIndex']);
         }
+        unset($segments);
 
         return $daySegments;
     }
@@ -86,44 +83,85 @@ class ProgrammationGridBuilder
         $occurrences = [];
 
         if ($slot->isWeekly()) {
-            $date = $this->findDayInDisplayedWeek($startOfWeek, $slot->getDayOfWeek());
-            if ($date !== null) {
-                $date = $date->modify(sprintf('+%d days', $slot->getWeekOffset() * 7));
-                $startsAt = $this->applyTime($date, $slot);
+            $visibleDate = $this->findDayInDisplayedWeek($startOfWeek, $slot->getDayOfWeek());
 
-                if ($startsAt >= $startOfWeek && $startsAt < $endOfWeek) {
+            if ($visibleDate !== null) {
+                $startsAt = $this->applyTime($visibleDate, $slot);
+
+                if ($this->weeklyOccurrenceMatchesRule($rule, $slot, $startsAt)) {
                     $occurrences[] = $startsAt;
                 }
             }
         }
 
         if ($slot->isMonthly()) {
-            $cursor = $startOfWeek->modify('first day of this month')->setTime(0, 0);
+            $monthsToCheck = [
+                $startOfWeek->modify('first day of last month')->setTime(0, 0, 0),
+                $startOfWeek->modify('first day of this month')->setTime(0, 0, 0),
+                $startOfWeek->modify('first day of next month')->setTime(0, 0, 0),
+            ];
 
-            while ($cursor < $endOfWeek) {
-                if ($this->monthMatchesInterval($rule, $cursor, $slot->getMonthInterval())) {
-                    $baseDate = $this->resolveMonthlyOccurrenceDate(
-                        (int) $cursor->format('Y'),
-                        (int) $cursor->format('m'),
-                        $slot->getDayOfWeek(),
-                        $slot->getMonthlyOccurrence()
-                    );
-
-                    if ($baseDate !== null) {
-                        $baseDate = $baseDate->modify(sprintf('+%d days', $slot->getWeekOffset() * 7));
-                        $startsAt = $this->applyTime($baseDate, $slot);
-
-                        if ($startsAt >= $startOfWeek && $startsAt < $endOfWeek) {
-                            $occurrences[] = $startsAt;
-                        }
-                    }
+            foreach ($monthsToCheck as $monthCursor) {
+                if (!$this->monthMatchesInterval($rule, $monthCursor, $slot->getMonthInterval())) {
+                    continue;
                 }
 
-                $cursor = $cursor->modify('first day of next month')->setTime(0, 0);
+                $baseDate = $this->resolveMonthlyOccurrenceDate(
+                    (int) $monthCursor->format('Y'),
+                    (int) $monthCursor->format('m'),
+                    $slot->getDayOfWeek(),
+                    $slot->getMonthlyOccurrence()
+                );
+
+                if ($baseDate === null) {
+                    continue;
+                }
+
+                $visibleDate = $baseDate->modify(sprintf('+%d days', $slot->getWeekOffset() * 7));
+                $startsAt = $this->applyTime($visibleDate, $slot);
+
+                if ($startsAt < $startOfWeek || $startsAt >= $endOfWeek) {
+                    continue;
+                }
+
+                if (!$this->dateMatchesRuleWindow($rule, $baseDate)) {
+                    continue;
+                }
+
+                $key = $startsAt->format('Y-m-d H:i:s');
+                $occurrences[$key] = $startsAt;
             }
         }
 
-        return $occurrences;
+        return array_values($occurrences);
+    }
+
+    private function weeklyOccurrenceMatchesRule(
+        ProgrammationRule $rule,
+        ProgrammationRuleSlot $slot,
+        \DateTimeImmutable $visibleStartsAt
+    ): bool {
+        $anchorDate = $visibleStartsAt->modify(sprintf('-%d days', $slot->getWeekOffset() * 7));
+
+        return $this->dateMatchesRuleWindow($rule, $anchorDate);
+    }
+
+    private function dateMatchesRuleWindow(
+        ProgrammationRule $rule,
+        \DateTimeImmutable $date
+    ): bool {
+        $validFrom = $this->toImmutableStartOfDay($rule->getValidFrom());
+        $validUntil = $this->toImmutableEndOfDay($rule->getValidUntil());
+
+        if ($validFrom !== null && $date < $validFrom) {
+            return false;
+        }
+
+        if ($validUntil !== null && $date > $validUntil) {
+            return false;
+        }
+
+        return true;
     }
 
     private function findDayInDisplayedWeek(\DateTimeImmutable $startOfWeek, ?int $dayOfWeek): ?\DateTimeImmutable
@@ -148,7 +186,7 @@ class ProgrammationGridBuilder
         $startTime = $slot->getStartTime();
 
         if ($startTime === null) {
-            return $date->setTime(0, 0);
+            return $date->setTime(0, 0, 0);
         }
 
         return $date->setTime(
@@ -167,9 +205,8 @@ class ProgrammationGridBuilder
             return true;
         }
 
-        $anchor = $rule->getValidFrom()
-            ? $rule->getValidFrom()->setTime(0, 0)
-            : $monthDate->setDate((int) $monthDate->format('Y'), 1, 1)->setTime(0, 0);
+        $anchor = $this->toImmutableStartOfDay($rule->getValidFrom())
+            ?? $monthDate->setDate((int) $monthDate->format('Y'), 1, 1)->setTime(0, 0, 0);
 
         $anchorYear = (int) $anchor->format('Y');
         $anchorMonth = (int) $anchor->format('n');
@@ -207,11 +244,51 @@ class ProgrammationGridBuilder
         }
 
         if ($monthlyOccurrence === ProgrammationRuleSlot::MONTHLY_LAST) {
-            return !empty($matchingDays) ? end($matchingDays) : null;
+            if (empty($matchingDays)) {
+                return null;
+            }
+
+            $lastMatch = end($matchingDays);
+
+            return $lastMatch instanceof \DateTimeImmutable ? $lastMatch : null;
         }
 
         $index = $monthlyOccurrence - 1;
 
         return $matchingDays[$index] ?? null;
+    }
+
+    private function toImmutableStartOfDay(?\DateTimeInterface $date): ?\DateTimeImmutable
+    {
+        if ($date === null) {
+            return null;
+        }
+
+        if ($date instanceof \DateTimeImmutable) {
+            return $date->setTime(0, 0, 0);
+        }
+
+        if ($date instanceof \DateTime) {
+            return \DateTimeImmutable::createFromMutable($date)->setTime(0, 0, 0);
+        }
+
+        return null;
+    }
+
+    private function toImmutableEndOfDay(?\DateTimeInterface $date): ?\DateTimeImmutable
+    {
+        if ($date === null) {
+            return null;
+        }
+
+        if ($date instanceof \DateTimeImmutable) {
+            return $date->setTime(23, 59, 59);
+        }
+
+        if ($date instanceof \DateTime) {
+            return \DateTimeImmutable::createFromMutable($date)->setTime(23, 59, 59);
+        }
+
+        return null;
     }
 }

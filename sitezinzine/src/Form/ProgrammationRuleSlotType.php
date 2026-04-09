@@ -113,16 +113,15 @@ class ProgrammationRuleSlotType extends AbstractType
                 'placeholder' => false,
                 'choices' => [
                     '1re diffusion' => 1,
-                    'Rediffusion 1' => 2,
-                    'Rediffusion 2' => 3,
-                    'Rediffusion 3' => 4,
+                    '1re rediffusion' => 2,
+                    '2e rediffusion' => 3,
                 ],
                 'help' => 'Choisis s’il s’agit de la diffusion principale ou d’une rediffusion.',
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Positive(),
                     new Assert\Choice([
-                        'choices' => [1, 2, 3, 4],
+                        'choices' => [1, 2, 3],
                     ]),
                 ],
             ])

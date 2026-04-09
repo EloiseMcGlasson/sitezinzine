@@ -209,7 +209,7 @@ class ProgrammationRuleSlotController extends AbstractController
             );
         }
 
-        if (!in_array($broadcastRank, [1, 2, 3, 4], true)) {
+        if (!in_array($broadcastRank, [1, 2, 3], true)) {
             $form->get('broadcastRank')->addError(
                 new FormError('L’ordre de diffusion sélectionné est invalide.')
             );
