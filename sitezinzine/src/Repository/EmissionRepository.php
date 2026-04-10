@@ -195,7 +195,7 @@ class EmissionRepository extends ServiceEntityRepository
             'histoire/politique' => [2, 9],
             'agriculture/forêt/écologie' => [3, 10, 5],
             'alimentation/santé' => [4, 11],
-            'féminisme/société' => [14, 6],
+            'féminisme/société/éducation' => [14, 6, 16],
             'international/migrations' => [13, 12],
         ];
     }
@@ -422,82 +422,74 @@ LIMIT 6
 
    public function findBySearchAdmin(array $criteria, int $page = 1): PaginationInterface
 {
-    $params = [];
+    $qb = $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.theme', 't')
+        ->andWhere('c.id IS NOT NULL');
 
-    // Sous-requête pour filtrer par date de diffusion si nécessaire
+    // Filtre par dates de diffusion via sous-requête
     if (!empty($criteria['dateDebut']) || !empty($criteria['dateFin'])) {
-        $subQb = $this->createQueryBuilder('e2')
-            ->select('e2.id')
-            ->leftJoin('e2.diffusions', 'd2')
-            ->groupBy('e2.id');
+        $subQb = $this->getEntityManager()->createQueryBuilder()
+            ->select('IDENTITY(d2.emission)')
+            ->from(\App\Entity\Diffusion::class, 'd2')
+            ->groupBy('d2.emission');
 
         $havingConditions = [];
 
         if (!empty($criteria['dateDebut'])) {
             $havingConditions[] = 'MAX(d2.horaireDiffusion) >= :dateDebut';
-            $params['dateDebut'] = $criteria['dateDebut'];
+            $qb->setParameter('dateDebut', $criteria['dateDebut']);
         }
 
         if (!empty($criteria['dateFin'])) {
             $havingConditions[] = 'MAX(d2.horaireDiffusion) <= :dateFin';
-            $params['dateFin'] = $criteria['dateFin'];
+            $qb->setParameter('dateFin', $criteria['dateFin']);
         }
 
         if (!empty($havingConditions)) {
             $subQb->having(implode(' AND ', $havingConditions));
         }
 
-        $ids = array_column(
-            $subQb->getQuery()
-                ->setParameters($params)
-                ->getScalarResult(),
-            'id'
+        $ids = array_map(
+            'current',
+            $subQb->getQuery()->getScalarResult()
         );
 
         if (empty($ids)) {
             return $this->paginator->paginate([], $page, 12);
         }
-    }
 
-    // Requête principale
-    $qb = $this->createQueryBuilder('e')
-        ->addSelect('MAX(d.horaireDiffusion) AS HIDDEN lastDiff')
-        ->leftJoin('e.diffusions', 'd')
-        ->leftJoin('e.categorie', 'c')
-        ->leftJoin('e.theme', 't')
-        ->leftJoin('e.users', 'u')
-        ->leftJoin('e.inviteOldAnimateurs', 'ioa')
-        ->andWhere('c.id != 0');
-
-    if (isset($ids)) {
         $qb->andWhere('e.id IN (:ids)')
             ->setParameter('ids', $ids);
     }
 
     // Recherche texte robuste : mots entiers sur titre / descriptif / ref
-if (!empty($criteria['titre'])) {
-    $search = trim((string) $criteria['titre']);
-    $words = preg_split('/\s+/', mb_strtolower($search));
+    if (!empty($criteria['titre'])) {
+        $search = trim((string) $criteria['titre']);
+        $words = preg_split('/\s+/', mb_strtolower($search));
 
-    foreach ($words as $index => $word) {
-        $word = trim($word);
+        $validWords = [];
+        foreach ($words as $word) {
+            $word = trim($word);
 
-        if ($word === '' || mb_strlen($word) < 3) {
-            continue;
+            if ($word !== '' && mb_strlen($word) >= 3) {
+                $validWords[] = $word;
+            }
         }
 
-        $paramName = 'searchRegex' . $index;
-        $regex = '(^|[[:space:][:punct:]])' . preg_quote($word) . '($|[[:space:][:punct:]])';
+        foreach ($validWords as $index => $word) {
+            $paramName = 'searchRegex' . $index;
+            $regex = '(^|[[:space:][:punct:]])' . preg_quote($word, '/') . '($|[[:space:][:punct:]])';
 
-        $qb->andWhere(
-            $qb->expr()->orX(
-                "REGEXP(LOWER(e.titre), :$paramName) = 1",
-                "REGEXP(LOWER(e.descriptif), :$paramName) = 1",
-                "REGEXP(LOWER(e.ref), :$paramName) = 1"
-            )
-        )->setParameter($paramName, $regex);
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    "REGEXP(LOWER(e.titre), :$paramName) = 1",
+                    "REGEXP(LOWER(e.descriptif), :$paramName) = 1",
+                    "REGEXP(LOWER(e.ref), :$paramName) = 1"
+                )
+            )->setParameter($paramName, $regex);
+        }
     }
-}
 
     if (($criteria['categorie'] ?? null) instanceof Categories) {
         $qb->andWhere('c.id = :categorieId')
@@ -516,33 +508,71 @@ if (!empty($criteria['titre'])) {
             [$type, $id] = $parts;
 
             if ($type === 'user' && ctype_digit($id)) {
-                $qb->andWhere('u.id = :personId')
+                $qb->innerJoin('e.users', 'u_filter')
+                    ->andWhere('u_filter.id = :personId')
                     ->setParameter('personId', (int) $id);
-            }
-
-            if ($type === 'old' && ctype_digit($id)) {
-                $qb->andWhere('ioa.id = :personId')
+            } elseif ($type === 'old' && ctype_digit($id)) {
+                $qb->innerJoin('e.inviteOldAnimateurs', 'ioa_filter')
+                    ->andWhere('ioa_filter.id = :personId')
                     ->setParameter('personId', (int) $id);
             }
         }
     }
 
+    // Sous-requête pour trier par dernière diffusion sans GROUP BY global
+    $lastDiffSubQuery = $this->getEntityManager()->createQueryBuilder()
+        ->select('MAX(d3.horaireDiffusion)')
+        ->from(\App\Entity\Diffusion::class, 'd3')
+        ->where('d3.emission = e')
+        ->getDQL();
+
+    $qb->addSelect('(' . $lastDiffSubQuery . ') AS HIDDEN lastDiff')
+        ->orderBy('lastDiff', 'DESC')
+        ->addOrderBy('e.id', 'DESC');
+
     $pagination = $this->paginator->paginate(
-        $qb->groupBy('e.id')
-            ->orderBy('lastDiff', 'DESC'),
+        $qb,
         $page,
         12,
         [
-            'distinct' => false,
+            'distinct' => true,
         ]
     );
 
-    // Injecter la date de dernière diffusion dans l’objet Emission
+    // Hydrater lastDiffusion sur les émissions de la page en une seule requête
+    $emissions = [];
     foreach ($pagination as $item) {
-        if (is_array($item) && isset($item[0], $item['lastDiff']) && $item['lastDiff'] !== null) {
-            /** @var \App\Entity\Emission $emission */
-            $emission = $item[0];
-            $emission->setLastDiffusion(new \DateTime($item['lastDiff']));
+        if ($item instanceof \App\Entity\Emission) {
+            $emissions[] = $item;
+        }
+    }
+
+    if (!empty($emissions)) {
+        $emissionIds = array_map(
+            fn (\App\Entity\Emission $emission) => $emission->getId(),
+            $emissions
+        );
+
+        $rows = $this->getEntityManager()->createQueryBuilder()
+            ->select('IDENTITY(d.emission) AS emissionId, MAX(d.horaireDiffusion) AS lastDiff')
+            ->from(\App\Entity\Diffusion::class, 'd')
+            ->where('d.emission IN (:ids)')
+            ->groupBy('d.emission')
+            ->setParameter('ids', $emissionIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $lastDiffByEmissionId = [];
+        foreach ($rows as $row) {
+            $lastDiffByEmissionId[(int) $row['emissionId']] = $row['lastDiff'];
+        }
+
+        foreach ($emissions as $emission) {
+            $lastDiff = $lastDiffByEmissionId[$emission->getId()] ?? null;
+
+            if ($lastDiff !== null) {
+                $emission->setLastDiffusion(new \DateTime($lastDiff));
+            }
         }
     }
 
@@ -555,84 +585,76 @@ if (!empty($criteria['titre'])) {
 
     public function findBySearch(array $criteria, int $page = 1): PaginationInterface
 {
-    $params = [];
+    $qb = $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.theme', 't')
+        ->andWhere('e.url IS NOT NULL')
+        ->andWhere('e.url != :emptyUrl')
+        ->andWhere('c.id IS NOT NULL')
+        ->setParameter('emptyUrl', '');
 
-    // Sous-requête pour filtrer par date de diffusion si nécessaire
+    // Filtre par dates de diffusion via sous-requête
     if (!empty($criteria['dateDebut']) || !empty($criteria['dateFin'])) {
-        $subQb = $this->createQueryBuilder('e2')
-            ->select('e2.id')
-            ->leftJoin('e2.diffusions', 'd2')
-            ->groupBy('e2.id');
+        $subQb = $this->getEntityManager()->createQueryBuilder()
+            ->select('IDENTITY(d2.emission)')
+            ->from(\App\Entity\Diffusion::class, 'd2')
+            ->groupBy('d2.emission');
 
         $havingConditions = [];
 
         if (!empty($criteria['dateDebut'])) {
             $havingConditions[] = 'MAX(d2.horaireDiffusion) >= :dateDebut';
-            $params['dateDebut'] = $criteria['dateDebut'];
+            $qb->setParameter('dateDebut', $criteria['dateDebut']);
         }
 
         if (!empty($criteria['dateFin'])) {
             $havingConditions[] = 'MAX(d2.horaireDiffusion) <= :dateFin';
-            $params['dateFin'] = $criteria['dateFin'];
+            $qb->setParameter('dateFin', $criteria['dateFin']);
         }
 
         if (!empty($havingConditions)) {
             $subQb->having(implode(' AND ', $havingConditions));
         }
 
-        $ids = array_column(
-            $subQb->getQuery()
-                ->setParameters($params)
-                ->getScalarResult(),
-            'id'
+        $ids = array_map(
+            'current',
+            $subQb->getQuery()->getScalarResult()
         );
 
         if (empty($ids)) {
             return $this->paginator->paginate([], $page, 12);
         }
-    }
 
-    // Requête principale
-    $qb = $this->createQueryBuilder('e')
-        ->addSelect('MAX(d.horaireDiffusion) AS HIDDEN lastDiff')
-        ->leftJoin('e.diffusions', 'd')
-        ->leftJoin('e.categorie', 'c')
-        ->leftJoin('e.theme', 't')
-        ->leftJoin('e.users', 'u')
-        ->leftJoin('e.inviteOldAnimateurs', 'ioa')
-        ->andWhere('e.url IS NOT NULL AND e.url != :emptyUrl')
-        ->andWhere('c.id != 0')
-        ->setParameter('emptyUrl', '');
-
-    if (isset($ids)) {
         $qb->andWhere('e.id IN (:ids)')
             ->setParameter('ids', $ids);
     }
 
     // Recherche texte robuste : mots entiers sur titre / descriptif / ref
-if (!empty($criteria['titre'])) {
-    $search = trim((string) $criteria['titre']);
-    $words = preg_split('/\s+/', mb_strtolower($search));
+    if (!empty($criteria['titre'])) {
+        $search = trim((string) $criteria['titre']);
+        $words = preg_split('/\s+/', mb_strtolower($search));
 
-    foreach ($words as $index => $word) {
-        $word = trim($word);
-
-        if ($word === '' || mb_strlen($word) < 3) {
-            continue;
+        $validWords = [];
+        foreach ($words as $word) {
+            $word = trim($word);
+            if ($word !== '' && mb_strlen($word) >= 3) {
+                $validWords[] = $word;
+            }
         }
 
-        $paramName = 'searchRegex' . $index;
-        $regex = '(^|[[:space:][:punct:]])' . preg_quote($word) . '($|[[:space:][:punct:]])';
+        foreach ($validWords as $index => $word) {
+            $paramName = 'searchRegex' . $index;
+            $regex = '(^|[[:space:][:punct:]])' . preg_quote($word, '/') . '($|[[:space:][:punct:]])';
 
-        $qb->andWhere(
-            $qb->expr()->orX(
-                "REGEXP(LOWER(e.titre), :$paramName) = 1",
-                "REGEXP(LOWER(e.descriptif), :$paramName) = 1",
-                "REGEXP(LOWER(e.ref), :$paramName) = 1"
-            )
-        )->setParameter($paramName, $regex);
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    "REGEXP(LOWER(e.titre), :$paramName) = 1",
+                    "REGEXP(LOWER(e.descriptif), :$paramName) = 1",
+                    "REGEXP(LOWER(e.ref), :$paramName) = 1"
+                )
+            )->setParameter($paramName, $regex);
+        }
     }
-}
 
     if (($criteria['categorie'] ?? null) instanceof Categories) {
         $qb->andWhere('c.id = :categorieId')
@@ -651,33 +673,55 @@ if (!empty($criteria['titre'])) {
             [$type, $id] = $parts;
 
             if ($type === 'user' && ctype_digit($id)) {
-                $qb->andWhere('u.id = :personId')
+                $qb->innerJoin('e.users', 'u_filter')
+                    ->andWhere('u_filter.id = :personId')
                     ->setParameter('personId', (int) $id);
             }
 
             if ($type === 'old' && ctype_digit($id)) {
-                $qb->andWhere('ioa.id = :personId')
+                $qb->innerJoin('e.inviteOldAnimateurs', 'ioa_filter')
+                    ->andWhere('ioa_filter.id = :personId')
                     ->setParameter('personId', (int) $id);
             }
         }
     }
 
+    // Sous-requête pour trier par dernière diffusion sans GROUP BY global
+    $lastDiffSubQuery = $this->getEntityManager()->createQueryBuilder()
+        ->select('MAX(d3.horaireDiffusion)')
+        ->from(\App\Entity\Diffusion::class, 'd3')
+        ->where('d3.emission = e')
+        ->getDQL();
+
+    $qb->addSelect('(' . $lastDiffSubQuery . ') AS HIDDEN lastDiff')
+        ->orderBy('lastDiff', 'DESC')
+        ->addOrderBy('e.id', 'DESC');
+
     $pagination = $this->paginator->paginate(
-        $qb->groupBy('e.id')
-            ->orderBy('lastDiff', 'DESC'),
+        $qb,
         $page,
         12,
         [
-            'distinct' => false,
+            'distinct' => true,
         ]
     );
 
-    // Injecter la date de dernière diffusion dans l’objet Emission
-    foreach ($pagination as $item) {
-        if (is_array($item) && isset($item[0], $item['lastDiff']) && $item['lastDiff'] !== null) {
-            /** @var \App\Entity\Emission $emission */
-            $emission = $item[0];
-            $emission->setLastDiffusion(new \DateTime($item['lastDiff']));
+    // Hydratation de la date de dernière diffusion sur chaque émission
+    foreach ($pagination as $emission) {
+        if (!$emission instanceof \App\Entity\Emission) {
+            continue;
+        }
+
+        $lastDiff = $this->getEntityManager()->createQueryBuilder()
+            ->select('MAX(d4.horaireDiffusion)')
+            ->from(\App\Entity\Diffusion::class, 'd4')
+            ->where('d4.emission = :emission')
+            ->setParameter('emission', $emission)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ($lastDiff !== null) {
+            $emission->setLastDiffusion(new \DateTime($lastDiff));
         }
     }
 

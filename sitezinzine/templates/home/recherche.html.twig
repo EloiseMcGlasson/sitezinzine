@@ -212,19 +212,6 @@
   isAdmin: false,
   showAdminActions: false
 } %}
-    <script>
-  window.addEventListener('load', () => {
-    const docW = document.documentElement.clientWidth;
-    const offenders = [...document.querySelectorAll('*')].filter(el => el.scrollWidth > docW);
-    console.log("Viewport:", docW);
-    console.log("Offenders:", offenders.map(el => ({
-      tag: el.tagName,
-      class: el.className,
-      id: el.id,
-      scrollWidth: el.scrollWidth
-    })));
-    offenders.forEach(el => el.style.outline = '3px solid lime');
-  });
-</script>
+
   {% endblock %}
   

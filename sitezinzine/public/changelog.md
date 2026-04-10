@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.83] - 2026-04-10
+### Ajout
+- Ajout du thème éducation dans un groupe de thème.
+### Correction
+- Correction du form emission qui supprimait la catégorie si elle était inactive.
+- Correction des pages recherche qui sortaient plus de page que de résultats.
+- Correction de la duplication des champs date en cas de retour arrière sur le form recherche.
+- Correction du reset du form recherche (encore imparfait).
+
+
 ## [1.0.82] - 2026-04-09
 ### Ajout
 - Ajout du générateur de programmation.

@@ -8,19 +8,23 @@ export default class extends Controller {
   reset(event) {
     event.preventDefault();
 
-    if (!this.hasFormTarget) return;
+    if (!this.hasFormTarget) {
+      return;
+    }
 
-    // 1) reset HTML
+    // 1) reset HTML natif
     this.formTarget.reset();
 
-    // 2) reset flatpickr (si présent)
-    this.formTarget.querySelectorAll(".flatpickr-input").forEach((input) => {
-      if (input && input._flatpickr) {
-        input._flatpickr.clear();
-      }
-    });
+    // 2) reset flatpickr sur les vrais inputs d'origine
+    this.formTarget
+      .querySelectorAll('[data-controller~="flatpickr"]')
+      .forEach((input) => {
+        if (input._flatpickr) {
+          input._flatpickr.clear();
+        }
+      });
 
-    // 3) revenir à la page “propre” (sans query params)
+    // 3) revenir à la page propre
     const url = this.hasUrlValue ? this.urlValue : window.location.pathname;
     Turbo.visit(url);
   }

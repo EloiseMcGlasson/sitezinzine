@@ -7,10 +7,14 @@ export default class extends Controller {
     enableTime: Boolean,
     dateFormat: String,
     altFormat: String
-  }
+  };
 
   connect() {
-    flatpickr(this.element, {
+    if (this.element._flatpickr) {
+      this.element._flatpickr.destroy();
+    }
+
+    this.flatpickr = flatpickr(this.element, {
       enableTime: this.enableTimeValue || false,
       dateFormat: this.dateFormatValue || 'Y-m-d',
       altInput: true,
@@ -18,5 +22,12 @@ export default class extends Controller {
       locale: French,
       allowInput: true
     });
+  }
+
+  disconnect() {
+    if (this.flatpickr) {
+      this.flatpickr.destroy();
+      this.flatpickr = null;
+    }
   }
 }

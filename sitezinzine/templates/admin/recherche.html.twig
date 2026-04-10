@@ -210,7 +210,7 @@ button[type=reset]:hover {
         <h1>
             Recherche d'émissions
         </h1>
-        <div class="form">
+        <div class="form" data-controller="reset-form" data-reset-form-url-value="{{ path('admin.emission.rechercheadmin') }}">
             {{ form_start (form) }}
             <div class="search-row">
                 <div>
@@ -225,10 +225,22 @@ button[type=reset]:hover {
             </div>
             <div class="date-range">
                 <div>
-                    {{ form_row(form.dateDebut, { attr: { 'data-controller': 'flatpickr' } }) }}
+                    {{ form_row(form.dateDebut, {
+    attr: {
+        'data-controller': 'flatpickr',
+        'data-flatpickr-date-format-value': 'Y-m-d',
+        'data-flatpickr-alt-format-value': 'd/m/Y'
+    }
+}) }}
                 </div>
                 <div>
-                    {{ form_row(form.dateFin, { attr: { 'data-controller': 'flatpickr' } }) }}
+                    {{ form_row(form.dateFin, {
+    attr: {
+        'data-controller': 'flatpickr',
+        'data-flatpickr-date-format-value': 'Y-m-d',
+        'data-flatpickr-alt-format-value': 'd/m/Y'
+    }
+}) }}
                 </div>
                 <div>
                     {{ form_row(form.personne) }}
@@ -238,16 +250,15 @@ button[type=reset]:hover {
                 <button type="submit">
                     Rechercher
                 </button>
-                <button type="reset" onclick="resetForm()">
+                <button type="reset" data-action="search-reset#reset">
                     Réinitialiser
                 </button>
             </div>
             {{ form_end (form) }}
         </div>
         <img class="imgbottom" src="/images/top-content-dechire-D.gif"></div>
-<div id="resultats"></div>
-
-{% include 'partials/_emission_results.html.twig' with {
+        <div id="resultats"></div>
+        {% include 'partials/_emission_results.html.twig' with {
   emissions: emissions,
   searchTerm: searchTerm,
   showNoResults: form.vars.submitted,
@@ -260,24 +271,5 @@ button[type=reset]:hover {
   editRoute: 'admin.emission.edit',
   deleteRoute: 'admin.emission.delete'
 } %}
-                                    <script>
-    // Fonction pour réinitialiser le formulaire et rediriger vers la page de recherche
-    function resetForm() {
-        // Réinitialiser les champs du formulaire
-        document.querySelector('form').reset();
-        
-        // Réinitialiser les datepickers Flatpickr
-        document.querySelectorAll('.flatpickr-input').forEach(input => {
-            if (input._flatpickr) {
-                input._flatpickr.clear();
-            }
-        });
-        
-        // Rediriger vers la page de recherche sans paramètres
-        // 👉 Utilise Turbo pour ne pas recharger toute la page (et couper la musique)
-            Turbo.visit('{{ path('admin.emission.rechercheadmin') }}');
-    }
+    {% endblock %}
     
-</script>
-                                {% endblock %}
-                                
