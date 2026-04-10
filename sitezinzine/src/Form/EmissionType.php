@@ -33,17 +33,42 @@ class EmissionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('categorie', EntityType::class, [
-                'class' => Categories::class,
-                'placeholder' => 'Sélectionnez une catégorie  (obligatoire)',
-                'choice_label' => 'titre',
-                'label' => 'Catégorie',
-                'query_builder' => function (CategoriesRepository $er): QueryBuilder {
-                    return $er->createQueryBuilder('u')
-                        ->where('u.active = 1')
-                        ->orderBy('u.titre', 'ASC');
-                }
-            ])
+->add('categorie', EntityType::class, [
+    'class' => Categories::class,
+    'required' => false,
+    'placeholder' => 'Sélectionnez une catégorie',
+    'choice_label' => function (Categories $categorie) {
+        $label = $categorie->getTitre();
+
+        if (!$categorie->isActive()) {
+            $label .= ' (inactive)';
+        }
+
+        if ($categorie->isSoftDelete()) {
+            $label .= ' (supprimée)';
+        }
+
+        return $label;
+    },
+    'label' => 'Catégorie',
+    'query_builder' => function (CategoriesRepository $er) use ($options): QueryBuilder {
+        /** @var Emission|null $emission */
+        $emission = $options['data'] ?? null;
+        $currentCategorie = $emission?->getCategorie();
+
+        $qb = $er->createQueryBuilder('c');
+
+        if ($currentCategorie !== null) {
+            $qb
+                ->where('(c.active = true AND c.softDelete = false) OR c.id = :currentId')
+                ->setParameter('currentId', $currentCategorie->getId());
+        } else {
+            $qb->where('c.active = true AND c.softDelete = false');
+        }
+
+        return $qb->orderBy('c.titre', 'ASC');
+    },
+])
             ->add('theme', EntityType::class, [
                 'class' => Theme::class,
                 'placeholder' => 'Sélectionnez un thème  (obligatoire)',

@@ -9,6 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class CategoriesRepository extends ServiceEntityRepository
 {
@@ -86,6 +87,21 @@ public function findDistinctEditeursWithNames(): array
         ->orderBy('e.name', 'ASC')
         ->getQuery()
         ->getArrayResult();
+}
+
+public function createActiveOrCurrentQueryBuilder(?Categories $currentCategorie): QueryBuilder
+{
+    $qb = $this->createQueryBuilder('c');
+
+    if ($currentCategorie !== null) {
+        $qb
+            ->where('c.isActive = true OR c.id = :currentId')
+            ->setParameter('currentId', $currentCategorie->getId());
+    } else {
+        $qb->where('c.isActive = true');
+    }
+
+    return $qb->orderBy('c.titre', 'ASC');
 }
 
 }
