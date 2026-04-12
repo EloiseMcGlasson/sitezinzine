@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.84] - 2026-04-12
+### Ajout
+- Ajout de la propagation des émissions programmées (choisir une émission en première diffusion la place automatiquement sur les créneaux de rediffusions prévues par les règles).
+- Ajout de la programmation par semaine paire ou impaire.
+### Correction
+- Tri des ancien·nes animateur·ices par ordre alphabétique sur le formulaire émission.
+
+
 ## [1.0.83] - 2026-04-10
 ### Ajout
 - Ajout du thème éducation dans un groupe de thème.

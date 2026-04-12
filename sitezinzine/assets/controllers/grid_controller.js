@@ -195,54 +195,59 @@ export default class extends Controller {
   }
 
   async selectEmission(event) {
-    const card = event.currentTarget
-    const emissionId = card.dataset.emissionId
+  const card = event.currentTarget
+  const emissionId = card.dataset.emissionId
 
-    if (!this.selectedPostit) {
-      return
-    }
+  if (!this.selectedPostit) {
+    return
+  }
 
-    const slotId = this.selectedPostit.dataset.slotId || ''
-    const startsAt = this.selectedPostit.dataset.startsAt || ''
-    const duration = this.selectedPostit.dataset.duration || ''
-    const categoryTitle = this.selectedPostit.dataset.categoryTitle || 'Catégorie inconnue'
-    const broadcastRank = this.selectedPostit.dataset.broadcastRank || ''
+  const slotId = this.selectedPostit.dataset.slotId || ''
+  const startsAt = this.selectedPostit.dataset.startsAt || ''
+  const duration = this.selectedPostit.dataset.duration || ''
+  const categoryTitle = this.selectedPostit.dataset.categoryTitle || 'Catégorie inconnue'
+  const broadcastRank = this.selectedPostit.dataset.broadcastRank || ''
 
-    if (!slotId || !startsAt || !emissionId) {
-      alert('Informations incomplètes pour affecter cette émission.')
-      return
-    }
+  if (!slotId || !startsAt || !emissionId) {
+    alert('Informations incomplètes pour affecter cette émission.')
+    return
+  }
 
-    try {
-      const response = await fetch('/admin/grille/assign', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: new URLSearchParams({
-          slotId,
-          emissionId,
-          startsAt
-        })
+  try {
+    const response = await fetch('/admin/grille/assign', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: new URLSearchParams({
+        slotId,
+        emissionId,
+        startsAt
       })
+    })
 
-      if (!response.ok) {
-        throw new Error('Réponse invalide')
-      }
+    if (!response.ok) {
+      throw new Error('Réponse invalide')
+    }
 
-      const data = await response.json()
+    const data = await response.json()
 
-      if (!data.success) {
-        throw new Error(data.error || 'Erreur inconnue')
-      }
+    if (!data.success) {
+      throw new Error(data.error || 'Erreur inconnue')
+    }
 
-      this.selectedPostit.innerHTML = `🎙 ${data.emissionTitle} • ${duration} min`
-      this.selectedPostit.dataset.assignedEmissionId = emissionId
-      this.selectedPostit.dataset.assignedEmissionTitle = data.emissionTitle
-      this.selectedPostit.classList.add('assigned')
+    if (data.propagated === true) {
+      window.location.reload()
+      return
+    }
 
-      this.slotSummaryTarget.innerHTML = `
+    this.selectedPostit.innerHTML = `🎙 ${data.emissionTitle} • ${duration} min`
+    this.selectedPostit.dataset.assignedEmissionId = emissionId
+    this.selectedPostit.dataset.assignedEmissionTitle = data.emissionTitle
+    this.selectedPostit.classList.add('assigned')
+
+    this.slotSummaryTarget.innerHTML = `
       <div><span class="label">Catégorie :</span> ${categoryTitle}</div>
       <div><span class="label">Début :</span> ${startsAt}</div>
       <div><span class="label">Durée :</span> ${duration} min</div>
@@ -250,16 +255,16 @@ export default class extends Controller {
       <div><span class="label">Émission affectée :</span> ${data.emissionTitle}</div>
     `
 
-      this.slotActionsTarget.style.display = 'block'
+    this.slotActionsTarget.style.display = 'block'
 
-      const cards = this.emissionsListTarget.querySelectorAll('.emission-card')
-      cards.forEach(el => el.classList.remove('is-selected'))
-      card.classList.add('is-selected')
+    const cards = this.emissionsListTarget.querySelectorAll('.emission-card')
+    cards.forEach(el => el.classList.remove('is-selected'))
+    card.classList.add('is-selected')
 
-    } catch (error) {
-      alert('Erreur lors de l’affectation de l’émission.')
-    }
+  } catch (error) {
+    alert('Erreur lors de l’affectation de l’émission.')
   }
+}
 
   async removeAssignment() {
     if (!this.selectedPostit) {

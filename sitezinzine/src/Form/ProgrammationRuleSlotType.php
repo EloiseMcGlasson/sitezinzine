@@ -65,8 +65,6 @@ class ProgrammationRuleSlotType extends AbstractType
             ->add('dayOfWeek', ChoiceType::class, [
                 'label' => 'Jour',
                 'placeholder' => 'Choisir un jour',
-                // Ordre d’affichage = semaine radio mardi -> lundi
-                // Valeurs stockées inchangées : 1=lundi ... 7=dimanche
                 'choices' => [
                     'Mardi' => 2,
                     'Mercredi' => 3,
@@ -145,6 +143,26 @@ class ProgrammationRuleSlotType extends AbstractType
                 ],
             ])
 
+            ->add('weekParity', ChoiceType::class, [
+                'label' => 'Rythme hebdomadaire',
+                'required' => false,
+                'placeholder' => 'Toutes les semaines',
+                'choices' => [
+                    'Semaines paires' => ProgrammationRuleSlot::WEEK_PARITY_EVEN,
+                    'Semaines impaires' => ProgrammationRuleSlot::WEEK_PARITY_ODD,
+                ],
+                'help' => 'Laisser vide pour une diffusion toutes les semaines.',
+                'constraints' => [
+                    new Assert\Choice([
+                        'choices' => [
+                            ProgrammationRuleSlot::WEEK_PARITY_EVEN,
+                            ProgrammationRuleSlot::WEEK_PARITY_ODD,
+                            null,
+                        ],
+                    ]),
+                ],
+            ])
+
             ->add('isActive', CheckboxType::class, [
                 'label' => 'Actif',
                 'required' => false,
@@ -152,8 +170,7 @@ class ProgrammationRuleSlotType extends AbstractType
 
             ->add('Sauvegarder', SubmitType::class, [
                 'label' => 'Sauvegarder',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

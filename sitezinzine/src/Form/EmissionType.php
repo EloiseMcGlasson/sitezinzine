@@ -106,10 +106,11 @@ class EmissionType extends AbstractType
                 'expanded' => false,
                 'label' => 'Ancien·nes animateur·ices',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
-                'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                => $er->createQueryBuilder('i')
+                'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder =>
+                $er->createQueryBuilder('i')
                     ->andWhere('i.ancienanimateur = 1')
-                    ->orderBy('i.lastName', 'ASC'),
+                    ->orderBy('i.firstName', 'ASC')
+                    ->addOrderBy('i.lastName', 'ASC'),
             ])
 
             ->add('titre', TextType::class, [

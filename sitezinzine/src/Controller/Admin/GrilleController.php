@@ -203,18 +203,67 @@ class GrilleController extends AbstractController
         $slot = $slotRepository->find($slotId);
         $emission = $emissionRepository->find($emissionId);
 
-        if (!$slot || !$emission) {
+        if (!$slot instanceof ProgrammationRuleSlot || !$emission) {
             return $this->json(['error' => 'Données invalides'], 404);
         }
 
-        $date = new \DateTimeImmutable($startsAt);
+        try {
+            $selectedDate = new \DateTimeImmutable($startsAt);
+        } catch (\Exception) {
+            return $this->json(['error' => 'Date invalide'], 400);
+        }
 
-        $draft = $draftRepository->findOneBySlotAndHoraire($slot, $date);
+        $rule = $slot->getRule();
+
+        if (!$rule) {
+            return $this->json(['error' => 'Règle introuvable'], 404);
+        }
+
+        // Étape 1 : si on clique sur la 1re diffusion, on propage à toute la règle
+        if ($slot->getBroadcastRank() === 1) {
+            $anchorDate = $selectedDate;
+
+            foreach ($rule->getSlots() as $relatedSlot) {
+                if (!$relatedSlot instanceof ProgrammationRuleSlot) {
+                    continue;
+                }
+
+                if (!$relatedSlot->isActive() || $relatedSlot->isDeleted()) {
+                    continue;
+                }
+
+                $relatedStartsAt = $this->computeStartsAtFromAnchor($anchorDate, $relatedSlot);
+
+                $draft = $draftRepository->findOneBySlotAndHoraire($relatedSlot, $relatedStartsAt);
+
+                if (!$draft) {
+                    $draft = new DiffusionDraft();
+                    $draft->setSlot($relatedSlot);
+                    $draft->setHoraireDiffusion($relatedStartsAt);
+                }
+
+                $draft->setEmission($emission);
+                $draft->setNombreDiffusion($relatedSlot->getBroadcastRank());
+
+                $em->persist($draft);
+            }
+
+            $em->flush();
+
+            return $this->json([
+                'success' => true,
+                'emissionTitle' => $emission->getTitre(),
+                'propagated' => true,
+            ]);
+        }
+
+        // Sinon : comportement actuel, seulement le slot cliqué
+        $draft = $draftRepository->findOneBySlotAndHoraire($slot, $selectedDate);
 
         if (!$draft) {
             $draft = new DiffusionDraft();
             $draft->setSlot($slot);
-            $draft->setHoraireDiffusion($date);
+            $draft->setHoraireDiffusion($selectedDate);
         }
 
         $draft->setEmission($emission);
@@ -226,8 +275,63 @@ class GrilleController extends AbstractController
         return $this->json([
             'success' => true,
             'emissionTitle' => $emission->getTitre(),
+            'propagated' => false,
         ]);
     }
+
+    private function computeStartsAtFromAnchor(
+        \DateTimeImmutable $anchorDate,
+        ProgrammationRuleSlot $slot
+    ): \DateTimeImmutable {
+        $anchorWeekStart = $this->getRadioWeekStart($anchorDate);
+
+        $targetDate = $anchorWeekStart
+            ->modify(sprintf('+%d days', $this->radioDayIndexFromDayOfWeek($slot->getDayOfWeek())))
+            ->modify(sprintf('+%d days', $slot->getWeekOffset() * 7));
+
+        $startTime = $slot->getStartTime();
+
+        if ($startTime === null) {
+            return $targetDate->setTime(0, 0, 0);
+        }
+
+        return $targetDate->setTime(
+            (int) $startTime->format('H'),
+            (int) $startTime->format('i'),
+            0
+        );
+    }
+
+    private function getRadioWeekStart(\DateTimeImmutable $date): \DateTimeImmutable
+{
+    $midnight = $date->setTime(0, 0, 0);
+    $dayOfWeek = (int) $midnight->format('N'); // 1=lundi ... 7=dimanche
+
+    return match ($dayOfWeek) {
+        2 => $midnight, // mardi
+        3 => $midnight->modify('-1 day'),
+        4 => $midnight->modify('-2 days'),
+        5 => $midnight->modify('-3 days'),
+        6 => $midnight->modify('-4 days'),
+        7 => $midnight->modify('-5 days'),
+        1 => $midnight->modify('-6 days'), // lundi => début semaine radio = mardi précédent
+        default => $midnight,
+    };
+}
+
+private function radioDayIndexFromDayOfWeek(?int $dayOfWeek): int
+{
+    return match ($dayOfWeek) {
+        2 => 0, // mardi
+        3 => 1, // mercredi
+        4 => 2, // jeudi
+        5 => 3, // vendredi
+        6 => 4, // samedi
+        7 => 5, // dimanche
+        1 => 6, // lundi
+        default => 0,
+    };
+}
 
     #[Route('/remove', name: 'remove', methods: ['POST'])]
     public function remove(

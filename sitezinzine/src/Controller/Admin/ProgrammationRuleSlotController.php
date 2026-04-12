@@ -10,6 +10,7 @@ use App\Repository\ProgrammationRuleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -146,10 +147,12 @@ class ProgrammationRuleSlotController extends AbstractController
             throw $this->createNotFoundException('Ce créneau n’appartient pas à cette règle.');
         }
 
-        if (!$this->isCsrfTokenValid(
-            'delete_slot_' . $programmationRuleSlot->getId(),
-            (string) $request->request->get('_token')
-        )) {
+        if (
+            !$this->isCsrfTokenValid(
+                'delete_slot_' . $programmationRuleSlot->getId(),
+                (string) $request->request->get('_token')
+            )
+        ) {
             $this->addFlash('danger', 'Jeton CSRF invalide.');
 
             return $this->redirectToRoute('admin_programmationRuleSlot_index', [
@@ -175,7 +178,7 @@ class ProgrammationRuleSlotController extends AbstractController
         ]);
     }
 
-    private function validateSlotForm($form, ProgrammationRuleSlot $programmationRuleSlot): void
+    private function validateSlotForm(FormInterface $form, ProgrammationRuleSlot $programmationRuleSlot): void
     {
         $recurrenceType = $programmationRuleSlot->getRecurrenceType();
         $monthlyOccurrence = $programmationRuleSlot->getMonthlyOccurrence();
@@ -183,6 +186,7 @@ class ProgrammationRuleSlotController extends AbstractController
         $weekOffset = $programmationRuleSlot->getWeekOffset();
         $broadcastRank = $programmationRuleSlot->getBroadcastRank();
         $durationMinutes = $programmationRuleSlot->getDurationMinutes();
+        $weekParity = $programmationRuleSlot->getWeekParity();
 
         if ($recurrenceType === ProgrammationRuleSlot::RECURRENCE_WEEKLY) {
             $programmationRuleSlot->setMonthlyOccurrence(null);
@@ -190,6 +194,8 @@ class ProgrammationRuleSlotController extends AbstractController
         }
 
         if ($recurrenceType === ProgrammationRuleSlot::RECURRENCE_MONTHLY) {
+            $programmationRuleSlot->setWeekParity(null);
+
             if ($monthlyOccurrence === null) {
                 $form->get('monthlyOccurrence')->addError(
                     new FormError('Ce champ est obligatoire pour une programmation mensuelle.')
@@ -212,6 +218,22 @@ class ProgrammationRuleSlotController extends AbstractController
         if (!in_array($broadcastRank, [1, 2, 3], true)) {
             $form->get('broadcastRank')->addError(
                 new FormError('L’ordre de diffusion sélectionné est invalide.')
+            );
+        }
+
+        if (
+            !in_array(
+                $weekParity,
+                [
+                    null,
+                    ProgrammationRuleSlot::WEEK_PARITY_EVEN,
+                    ProgrammationRuleSlot::WEEK_PARITY_ODD,
+                ],
+                true
+            )
+        ) {
+            $form->get('weekParity')->addError(
+                new FormError('Le rythme hebdomadaire sélectionné est invalide.')
             );
         }
 

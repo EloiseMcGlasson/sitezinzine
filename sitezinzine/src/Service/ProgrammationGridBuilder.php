@@ -25,11 +25,20 @@ class ProgrammationGridBuilder
             }
 
             foreach ($rule->getSlots() as $slot) {
+                if (!$slot instanceof ProgrammationRuleSlot) {
+                    continue;
+                }
+
                 if (!$slot->isActive() || $slot->isDeleted()) {
                     continue;
                 }
 
-                $occurrences = $this->generateSlotOccurrencesForWeek($rule, $slot, $startOfWeek, $endOfWeek);
+                $occurrences = $this->generateSlotOccurrencesForWeek(
+                    $rule,
+                    $slot,
+                    $startOfWeek,
+                    $endOfWeek
+                );
 
                 foreach ($occurrences as $startsAt) {
                     $dayIndex = (int) $startOfWeek->diff($startsAt)->days;
@@ -42,13 +51,7 @@ class ProgrammationGridBuilder
                     $minute = (int) $startsAt->format('i');
                     $startIndex = $hour * 4 + intdiv($minute, 15);
 
-                    if ($startIndex < 0) {
-                        $startIndex = 0;
-                    }
-
-                    if ($startIndex > 95) {
-                        $startIndex = 95;
-                    }
+                    $startIndex = max(0, min(95, $startIndex));
 
                     $daySegments[$dayIndex][] = [
                         'title' => $rule->getCategory()?->getTitre() ?? 'Catégorie inconnue',
@@ -64,7 +67,10 @@ class ProgrammationGridBuilder
         }
 
         foreach ($daySegments as &$segments) {
-            usort($segments, static fn(array $a, array $b) => $a['startIndex'] <=> $b['startIndex']);
+            usort(
+                $segments,
+                static fn(array $a, array $b): int => $a['startIndex'] <=> $b['startIndex']
+            );
         }
         unset($segments);
 
@@ -88,7 +94,12 @@ class ProgrammationGridBuilder
             if ($visibleDate !== null) {
                 $startsAt = $this->applyTime($visibleDate, $slot);
 
-                if ($this->weeklyOccurrenceMatchesRule($rule, $slot, $startsAt)) {
+                if (
+                    $startsAt >= $startOfWeek
+                    && $startsAt < $endOfWeek
+                    && $this->weeklyOccurrenceMatchesRule($rule, $slot, $startsAt)
+                    && $this->weekMatchesParity($slot, $startsAt)
+                ) {
                     $occurrences[] = $startsAt;
                 }
             }
@@ -117,14 +128,14 @@ class ProgrammationGridBuilder
                     continue;
                 }
 
+                if (!$this->dateMatchesRuleWindow($rule, $baseDate)) {
+                    continue;
+                }
+
                 $visibleDate = $baseDate->modify(sprintf('+%d days', $slot->getWeekOffset() * 7));
                 $startsAt = $this->applyTime($visibleDate, $slot);
 
                 if ($startsAt < $startOfWeek || $startsAt >= $endOfWeek) {
-                    continue;
-                }
-
-                if (!$this->dateMatchesRuleWindow($rule, $baseDate)) {
                     continue;
                 }
 
@@ -146,6 +157,25 @@ class ProgrammationGridBuilder
         return $this->dateMatchesRuleWindow($rule, $anchorDate);
     }
 
+    private function weekMatchesParity(
+        ProgrammationRuleSlot $slot,
+        \DateTimeImmutable $date
+    ): bool {
+        $weekParity = $slot->getWeekParity();
+
+        if ($weekParity === null || $weekParity === '') {
+            return true;
+        }
+
+        $weekNumber = (int) $date->format('W');
+
+        return match ($weekParity) {
+            ProgrammationRuleSlot::WEEK_PARITY_EVEN => $weekNumber % 2 === 0,
+            ProgrammationRuleSlot::WEEK_PARITY_ODD => $weekNumber % 2 === 1,
+            default => true,
+        };
+    }
+
     private function dateMatchesRuleWindow(
         ProgrammationRule $rule,
         \DateTimeImmutable $date
@@ -164,8 +194,10 @@ class ProgrammationGridBuilder
         return true;
     }
 
-    private function findDayInDisplayedWeek(\DateTimeImmutable $startOfWeek, ?int $dayOfWeek): ?\DateTimeImmutable
-    {
+    private function findDayInDisplayedWeek(
+        \DateTimeImmutable $startOfWeek,
+        ?int $dayOfWeek
+    ): ?\DateTimeImmutable {
         if ($dayOfWeek === null) {
             return null;
         }
@@ -181,8 +213,10 @@ class ProgrammationGridBuilder
         return null;
     }
 
-    private function applyTime(\DateTimeImmutable $date, ProgrammationRuleSlot $slot): \DateTimeImmutable
-    {
+    private function applyTime(
+        \DateTimeImmutable $date,
+        ProgrammationRuleSlot $slot
+    ): \DateTimeImmutable {
         $startTime = $slot->getStartTime();
 
         if ($startTime === null) {

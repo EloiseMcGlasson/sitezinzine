@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['month_interval'], name: 'idx_programmation_rule_slot_month_interval')]
 #[ORM\Index(columns: ['is_active'], name: 'idx_programmation_rule_slot_active')]
 #[ORM\Index(columns: ['deleted_at'], name: 'idx_programmation_rule_slot_deleted')]
+#[ORM\Index(columns: ['week_parity'], name: 'idx_programmation_rule_slot_week_parity')]
 class ProgrammationRuleSlot
 {
     public const RECURRENCE_WEEKLY = 'weekly';
@@ -25,6 +26,9 @@ class ProgrammationRuleSlot
     public const MONTHLY_THIRD = 3;
     public const MONTHLY_FOURTH = 4;
     public const MONTHLY_LAST = -1;
+
+    public const WEEK_PARITY_EVEN = 'even';
+    public const WEEK_PARITY_ODD = 'odd';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -49,9 +53,8 @@ class ProgrammationRuleSlot
 
     /**
      * 1 = 1re diffusion
-     * 2 = rediffusion 1
-     * 3 = rediffusion 2
-     * etc.
+     * 2 = 1re rediffusion
+     * 3 = 2e rediffusion
      */
     #[ORM\Column(name: 'broadcast_rank')]
     private int $broadcastRank = 1;
@@ -87,6 +90,15 @@ class ProgrammationRuleSlot
      */
     #[ORM\Column(name: 'month_interval')]
     private int $monthInterval = 1;
+
+    /**
+     * Utilisé seulement si recurrenceType = weekly
+     * null = toutes les semaines
+     * even = semaines paires
+     * odd = semaines impaires
+     */
+    #[ORM\Column(name: 'week_parity', type: 'string', length: 10, nullable: true)]
+    private ?string $weekParity = null;
 
     #[ORM\Column]
     private bool $isActive = true;
@@ -190,8 +202,8 @@ class ProgrammationRuleSlot
 
     public function setBroadcastRank(int $broadcastRank): static
     {
-        if ($broadcastRank < 1) {
-            throw new \InvalidArgumentException('broadcastRank doit être supérieur ou égal à 1.');
+        if (!in_array($broadcastRank, [1, 2, 3], true)) {
+            throw new \InvalidArgumentException('broadcastRank doit valoir 1, 2 ou 3.');
         }
 
         $this->broadcastRank = $broadcastRank;
@@ -240,6 +252,10 @@ class ProgrammationRuleSlot
             $this->monthInterval = 1;
         }
 
+        if ($recurrenceType === self::RECURRENCE_MONTHLY) {
+            $this->weekParity = null;
+        }
+
         $this->touch();
 
         return $this;
@@ -286,6 +302,38 @@ class ProgrammationRuleSlot
         $this->touch();
 
         return $this;
+    }
+
+    public function getWeekParity(): ?string
+    {
+        return $this->weekParity;
+    }
+
+    public function setWeekParity(?string $weekParity): static
+    {
+        $allowed = [
+            null,
+            self::WEEK_PARITY_EVEN,
+            self::WEEK_PARITY_ODD,
+        ];
+
+        if (!in_array($weekParity, $allowed, true)) {
+            throw new \InvalidArgumentException('weekParity invalide.');
+        }
+
+        $this->weekParity = $weekParity;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getWeekParityLabel(): ?string
+    {
+        return match ($this->weekParity) {
+            self::WEEK_PARITY_EVEN => 'Semaines paires',
+            self::WEEK_PARITY_ODD => 'Semaines impaires',
+            default => null,
+        };
     }
 
     public function getMonthIntervalLabel(): string
