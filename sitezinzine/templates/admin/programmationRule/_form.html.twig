@@ -18,7 +18,7 @@
 .main-content .programmation-rule-form h1{
   margin: 0 0 12px 0;
   text-align: center;
-  color: #E4013A;
+  color: white;
   font-weight: 900;
   font-size: 22px;
   line-height: 1.2;
@@ -181,6 +181,13 @@
 
   {{ form_start(form) }}
 
+  {% if rule is defined and rule.id %}
+    <div class="field">
+      <label>Règle</label>
+      <div>{{ rule.displayName }}</div>
+    </div>
+  {% endif %}
+
   <div class="field">
     {{ form_label(form.category) }}
     {{ form_widget(form.category) }}
@@ -212,7 +219,7 @@
   {{ form_widget(form._token) }}
 
   <div class="actions">
-    {{ form_widget(form.Sauvegarder) }}
+    {{ form_widget(form.save) }}
     <a href="{{ path('admin_programmationRule_index') }}" class="btn-back">Retour à la liste</a>
   </div>
 

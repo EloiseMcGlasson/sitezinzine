@@ -6,22 +6,24 @@
   {{ parent() }}
   <style>
     :root{
-      --slot-h: 8px;               /* 1 quart d’heure = 8px */
-      --head-h: 44px;              /* hauteur de l’en-tête */
+      --slot-h: 8px;
+      --head-h: 44px;
       --grid-bg:#fff;
       --grid-line:#e6e6e6;
       --head-bg:#f0f0f0;
       --head-text:#1c1c1a;
       --hour-text:#3a3a3a;
 
-      /* Post-it non assigné */
       --postit:#d75a6f;
       --postit-border:#b9475a;
       --postit-text:#fff;
 
-      /* Post-it assigné */
       --postit-assigned:#8a3f9b;
       --postit-assigned-border:#6d2f7c;
+
+      --postit-rebroadcast:#d9d9d9;
+      --postit-rebroadcast-border:#b8b8b8;
+      --postit-rebroadcast-text:#3d3d3d;
     }
 
     .schedule-layout{
@@ -40,7 +42,6 @@
       flex:0 0 320px;
     }
 
-    /* Grille unique : 1 ligne d’en-tête + 96 lignes de slots */
     .schedule-grid{
       display:grid;
       grid-template-columns: 80px repeat(7, 1fr);
@@ -50,7 +51,6 @@
       background:var(--grid-bg);
     }
 
-    /* En-têtes */
     .head{
       display:flex;
       align-items:center;
@@ -70,7 +70,6 @@
       padding-left:8px;
     }
 
-    /* Colonne HEURE (wrapper sur 96 lignes) */
     .hours-col{
       grid-column:1;
       grid-row:2 / span 96;
@@ -102,7 +101,6 @@
       transform:none;
     }
 
-    /* Colonnes JOUR */
     .day-col{
       position:relative;
       grid-row:2 / span 96;
@@ -127,7 +125,6 @@
       outline-offset:-2px;
     }
 
-    /* Post-it */
     .postit{
       position:absolute;
       left:1px;
@@ -150,11 +147,28 @@
       cursor:grab;
       user-select:none;
       z-index:2;
+      transition:opacity .2s ease, filter .2s ease;
     }
 
     .postit.assigned{
       background:var(--postit-assigned);
       border-color:var(--postit-assigned-border);
+    }
+
+    .postit.postit--rebroadcast{
+      background:var(--postit-rebroadcast);
+      color:var(--postit-rebroadcast-text);
+      border-color:var(--postit-rebroadcast-border);
+      cursor:not-allowed;
+      opacity:.82;
+      filter:grayscale(.2);
+      user-select:none;
+    }
+
+    .postit.postit--rebroadcast.assigned{
+      background:#d7cfe0;
+      border-color:#b7a8c8;
+      color:#43384b;
     }
 
     .postit[data-slots="1"]{
@@ -174,11 +188,66 @@
       z-index:5;
     }
 
-    /* Sidebar */
+    .postit__content{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      width:100%;
+    }
+
+    .postit__label{
+      display:block;
+    }
+
+    .postit__badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:1px 6px;
+      border-radius:999px;
+      font-size:8px;
+      font-weight:700;
+      line-height:1;
+      background:rgba(255,255,255,.72);
+      color:#333;
+      max-width:100%;
+    }
+
     .sidebar h2{
       font-size:16px;
       margin:0 0 8px;
       color:var(--head-text);
+    }
+
+    .sidebar-mode-switch{
+      display:flex;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .mode-btn{
+      flex:1 1 0;
+      border:1px solid #ddd;
+      background:#fff;
+      color:#1c1c1a;
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+
+    .mode-btn:hover{
+      background:#f7f7f7;
+    }
+
+    .mode-btn.is-active{
+      background:#E4013A;
+      border-color:#E4013A;
+      color:#fff;
     }
 
     #emissions-pool{
@@ -208,7 +277,8 @@
       color:#1c1c1a;
     }
 
-    #slot-selection-empty{
+    #slot-selection-empty,
+    #special-selection-empty{
       background:#fff;
       border:1px dashed #d0d0d0;
       border-radius:8px;
@@ -258,25 +328,43 @@
       pointer-events:none;
       z-index:9999;
     }
-/* remove button */
+
     .slot-actions{
-  margin-top:12px;
+      margin-top:12px;
+    }
+
+    .btn-remove-assignment{
+      width:100%;
+      border:1px solid #b9475a;
+      background:#fff;
+      color:#b9475a;
+      border-radius:6px;
+      padding:8px 10px;
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-remove-assignment:hover{
+      background:#fff5f6;
+    }
+
+    .special-placeholder{
+      font-size:14px;
+      line-height:1.5;
+      color:#333;
+    }
+
+    .special-placeholder p{
+      margin:0 0 10px;
+    }
+
+    .emission-card.is-auto-generated {
+  border: 2px solid #000;
 }
 
-.btn-remove-assignment{
-  width:100%;
-  border:1px solid #b9475a;
-  background:#fff;
-  color:#b9475a;
-  border-radius:6px;
-  padding:8px 10px;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.btn-remove-assignment:hover{
-  background:#fff5f6;
+.emission-card.is-auto-generated small {
+  font-weight: 700;
 }
 
     @media (max-width: 900px){
@@ -308,7 +396,6 @@
   <div class="schedule-layout" data-controller="grid">
     <div class="grid-area">
       <div class="schedule-grid">
-        {# Ligne d’en-tête #}
         <div class="head hour" style="grid-column:1;grid-row:1;">
           Heure
         </div>
@@ -318,7 +405,6 @@
             {{ jour|format_date('medium', locale='fr') }}
           </div>
         {% endfor %}
-        {# Colonne HEURE #}
         <div class="hours-col">
           {% for i in 0..95 %}
             <div class="h-slot {{ i % 4 == 0 ? 'hour-start' : '' }}" style="top: calc({{ i }} * var(--slot-h));"></div>
@@ -329,7 +415,6 @@
             </div>
           {% endfor %}
         </div>
-        {# 7 colonnes JOUR #}
         {% for dayIndex in 0..6 %}
           <div class="day-col" data-grid-target="day" style="grid-column: {{ 2 + dayIndex }};">
             {% for i in 0..95 %}
@@ -339,12 +424,40 @@
               {% set slots = (seg.duration / 15)|round(0, 'ceil') %}
               {% set displayTitle = seg.displayTitle|default(seg.title|default('Créneau')) %}
               {% set categoryTitle = seg.categoryTitle|default(seg.title|default('Catégorie inconnue')) %}
-              <div class="postit {{ seg.assigned|default(false) ? 'assigned' : '' }}" style="top: calc({{ seg.startIndex }} * var(--slot-h)); height: calc({{ slots }} * var(--slot-h));" data-slots="{{ slots }}" data-duration="{{ seg.duration }}" data-rule-id="{{ seg.ruleId|default('') }}" data-slot-id="{{ seg.slotId|default('') }}" data-broadcast-rank="{{ seg.broadcastRank|default('') }}" data-starts-at="{{ seg.startsAt|default('') }}" data-category-title="{{ categoryTitle }}" data-assigned-emission-id="{{ seg.emissionId|default('') }}" data-assigned-emission-title="{{ seg.emissionTitle|default('') }}" data-action="click->grid#selectSlot" title="🎙 {{ displayTitle }} • {{ seg.duration }} min" draggable="true">
-                🎙
-                {{ displayTitle }}
-                •
-                {{ seg.duration }}
-                min
+              {% set ruleNumber = seg.ruleNumber|default(null) %}
+              {% set ruleDisplayName = seg.ruleDisplayName|default(categoryTitle) %}
+              {% set broadcastRank = seg.broadcastRank|default(1) %}
+              {% set isRebroadcast = broadcastRank > 1 %}
+              {% set rebroadcastLabel = broadcastRank == 2 ? 'R1 auto' : (broadcastRank == 3 ? 'R2 auto' : 'Rediff. auto') %}
+              {% set postitClasses = [
+                'postit',
+                seg.assigned|default(false) ? 'assigned',
+                isRebroadcast ? 'postit--rebroadcast' : 'postit--first-broadcast'
+              ]|filter(v => v) %}
+              <div class="{{ postitClasses|join(' ') }}" style="top: calc({{ seg.startIndex }} * var(--slot-h)); height: calc({{ slots }} * var(--slot-h));" data-slots="{{ slots }}" data-duration="{{ seg.duration }}" data-rule-id="{{ seg.ruleId|default('') }}" data-rule-number="{{ ruleNumber ?? '' }}" data-rule-display-name="{{ ruleDisplayName }}" data-slot-id="{{ seg.slotId|default('') }}" data-broadcast-rank="{{ broadcastRank }}" data-starts-at="{{ seg.startsAt|default('') }}" data-category-title="{{ categoryTitle }}" data-assigned-emission-id="{{ seg.emissionId|default('') }}" data-assigned-emission-title="{{ seg.emissionTitle|default('') }}" data-slot-locked="{{ isRebroadcast ? 'true' : 'false' }}" {% if not isRebroadcast %} data-action="click->grid#selectSlot" {% endif %} title="{% if isRebroadcast %}{{ ruleDisplayName }} — rediffusion générée automatiquement depuis la première diffusion{% else %}{{ ruleDisplayName }} • {{ seg.duration }} min{% endif %}" draggable="{{ isRebroadcast ? 'false' : 'true' }}" {% if isRebroadcast %} aria-disabled="true" {% endif %}>
+                <div class="postit__content">
+                  <span class="postit__label">
+                    🎙
+                    {{ displayTitle }}
+                    •
+                    {{ seg.duration }}
+                    min
+                  </span>
+                  {% if ruleNumber %}
+                    <span class="postit__badge">
+                      R
+                      {{ ruleNumber }}
+                      {% if isRebroadcast %}
+                        ·
+                        {{ rebroadcastLabel }}
+                      {% endif %}
+                    </span>
+                  {% elseif isRebroadcast %}
+                    <span class="postit__badge">
+                      {{ rebroadcastLabel }}
+                    </span>
+                  {% endif %}
+                </div>
               </div>
             {% endfor %}
           </div>
@@ -353,28 +466,72 @@
     </div>
     <aside class="sidebar">
       <h2>
-        Émissions disponibles
+        Programmation
       </h2>
-      <div id="slot-selection-empty" data-grid-target="emptyState">
-        Sélectionne un créneau dans la grille pour afficher les émissions compatibles.
+      <div class="sidebar-mode-switch">
+        <button type="button" class="mode-btn is-active" data-grid-target="modeRegularBtn" data-action="click->grid#showRegularMode">
+          Régulières
+        </button>
+        <button type="button" class="mode-btn" data-grid-target="modeSpecialBtn" data-action="click->grid#showSpecialMode">
+          Non régulières
+        </button>
       </div>
-      <div id="slot-selection-panel" data-grid-target="sidebarPanel" style="display:none;">
-        <div class="sidebar-section">
-          <h3>
-            Créneau sélectionné
-          </h3>
-          <div class="slot-summary" data-grid-target="slotSummary"></div>
-          <div class="slot-actions" data-grid-target="slotActions" style="display:none;">
-            <button type="button" class="btn-remove-assignment" data-action="click->grid#removeAssignment">
-              Retirer l’émission
-            </button>
+      <div data-grid-target="regularPanel">
+        <h2>
+          Émissions disponibles
+        </h2>
+        <div id="slot-selection-empty" data-grid-target="emptyState">
+          Sélectionne un créneau dans la grille pour afficher les émissions compatibles.
+        </div>
+        <div id="slot-selection-panel" data-grid-target="sidebarPanel" style="display:none;">
+          <div class="sidebar-section">
+            <h3>
+              Créneau sélectionné
+            </h3>
+            <div class="slot-summary" data-grid-target="slotSummary"></div>
+            <div class="slot-actions" data-grid-target="slotActions" style="display:none;">
+              <button type="button" class="btn-remove-assignment" data-action="click->grid#removeAssignment">
+                Retirer l’émission
+              </button>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <h3>
+              Émissions suggérées
+            </h3>
+            <div id="emissions-pool" data-grid-target="emissionsList"></div>
           </div>
         </div>
-        <div class="sidebar-section">
-          <h3>
-            Émissions suggérées
-          </h3>
-          <div id="emissions-pool" data-grid-target="emissionsList"></div>
+      </div>
+      <div data-grid-target="specialPanel" style="display:none;">
+        <h2>
+          Émissions non régulières
+        </h2>
+        <div id="special-selection-empty" data-grid-target="specialEmptyState">
+          Passe en mode « non régulières », puis clique un créneau de la grille pour préparer une programmation ponctuelle.
+        </div>
+        <div data-grid-target="specialSidebarPanel" style="display:none;">
+          <div class="sidebar-section">
+            <h3>
+              Créneau sélectionné
+            </h3>
+            <div class="slot-summary" data-grid-target="specialSlotSummary"></div>
+          </div>
+          <div class="sidebar-section">
+            <div class="special-placeholder">
+              <p>
+                <strong>
+                  Programmation ponctuelle
+                </strong>
+              </p>
+              <p>
+                Cette zone servira à programmer une émission non régulière, sans règle de programmation.
+              </p>
+              <p>
+                Tu pourras ensuite y brancher la recherche d’émissions et l’action d’affectation dédiée.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </aside>

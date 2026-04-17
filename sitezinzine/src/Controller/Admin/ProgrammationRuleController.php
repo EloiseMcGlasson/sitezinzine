@@ -25,18 +25,37 @@ class ProgrammationRuleController extends AbstractController
     }
 
     #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
-    public function create(Request $request, EntityManagerInterface $em): Response
-    {
+    public function create(
+        Request $request,
+        EntityManagerInterface $em,
+        ProgrammationRuleRepository $programmationRuleRepository
+    ): Response {
         $programmationRule = new ProgrammationRule();
 
         $form = $this->createForm(ProgrammationRuleType::class, $programmationRule);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $category = $programmationRule->getCategory();
+
+            if ($category === null) {
+                $this->addFlash('danger', 'La catégorie est obligatoire.');
+
+                return $this->render('admin/programmationRule/create.html.twig', [
+                    'form' => $form,
+                    'rule' => $programmationRule,
+                ]);
+            }
+
+            if ($programmationRule->getRuleNumber() === null) {
+                $maxRuleNumber = $programmationRuleRepository->findMaxRuleNumberByCategory($category);
+                $programmationRule->setRuleNumber($maxRuleNumber + 1);
+            }
+
             $em->persist($programmationRule);
             $em->flush();
 
-            $this->addFlash('success', 'Règle créée avec succès.');
+            $this->addFlash('success', sprintf('Règle créée avec succès : %s.', $programmationRule->getDisplayName()));
 
             return $this->redirectToRoute('admin_programmationRule_index');
         }
@@ -48,10 +67,14 @@ class ProgrammationRuleController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    public function edit(Request $request, ProgrammationRule $programmationRule, EntityManagerInterface $em): Response
-    {
+    public function edit(
+        Request $request,
+        ProgrammationRule $programmationRule,
+        EntityManagerInterface $em
+    ): Response {
         if ($programmationRule->isDeleted()) {
             $this->addFlash('danger', 'Règle supprimée.');
+
             return $this->redirectToRoute('admin_programmationRule_index');
         }
 
@@ -61,7 +84,7 @@ class ProgrammationRuleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            $this->addFlash('success', 'Règle mise à jour.');
+            $this->addFlash('success', sprintf('Règle mise à jour : %s.', $programmationRule->getDisplayName()));
 
             return $this->redirectToRoute('admin_programmationRule_index');
         }
@@ -73,8 +96,11 @@ class ProgrammationRuleController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function delete(Request $request, ProgrammationRule $programmationRule, EntityManagerInterface $em): Response
-    {
+    public function delete(
+        Request $request,
+        ProgrammationRule $programmationRule,
+        EntityManagerInterface $em
+    ): Response {
         if (!$this->isCsrfTokenValid('delete_rule_' . $programmationRule->getId(), $request->request->get('_token'))) {
             return $this->redirectToRoute('admin_programmationRule_index');
         }
@@ -82,7 +108,7 @@ class ProgrammationRuleController extends AbstractController
         $programmationRule->softDelete();
         $em->flush();
 
-        $this->addFlash('success', 'Règle supprimée.');
+        $this->addFlash('success', sprintf('Règle supprimée : %s.', $programmationRule->getDisplayName()));
 
         return $this->redirectToRoute('admin_programmationRule_index');
     }

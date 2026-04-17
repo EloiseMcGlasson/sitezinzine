@@ -211,21 +211,21 @@
   }
 }
 </style>
-
 <div class="programmation-rule-form">
-  <h1>{{ form_title }}</h1>
-
+  <h1>
+    {{ form_title }}
+  </h1>
   <div class="rule-context">
-    <strong>Catégorie :</strong>
-    {{ rule.category ? rule.category.titre : '—' }}
+    <strong>
+      Règle :
+    </strong>
+    {{ rule.displayName }}
   </div>
-
   {{ form_start(form, {
     attr: {
       'data-controller': 'programmation-rule-slot'
     }
   }) }}
-
   <div class="grid">
     <div class="field">
       {{ form_label(form.recurrenceType) }}
@@ -237,7 +237,6 @@
       }) }}
       {{ form_errors(form.recurrenceType) }}
     </div>
-
     <div class="field" data-programmation-rule-slot-target="monthlyOccurrenceWrapper">
       {{ form_label(form.monthlyOccurrence) }}
       {{ form_widget(form.monthlyOccurrence, {
@@ -247,11 +246,12 @@
       }) }}
       {{ form_errors(form.monthlyOccurrence) }}
       {% if form.monthlyOccurrence.vars.help %}
-        <small>{{ form.monthlyOccurrence.vars.help }}</small>
+        <small>
+          {{ form.monthlyOccurrence.vars.help }}
+        </small>
       {% endif %}
     </div>
   </div>
-
   <div class="field" data-programmation-rule-slot-target="monthIntervalWrapper">
     {{ form_label(form.monthInterval) }}
     {{ form_widget(form.monthInterval, {
@@ -261,48 +261,51 @@
     }) }}
     {{ form_errors(form.monthInterval) }}
     {% if form.monthInterval.vars.help %}
-      <small>{{ form.monthInterval.vars.help }}</small>
+      <small>
+        {{ form.monthInterval.vars.help }}
+      </small>
     {% endif %}
   </div>
-
   <div class="grid">
     <div class="field">
       {{ form_label(form.dayOfWeek) }}
       {{ form_widget(form.dayOfWeek) }}
       {{ form_errors(form.dayOfWeek) }}
       {% if form.dayOfWeek.vars.help %}
-        <small>{{ form.dayOfWeek.vars.help }}</small>
+        <small>
+          {{ form.dayOfWeek.vars.help }}
+        </small>
       {% endif %}
     </div>
-
     <div class="field">
       {{ form_label(form.startTime) }}
       <div class="time-inline">
         {{ form_widget(form.startTime.hour) }}
-        <span class="time-separator">:</span>
+        <span class="time-separator">
+          :
+        </span>
         {{ form_widget(form.startTime.minute) }}
       </div>
       {{ form_errors(form.startTime) }}
     </div>
   </div>
-
   <div class="grid">
     <div class="field">
       {{ form_label(form.durationMinutes) }}
       {{ form_widget(form.durationMinutes) }}
       {{ form_errors(form.durationMinutes) }}
     </div>
-
     <div class="field">
       {{ form_label(form.broadcastRank) }}
       {{ form_widget(form.broadcastRank) }}
       {{ form_errors(form.broadcastRank) }}
       {% if form.broadcastRank.vars.help %}
-        <small>{{ form.broadcastRank.vars.help }}</small>
+        <small>
+          {{ form.broadcastRank.vars.help }}
+        </small>
       {% endif %}
     </div>
   </div>
-
   <div class="grid">
     <div class="field" data-programmation-rule-slot-target="weekOffsetWrapper">
       {{ form_label(form.weekOffset) }}
@@ -313,10 +316,11 @@
       }) }}
       {{ form_errors(form.weekOffset) }}
       {% if form.weekOffset.vars.help %}
-        <small>{{ form.weekOffset.vars.help }}</small>
+        <small>
+          {{ form.weekOffset.vars.help }}
+        </small>
       {% endif %}
     </div>
-
     <div class="field" data-programmation-rule-slot-target="weekParityWrapper">
       {{ form_label(form.weekParity) }}
       {{ form_widget(form.weekParity, {
@@ -326,11 +330,12 @@
       }) }}
       {{ form_errors(form.weekParity) }}
       {% if form.weekParity.vars.help %}
-        <small>{{ form.weekParity.vars.help }}</small>
+        <small>
+          {{ form.weekParity.vars.help }}
+        </small>
       {% endif %}
     </div>
   </div>
-
   <div class="field">
     <div class="checkline">
       {{ form_widget(form.isActive) }}
@@ -338,15 +343,12 @@
     </div>
     {{ form_errors(form.isActive) }}
   </div>
-
   {{ form_widget(form._token) }}
-
   <div class="actions">
     {{ form_widget(form.Sauvegarder) }}
     <a href="{{ path('admin_programmationRuleSlot_index', { ruleId: rule.id }) }}" class="btn-back">
       Retour aux créneaux
     </a>
   </div>
-
   {{ form_end(form, { render_rest: false }) }}
 </div>

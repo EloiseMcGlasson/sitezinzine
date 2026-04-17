@@ -4,7 +4,8 @@
 
 {% block body %}
   {% include 'admin/programmationRule/_form.html.twig' with {
-    form: form,
-    form_title: 'Créer une règle de programmation'
-  } only %}
+  form: form,
+  form_title: 'Créer une règle de programmation',
+  rule: rule
+} only %}
 {% endblock %}

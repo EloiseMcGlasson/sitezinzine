@@ -8,9 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProgrammationRuleRepository::class)]
-#[ORM\Table(name: 'programmation_rule')]
+#[ORM\Table(
+    name: 'programmation_rule',
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'uniq_programmation_rule_category_number', columns: ['category_id', 'rule_number'])
+    ]
+)]
 #[ORM\Index(columns: ['is_active'], name: 'idx_programmation_rule_active')]
 #[ORM\Index(columns: ['deleted_at'], name: 'idx_programmation_rule_deleted')]
+#[ORM\Index(columns: ['category_id'], name: 'idx_programmation_rule_category')]
 class ProgrammationRule
 {
     #[ORM\Id]
@@ -21,6 +27,9 @@ class ProgrammationRule
     #[ORM\ManyToOne(targetEntity: Categories::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Categories $category = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $ruleNumber = null;
 
     #[ORM\Column(type: 'date_immutable', nullable: true)]
     private ?\DateTimeImmutable $validFrom = null;
@@ -58,9 +67,20 @@ class ProgrammationRule
 
     public function __toString(): string
     {
-        return $this->category?->getTitre() ?? 'Règle de programmation';
+        return $this->getDisplayName();
     }
 
+    public function getDisplayName(): string
+{
+    $categoryTitle = $this->category?->getTitre() ?? 'Catégorie';
+
+    if ($this->ruleNumber === null) {
+        return sprintf('%s règle N° ?', $categoryTitle);
+    }
+
+    return sprintf('%s règle N° %d', $categoryTitle, $this->ruleNumber);
+}
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +94,19 @@ class ProgrammationRule
     public function setCategory(?Categories $category): static
     {
         $this->category = $category;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getRuleNumber(): ?int
+    {
+        return $this->ruleNumber;
+    }
+
+    public function setRuleNumber(int $ruleNumber): static
+    {
+        $this->ruleNumber = $ruleNumber;
         $this->touch();
 
         return $this;

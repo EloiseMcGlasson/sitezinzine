@@ -9,7 +9,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,14 +16,18 @@ class ProgrammationRuleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
+        /** @var ProgrammationRule|null $rule */
+        $rule = $options['data'] ?? null;
+        $isEdit = $rule instanceof ProgrammationRule && $rule->getId() !== null;
 
+        $builder
             ->add('category', EntityType::class, [
                 'class' => Categories::class,
                 'choice_label' => 'titre',
                 'label' => 'Catégorie',
                 'placeholder' => 'Choisir une catégorie',
                 'required' => true,
+                'disabled' => $isEdit,
                 'query_builder' => function ($repository) {
                     return $repository->createQueryBuilder('c')
                         ->andWhere('c.softDelete = :softDelete')
@@ -50,7 +53,7 @@ class ProgrammationRuleType extends AbstractType
                 'label' => 'Règle active',
                 'required' => false,
             ])
-            ->add('Sauvegarder', SubmitType::class, [
+            ->add('save', SubmitType::class, [
                 'label' => 'Sauvegarder',
             ]);
     }

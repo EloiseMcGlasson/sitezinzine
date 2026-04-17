@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Categories;
 use App\Entity\ProgrammationRule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -53,6 +54,7 @@ class ProgrammationRuleRepository extends ServiceEntityRepository
             ->leftJoin('r.category', 'c')
             ->addSelect('c')
             ->orderBy('c.titre', 'ASC')
+            ->addOrderBy('r.ruleNumber', 'ASC')
             ->addOrderBy('r.id', 'ASC')
             ->getQuery()
             ->getResult();
@@ -64,7 +66,9 @@ class ProgrammationRuleRepository extends ServiceEntityRepository
             ->leftJoin('r.category', 'c')
             ->addSelect('c')
             ->andWhere('r.deletedAt IS NOT NULL')
-            ->orderBy('r.deletedAt', 'DESC')
+            ->orderBy('c.titre', 'ASC')
+            ->addOrderBy('r.ruleNumber', 'ASC')
+            ->addOrderBy('r.deletedAt', 'DESC')
             ->addOrderBy('r.id', 'DESC')
             ->getQuery()
             ->getResult();
@@ -76,6 +80,7 @@ class ProgrammationRuleRepository extends ServiceEntityRepository
             ->leftJoin('r.category', 'c')
             ->addSelect('c')
             ->orderBy('c.titre', 'ASC')
+            ->addOrderBy('r.ruleNumber', 'ASC')
             ->addOrderBy('r.id', 'ASC')
             ->getQuery()
             ->getResult();
@@ -90,8 +95,21 @@ class ProgrammationRuleRepository extends ServiceEntityRepository
             ->andWhere('(r.validUntil IS NULL OR r.validUntil >= :date)')
             ->setParameter('date', $date->format('Y-m-d'))
             ->orderBy('c.titre', 'ASC')
+            ->addOrderBy('r.ruleNumber', 'ASC')
             ->addOrderBy('r.id', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findMaxRuleNumberByCategory(Categories $category): int
+    {
+        $result = $this->createQueryBuilder('r')
+            ->select('MAX(r.ruleNumber) AS maxNumber')
+            ->andWhere('r.category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $result !== null ? (int) $result : 0;
     }
 }

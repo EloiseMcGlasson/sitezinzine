@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.85] - 2026-04-17
+### Ajout
+- Automatisation de l'affichage de l'éditeur et de la durée lors du choix de la catégorie sur le form de creation d'émission.
+- Ajout de la différenciation des règles de programmations.
+- Ajout de la création d'une fiche émission autogénérée pour le direct, sa propagation et sa suppression.
+
 ## [1.0.84] - 2026-04-12
 ### Ajout
 - Ajout de la propagation des émissions programmées (choisir une émission en première diffusion la place automatiquement sur les créneaux de rediffusions prévues par les règles).

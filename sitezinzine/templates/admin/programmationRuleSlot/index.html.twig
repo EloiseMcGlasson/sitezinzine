@@ -1,9 +1,9 @@
 {% extends 'admin/admin.html.twig' %}
-
-{% block title %}Gestion des créneaux{% endblock %}
-
+{% block title %}
+  Gestion des créneaux
+{% endblock %}
 {% block body %}
-<style>
+  <style>
 .main-content .programmation-rule-slot-index,
 .main-content .programmation-rule-slot-index *{
   box-sizing: border-box;
@@ -215,18 +215,21 @@
   }
 }
 </style>
-
-<div class="programmation-rule-slot-index">
-  <div class="page-header">
-    <h1>Créneaux de programmation</h1>
-
-    <div class="top-actions">
-      <a href="{{ path('admin_programmationRuleSlot_create', {ruleId: rule.id}) }}" class="btn-create">Créer un créneau</a>
-      <a href="{{ path('admin_programmationRule_index') }}" class="btn-back">Retour aux règles</a>
+  <div class="programmation-rule-slot-index">
+    <div class="page-header">
+      <h1>
+        Créneaux de programmation
+      </h1>
+      <div class="top-actions">
+        <a href="{{ path('admin_programmationRuleSlot_create', {ruleId: rule.id}) }}" class="btn-create">
+          Créer un créneau
+        </a>
+        <a href="{{ path('admin_programmationRule_index') }}" class="btn-back">
+          Retour aux règles
+        </a>
+      </div>
     </div>
-  </div>
-
-  {% set radioDays = {
+    {% set radioDays = {
     2: 'Mardi',
     3: 'Mercredi',
     4: 'Jeudi',
@@ -235,106 +238,204 @@
     7: 'Dimanche',
     1: 'Lundi'
   } %}
-
-  <div class="context">
-    <strong>Catégorie :</strong> {{ rule.category ? rule.category.titre : '—' }}
-  </div>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Rang</th>
-          <th>Libellé diffusion</th>
-          <th>Récurrence</th>
-          <th>Occurrence</th>
-          <th>Intervalle mensuel</th>
-          <th>Décalage semaine</th>
-          <th>Jour</th>
-          <th>Heure</th>
-          <th>Durée</th>
-          <th>Actif</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for slot in slots %}
-        <tr>
-          <td>{{ slot.broadcastRank }}</td>
-          <td>{{ slot.broadcastLabel }}</td>
-          <td>{{ slot.recurrenceLabel }}</td>
-          <td>{{ slot.monthlyOccurrenceLabel ?: '—' }}</td>
-          <td>{{ slot.isMonthly ? slot.monthIntervalLabel : '—' }}</td>
-          <td>{{ slot.weekOffsetLabel }}</td>
-          <td>{{ radioDays[slot.dayOfWeek] ?? slot.dayLabel }}</td>
-          <td>{{ slot.startTime ? slot.startTime|date('H:i') : '—' }}</td>
-          <td>{{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}</td>
-          <td>
-            {% if slot.isActive %}
-              <span class="badge badge-active">Oui</span>
+    <div class="context">
+      <strong>
+        Règle :
+      </strong>
+      {{ rule.displayName }}
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Rang
+            </th>
+            <th>
+              Libellé diffusion
+            </th>
+            <th>
+              Récurrence
+            </th>
+            <th>
+              Occurrence
+            </th>
+            <th>
+              Intervalle mensuel
+            </th>
+            <th>
+              Décalage semaine
+            </th>
+            <th>
+              Jour
+            </th>
+            <th>
+              Heure
+            </th>
+            <th>
+              Durée
+            </th>
+            <th>
+              Actif
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for slot in slots %}
+            <tr>
+              <td>
+                {{ slot.broadcastRank }}
+              </td>
+              <td>
+                {{ slot.broadcastLabel }}
+              </td>
+              <td>
+                {{ slot.recurrenceLabel }}
+              </td>
+              <td>
+                {{ slot.monthlyOccurrenceLabel ?: '—' }}
+              </td>
+              <td>
+                {{ slot.isMonthly ? slot.monthIntervalLabel : '—' }}
+              </td>
+              <td>
+                {{ slot.weekOffsetLabel }}
+              </td>
+              <td>
+                {{ radioDays[slot.dayOfWeek] ?? slot.dayLabel }}
+              </td>
+              <td>
+                {{ slot.startTime ? slot.startTime|date('H:i') : '—' }}
+              </td>
+              <td>
+                {{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}
+              </td>
+              <td>
+                {% if slot.isActive %}
+                  <span class="badge badge-active">
+                    Oui
+                  </span>
+                {% else %}
+                  <span class="badge badge-inactive">
+                    Non
+                  </span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="actions">
+                  <a href="{{ path('admin_programmationRuleSlot_edit', {ruleId: rule.id, id: slot.id}) }}" class="btn-edit">
+                    Modifier
+                  </a>
+                  <form method="post" action="{{ path('admin_programmationRuleSlot_delete', {ruleId: rule.id, id: slot.id}) }}" onsubmit="return confirm('Supprimer ce créneau ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_slot_' ~ slot.id) }}">
+                      <button type="submit" class="btn-delete">
+                        Supprimer
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
             {% else %}
-              <span class="badge badge-inactive">Non</span>
-            {% endif %}
-          </td>
-          <td>
+              <tr>
+                <td colspan="11" class="empty">
+                  Aucun créneau pour cette règle.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="mobile-cards">
+        {% for slot in slots %}
+          <div class="card">
+            <h2>
+              {{ slot.broadcastLabel }}
+            </h2>
+            <p>
+              <strong>
+                Rang :
+              </strong>
+              {{ slot.broadcastRank }}
+            </p>
+            <p>
+              <strong>
+                Récurrence :
+              </strong>
+              {{ slot.recurrenceLabel }}
+            </p>
+            <p>
+              <strong>
+                Occurrence :
+              </strong>
+              {{ slot.monthlyOccurrenceLabel ?: '—' }}
+            </p>
+            <p>
+              <strong>
+                Intervalle mensuel :
+              </strong>
+              {{ slot.isMonthly ? slot.monthIntervalLabel : '—' }}
+            </p>
+            <p>
+              <strong>
+                Décalage semaine :
+              </strong>
+              {{ slot.weekOffsetLabel }}
+            </p>
+            <p>
+              <strong>
+                Jour :
+              </strong>
+              {{ radioDays[slot.dayOfWeek] ?? slot.dayLabel }}
+            </p>
+            <p>
+              <strong>
+                Heure :
+              </strong>
+              {{ slot.startTime ? slot.startTime|date('H:i') : '—' }}
+            </p>
+            <p>
+              <strong>
+                Durée :
+              </strong>
+              {{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}
+            </p>
+            <p>
+              <strong>
+                Actif :
+              </strong>
+              {% if slot.isActive %}
+                <span class="badge badge-active">
+                  Oui
+                </span>
+              {% else %}
+                <span class="badge badge-inactive">
+                  Non
+                </span>
+              {% endif %}
+            </p>
             <div class="actions">
-              <a href="{{ path('admin_programmationRuleSlot_edit', {ruleId: rule.id, id: slot.id}) }}" class="btn-edit">Modifier</a>
-
-              <form method="post"
-                    action="{{ path('admin_programmationRuleSlot_delete', {ruleId: rule.id, id: slot.id}) }}"
-                    onsubmit="return confirm('Supprimer ce créneau ?');">
+              <a href="{{ path('admin_programmationRuleSlot_edit', {ruleId: rule.id, id: slot.id}) }}" class="btn-edit">
+                Modifier
+              </a>
+              <form method="post" action="{{ path('admin_programmationRuleSlot_delete', {ruleId: rule.id, id: slot.id}) }}" onsubmit="return confirm('Supprimer ce créneau ?');">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_slot_' ~ slot.id) }}">
-                <button type="submit" class="btn-delete">Supprimer</button>
-              </form>
+                  <button type="submit" class="btn-delete">
+                    Supprimer
+                  </button>
+                </form>
+              </div>
             </div>
-          </td>
-        </tr>
-      {% else %}
-        <tr>
-          <td colspan="11" class="empty">Aucun créneau pour cette règle.</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <div class="mobile-cards">
-    {% for slot in slots %}
-      <div class="card">
-        <h2>{{ slot.broadcastLabel }}</h2>
-        <p><strong>Rang :</strong> {{ slot.broadcastRank }}</p>
-        <p><strong>Récurrence :</strong> {{ slot.recurrenceLabel }}</p>
-        <p><strong>Occurrence :</strong> {{ slot.monthlyOccurrenceLabel ?: '—' }}</p>
-        <p><strong>Intervalle mensuel :</strong> {{ slot.isMonthly ? slot.monthIntervalLabel : '—' }}</p>
-        <p><strong>Décalage semaine :</strong> {{ slot.weekOffsetLabel }}</p>
-        <p><strong>Jour :</strong> {{ radioDays[slot.dayOfWeek] ?? slot.dayLabel }}</p>
-        <p><strong>Heure :</strong> {{ slot.startTime ? slot.startTime|date('H:i') : '—' }}</p>
-        <p><strong>Durée :</strong> {{ slot.durationMinutes ? slot.durationMinutes ~ ' min' : '—' }}</p>
-        <p>
-          <strong>Actif :</strong>
-          {% if slot.isActive %}
-            <span class="badge badge-active">Oui</span>
           {% else %}
-            <span class="badge badge-inactive">Non</span>
-          {% endif %}
-        </p>
-
-        <div class="actions">
-          <a href="{{ path('admin_programmationRuleSlot_edit', {ruleId: rule.id, id: slot.id}) }}" class="btn-edit">Modifier</a>
-
-          <form method="post"
-                action="{{ path('admin_programmationRuleSlot_delete', {ruleId: rule.id, id: slot.id}) }}"
-                onsubmit="return confirm('Supprimer ce créneau ?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete_slot_' ~ slot.id) }}">
-            <button type="submit" class="btn-delete">Supprimer</button>
-          </form>
+            <div class="card">
+              <p class="empty">
+                Aucun créneau pour cette règle.
+              </p>
+            </div>
+          {% endfor %}
         </div>
       </div>
-    {% else %}
-      <div class="card">
-        <p class="empty">Aucun créneau pour cette règle.</p>
-      </div>
-    {% endfor %}
-  </div>
-</div>
-{% endblock %}
+    {% endblock %}
+    

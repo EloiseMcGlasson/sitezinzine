@@ -24,6 +24,10 @@ class ProgrammationGridBuilder
                 continue;
             }
 
+            if ($rule->isDeleted() || !$rule->isActive()) {
+                continue;
+            }
+
             foreach ($rule->getSlots() as $slot) {
                 if (!$slot instanceof ProgrammationRuleSlot) {
                     continue;
@@ -53,11 +57,19 @@ class ProgrammationGridBuilder
 
                     $startIndex = max(0, min(95, $startIndex));
 
+                    $categoryTitle = $rule->getCategory()?->getTitre() ?? 'Catégorie inconnue';
+                    $ruleNumber = $rule->getRuleNumber();
+                    $ruleDisplayName = $rule->getDisplayName();
+
                     $daySegments[$dayIndex][] = [
-                        'title' => $rule->getCategory()?->getTitre() ?? 'Catégorie inconnue',
+                        'title' => $categoryTitle,
+                        'displayTitle' => $categoryTitle,
+                        'categoryTitle' => $categoryTitle,
                         'duration' => $slot->getDurationMinutes() ?? 15,
                         'startIndex' => $startIndex,
                         'ruleId' => $rule->getId(),
+                        'ruleNumber' => $ruleNumber,
+                        'ruleDisplayName' => $ruleDisplayName,
                         'slotId' => $slot->getId(),
                         'broadcastRank' => $slot->getBroadcastRank(),
                         'startsAt' => $startsAt->format('Y-m-d H:i:s'),

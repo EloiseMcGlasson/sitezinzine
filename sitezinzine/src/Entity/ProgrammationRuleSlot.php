@@ -55,6 +55,7 @@ class ProgrammationRuleSlot
      * 1 = 1re diffusion
      * 2 = 1re rediffusion
      * 3 = 2e rediffusion
+     * 4 = 3e rediffusion
      */
     #[ORM\Column(name: 'broadcast_rank')]
     private int $broadcastRank = 1;
@@ -202,8 +203,8 @@ class ProgrammationRuleSlot
 
     public function setBroadcastRank(int $broadcastRank): static
     {
-        if (!in_array($broadcastRank, [1, 2, 3], true)) {
-            throw new \InvalidArgumentException('broadcastRank doit valoir 1, 2 ou 3.');
+        if (!in_array($broadcastRank, [1, 2, 3, 4], true)) {
+            throw new \InvalidArgumentException('broadcastRank doit valoir 1, 2, 3 ou 4.');
         }
 
         $this->broadcastRank = $broadcastRank;
@@ -434,6 +435,7 @@ class ProgrammationRuleSlot
             1 => '1re diffusion',
             2 => '1re rediffusion',
             3 => '2e rediffusion',
+            4 => '3e rediffusion',
             default => 'Diffusion inconnue',
         };
     }

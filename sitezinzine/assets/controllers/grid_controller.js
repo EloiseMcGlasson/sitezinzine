@@ -1,7 +1,21 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['day', 'emptyState', 'sidebarPanel', 'slotSummary', 'emissionsList', 'slotActions']
+  static targets = [
+    'day',
+    'emptyState',
+    'sidebarPanel',
+    'slotSummary',
+    'emissionsList',
+    'slotActions',
+    'modeRegularBtn',
+    'modeSpecialBtn',
+    'regularPanel',
+    'specialPanel',
+    'specialEmptyState',
+    'specialSidebarPanel',
+    'specialSlotSummary'
+  ]
 
   connect() {
     this.CELL_MIN = 15
@@ -11,11 +25,12 @@ export default class extends Controller {
     this.fromDay = null
     this.fromStartIndex = null
     this.selectedPostit = null
+    this.currentMode = 'regular'
 
-    this.element.querySelectorAll('.postit').forEach(el => this.makeDraggable(el, 'grid'))
+    this.element.querySelectorAll('.postit').forEach((el) => this.makeDraggable(el, 'grid'))
 
-    this.dayTargets.forEach(day => {
-      day.addEventListener('dragover', e => {
+    this.dayTargets.forEach((day) => {
+      day.addEventListener('dragover', (e) => {
         e.preventDefault()
         day.classList.add('drag-over')
       })
@@ -24,12 +39,12 @@ export default class extends Controller {
         day.classList.remove('drag-over')
       })
 
-      day.addEventListener('drop', e => this.dropOnDay(e, day))
+      day.addEventListener('drop', (e) => this.dropOnDay(e, day))
     })
 
     const pool = this.element.querySelector('#emissions-pool')
     if (pool) {
-      pool.addEventListener('dragover', e => {
+      pool.addEventListener('dragover', (e) => {
         e.preventDefault()
         pool.classList.add('drop-pool-hover')
       })
@@ -38,8 +53,30 @@ export default class extends Controller {
         pool.classList.remove('drop-pool-hover')
       })
 
-      pool.addEventListener('drop', e => this.dropBackToPool(e, pool))
+      pool.addEventListener('drop', (e) => this.dropBackToPool(e, pool))
     }
+
+    this.showRegularMode()
+  }
+
+  showRegularMode() {
+    this.currentMode = 'regular'
+
+    this.regularPanelTarget.style.display = 'block'
+    this.specialPanelTarget.style.display = 'none'
+
+    this.modeRegularBtnTarget.classList.add('is-active')
+    this.modeSpecialBtnTarget.classList.remove('is-active')
+  }
+
+  showSpecialMode() {
+    this.currentMode = 'special'
+
+    this.regularPanelTarget.style.display = 'none'
+    this.specialPanelTarget.style.display = 'block'
+
+    this.modeRegularBtnTarget.classList.remove('is-active')
+    this.modeSpecialBtnTarget.classList.add('is-active')
   }
 
   durationToCells(d) {
@@ -53,6 +90,14 @@ export default class extends Controller {
   }
 
   makeDraggable(el, source) {
+    const isLocked = el.dataset.slotLocked === 'true'
+
+    if (isLocked) {
+      el.setAttribute('draggable', 'false')
+      el.dataset.source = source
+      return
+    }
+
     el.setAttribute('draggable', 'true')
     el.dataset.source = source
 
@@ -70,7 +115,73 @@ export default class extends Controller {
     })
   }
 
+  durationLabel(duration) {
+    return `${duration} min`
+  }
+
+  escapeHtml(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;')
+  }
+
+  buildSlotSummary(postit, assignedEmissionTitle = '') {
+    const categoryTitle = postit.dataset.categoryTitle || 'Catégorie inconnue'
+    const ruleDisplayName = postit.dataset.ruleDisplayName || categoryTitle
+    const startsAt = postit.dataset.startsAt || ''
+    const duration = postit.dataset.duration || ''
+    const broadcastRank = postit.dataset.broadcastRank || ''
+    const safeAssignedTitle = assignedEmissionTitle || postit.dataset.assignedEmissionTitle || ''
+
+    return `
+      <div><span class="label">Règle :</span> ${this.escapeHtml(ruleDisplayName)}</div>
+      <div><span class="label">Catégorie :</span> ${this.escapeHtml(categoryTitle)}</div>
+      <div><span class="label">Début :</span> ${this.escapeHtml(startsAt)}</div>
+      <div><span class="label">Durée :</span> ${this.escapeHtml(this.durationLabel(duration))}</div>
+      <div><span class="label">Rang :</span> ${this.escapeHtml(broadcastRank)}</div>
+      ${
+        safeAssignedTitle
+          ? `<div><span class="label">Émission affectée :</span> ${this.escapeHtml(safeAssignedTitle)}</div>`
+          : ''
+      }
+    `
+  }
+
+  buildSpecialSlotSummary(postit) {
+    const startsAt = postit.dataset.startsAt || ''
+    const duration = postit.dataset.duration || ''
+    const categoryTitle = postit.dataset.categoryTitle || 'Catégorie inconnue'
+
+    return `
+      <div><span class="label">Début :</span> ${this.escapeHtml(startsAt)}</div>
+      <div><span class="label">Durée :</span> ${this.escapeHtml(this.durationLabel(duration))}</div>
+      <div><span class="label">Contexte grille :</span> ${this.escapeHtml(categoryTitle)}</div>
+      <div><span class="label">Type :</span> Programmation non régulière</div>
+    `
+  }
+
+  buildCreateLiveButton() {
+    return `
+      <div class="create-live-box">
+        <button
+          type="button"
+          class="btn-create-live"
+          data-action="click->grid#createLiveEmission"
+        >
+          Créer un direct
+        </button>
+      </div>
+    `
+  }
+
   placePostIt(dayEl, startIndex) {
+    if (!this.dragged || this.dragged.dataset.slotLocked === 'true') {
+      return
+    }
+
     const duration = parseInt(this.dragged.dataset.duration || '15', 10)
     const heightPx = this.durationToPx(duration)
     const cells = this.durationToCells(duration)
@@ -95,7 +206,10 @@ export default class extends Controller {
 
   dropOnDay(e, dayEl) {
     dayEl.classList.remove('drag-over')
-    if (!this.dragged) return
+
+    if (!this.dragged || this.dragged.dataset.slotLocked === 'true') {
+      return
+    }
 
     const rect = dayEl.getBoundingClientRect()
     let startIndex = Math.floor((e.clientY - rect.top) / this.CELL_H)
@@ -107,7 +221,9 @@ export default class extends Controller {
     e.preventDefault()
     pool.classList.remove('drop-pool-hover')
 
-    if (!this.dragged || this.dragged.dataset.source !== 'grid') return
+    if (!this.dragged || this.dragged.dataset.source !== 'grid' || this.dragged.dataset.slotLocked === 'true') {
+      return
+    }
 
     this.dragged.removeAttribute('style')
     this.dragged.classList.remove('postit')
@@ -122,6 +238,10 @@ export default class extends Controller {
   async selectSlot(event) {
     const postit = event.currentTarget
 
+    if (postit.dataset.slotLocked === 'true') {
+      return
+    }
+
     if (this.selectedPostit) {
       this.selectedPostit.classList.remove('is-selected')
     }
@@ -129,38 +249,121 @@ export default class extends Controller {
     this.selectedPostit = postit
     this.selectedPostit.classList.add('is-selected')
 
-    const categoryTitle = postit.dataset.categoryTitle || 'Catégorie inconnue'
-    const duration = postit.dataset.duration || ''
-    const startsAt = postit.dataset.startsAt || ''
-    const broadcastRank = postit.dataset.broadcastRank || ''
-    const ruleId = postit.dataset.ruleId || ''
-    const slotId = postit.dataset.slotId || ''
+    if (this.currentMode === 'special') {
+      this.specialEmptyStateTarget.style.display = 'none'
+      this.specialSidebarPanelTarget.style.display = 'block'
+      this.specialSlotSummaryTarget.innerHTML = this.buildSpecialSlotSummary(postit)
+      return
+    }
+
     const assignedEmissionTitle = postit.dataset.assignedEmissionTitle || ''
 
     this.emptyStateTarget.style.display = 'none'
     this.sidebarPanelTarget.style.display = 'block'
-
-    this.slotSummaryTarget.innerHTML = `
-    <div><span class="label">Catégorie :</span> ${categoryTitle}</div>
-    <div><span class="label">Début :</span> ${startsAt}</div>
-    <div><span class="label">Durée :</span> ${duration} min</div>
-    <div><span class="label">Rang :</span> ${broadcastRank}</div>
-    ${assignedEmissionTitle
-        ? `<div><span class="label">Émission affectée :</span> ${assignedEmissionTitle}</div>`
-        : ''
-      }
-  `
+    this.slotSummaryTarget.innerHTML = this.buildSlotSummary(postit, assignedEmissionTitle)
 
     this.slotActionsTarget.style.display = assignedEmissionTitle ? 'block' : 'none'
 
-    this.emissionsListTarget.innerHTML = '<div>Chargement…</div>'
+    await this.loadCandidatesForSelectedPostit()
+  }
+
+  renderEmissions(data, options = {}) {
+    const items = Array.isArray(data.items) ? data.items : []
+    const showCreateLive = options.showCreateLive === true
+
+    let html = ''
+
+    if (items.length === 0) {
+      html += '<div>Aucune émission compatible pour le moment.</div>'
+    } else {
+      html += items.map((item) => `
+        <div
+          class="emission-card ${item.isAutoGenerated ? 'is-auto-generated' : ''}"
+          data-emission-id="${item.id}"
+          data-action="click->grid#selectEmission"
+        >
+          ${this.escapeHtml(item.title)}
+          <small>
+            ${this.escapeHtml(item.meta ?? '')}
+            ${item.isAutoGenerated ? ' • direct auto' : ''}
+          </small>
+        </div>
+      `).join('')
+    }
+
+    if (showCreateLive) {
+      html += this.buildCreateLiveButton()
+    }
+
+    this.emissionsListTarget.innerHTML = html
+  }
+
+  getRebroadcastLabel(broadcastRank) {
+    const rank = parseInt(broadcastRank || '1', 10)
+
+    if (rank === 2) return 'R1 auto'
+    if (rank === 3) return 'R2 auto'
+    if (rank > 3) return 'Rediff. auto'
+
+    return ''
+  }
+
+  renderPostitContent(postit, title, duration) {
+    const broadcastRank = parseInt(postit.dataset.broadcastRank || '1', 10)
+    const isRebroadcast = postit.dataset.slotLocked === 'true'
+    const rebroadcastBadge = isRebroadcast ? this.getRebroadcastLabel(broadcastRank) : ''
+    const ruleNumber = postit.dataset.ruleNumber || ''
+
+    let badge = ''
+    if (ruleNumber && rebroadcastBadge) {
+      badge = `R${this.escapeHtml(ruleNumber)} · ${this.escapeHtml(rebroadcastBadge)}`
+    } else if (ruleNumber) {
+      badge = `R${this.escapeHtml(ruleNumber)}`
+    } else if (rebroadcastBadge) {
+      badge = this.escapeHtml(rebroadcastBadge)
+    }
+
+    postit.innerHTML = `
+      <div class="postit__content">
+        <span class="postit__label">🎙 ${this.escapeHtml(title)} • ${this.escapeHtml(duration)} min</span>
+        ${badge ? `<span class="postit__badge">${badge}</span>` : ''}
+      </div>
+    `
+  }
+
+  async selectEmission(event) {
+    const card = event.currentTarget
+    const emissionId = card.dataset.emissionId
+
+    if (!this.selectedPostit || this.selectedPostit.dataset.slotLocked === 'true') {
+      return
+    }
+
+    if (this.currentMode !== 'regular') {
+      return
+    }
+
+    const slotId = this.selectedPostit.dataset.slotId || ''
+    const startsAt = this.selectedPostit.dataset.startsAt || ''
+    const duration = this.selectedPostit.dataset.duration || ''
+
+    if (!slotId || !startsAt || !emissionId) {
+      alert('Informations incomplètes pour affecter cette émission.')
+      return
+    }
 
     try {
-      const url = `/admin/grille/candidates?ruleId=${encodeURIComponent(ruleId)}&slotId=${encodeURIComponent(slotId)}&startsAt=${encodeURIComponent(startsAt)}`
-      const response = await fetch(url, {
+      const response = await fetch('/admin/grille/assign', {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'X-Requested-With': 'XMLHttpRequest'
-        }
+        },
+        body: new URLSearchParams({
+          slotId,
+          emissionId,
+          startsAt
+        })
       })
 
       if (!response.ok) {
@@ -168,106 +371,101 @@ export default class extends Controller {
       }
 
       const data = await response.json()
-      this.renderEmissions(data)
+
+      if (!data.success) {
+        throw new Error(data.error || 'Erreur inconnue')
+      }
+
+      if (data.propagated === true) {
+        window.location.reload()
+        return
+      }
+
+      this.renderPostitContent(this.selectedPostit, data.emissionTitle, duration)
+      this.selectedPostit.dataset.assignedEmissionId = emissionId
+      this.selectedPostit.dataset.assignedEmissionTitle = data.emissionTitle
+      this.selectedPostit.classList.add('assigned')
+
+      this.slotSummaryTarget.innerHTML = this.buildSlotSummary(this.selectedPostit, data.emissionTitle)
+      this.slotActionsTarget.style.display = 'block'
+
+      const cards = this.emissionsListTarget.querySelectorAll('.emission-card')
+      cards.forEach((el) => el.classList.remove('is-selected'))
+      card.classList.add('is-selected')
+
+      await this.loadCandidatesForSelectedPostit()
     } catch (error) {
-      this.emissionsListTarget.innerHTML = '<div>Impossible de charger les émissions.</div>'
+      alert('Erreur lors de l’affectation de l’émission.')
     }
   }
 
-  renderEmissions(data) {
-    const items = Array.isArray(data.items) ? data.items : []
-
-    if (items.length === 0) {
-      this.emissionsListTarget.innerHTML = '<div>Aucune émission compatible pour le moment.</div>'
+  async createLiveEmission() {
+    if (!this.selectedPostit || this.selectedPostit.dataset.slotLocked === 'true') {
       return
     }
 
-    this.emissionsListTarget.innerHTML = items.map(item => `
-      <div
-        class="emission-card"
-        data-emission-id="${item.id}"
-        data-action="click->grid#selectEmission"
-      >
-        ${item.title}
-        <small>${item.meta ?? ''}</small>
-      </div>
-    `).join('')
-  }
+    if (this.currentMode !== 'regular') {
+      return
+    }
 
-  async selectEmission(event) {
-  const card = event.currentTarget
-  const emissionId = card.dataset.emissionId
+    const slotId = this.selectedPostit.dataset.slotId || ''
+    const startsAt = this.selectedPostit.dataset.startsAt || ''
+    const duration = this.selectedPostit.dataset.duration || ''
 
-  if (!this.selectedPostit) {
-    return
-  }
+    if (!slotId || !startsAt) {
+      alert('Informations incomplètes pour créer ce direct.')
+      return
+    }
 
-  const slotId = this.selectedPostit.dataset.slotId || ''
-  const startsAt = this.selectedPostit.dataset.startsAt || ''
-  const duration = this.selectedPostit.dataset.duration || ''
-  const categoryTitle = this.selectedPostit.dataset.categoryTitle || 'Catégorie inconnue'
-  const broadcastRank = this.selectedPostit.dataset.broadcastRank || ''
-
-  if (!slotId || !startsAt || !emissionId) {
-    alert('Informations incomplètes pour affecter cette émission.')
-    return
-  }
-
-  try {
-    const response = await fetch('/admin/grille/assign', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: new URLSearchParams({
-        slotId,
-        emissionId,
-        startsAt
+    try {
+      const response = await fetch('/admin/grille/create-live', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({
+          slotId,
+          startsAt
+        })
       })
-    })
 
-    if (!response.ok) {
-      throw new Error('Réponse invalide')
+      const data = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        throw new Error(data?.error || `Réponse invalide (${response.status})`)
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Erreur inconnue')
+      }
+
+      if (data.propagated === true) {
+        window.location.reload()
+        return
+      }
+
+      this.renderPostitContent(this.selectedPostit, data.emissionTitle, duration)
+      this.selectedPostit.dataset.assignedEmissionId = data.emissionId
+      this.selectedPostit.dataset.assignedEmissionTitle = data.emissionTitle
+      this.selectedPostit.classList.add('assigned')
+
+      this.slotSummaryTarget.innerHTML = this.buildSlotSummary(this.selectedPostit, data.emissionTitle)
+      this.slotActionsTarget.style.display = 'block'
+
+      await this.loadCandidatesForSelectedPostit()
+    } catch (error) {
+      console.error(error)
+      alert(`Erreur lors de la création du direct : ${error.message}`)
     }
-
-    const data = await response.json()
-
-    if (!data.success) {
-      throw new Error(data.error || 'Erreur inconnue')
-    }
-
-    if (data.propagated === true) {
-      window.location.reload()
-      return
-    }
-
-    this.selectedPostit.innerHTML = `🎙 ${data.emissionTitle} • ${duration} min`
-    this.selectedPostit.dataset.assignedEmissionId = emissionId
-    this.selectedPostit.dataset.assignedEmissionTitle = data.emissionTitle
-    this.selectedPostit.classList.add('assigned')
-
-    this.slotSummaryTarget.innerHTML = `
-      <div><span class="label">Catégorie :</span> ${categoryTitle}</div>
-      <div><span class="label">Début :</span> ${startsAt}</div>
-      <div><span class="label">Durée :</span> ${duration} min</div>
-      <div><span class="label">Rang :</span> ${broadcastRank}</div>
-      <div><span class="label">Émission affectée :</span> ${data.emissionTitle}</div>
-    `
-
-    this.slotActionsTarget.style.display = 'block'
-
-    const cards = this.emissionsListTarget.querySelectorAll('.emission-card')
-    cards.forEach(el => el.classList.remove('is-selected'))
-    card.classList.add('is-selected')
-
-  } catch (error) {
-    alert('Erreur lors de l’affectation de l’émission.')
   }
-}
 
   async removeAssignment() {
-    if (!this.selectedPostit) {
+    if (!this.selectedPostit || this.selectedPostit.dataset.slotLocked === 'true') {
+      return
+    }
+
+    if (this.currentMode !== 'regular') {
       return
     }
 
@@ -275,7 +473,6 @@ export default class extends Controller {
     const startsAt = this.selectedPostit.dataset.startsAt || ''
     const duration = this.selectedPostit.dataset.duration || ''
     const categoryTitle = this.selectedPostit.dataset.categoryTitle || 'Catégorie inconnue'
-    const broadcastRank = this.selectedPostit.dataset.broadcastRank || ''
 
     if (!slotId || !startsAt) {
       alert('Informations incomplètes pour retirer cette émission.')
@@ -305,22 +502,64 @@ export default class extends Controller {
         throw new Error(data.error || 'Erreur inconnue')
       }
 
-      this.selectedPostit.innerHTML = `🎙 ${categoryTitle} • ${duration} min`
+      if (data.propagated === true) {
+        window.location.reload()
+        return
+      }
+
+      this.renderPostitContent(this.selectedPostit, categoryTitle, duration)
       this.selectedPostit.dataset.assignedEmissionId = ''
       this.selectedPostit.dataset.assignedEmissionTitle = ''
       this.selectedPostit.classList.remove('assigned')
 
-      this.slotSummaryTarget.innerHTML = `
-      <div><span class="label">Catégorie :</span> ${categoryTitle}</div>
-      <div><span class="label">Début :</span> ${startsAt}</div>
-      <div><span class="label">Durée :</span> ${duration} min</div>
-      <div><span class="label">Rang :</span> ${broadcastRank}</div>
-    `
-
+      this.slotSummaryTarget.innerHTML = this.buildSlotSummary(this.selectedPostit)
       this.slotActionsTarget.style.display = 'none'
 
+      await this.loadCandidatesForSelectedPostit()
     } catch (error) {
       alert('Erreur lors de la suppression de l’émission.')
+    }
+  }
+
+  async loadCandidatesForSelectedPostit() {
+    if (!this.selectedPostit) {
+      this.emissionsListTarget.innerHTML = '<div>Aucune émission compatible pour le moment.</div>'
+      return
+    }
+
+    const startsAt = this.selectedPostit.dataset.startsAt || ''
+    const slotId = this.selectedPostit.dataset.slotId || ''
+    const assignedEmissionTitle = this.selectedPostit.dataset.assignedEmissionTitle || ''
+    const broadcastRank = parseInt(this.selectedPostit.dataset.broadcastRank || '1', 10)
+
+    if (!slotId || !startsAt) {
+      this.emissionsListTarget.innerHTML = '<div>Impossible de charger les émissions.</div>'
+      return
+    }
+
+    this.emissionsListTarget.innerHTML = '<div>Chargement…</div>'
+
+    try {
+      const url = `/admin/grille/candidates?slotId=${encodeURIComponent(slotId)}&startsAt=${encodeURIComponent(startsAt)}`
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Réponse invalide')
+      }
+
+      const data = await response.json()
+      const items = Array.isArray(data.items) ? data.items : []
+      const hasAutoGeneratedCandidate = items.some((item) => item.isAutoGenerated === true)
+
+      this.renderEmissions(data, {
+        showCreateLive: !assignedEmissionTitle && broadcastRank === 1 && !hasAutoGeneratedCandidate
+      })
+    } catch (error) {
+      this.emissionsListTarget.innerHTML = '<div>Impossible de charger les émissions.</div>'
     }
   }
 }

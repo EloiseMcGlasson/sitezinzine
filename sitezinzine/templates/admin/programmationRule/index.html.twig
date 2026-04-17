@@ -28,7 +28,7 @@
 
 .main-content .programmation-rule-index h1{
   margin: 0;
-  color: #E4013A;
+  color: white;
   font-size: 26px;
   font-weight: 900;
 }
@@ -195,6 +195,7 @@
 <div class="programmation-rule-index">
   <div class="page-header">
     <h1>Règles de programmation</h1>
+      
     <a href="{{ path('admin_programmationRule_create') }}" class="btn-create">Créer une règle</a>
   </div>
 
@@ -213,7 +214,7 @@
       <tbody>
       {% for rule in rules %}
         <tr>
-          <td>{{ rule.category ? rule.category.titre : '—' }}</td>
+          <td>{{ rule.displayName }}</td>
           <td>{{ rule.validFrom ? rule.validFrom|date('d/m/Y') : '—' }}</td>
           <td>{{ rule.validUntil ? rule.validUntil|date('d/m/Y') : '—' }}</td>
           <td>
@@ -250,7 +251,7 @@
   <div class="mobile-cards">
     {% for rule in rules %}
       <div class="card">
-        <h2>{{ rule.category ? rule.category.titre : 'Règle sans catégorie' }}</h2>
+        <h2>{{ rule.category.titre }} règle N° {{ rule.ruleNumber }}</h2>
         <p><strong>Valide du :</strong> {{ rule.validFrom ? rule.validFrom|date('d/m/Y') : '—' }}</p>
         <p><strong>Valide au :</strong> {{ rule.validUntil ? rule.validUntil|date('d/m/Y') : '—' }}</p>
         <p><strong>Créneaux :</strong> {{ rule.slots|length }}</p>

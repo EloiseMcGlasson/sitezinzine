@@ -1,277 +1,296 @@
 {% extends 'admin/admin.html.twig' %}
+
 {% block title 'Créer une émission' %}
+
 {% block body %}
   <style>
-/* scope strict, MAIS on exclut TinyMCE */
-.main-content .em-form,
-.main-content .em-form *:not(.tox):not(.tox *){
-  box-sizing: border-box;
-}
+    /* scope strict, MAIS on exclut TinyMCE */
+    .main-content .em-form,
+    .main-content .em-form *:not(.tox):not(.tox *){
+      box-sizing: border-box;
+    }
 
-/* TinyMCE: empêche les styles globaux de transformer la toolbar */
-.main-content .em-form .tox button,
-.main-content .em-form .tox .tox-tbtn,
-.main-content .em-form .tox .tox-mbtn{
-  background: initial !important;
-  color: inherit !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  padding: initial !important;
-  margin: initial !important;
-  width: auto !important;
-  height: auto !important;
-}
+    /* TinyMCE: empêche les styles globaux de transformer la toolbar */
+    .main-content .em-form .tox button,
+    .main-content .em-form .tox .tox-tbtn,
+    .main-content .em-form .tox .tox-mbtn{
+      background: initial !important;
+      color: inherit !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      padding: initial !important;
+      margin: initial !important;
+      width: auto !important;
+      height: auto !important;
+    }
 
-/* card blanche */
-.main-content .em-form{
-  font-family: "Montserrat Alternates", sans-serif;
-  max-width: 1080px;
-  margin: 18px auto 28px;
-  padding: 16px 16px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  color: #1C1C1A;
-}
+    /* card blanche */
+    .main-content .em-form{
+      font-family: "Montserrat Alternates", sans-serif;
+      max-width: 1080px;
+      margin: 18px auto 28px;
+      padding: 16px 16px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      color: #1C1C1A;
+    }
 
-.main-content .em-form h1{
-  margin: 0 0 12px 0;
-  text-align: center;
-  color: #E4013A;
-  font-weight: 900;
-  font-size: 22px;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
+    .main-content .em-form h1{
+      margin: 0 0 12px 0;
+      text-align: center;
+      color: #E4013A;
+      font-weight: 900;
+      font-size: 22px;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
 
-/* form layout */
-.main-content .em-form form{
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+    /* form layout */
+    .main-content .em-form form{
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-.main-content .em-form .grid-4{
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
-}
+    .main-content .em-form .grid-4{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
 
-.main-content .em-form .grid-3{
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
-}
+    .main-content .em-form .grid-3{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
 
-.main-content .em-form .grid-2{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
-}
+    .main-content .em-form .grid-2{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
 
-.main-content .em-form .grid-3-lists{
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
-}
+    .main-content .em-form .grid-3-lists{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
 
-.main-content .em-form .field{
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
+    .main-content .em-form .field{
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-.main-content .em-form label{
-  margin: 0 0 6px 0;
-  font-weight: 800;
-  color: #333;
-  font-size: 14px;
-}
+    .main-content .em-form label{
+      margin: 0 0 6px 0;
+      font-weight: 800;
+      color: #333;
+      font-size: 14px;
+    }
 
-.main-content .em-form input[type="text"],
-.main-content .em-form input[type="number"],
-.main-content .em-form input[type="file"],
-.main-content .em-form select,
-.main-content .em-form textarea{
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  background: #fff;
-}
+    .main-content .em-form input[type="text"],
+    .main-content .em-form input[type="number"],
+    .main-content .em-form input[type="file"],
+    .main-content .em-form select,
+    .main-content .em-form textarea{
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #fff;
+    }
 
-.main-content .em-form input[type="file"]{
-  padding: 8px 10px;
-}
+    .main-content .em-form input[type="file"]{
+      padding: 8px 10px;
+    }
 
-.main-content .em-form textarea{ min-height: 140px; }
+    .main-content .em-form textarea{
+      min-height: 140px;
+    }
 
-.main-content .em-form input:focus,
-.main-content .em-form select:focus,
-.main-content .em-form textarea:focus{
-  outline: none;
-  border-color: #E4013A;
-  box-shadow: 0 0 0 3px rgba(228, 1, 58, 0.15);
-}
+    .main-content .em-form input:focus,
+    .main-content .em-form select:focus,
+    .main-content .em-form textarea:focus{
+      outline: none;
+      border-color: #E4013A;
+      box-shadow: 0 0 0 3px rgba(228, 1, 58, 0.15);
+    }
 
-/* submit */
-.main-content .em-form button,
-.main-content .em-form input[type="submit"]{
-  width: 100%;
-  padding: 12px 14px;
-  border: 0;
-  border-radius: 26px;
-  background: #E4013A;
-  color: #fff;
-  font-weight: 900;
-  cursor: pointer;
-  transition: background-color .2s ease;
-}
-.main-content .em-form button:hover,
-.main-content .em-form input[type="submit"]:hover{
-  background: #b30021;
-}
+    /* submit */
+    .main-content .em-form button,
+    .main-content .em-form input[type="submit"]{
+      width: 100%;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 26px;
+      background: #E4013A;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background-color .2s ease;
+    }
 
-/* TinyMCE: arrondis */
-.main-content .em-form .tinymce-wrap .tox{
-  border-radius: 10px;
-  overflow: hidden;
-}
+    .main-content .em-form button:hover,
+    .main-content .em-form input[type="submit"]:hover{
+      background: #b30021;
+    }
 
-/* multi-select confort */
-.main-content .em-form select[multiple]{
-  min-height: 160px;
-}
+    /* TinyMCE: arrondis */
+    .main-content .em-form .tinymce-wrap .tox{
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-.main-content .em-form .form-text{
-  margin-top: 6px;
-  font-size: 13px;
-  opacity: .75;
-}
+    /* multi-select confort */
+    .main-content .em-form select[multiple]{
+      min-height: 160px;
+    }
 
-/* responsive */
-@media (max-width: 960px){
-  .main-content .em-form{
-    margin: 14px 12px 22px;
-    padding: 14px 12px;
-  }
+    .main-content .em-form .form-text{
+      margin-top: 6px;
+      font-size: 13px;
+      opacity: .75;
+    }
 
-  .main-content .em-form .grid-4{ grid-template-columns: 1fr; }
-  .main-content .em-form .grid-3{ grid-template-columns: 1fr; }
-  .main-content .em-form .grid-2{ grid-template-columns: 1fr; }
-  .main-content .em-form .grid-3-lists{ grid-template-columns: 1fr; }
-}
+    /* responsive */
+    @media (max-width: 960px){
+      .main-content .em-form{
+        margin: 14px 12px 22px;
+        padding: 14px 12px;
+      }
 
-@media (max-width: 420px){
-  .main-content .em-form{
-    margin: 10px 8px 16px;
-    padding: 12px 10px;
-    border-radius: 10px;
-  }
+      .main-content .em-form .grid-4{ grid-template-columns: 1fr; }
+      .main-content .em-form .grid-3{ grid-template-columns: 1fr; }
+      .main-content .em-form .grid-2{ grid-template-columns: 1fr; }
+      .main-content .em-form .grid-3-lists{ grid-template-columns: 1fr; }
+    }
 
-  .main-content .em-form h1{ font-size: 18px; }
-  .main-content .em-form label{ font-size: 13px; }
+    @media (max-width: 420px){
+      .main-content .em-form{
+        margin: 10px 8px 16px;
+        padding: 12px 10px;
+        border-radius: 10px;
+      }
 
-  .main-content .em-form input[type="text"],
-  .main-content .em-form input[type="number"],
-  .main-content .em-form input[type="file"],
-  .main-content .em-form select,
-  .main-content .em-form textarea{
-    padding: 9px 10px;
-    font-size: 14px;
-  }
+      .main-content .em-form h1{ font-size: 18px; }
+      .main-content .em-form label{ font-size: 13px; }
 
-  .main-content .em-form select[multiple]{ min-height: 130px; }
-}
+      .main-content .em-form input[type="text"],
+      .main-content .em-form input[type="number"],
+      .main-content .em-form input[type="file"],
+      .main-content .em-form select,
+      .main-content .em-form textarea{
+        padding: 9px 10px;
+        font-size: 14px;
+      }
 
-@media (max-height: 520px) and (orientation: landscape){
-  .main-content .em-form{
-    margin: 10px 12px 14px;
-    padding: 12px 12px;
-  }
+      .main-content .em-form select[multiple]{ min-height: 130px; }
+    }
 
-  .main-content .em-form select[multiple]{ min-height: 120px; }
-  .main-content .em-form textarea{ min-height: 110px; }
+    @media (max-height: 520px) and (orientation: landscape){
+      .main-content .em-form{
+        margin: 10px 12px 14px;
+        padding: 12px 12px;
+      }
 
-  .main-content .em-form button,
-  .main-content .em-form input[type="submit"]{
-    padding: 10px 12px;
-    border-radius: 22px;
-  }
-}
-</style>
+      .main-content .em-form select[multiple]{ min-height: 120px; }
+      .main-content .em-form textarea{ min-height: 110px; }
+
+      .main-content .em-form button,
+      .main-content .em-form input[type="submit"]{
+        padding: 10px 12px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+
   <div class="em-form">
     <h1>
       Créer une nouvelle émission
     </h1>
-    {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
-    {# Ligne 1 : Catégorie / Thème / Durée / Éditeur #}
-    <div class="grid-4">
-      <div class="field">
-        {{ form_row(form.categorie) }}
+
+    {{ form_start(form, {
+      attr: {
+        'data-turbo': 'false',
+        'data-controller': 'emission-form'
+      }
+    }) }}
+
+      {# Ligne 1 : Catégorie / Thème / Durée / Éditeur #}
+      <div class="grid-4">
+        <div class="field">
+          {{ form_row(form.categorie) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.theme) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.duree) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.editeur) }}
+        </div>
       </div>
-      <div class="field">
-        {{ form_row(form.theme) }}
+
+      {# Ligne 2 : Titre / Keyword / Ref #}
+      <div class="grid-3">
+        <div class="field">
+          {{ form_row(form.titre) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.keyword) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.ref) }}
+        </div>
       </div>
-      <div class="field">
-        {{ form_row(form.duree) }}
+
+      {# Ligne 3 : 3 listes sur une ligne #}
+      <div class="grid-3-lists">
+        <div class="field">
+          {{ form_row(form.users) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.invites) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.inviteOldAnimateurs) }}
+        </div>
       </div>
-      <div class="field">
-        {{ form_row(form.editeur) }}
+
+      <small style="opacity:.7; display:block; margin-top: -6px;">
+        Maintenez Ctrl (ou Cmd sur Mac) pour ajouter ou retirer une sélection
+      </small>
+
+      {# Descriptif TinyMCE #}
+      <div class="tinymce-wrap" data-controller="tinymce">
+        {{ form_row(form.descriptif) }}
       </div>
-    </div>
-    {# Ligne 2 : Titre / Keyword / Ref #}
-    <div class="grid-3">
-      <div class="field">
-        {{ form_row(form.titre) }}
+
+      {# Fichiers + URL #}
+      <div class="grid-3">
+        <div class="field">
+          {{ form_row(form.thumbnailFile) }}
+        </div>
+        <div class="field">
+          {% if form.thumbnailFileMp3 is defined %}
+            {{ form_row(form.thumbnailFileMp3) }}
+          {% endif %}
+        </div>
+        <div class="field">
+          {{ form_row(form.url) }}
+        </div>
       </div>
-      <div class="field">
-        {{ form_row(form.keyword) }}
-      </div>
-      <div class="field">
-        {{ form_row(form.ref) }}
-      </div>
-    </div>
-    {# Ligne 3 : 3 listes sur une ligne #}
-    <div class="grid-3-lists">
-      <div class="field">
-        {{ form_row(form.users) }}
-      </div>
-      <div class="field">
-        {{ form_row(form.invites) }}
-      </div>
-      <div class="field">
-        {{ form_row(form.inviteOldAnimateurs) }}
-      </div>
-    </div>
-    <small style="opacity:.7; display:block; margin-top: -6px;">
-      Maintenez Ctrl (ou Cmd sur Mac) pour ajouter ou retirer une sélection
-    </small>
-    {# Descriptif TinyMCE #}
-    <div class="tinymce-wrap" data-controller="tinymce">
-      {{ form_row(form.descriptif) }}
-    </div>
-    {# Fichiers + URL #}
-    <div class="grid-3">
-      <div class="field">
-        {{ form_row(form.thumbnailFile) }}
-      </div>
-      <div class="field">
-        {% if form.thumbnailFileMp3 is defined %}
-          {{ form_row(form.thumbnailFileMp3) }}
-        {% endif %}
-      </div>
-      <div class="field">
-        {{ form_row(form.url) }}
-      </div>
-    </div>
+
     {{ form_end(form) }}
   </div>
 {% endblock %}
