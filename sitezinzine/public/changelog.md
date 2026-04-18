@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.86] - 2026-04-18
+### Ajout
+- Ajout de la gestion des émissions auto-générées direct sur la grille.
+- Ajout de l'affichage des émissions auto-générées direct sur le tableau de bord du users et des super-admin.
+
+
 ## [1.0.85] - 2026-04-17
 ### Ajout
 - Automatisation de l'affichage de l'éditeur et de la durée lors du choix de la catégorie sur le form de creation d'émission.

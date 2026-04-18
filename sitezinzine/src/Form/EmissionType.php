@@ -108,9 +108,9 @@ class EmissionType extends AbstractType
                 'label' => 'Invité·es',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
                 'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                    => $er->createQueryBuilder('i')
-                        ->andWhere('i.ancienanimateur = 0 OR i.ancienanimateur IS NULL')
-                        ->orderBy('i.lastName', 'ASC'),
+                => $er->createQueryBuilder('i')
+                    ->andWhere('i.ancienanimateur = 0 OR i.ancienanimateur IS NULL')
+                    ->orderBy('i.lastName', 'ASC'),
             ])
             ->add('inviteOldAnimateurs', EntityType::class, [
                 'class' => InviteOldAnimateur::class,
@@ -121,10 +121,10 @@ class EmissionType extends AbstractType
                 'label' => 'Ancien·nes animateur·ices',
                 'choice_label' => fn(InviteOldAnimateur $a) => (string) $a,
                 'query_builder' => fn(InviteOldAnimateurRepository $er): QueryBuilder
-                    => $er->createQueryBuilder('i')
-                        ->andWhere('i.ancienanimateur = 1')
-                        ->orderBy('i.firstName', 'ASC')
-                        ->addOrderBy('i.lastName', 'ASC'),
+                => $er->createQueryBuilder('i')
+                    ->andWhere('i.ancienanimateur = 1')
+                    ->orderBy('i.firstName', 'ASC')
+                    ->addOrderBy('i.lastName', 'ASC'),
             ])
             ->add('titre', TextType::class, [
                 'label' => 'Titre de l\'émission  (obligatoire)',
@@ -146,7 +146,7 @@ class EmissionType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'query_builder' => fn(UserRepository $ur): QueryBuilder
-                    => $ur->createQueryBuilder('u')->orderBy('u.username', 'ASC'),
+                => $ur->createQueryBuilder('u')->orderBy('u.username', 'ASC'),
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée (obligatoire)',
@@ -182,6 +182,14 @@ class EmissionType extends AbstractType
                     'mapped' => false,
                     'label' => 'Supprimer le fichier MP3 actuel',
                 ]);
+        }
+
+        if ($options['data'] instanceof Emission && $options['data']->isPendingCompletion()) {
+            $builder->add('markAsCompleted', CheckboxType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Cette fiche est finalisée',
+            ]);
         }
 
         $builder->add('Sauvegarder', SubmitType::class);

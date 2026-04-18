@@ -857,4 +857,60 @@ LIMIT 6
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findPendingCompletionForUser(User $user, int $limit = 5): array
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.users', 'u')
+            ->leftJoin('e.categorie', 'c')
+            ->addSelect('c')
+            ->andWhere('u = :user')
+            ->andWhere('e.isPendingCompletion = :pending')
+            ->setParameter('user', $user)
+            ->setParameter('pending', true)
+            ->orderBy('e.datepub', 'DESC')
+            ->addOrderBy('e.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countPendingCompletionForUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('e')
+            ->select('COUNT(DISTINCT e.id)')
+            ->innerJoin('e.users', 'u')
+            ->andWhere('u = :user')
+            ->andWhere('e.isPendingCompletion = :pending')
+            ->setParameter('user', $user)
+            ->setParameter('pending', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findAllPendingCompletion(int $limit = 5): array
+{
+    return $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->addSelect('c')
+        ->leftJoin('e.users', 'u')
+        ->addSelect('u')
+        ->andWhere('e.isPendingCompletion = :pending')
+        ->setParameter('pending', true)
+        ->orderBy('e.datepub', 'DESC')
+        ->addOrderBy('e.id', 'DESC')
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+}
+
+public function countAllPendingCompletion(): int
+{
+    return (int) $this->createQueryBuilder('e')
+        ->select('COUNT(DISTINCT e.id)')
+        ->andWhere('e.isPendingCompletion = :pending')
+        ->setParameter('pending', true)
+        ->getQuery()
+        ->getSingleScalarResult();
+}
 }

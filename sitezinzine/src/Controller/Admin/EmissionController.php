@@ -169,6 +169,15 @@ class EmissionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Checkbox "Marquer comme complétée" (visible si l'émission est en attente de finalisation)
+            if (
+                $emission->isPendingCompletion()
+                && $form->has('markAsCompleted')
+                && $form->get('markAsCompleted')->getData()
+            ) {
+                $emission->markAsCompleted();
+            }
+
             // ✅ suppression image si demandée
             if ($request->request->getBoolean('delete_thumbnail')) {
 
@@ -304,5 +313,34 @@ class EmissionController extends AbstractController
         $this->addFlash('success', 'Le fichier MP3 a bien été supprimé.');
 
         return $this->redirectToRoute('admin.emission.edit', ['id' => $emission->getId()]);
+    }
+
+    #[Route('/{id}/mark-completed', name: 'mark_completed', methods: ['POST'], requirements: ['id' => Requirement::DIGITS])]
+    public function markCompleted(
+        Request $request,
+        Emission $emission,
+        EntityManagerInterface $em,
+        Security $security
+    ): Response {
+        $user = $security->getUser();
+
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            !$this->isGranted('ROLE_SUPER_ADMIN') &&
+            (!$user || !$emission->getUsers()->contains($user))
+        ) {
+            throw $this->createAccessDeniedException('Vous n’avez pas accès à cette émission.');
+        }
+
+        if (!$this->isCsrfTokenValid('mark_completed_' . $emission->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
+        $emission->markAsCompleted();
+        $em->flush();
+
+        $this->addFlash('success', 'L’émission a été retirée de la liste des fiches à finaliser.');
+
+        return $this->redirectToRoute('admin.index');
     }
 }
