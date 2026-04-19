@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.0.87] - 2026-04-xx
+## [1.0.88] - 2026-04-19 bis
+### Correction
+- Changement pour le mail, passage de smtp à api de mailjet.
+
+## [1.0.87] - 2026-04-19
 ### Correction
 - Correction de l'affichage du nombre de créneaux existant pour une règle.
 - Correction du DSN mailjet afin que les mail systèmes du site fonctionnent (changement de mot de passe).

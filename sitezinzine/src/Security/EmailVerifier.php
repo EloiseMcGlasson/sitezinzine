@@ -41,7 +41,10 @@ class EmailVerifier
         $context['expiresAtMessageKey'] = $signatureComponents->getExpirationMessageKey();
         $context['expiresAtMessageData'] = $signatureComponents->getExpirationMessageData();
 
-        $email->context($context);
+        $email
+            ->from('mc.glasson@free.fr')
+            ->context($context)
+        ;
 
         $this->mailer->send($email);
     }
