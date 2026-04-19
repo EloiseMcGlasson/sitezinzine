@@ -71,16 +71,16 @@ class ProgrammationRule
     }
 
     public function getDisplayName(): string
-{
-    $categoryTitle = $this->category?->getTitre() ?? 'Catégorie';
+    {
+        $categoryTitle = $this->category?->getTitre() ?? 'Catégorie';
 
-    if ($this->ruleNumber === null) {
-        return sprintf('%s règle N° ?', $categoryTitle);
+        if ($this->ruleNumber === null) {
+            return sprintf('%s règle N° ?', $categoryTitle);
+        }
+
+        return sprintf('%s règle N° %d', $categoryTitle, $this->ruleNumber);
     }
 
-    return sprintf('%s règle N° %d', $categoryTitle, $this->ruleNumber);
-}
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -283,5 +283,12 @@ class ProgrammationRule
     private function touch(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getActiveSlotsCount(): int
+    {
+        return $this->slots->filter(
+            fn(ProgrammationRuleSlot $slot) => $slot->getDeletedAt() === null
+        )->count();
     }
 }

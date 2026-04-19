@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.87] - 2026-04-xx
+### Correction
+- Correction de l'affichage du nombre de créneaux existant pour une règle.
+- Correction du DSN mailjet afin que les mail systèmes du site fonctionnent (changement de mot de passe).
+
+
 ## [1.0.86] - 2026-04-18
 ### Ajout
 - Ajout de la gestion des émissions auto-générées direct sur la grille.
@@ -11,6 +17,7 @@
 - Automatisation de l'affichage de l'éditeur et de la durée lors du choix de la catégorie sur le form de creation d'émission.
 - Ajout de la différenciation des règles de programmations.
 - Ajout de la création d'une fiche émission autogénérée pour le direct, sa propagation et sa suppression.
+
 
 ## [1.0.84] - 2026-04-12
 ### Ajout

@@ -224,7 +224,7 @@
               <span class="badge badge-inactive">Non</span>
             {% endif %}
           </td>
-          <td>{{ rule.slots|length }}</td>
+          <td>{{ rule.getActiveSlotsCount() }}</td>
           <td>
             <div class="actions">
               <a href="{{ path('admin_programmationRule_edit', {id: rule.id}) }}" class="btn-edit">Modifier</a>
