@@ -1,462 +1,849 @@
 {% extends 'admin/admin.html.twig' %}
+
 {% block title %}
   Grille de programmation
 {% endblock %}
+
 {% block stylesheets %}
   {{ parent() }}
+
   <style>
-    :root{
-      --slot-h: 8px;
-      --head-h: 44px;
-      --grid-bg:#fff;
-      --grid-line:#e6e6e6;
-      --head-bg:#f0f0f0;
-      --head-text:#1c1c1a;
-      --hour-text:#3a3a3a;
+    /* =========================
+       VARIABLES GLOBALES
+       ========================= */
+    :root {
+      /* Dimensions principales */
+      --slot-h: 14px;
+      --head-h: 64px;
+      --time-col-w: 78px;
+      --sidebar-w: 300px;
 
-      --postit:#d75a6f;
-      --postit-border:#b9475a;
-      --postit-text:#fff;
+      /* Couleurs grille */
+      --grid-bg: #ffffff;
+      --grid-line: #e3e3e3;
+      --grid-line-soft: #f1f1f1;
+      --grid-line-strong: #cccccc;
 
-      --postit-assigned:#8a3f9b;
-      --postit-assigned-border:#6d2f7c;
+      /* Couleurs entêtes */
+      --head-bg: #f7f7f8;
+      --head-text: #1c1c1a;
+      --head-subtext: #616161;
+      --hour-text: #3a3a3a;
 
-      --postit-rebroadcast:#d9d9d9;
-      --postit-rebroadcast-border:#b8b8b8;
-      --postit-rebroadcast-text:#3d3d3d;
+      /* Post-it 1re diffusion */
+      --postit-first: #d75a6f;
+      --postit-first-border: #b9475a;
+      --postit-first-text: #ffffff;
+
+      /* Post-it direct */
+      --postit-live: #e4013a;
+      --postit-live-border: #b3002e;
+      --postit-live-text: #ffffff;
+
+      /* Post-it affecté */
+      --postit-assigned: #8a3f9b;
+      --postit-assigned-border: #6d2f7c;
+
+      /* Post-it rediffusion */
+      --postit-rebroadcast: #dfe7ef;
+      --postit-rebroadcast-border: #b6c3d0;
+      --postit-rebroadcast-text: #233241;
+
+      /* Badge interne des post-its */
+      --badge-light-bg: rgba(255, 255, 255, 0.82);
+      --badge-light-text: #222;
     }
 
-    .schedule-layout{
-      display:flex;
-      gap:24px;
-      align-items:flex-start;
+    /* =========================
+       LAYOUT GENERAL
+       ========================= */
+    .schedule-layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
     }
 
-    .grid-area{
-      flex:1;
-      min-width:0;
+    .grid-area {
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
-    .sidebar{
-      width:320px;
-      flex:0 0 320px;
+    .sidebar {
+      width: var(--sidebar-w);
+      flex: 0 0 var(--sidebar-w);
     }
 
-    .schedule-grid{
-      display:grid;
-      grid-template-columns: 80px repeat(7, 1fr);
+    /* =========================
+       NAVIGATION DE SEMAINE
+       ========================= */
+    .week-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1px solid #e6e6e6;
+      border-radius: 10px;
+    }
+
+    .week-nav__title {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #1c1c1a;
+    }
+
+    .week-nav__bar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .week-nav__link {
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 14px;
+      color: #1c1c1a;
+      white-space: nowrap;
+    }
+
+    .week-nav__link:hover {
+      text-decoration: underline;
+    }
+
+    .week-nav__link--left {
+      justify-self: start;
+    }
+
+    .week-nav__link--right {
+      justify-self: end;
+    }
+
+    /* Bloc central : aujourd'hui + date + aller */
+    .week-nav__center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 10px;
+      background: #f8f8f8;
+      border: 1px solid #e3e3e3;
+      border-radius: 8px;
+    }
+
+    .week-nav__form {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .week-nav__date {
+      min-width: 160px;
+      height: 38px;
+      padding: 0 8px;
+      border: 1px solid #d6d6d6;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+      color: #1c1c1a;
+    }
+
+    .week-nav__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .week-nav__btn--primary {
+      background: #E4013A;
+      border-color: #E4013A;
+      color: #fff;
+    }
+
+    .week-nav__btn--primary:hover {
+      filter: brightness(0.95);
+    }
+
+    .week-nav__btn--dark {
+      background: #1c1c1a;
+      border-color: #1c1c1a;
+      color: #fff;
+    }
+
+    .week-nav__btn--dark:hover {
+      filter: brightness(1.08);
+    }
+
+    /* =========================
+       GRILLE
+       ========================= */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: var(--time-col-w) repeat(7, minmax(0, 1fr));
       grid-template-rows: var(--head-h) repeat(96, var(--slot-h));
-      border-left:1px solid var(--grid-line);
-      border-right:1px solid var(--grid-line);
-      background:var(--grid-bg);
+      border: 1px solid var(--grid-line);
+      background: var(--grid-bg);
+      width: 100%;
     }
 
-    .head{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:var(--head-bg);
-      color:var(--head-text);
-      border-bottom:1px solid var(--grid-line);
-      border-right:1px solid var(--grid-line);
-      font-weight:700;
-      font-size:14px;
-      padding:0 8px;
-      text-align:center;
+    /* Entêtes colonnes */
+    .head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: var(--head-bg);
+      color: var(--head-text);
+      border-bottom: 1px solid var(--grid-line);
+      border-right: 1px solid var(--grid-line);
+      text-align: center;
+      padding: 6px 4px;
+      line-height: 1.1;
     }
 
-    .head.hour{
-      justify-content:flex-start;
-      padding-left:8px;
+    .head.hour {
+      align-items: flex-start;
+      justify-content: center;
+      padding-left: 10px;
+      font-size: 13px;
+      font-weight: 800;
     }
 
-    .hours-col{
-      grid-column:1;
-      grid-row:2 / span 96;
-      position:relative;
-      border-right:1px solid var(--grid-line);
+    .head__day {
+      font-size: 14px;
+      font-weight: 800;
     }
 
-    .h-slot{
-      position:absolute;
-      left:0;
-      right:0;
-      height:var(--slot-h);
-      border-top:1px solid rgba(0,0,0,.06);
-      pointer-events:none;
+    .head__date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--head-subtext);
     }
 
-    .h-slot.hour-start{
-      border-top-color:#d8d8d8;
+    /* Colonne des heures */
+    .hours-col {
+      grid-column: 1;
+      grid-row: 2 / span 96;
+      position: relative;
+      border-right: 1px solid var(--grid-line);
+      background: #fcfcfc;
+    }
+
+    .h-slot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: var(--slot-h);
+      border-top: 1px solid var(--grid-line-soft);
+      pointer-events: none;
+    }
+
+    .h-slot.hour-start {
+      border-top: 2px solid var(--grid-line-strong);
+    }
+
+    .h-slot.half-hour {
+      border-top: 1px solid #dcdcdc;
     }
 
     .hour-label{
-      position:absolute;
-      left:8px;
-      top:0;
-      font-size:13px;
-      font-weight:700;
-      line-height:1;
-      color:var(--hour-text);
-      transform:none;
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: calc(4 * var(--slot-h)); /* 1 heure = 4 slots */
+
+      display: flex;
+      align-items: center;   /* centre vertical */
+      justify-content: center; /* centre horizontal */
+
+      font-size: 12px;
+      color: #888;
+      font-weight: 700;
+      
+
+      pointer-events: none;
     }
 
-    .day-col{
-      position:relative;
-      grid-row:2 / span 96;
-      border-left:1px solid var(--grid-line);
+    /* Colonnes des jours */
+    .day-col {
+      position: relative;
+      grid-row: 2 / span 96;
+      border-left: 1px solid var(--grid-line);
+      min-width: 0;
     }
 
-    .day-slot{
-      position:absolute;
-      left:0;
-      right:0;
-      height:var(--slot-h);
-      border-top:1px solid rgba(0,0,0,.06);
-      pointer-events:none;
+    .day-slot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: var(--slot-h);
+      border-top: 1px solid var(--grid-line-soft);
+      pointer-events: none;
     }
 
-    .day-slot.hour-start{
-      border-top-color:#d8d8d8;
+    .day-slot.hour-start {
+      border-top: 2px solid var(--grid-line-strong);
     }
 
-    .day-col.drag-over{
-      outline:2px dashed var(--postit);
-      outline-offset:-2px;
+    .day-slot.half-hour {
+      border-top: 1px solid #dcdcdc;
     }
 
-    .postit{
-      position:absolute;
-      left:1px;
-      right:1px;
-      top:0;
-      background:var(--postit);
-      color:var(--postit-text);
-      border:1px solid var(--postit-border);
-      border-radius:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:0 2px;
-      font-size:9px;
-      font-weight:500;
-      line-height:1;
-      text-align:center;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      cursor:grab;
-      user-select:none;
-      z-index:2;
-      transition:opacity .2s ease, filter .2s ease;
+    .day-col.drag-over {
+      outline: 2px dashed var(--postit-live);
+      outline-offset: -2px;
+      background: rgba(228, 1, 58, 0.03);
     }
 
-    .postit.assigned{
-      background:var(--postit-assigned);
-      border-color:var(--postit-assigned-border);
+    /* =========================
+       POST-ITS
+       ========================= */
+    .postit {
+      position: absolute;
+      top: 0;
+      left: 3px;
+      right: 3px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: center;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      z-index: 2;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      transition: opacity 0.2s ease, filter 0.2s ease, transform 0.15s ease;
+      box-sizing: border-box;
     }
 
-    .postit.postit--rebroadcast{
-      background:var(--postit-rebroadcast);
-      color:var(--postit-rebroadcast-text);
-      border-color:var(--postit-rebroadcast-border);
-      cursor:not-allowed;
-      opacity:.82;
-      filter:grayscale(.2);
-      user-select:none;
+    .postit:hover {
+      transform: translateY(-1px);
     }
 
-    .postit.postit--rebroadcast.assigned{
-      background:#d7cfe0;
-      border-color:#b7a8c8;
-      color:#43384b;
+    .postit--first {
+      background: var(--postit-first);
+      color: var(--postit-first-text);
+      border: 1px solid var(--postit-first-border);
     }
 
-    .postit[data-slots="1"]{
-      white-space:nowrap;
+    .postit--live {
+      background: var(--postit-live);
+      color: var(--postit-live-text);
+      border: 1px solid var(--postit-live-border);
     }
 
-    .postit:not([data-slots="1"]){
-      white-space:normal;
-      line-height:1.05;
-      padding:1px 3px;
-      word-break:break-word;
+    .postit--rebroadcast {
+      background: var(--postit-rebroadcast);
+      color: var(--postit-rebroadcast-text);
+      border: 1px solid var(--postit-rebroadcast-border);
+      cursor: not-allowed;
+      opacity: 0.95;
     }
 
-    .postit.is-selected{
-      outline:2px solid #1c1c1a;
-      outline-offset:-2px;
-      z-index:5;
+    .postit.assigned.postit--first {
+      background: var(--postit-assigned);
+      border-color: var(--postit-assigned-border);
+      color: #fff;
     }
 
-    .postit__content{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:2px;
-      width:100%;
+    .postit.assigned.postit--live {
+      background: linear-gradient(180deg, #e4013a 0%, #b3002e 100%);
+      border-color: #900026;
+      color: #fff;
     }
 
-    .postit__label{
-      display:block;
+    .postit.is-selected {
+      outline: 3px solid #1c1c1a;
+      outline-offset: -2px;
+      z-index: 5;
     }
 
-    .postit__badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:1px 6px;
-      border-radius:999px;
-      font-size:8px;
-      font-weight:700;
-      line-height:1;
-      background:rgba(255,255,255,.72);
-      color:#333;
-      max-width:100%;
+    .postit__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      width: 100%;
+      min-width: 0;
     }
 
-    .sidebar h2{
-      font-size:16px;
-      margin:0 0 8px;
-      color:var(--head-text);
+    .postit__label {
+      display: block;
+      max-width: 100%;
     }
 
-    .sidebar-mode-switch{
-      display:flex;
-      gap:8px;
-      margin-bottom:12px;
+    /* Créneaux très petits : on évite le retour à la ligne */
+    .postit[data-slots="1"] .postit__label,
+    .postit[data-slots="2"] .postit__label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .mode-btn{
-      flex:1 1 0;
-      border:1px solid #ddd;
-      background:#fff;
-      color:#1c1c1a;
-      border-radius:999px;
-      padding:10px 12px;
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      transition:all .2s ease;
+    /* Créneaux plus grands : on autorise la coupe du texte */
+    .postit:not([data-slots="1"]):not([data-slots="2"]) .postit__label {
+      white-space: normal;
+      word-break: break-word;
     }
 
-    .mode-btn:hover{
-      background:#f7f7f7;
+    .postit__badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      background: var(--badge-light-bg);
+      color: var(--badge-light-text);
+      max-width: 100%;
+      white-space: nowrap;
     }
 
-    .mode-btn.is-active{
-      background:#E4013A;
-      border-color:#E4013A;
-      color:#fff;
+    /* =========================
+       SIDEBAR
+       ========================= */
+    .sidebar h2 {
+      font-size: 16px;
+      margin: 0 0 8px;
+      color: var(--head-text);
     }
 
-    #emissions-pool{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    /* Sélecteur de mode (régulières / non régulières) */
+    .sidebar-mode-switch {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding: 4px;
+      background: #f3f3f3;
+      border: 1px solid #dcdcdc;
+      border-radius: 999px;
     }
 
-    #emissions-pool.drop-pool-hover{
-      background:#fff8f8;
-      border:2px dashed var(--postit);
-      padding:10px;
-      border-radius:6px;
+    .mode-btn {
+      flex: 1 1 0;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #2a2a2a;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    .sidebar-section{
-      background:#fff;
-      border:1px solid #e6e6e6;
-      border-radius:8px;
-      padding:12px;
-      margin-bottom:16px;
+    .mode-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
     }
 
-    .sidebar-section h3{
-      margin:0 0 10px;
-      font-size:15px;
-      color:#1c1c1a;
+    .mode-btn:focus-visible {
+      outline: 3px solid #1c1c1a;
+      outline-offset: 2px;
+    }
+
+    .mode-btn.is-active {
+      background: #E4013A;
+      border-color: #E4013A;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    }
+
+    .sidebar-section {
+      background: #fff;
+      border: 1px solid #e6e6e6;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .sidebar-section h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #1c1c1a;
     }
 
     #slot-selection-empty,
-    #special-selection-empty{
-      background:#fff;
-      border:1px dashed #d0d0d0;
-      border-radius:8px;
-      padding:14px;
-      font-size:14px;
-      color:#555;
+    #special-selection-empty {
+      background: #fff;
+      border: 1px dashed #d0d0d0;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 14px;
+      color: #555;
     }
 
-    .slot-summary{
-      font-size:14px;
-      line-height:1.5;
-      color:#222;
+    .slot-summary {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #222;
     }
 
-    .slot-summary .label{
-      font-weight:700;
+    .slot-summary .label {
+      font-weight: 700;
     }
 
-    .emission-card{
-      background:var(--postit);
-      color:#fff;
-      border:1px solid var(--postit-border);
-      padding:8px 10px;
-      border-radius:6px;
-      font-size:12px;
-      font-weight:700;
-      cursor:pointer;
-      user-select:none;
-      margin-bottom:8px;
+    #emissions-pool {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .emission-card small{
-      display:block;
-      margin-top:4px;
-      font-weight:400;
-      opacity:.95;
+    #emissions-pool.drop-pool-hover {
+      background: #fff8f8;
+      border: 2px dashed var(--postit-live);
+      padding: 10px;
+      border-radius: 6px;
     }
 
-    .custom-tooltip{
-      position:fixed;
-      display:none;
-      background:rgba(0,0,0,.85);
-      color:#fff;
-      padding:4px 8px;
-      border-radius:4px;
-      font-size:12px;
-      pointer-events:none;
-      z-index:9999;
+    .emission-card {
+      background: var(--postit-first);
+      color: #fff;
+      border: 1px solid var(--postit-first-border);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 8px;
     }
 
-    .slot-actions{
-      margin-top:12px;
-    }
-
-    .btn-remove-assignment{
-      width:100%;
-      border:1px solid #b9475a;
-      background:#fff;
-      color:#b9475a;
-      border-radius:6px;
-      padding:8px 10px;
-      font-size:13px;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .btn-remove-assignment:hover{
-      background:#fff5f6;
-    }
-
-    .special-placeholder{
-      font-size:14px;
-      line-height:1.5;
-      color:#333;
-    }
-
-    .special-placeholder p{
-      margin:0 0 10px;
+    .emission-card small {
+      display: block;
+      margin-top: 4px;
+      font-weight: 400;
+      opacity: 0.95;
     }
 
     .emission-card.is-auto-generated {
-  border: 2px solid #000;
-}
+      background: var(--postit-live);
+      border-color: var(--postit-live-border);
+    }
 
-.emission-card.is-auto-generated small {
-  font-weight: 700;
-}
+    .emission-card.is-selected {
+      outline: 2px solid #1c1c1a;
+      outline-offset: 1px;
+    }
 
-    @media (max-width: 900px){
-      .grid-area{
-        overflow-x:auto;
+    .slot-actions {
+      margin-top: 12px;
+    }
+
+    .btn-remove-assignment {
+      width: 100%;
+      border: 1px solid #b9475a;
+      background: #fff;
+      color: #b9475a;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-remove-assignment:hover {
+      background: #fff5f6;
+    }
+
+    .create-live-box {
+      margin-top: 12px;
+    }
+
+    .btn-create-live {
+      width: 100%;
+      border: 1px solid var(--postit-live-border);
+      background: var(--postit-live);
+      color: #fff;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-create-live:hover {
+      filter: brightness(0.96);
+    }
+
+    .special-placeholder {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .special-placeholder p {
+      margin: 0 0 10px;
+    }
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+    @media (max-width: 1200px) {
+      :root {
+        --sidebar-w: 280px;
+        --time-col-w: 72px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .week-nav {
+        align-items: stretch;
+      }
+
+      .week-nav__bar {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .week-nav__link--left,
+      .week-nav__link--right {
+        justify-self: center;
+      }
+
+      .week-nav__center {
+        width: 100%;
+      }
+
+      .week-nav__form {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .week-nav__date {
+        flex: 1 1 180px;
+      }
+
+      .schedule-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex: none;
+      }
+
+      .head__day {
+        font-size: 13px;
+      }
+
+      .head__date {
+        font-size: 11px;
+      }
+
+      .postit {
+        font-size: 10px;
+      }
+
+      .postit__badge {
+        font-size: 8px;
       }
     }
   </style>
 {% endblock %}
+
 {% block body %}
-  <h1>
-    Grille de programmation
-  </h1>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-    <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')}) }}">
-      ⬅ Semaine précédente
-    </a>
-    <h2 style="font-size:18px;margin:0;">
-      <a href="{{ path('admin.grille.index_current') }}">
-        📅 Semaine actuelle
-      </a>
-      Semaine du
-      {{ startOfWeek|date('d/m/Y') }}
+  <h1>Grille de programmation</h1>
+
+  {# =========================
+     NAVIGATION DE SEMAINE
+     ========================= #}
+  <div class="week-nav">
+    <h2 class="week-nav__title">
+      Semaine du {{ startOfWeek|date('d/m/Y') }}
     </h2>
-    <a href="{{ path('admin.grille.index', {'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')}) }}">
-      Semaine suivante ➡
-    </a>
+
+    <div class="week-nav__bar">
+      <a
+        class="week-nav__link week-nav__link--left"
+        href="{{ path('admin.grille.index', {
+          'startOfWeek': startOfWeek|date_modify('-7 days')|date('Y-m-d')
+        }) }}"
+      >
+        ← Semaine précédente
+      </a>
+
+      <div class="week-nav__center">
+        <a
+          class="week-nav__btn week-nav__btn--primary"
+          href="{{ path('admin.grille.index_current') }}"
+        >
+          Aujourd’hui
+        </a>
+
+        <form
+          method="get"
+          action="{{ path('admin.grille.goto') }}"
+          class="week-nav__form"
+        >
+          <input
+            type="date"
+            name="date"
+            value="{{ startOfWeek|date('Y-m-d') }}"
+            class="week-nav__date"
+          >
+
+          <button type="submit" class="week-nav__btn week-nav__btn--dark">
+            Aller
+          </button>
+        </form>
+      </div>
+
+      <a
+        class="week-nav__link week-nav__link--right"
+        href="{{ path('admin.grille.index', {
+          'startOfWeek': startOfWeek|date_modify('+7 days')|date('Y-m-d')
+        }) }}"
+      >
+        Semaine suivante →
+      </a>
+    </div>
   </div>
+
   <div class="schedule-layout" data-controller="grid">
+    {# =========================
+       ZONE GRILLE
+       ========================= #}
     <div class="grid-area">
       <div class="schedule-grid">
-        <div class="head hour" style="grid-column:1;grid-row:1;">
+        {# En-tête colonne heures #}
+        <div class="head hour" style="grid-column:1; grid-row:1;">
           Heure
         </div>
+
+        {# En-têtes des 7 jours de la semaine radio #}
         {% for i in 0..6 %}
           {% set jour = startOfWeek|date_modify("+" ~ i ~ " days") %}
           <div class="head" style="grid-column: {{ 2 + i }}; grid-row:1;">
-            {{ jour|format_date('medium', locale='fr') }}
+            <span class="head__day">
+              {{ jour|format_date(pattern='EEEE', locale='fr')|capitalize }}
+            </span>
+            <span class="head__date">
+              {{ jour|date('d/m') }}
+            </span>
           </div>
         {% endfor %}
+
+        {# Colonne verticale des heures #}
         <div class="hours-col">
           {% for i in 0..95 %}
-            <div class="h-slot {{ i % 4 == 0 ? 'hour-start' : '' }}" style="top: calc({{ i }} * var(--slot-h));"></div>
+            <div
+              class="h-slot {{ i % 4 == 0 ? 'hour-start' : '' }} {{ i % 4 == 2 ? 'half-hour' : '' }}"
+              style="top: calc({{ i }} * var(--slot-h));"
+            ></div>
           {% endfor %}
+
           {% for h in 0..23 %}
             <div class="hour-label" style="top: calc({{ h * 4 }} * var(--slot-h));">
               {{ "%02d:00"|format(h) }}
             </div>
           {% endfor %}
         </div>
+
+        {# Colonnes des jours + créneaux #}
         {% for dayIndex in 0..6 %}
-          <div class="day-col" data-grid-target="day" style="grid-column: {{ 2 + dayIndex }};">
+          <div
+            class="day-col"
+            data-grid-target="day"
+            style="grid-column: {{ 2 + dayIndex }};"
+          >
+            {# Lignes horizontales de fond #}
             {% for i in 0..95 %}
-              <div class="day-slot {{ i % 4 == 0 ? 'hour-start' : '' }}" style="top: calc({{ i }} * var(--slot-h));"></div>
+              <div
+                class="day-slot {{ i % 4 == 0 ? 'hour-start' : '' }} {{ i % 4 == 2 ? 'half-hour' : '' }}"
+                style="top: calc({{ i }} * var(--slot-h));"
+              ></div>
             {% endfor %}
+
+            {# Créneaux de la journée #}
             {% for seg in (daySegments[dayIndex] ?? []) %}
               {% set slots = (seg.duration / 15)|round(0, 'ceil') %}
               {% set displayTitle = seg.displayTitle|default(seg.title|default('Créneau')) %}
               {% set categoryTitle = seg.categoryTitle|default(seg.title|default('Catégorie inconnue')) %}
-              {% set ruleNumber = seg.ruleNumber|default(null) %}
               {% set ruleDisplayName = seg.ruleDisplayName|default(categoryTitle) %}
               {% set broadcastRank = seg.broadcastRank|default(1) %}
               {% set isRebroadcast = broadcastRank > 1 %}
-              {% set rebroadcastLabel = broadcastRank == 2 ? 'R1 auto' : (broadcastRank == 3 ? 'R2 auto' : 'Rediff. auto') %}
+              {% set isLive = seg.emissionIsAutoGenerated|default(false) %}
+              {% set isAssigned = seg.assigned|default(false) %}
+
+              {# Variante visuelle du post-it #}
+              {% set variantClass =
+                isRebroadcast
+                  ? 'postit--rebroadcast'
+                  : (isLive ? 'postit--live' : 'postit--first')
+              %}
+
+              {# Badge court affiché dans le post-it #}
+              {% set stateBadge =
+                isRebroadcast
+                  ? '↺ Rediff ' ~ (broadcastRank - 1)
+                  : (isLive ? '● Direct' : '■ 1re diff')
+              %}
+
               {% set postitClasses = [
                 'postit',
-                seg.assigned|default(false) ? 'assigned',
-                isRebroadcast ? 'postit--rebroadcast' : 'postit--first-broadcast'
+                variantClass,
+                isAssigned ? 'assigned'
               ]|filter(v => v) %}
-              <div class="{{ postitClasses|join(' ') }}" style="top: calc({{ seg.startIndex }} * var(--slot-h)); height: calc({{ slots }} * var(--slot-h));" data-slots="{{ slots }}" data-duration="{{ seg.duration }}" data-rule-id="{{ seg.ruleId|default('') }}" data-rule-number="{{ ruleNumber ?? '' }}" data-rule-display-name="{{ ruleDisplayName }}" data-slot-id="{{ seg.slotId|default('') }}" data-broadcast-rank="{{ broadcastRank }}" data-starts-at="{{ seg.startsAt|default('') }}" data-category-title="{{ categoryTitle }}" data-assigned-emission-id="{{ seg.emissionId|default('') }}" data-assigned-emission-title="{{ seg.emissionTitle|default('') }}" data-slot-locked="{{ isRebroadcast ? 'true' : 'false' }}" {% if not isRebroadcast %} data-action="click->grid#selectSlot" {% endif %} title="{% if isRebroadcast %}{{ ruleDisplayName }} — rediffusion générée automatiquement depuis la première diffusion{% else %}{{ ruleDisplayName }} • {{ seg.duration }} min{% endif %}" draggable="{{ isRebroadcast ? 'false' : 'true' }}" {% if isRebroadcast %} aria-disabled="true" {% endif %}>
+
+              <div
+                class="{{ postitClasses|join(' ') }}"
+                style="
+                  top: calc({{ seg.startIndex }} * var(--slot-h));
+                  height: calc({{ slots }} * var(--slot-h) - 2px);
+                "
+                data-slots="{{ slots }}"
+                data-duration="{{ seg.duration }}"
+                data-rule-id="{{ seg.ruleId|default('') }}"
+                data-rule-display-name="{{ ruleDisplayName }}"
+                data-slot-id="{{ seg.slotId|default('') }}"
+                data-broadcast-rank="{{ broadcastRank }}"
+                data-starts-at="{{ seg.startsAt|default('') }}"
+                data-category-title="{{ categoryTitle }}"
+                data-assigned-emission-id="{{ seg.emissionId|default('') }}"
+                data-assigned-emission-title="{{ seg.emissionTitle|default('') }}"
+                data-emission-is-auto-generated="{{ isLive ? 'true' : 'false' }}"
+                data-slot-locked="{{ isRebroadcast ? 'true' : 'false' }}"
+                {% if not isRebroadcast %}
+                  data-action="click->grid#selectSlot"
+                {% endif %}
+                title="{% if isRebroadcast %}{{ ruleDisplayName }} — rediffusion automatique{% elseif isLive %}{{ ruleDisplayName }} — direct auto-généré{% else %}{{ ruleDisplayName }} • {{ seg.duration }} min{% endif %}"
+                draggable="{{ isRebroadcast ? 'false' : 'true' }}"
+                {% if isRebroadcast %}
+                  aria-disabled="true"
+                {% endif %}
+              >
                 <div class="postit__content">
                   <span class="postit__label">
-                    🎙
-                    {{ displayTitle }}
-                    •
-                    {{ seg.duration }}
-                    min
+                    🎙 {{ displayTitle }}
                   </span>
-                  {% if ruleNumber %}
-                    <span class="postit__badge">
-                      R
-                      {{ ruleNumber }}
-                      {% if isRebroadcast %}
-                        ·
-                        {{ rebroadcastLabel }}
-                      {% endif %}
-                    </span>
-                  {% elseif isRebroadcast %}
-                    <span class="postit__badge">
-                      {{ rebroadcastLabel }}
-                    </span>
-                  {% endif %}
+                  <span class="postit__badge">
+                    {{ stateBadge }}
+                  </span>
                 </div>
               </div>
             {% endfor %}
@@ -464,66 +851,83 @@
         {% endfor %}
       </div>
     </div>
+
+    {# =========================
+       SIDEBAR
+       ========================= #}
     <aside class="sidebar">
-      <h2>
-        Programmation
-      </h2>
+      <h2>Programmation</h2>
+
       <div class="sidebar-mode-switch">
-        <button type="button" class="mode-btn is-active" data-grid-target="modeRegularBtn" data-action="click->grid#showRegularMode">
+        <button
+          type="button"
+          class="mode-btn is-active"
+          aria-pressed="true"
+          data-grid-target="modeRegularBtn"
+          data-action="click->grid#showRegularMode"
+        >
           Régulières
         </button>
-        <button type="button" class="mode-btn" data-grid-target="modeSpecialBtn" data-action="click->grid#showSpecialMode">
+
+        <button
+          type="button"
+          class="mode-btn"
+          aria-pressed="false"
+          data-grid-target="modeSpecialBtn"
+          data-action="click->grid#showSpecialMode"
+        >
           Non régulières
         </button>
       </div>
+
+      {# Mode régulier #}
       <div data-grid-target="regularPanel">
-        <h2>
-          Émissions disponibles
-        </h2>
+        <h2>Émissions disponibles</h2>
+
         <div id="slot-selection-empty" data-grid-target="emptyState">
           Sélectionne un créneau dans la grille pour afficher les émissions compatibles.
         </div>
+
         <div id="slot-selection-panel" data-grid-target="sidebarPanel" style="display:none;">
           <div class="sidebar-section">
-            <h3>
-              Créneau sélectionné
-            </h3>
+            <h3>Créneau sélectionné</h3>
             <div class="slot-summary" data-grid-target="slotSummary"></div>
+
             <div class="slot-actions" data-grid-target="slotActions" style="display:none;">
-              <button type="button" class="btn-remove-assignment" data-action="click->grid#removeAssignment">
+              <button
+                type="button"
+                class="btn-remove-assignment"
+                data-action="click->grid#removeAssignment"
+              >
                 Retirer l’émission
               </button>
             </div>
           </div>
+
           <div class="sidebar-section">
-            <h3>
-              Émissions suggérées
-            </h3>
+            <h3>Émissions suggérées</h3>
             <div id="emissions-pool" data-grid-target="emissionsList"></div>
           </div>
         </div>
       </div>
+
+      {# Mode non régulier #}
       <div data-grid-target="specialPanel" style="display:none;">
-        <h2>
-          Émissions non régulières
-        </h2>
+        <h2>Émissions non régulières</h2>
+
         <div id="special-selection-empty" data-grid-target="specialEmptyState">
           Passe en mode « non régulières », puis clique un créneau de la grille pour préparer une programmation ponctuelle.
         </div>
+
         <div data-grid-target="specialSidebarPanel" style="display:none;">
           <div class="sidebar-section">
-            <h3>
-              Créneau sélectionné
-            </h3>
+            <h3>Créneau sélectionné</h3>
             <div class="slot-summary" data-grid-target="specialSlotSummary"></div>
           </div>
+
           <div class="sidebar-section">
             <div class="special-placeholder">
-              <p>
-                <strong>
-                  Programmation ponctuelle
-                </strong>
-              </p>
+              <p><strong>Programmation ponctuelle</strong></p>
               <p>
                 Cette zone servira à programmer une émission non régulière, sans règle de programmation.
               </p>
@@ -536,5 +940,4 @@
       </div>
     </aside>
   </div>
-  <div id="tooltip" class="custom-tooltip"></div>
 {% endblock %}

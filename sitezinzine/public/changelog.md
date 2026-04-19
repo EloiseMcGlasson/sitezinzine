@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.89] - 2026-04-20
+### Ajout
+- Ajout des jours de la semaine sur les colonnes de la grille.
+### Correction
+- Agrandissement de la grille pour une meilleure visibilité.
+- Modification de la navigation des semaines de la grille.
+- Modification des boutons régulière/non régulière pour une meilleure experience ux.
+- Correction de la hauteur des créneaux qui dépassaient de leur taille prévue.
+- Centrage vertical des heures à gauche de la grille.
+
+
 ## [1.0.88] - 2026-04-19 bis
 ### Correction
 - Changement pour le mail, passage de smtp à api de mailjet.

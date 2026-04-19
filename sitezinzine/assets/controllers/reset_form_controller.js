@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import { Turbo } from "@hotwired/turbo";
+import * as Turbo from "@hotwired/turbo";
 
 export default class extends Controller {
   static targets = ["form"];
