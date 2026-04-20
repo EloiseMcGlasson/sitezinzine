@@ -52,6 +52,12 @@
       /* Badge interne des post-its */
       --badge-light-bg: rgba(255, 255, 255, 0.82);
       --badge-light-text: #222;
+
+      /* Conflits */
+      --postit-conflict: #ffb300;
+      --postit-conflict-strong: #e65100;
+      --postit-conflict-bg: rgba(255, 179, 0, 0.12);
+      --postit-conflict-resolved: #ffecb3;
     }
 
     /* =========================
@@ -123,7 +129,6 @@
       justify-self: end;
     }
 
-    /* Bloc central : aujourd'hui + date + aller */
     .week-nav__center {
       display: flex;
       align-items: center;
@@ -202,7 +207,6 @@
       width: 100%;
     }
 
-    /* Entêtes colonnes */
     .head {
       display: flex;
       flex-direction: column;
@@ -237,7 +241,6 @@
       color: var(--head-subtext);
     }
 
-    /* Colonne des heures */
     .hours-col {
       grid-column: 1;
       grid-row: 2 / span 96;
@@ -263,7 +266,6 @@
       border-top: 1px solid #dcdcdc;
     }
 
-    /* Libellés d'heures centrés dans leur bloc d'1 heure */
     .hour-label {
       position: absolute;
       left: 0;
@@ -278,7 +280,6 @@
       pointer-events: none;
     }
 
-    /* Colonnes des jours */
     .day-col {
       position: relative;
       grid-row: 2 / span 96;
@@ -377,6 +378,20 @@
       z-index: 5;
     }
 
+    .postit--conflict {
+      box-shadow:
+        0 0 0 2px var(--postit-conflict),
+        0 2px 6px rgba(0, 0, 0, 0.14);
+      z-index: 4;
+    }
+
+    .postit--conflict[data-conflict-severity="total"] {
+      box-shadow:
+        0 0 0 2px var(--postit-conflict-strong),
+        0 0 0 4px rgba(230, 81, 0, 0.18),
+        0 2px 6px rgba(0, 0, 0, 0.14);
+    }
+
     .postit__content {
       display: flex;
       flex-direction: column;
@@ -405,13 +420,28 @@
       opacity: 0.95;
     }
 
+    .postit__alert {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 5px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      background: rgba(28, 28, 26, 0.18);
+      color: #fff;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+
+    .postit--rebroadcast .postit__alert {
+      background: rgba(35, 50, 65, 0.14);
+      color: #233241;
+    }
+
     /* =========================
        CRENEAU 15 MIN
-       =========================
-       - non rempli : catégorie entière
-       - rempli : catégorie courte + titre émission compact sur la même ligne
-       - pas de badge
-       - pas d'emoji
        ========================= */
     .postit[data-slots="1"] {
       padding: 1px 4px;
@@ -431,20 +461,14 @@
       text-overflow: ellipsis;
     }
 
-    .postit[data-slots="1"] .postit__subline {
-      display: none;
-    }
-
-    .postit[data-slots="1"] .postit__badge {
+    .postit[data-slots="1"] .postit__subline,
+    .postit[data-slots="1"] .postit__badge,
+    .postit[data-slots="1"] .postit__alert {
       display: none;
     }
 
     /* =========================
        CRENEAU 30 MIN
-       =========================
-       - catégorie entière en principal
-       - titre émission éventuel dessous
-       - pas de badge
        ========================= */
     .postit[data-slots="2"] {
       padding: 2px 5px;
@@ -467,11 +491,11 @@
       font-size: 8px;
     }
 
-    .postit[data-slots="2"] .postit__badge {
+    .postit[data-slots="2"] .postit__badge,
+    .postit[data-slots="2"] .postit__alert {
       display: none;
     }
 
-    /* Créneaux plus grands : plusieurs lignes autorisées */
     .postit:not([data-slots="1"]):not([data-slots="2"]) .postit__label,
     .postit:not([data-slots="1"]):not([data-slots="2"]) .postit__subline {
       white-space: normal;
@@ -502,7 +526,6 @@
       color: var(--head-text);
     }
 
-    /* Sélecteur de mode */
     .sidebar-mode-switch {
       display: flex;
       gap: 6px;
@@ -728,7 +751,8 @@
         font-size: 10px;
       }
 
-      .postit__badge {
+      .postit__badge,
+      .postit__alert {
         font-size: 8px;
       }
     }
@@ -738,9 +762,6 @@
 {% block body %}
   <h1>Grille de programmation</h1>
 
-  {# =========================
-     NAVIGATION DE SEMAINE
-     ========================= #}
   <div class="week-nav">
     <h2 class="week-nav__title">
       Semaine du {{ startOfWeek|date('d/m/Y') }}
@@ -794,17 +815,12 @@
   </div>
 
   <div class="schedule-layout" data-controller="grid">
-    {# =========================
-       ZONE GRILLE
-       ========================= #}
     <div class="grid-area">
       <div class="schedule-grid">
-        {# En-tête colonne heures #}
         <div class="head hour" style="grid-column:1; grid-row:1;">
           Heure
         </div>
 
-        {# En-têtes des 7 jours de la semaine radio #}
         {% for i in 0..6 %}
           {% set jour = startOfWeek|date_modify("+" ~ i ~ " days") %}
           <div class="head" style="grid-column: {{ 2 + i }}; grid-row:1;">
@@ -817,7 +833,6 @@
           </div>
         {% endfor %}
 
-        {# Colonne verticale des heures #}
         <div class="hours-col">
           {% for i in 0..95 %}
             <div
@@ -833,14 +848,12 @@
           {% endfor %}
         </div>
 
-        {# Colonnes des jours + créneaux #}
         {% for dayIndex in 0..6 %}
           <div
             class="day-col"
             data-grid-target="day"
             style="grid-column: {{ 2 + dayIndex }};"
           >
-            {# Lignes horizontales de fond #}
             {% for i in 0..95 %}
               <div
                 class="day-slot {{ i % 4 == 0 ? 'hour-start' : '' }} {{ i % 4 == 2 ? 'half-hour' : '' }}"
@@ -848,7 +861,6 @@
               ></div>
             {% endfor %}
 
-            {# Créneaux de la journée #}
             {% for seg in (daySegments[dayIndex] ?? []) %}
               {% set slots = (seg.duration / 15)|round(0, 'ceil') %}
               {% set displayTitle = seg.displayTitle|default(seg.title|default('Créneau')) %}
@@ -860,15 +872,13 @@
               {% set isRebroadcast = broadcastRank > 1 %}
               {% set isLive = seg.emissionIsAutoGenerated|default(false) %}
               {% set isAssigned = seg.assigned|default(false) %}
+              {% set hasConflict = seg.hasConflict|default(false) %}
+              {% set conflictType = seg.conflictType|default('') %}
+              {% set conflictSeverity = seg.conflictSeverity|default('') %}
+              {% set conflictCount = seg.conflictCount|default(0) %}
+              {% set conflictWith = seg.conflictWith|default([]) %}
+              {% set endsAt = seg.endsAt|default('') %}
 
-              {# =========================
-                 LIBELLES DU POST-IT
-                 =========================
-                 - 15 min non rempli : catégorie entière
-                 - 15 min rempli : "SLUG — titre émission"
-                 - 30 min : catégorie entière
-                 - 30 min+ rempli : catégorie entière + titre dessous
-                 ========================= #}
               {% set shortCategoryLabel = categorySlug ?: categoryTitle %}
 
               {% if slots == 1 and assignedEmissionTitle %}
@@ -882,14 +892,12 @@
                 {% set secondaryLabel = assignedEmissionTitle %}
               {% endif %}
 
-              {# Variante visuelle du post-it #}
               {% set variantClass =
                 isRebroadcast
                   ? 'postit--rebroadcast'
                   : (isLive ? 'postit--live' : 'postit--first')
               %}
 
-              {# Badge court affiché uniquement sur les créneaux assez hauts #}
               {% set stateBadge =
                 isRebroadcast
                   ? '↺ Rediff ' ~ (broadcastRank - 1)
@@ -899,10 +907,18 @@
               {% set postitClasses = [
                 'postit',
                 variantClass,
-                isAssigned ? 'assigned'
+                isAssigned ? 'assigned',
+                hasConflict ? 'postit--conflict'
               ]|filter(v => v) %}
 
-              {# Tooltip compact sans libellés #}
+              {% set conflictLabel =
+                conflictSeverity == 'total'
+                  ? 'Conflit total'
+                  : (conflictSeverity == 'contained'
+                    ? 'Conflit inclus'
+                    : 'Conflit partiel')
+              %}
+
               {% set tooltipText %}
                 {{ categoryTitle }}
                 {% if assignedEmissionTitle %}| {{ assignedEmissionTitle }}{% endif %}
@@ -913,6 +929,10 @@
                   {% else %}
                     1re diffusion
                   {% endif %}
+                {% if hasConflict %}
+                  | ⚠ {{ conflictLabel }}
+                  {% if conflictCount > 0 %} ({{ conflictCount }}){% endif %}
+                {% endif %}
               {% endset %}
 
               <div
@@ -921,6 +941,7 @@
                   top: calc({{ seg.startIndex }} * var(--slot-h));
                   height: calc({{ slots }} * var(--slot-h) - 2px);
                 "
+                data-segment-key="{{ seg.segmentKey|default('') }}"
                 data-slots="{{ slots }}"
                 data-duration="{{ seg.duration }}"
                 data-rule-id="{{ seg.ruleId|default('') }}"
@@ -928,15 +949,19 @@
                 data-slot-id="{{ seg.slotId|default('') }}"
                 data-broadcast-rank="{{ broadcastRank }}"
                 data-starts-at="{{ seg.startsAt|default('') }}"
+                data-ends-at="{{ endsAt }}"
                 data-category-title="{{ categoryTitle }}"
                 data-category-slug="{{ categorySlug }}"
                 data-assigned-emission-id="{{ seg.emissionId|default('') }}"
                 data-assigned-emission-title="{{ seg.emissionTitle|default('') }}"
                 data-emission-is-auto-generated="{{ isLive ? 'true' : 'false' }}"
                 data-slot-locked="{{ isRebroadcast ? 'true' : 'false' }}"
-                {% if not isRebroadcast %}
-                  data-action="click->grid#selectSlot"
-                {% endif %}
+                data-has-conflict="{{ hasConflict ? 'true' : 'false' }}"
+                data-conflict-type="{{ conflictType }}"
+                data-conflict-severity="{{ conflictSeverity }}"
+                data-conflict-count="{{ conflictCount }}"
+                data-conflict-with="{{ conflictWith|json_encode|e('html_attr') }}"
+                data-action="click->grid#selectSlot"
                 title="{{ tooltipText|trim|replace({'  ': ' ', ' |': '|', '| ': ' | '}) }}"
                 draggable="{{ isRebroadcast ? 'false' : 'true' }}"
                 {% if isRebroadcast %}
@@ -945,15 +970,18 @@
               >
                 <div class="postit__content">
                   <span class="postit__label">
-                    {% if slots > 2 %}
-                      🎙
-                    {% endif %}
                     {{ mainLabel }}
                   </span>
 
                   {% if secondaryLabel %}
                     <span class="postit__subline">
                       {{ secondaryLabel }}
+                    </span>
+                  {% endif %}
+
+                  {% if slots > 2 and hasConflict %}
+                    <span class="postit__alert">
+                      ⚠ Conflit
                     </span>
                   {% endif %}
 
@@ -970,9 +998,6 @@
       </div>
     </div>
 
-    {# =========================
-       SIDEBAR
-       ========================= #}
     <aside class="sidebar">
       <h2>Programmation</h2>
 
@@ -998,7 +1023,6 @@
         </button>
       </div>
 
-      {# Mode régulier #}
       <div data-grid-target="regularPanel">
         <h2>Émissions disponibles</h2>
 
@@ -1029,7 +1053,6 @@
         </div>
       </div>
 
-      {# Mode non régulier #}
       <div data-grid-target="specialPanel" style="display:none;">
         <h2>Émissions non régulières</h2>
 
