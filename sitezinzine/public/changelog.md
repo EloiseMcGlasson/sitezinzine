@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.90] - 2026-04-xx
+### Ajout
+### Correction
+- Correction de l'affichage de texte des créneaux et du tooltip associé pour une meilleure lisibilité sur les créneau d'un quart d'heure.
+
 ## [1.0.89] - 2026-04-20
 ### Ajout
 - Ajout des jours de la semaine sur les colonnes de la grille.

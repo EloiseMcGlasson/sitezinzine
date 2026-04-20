@@ -15,6 +15,7 @@ class ProgrammationGridBuilder
 
     public function buildForWeek(\DateTimeImmutable $startOfWeek, \DateTimeImmutable $endOfWeek): array
     {
+        // 7 colonnes = mardi -> lundi
         $daySegments = array_fill(0, 7, []);
 
         $rules = $this->programmationRuleRepository->findAll();
@@ -24,6 +25,7 @@ class ProgrammationGridBuilder
                 continue;
             }
 
+            // On ignore les règles inactives ou supprimées
             if ($rule->isDeleted() || !$rule->isActive()) {
                 continue;
             }
@@ -33,6 +35,7 @@ class ProgrammationGridBuilder
                     continue;
                 }
 
+                // On ignore les slots inactifs ou supprimés
                 if (!$slot->isActive() || $slot->isDeleted()) {
                     continue;
                 }
@@ -57,27 +60,42 @@ class ProgrammationGridBuilder
 
                     $startIndex = max(0, min(95, $startIndex));
 
-                    $categoryTitle = $rule->getCategory()?->getTitre() ?? 'Catégorie inconnue';
+                    // On récupère la catégorie une seule fois
+                    $category = $rule->getCategory();
+                    $categoryTitle = $category?->getTitre() ?? 'Catégorie inconnue';
+                    $categorySlug = $category?->getSlug();
+
                     $ruleNumber = $rule->getRuleNumber();
                     $ruleDisplayName = $rule->getDisplayName();
 
                     $daySegments[$dayIndex][] = [
+                        // Titre par défaut affiché dans la grille avant affectation
                         'title' => $categoryTitle,
                         'displayTitle' => $categoryTitle,
+
+                        // Infos catégorie utiles pour l'affichage compact
                         'categoryTitle' => $categoryTitle,
+                        'categorySlug' => $categorySlug,
+
+                        // Infos de positionnement
                         'duration' => $slot->getDurationMinutes() ?? 15,
                         'startIndex' => $startIndex,
+
+                        // Infos de règle / slot
                         'ruleId' => $rule->getId(),
                         'ruleNumber' => $ruleNumber,
                         'ruleDisplayName' => $ruleDisplayName,
                         'slotId' => $slot->getId(),
                         'broadcastRank' => $slot->getBroadcastRank(),
+
+                        // Date/heure réelle du créneau
                         'startsAt' => $startsAt->format('Y-m-d H:i:s'),
                     ];
                 }
             }
         }
 
+        // Tri par ordre chronologique dans chaque journée
         foreach ($daySegments as &$segments) {
             usort(
                 $segments,
