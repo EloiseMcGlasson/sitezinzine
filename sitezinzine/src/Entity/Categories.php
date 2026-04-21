@@ -37,8 +37,9 @@ class Categories
     #[Groups(['categories.index'])]
     private ?int $oldid = null;
 
-    #[ORM\Column]
-    private ?int $editeur = null;
+    #[ORM\ManyToOne(targetEntity: Editeur::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Editeur $editeur = null;
 
     #[ORM\Column]
     #[Groups(['categories.index'])]
@@ -137,12 +138,12 @@ class Categories
         return $this;
     }
 
-    public function getEditeur(): ?int
+    public function getEditeur(): ?Editeur
     {
         return $this->editeur;
     }
 
-    public function setEditeur(int $editeur): static
+    public function setEditeur(?Editeur $editeur): static
     {
         $this->editeur = $editeur;
 
@@ -352,28 +353,28 @@ class Categories
     }
 
     public function getTagImages(): Collection
-{
-    return $this->tagImages;
-}
-
-public function addTagImage(CategorieTagImage $tagImage): static
-{
-    if (!$this->tagImages->contains($tagImage)) {
-        $this->tagImages->add($tagImage);
-        $tagImage->setCategorie($this);
+    {
+        return $this->tagImages;
     }
 
-    return $this;
-}
-
-public function removeTagImage(CategorieTagImage $tagImage): static
-{
-    if ($this->tagImages->removeElement($tagImage)) {
-        if ($tagImage->getCategorie() === $this) {
-            $tagImage->setCategorie(null);
+    public function addTagImage(CategorieTagImage $tagImage): static
+    {
+        if (!$this->tagImages->contains($tagImage)) {
+            $this->tagImages->add($tagImage);
+            $tagImage->setCategorie($this);
         }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function removeTagImage(CategorieTagImage $tagImage): static
+    {
+        if ($this->tagImages->removeElement($tagImage)) {
+            if ($tagImage->getCategorie() === $this) {
+                $tagImage->setCategorie(null);
+            }
+        }
+
+        return $this;
+    }
 }

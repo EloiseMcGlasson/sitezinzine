@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.91] - 2026-04-22
+### Ajout
+- Ajout de l'ajustement de la programmation en cas de créneau bancal à cause des mois coupés.
+### Correction
+- Changement de type pour editeur de int à entity et modif du code des pages associées.
+- Modification du style de la page index émission pour uniformiser le visuel du site.
+
+
 ## [1.0.90] - 2026-04-21
 ### Ajout
 - Gestion des conflits de créneaux dans la grille et leurs visualisation.

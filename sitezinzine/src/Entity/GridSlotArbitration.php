@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\GridSlotArbitrationRepository;
@@ -8,32 +10,25 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GridSlotArbitrationRepository::class)]
 #[ORM\Table(name: 'grid_slot_arbitration')]
-#[ORM\UniqueConstraint(
-    name: 'uniq_grid_slot_arbitration_slot_start',
-    columns: ['slot_id', 'starts_at']
-)]
-#[ORM\Index(name: 'idx_grid_slot_arbitration_status', columns: ['status'])]
-#[ORM\Index(name: 'idx_grid_slot_arbitration_starts_at', columns: ['starts_at'])]
-#[ORM\Index(name: 'idx_grid_slot_arbitration_needs_reschedule', columns: ['needs_reschedule'])]
-#[ORM\Index(name: 'idx_grid_slot_arbitration_conflict_type', columns: ['conflict_type'])]
+#[ORM\Index(columns: ['original_starts_at'], name: 'idx_grid_slot_arbitration_original_starts_at')]
+#[ORM\Index(columns: ['rescheduled_starts_at'], name: 'idx_grid_slot_arbitration_rescheduled_starts_at')]
+#[ORM\Index(columns: ['status'], name: 'idx_grid_slot_arbitration_status')]
 class GridSlotArbitration
 {
+    public const TYPE_RULE_OVERLAP = 'rule_overlap';
+    public const TYPE_MANUAL_OVERRIDE = 'manual_override';
+    public const TYPE_CALENDAR_ADJUSTMENT = 'calendar_adjustment';
+
     public const STATUS_PENDING = 'pending';
     public const STATUS_RESOLVED = 'resolved';
     public const STATUS_CANCELLED = 'cancelled';
 
-    public const CONFLICT_TYPE_RULE_OVERLAP = 'rule_overlap';
-    public const CONFLICT_TYPE_SPECIAL_EVENT_OVERRIDE = 'special_event_override';
-    public const CONFLICT_TYPE_MANUAL_OVERRIDE = 'manual_override';
-
-    public const RESOLUTION_ACTION_KEEP = 'keep';
-    public const RESOLUTION_ACTION_REPLACE = 'replace';
-    public const RESOLUTION_ACTION_CANCEL = 'cancel';
-    public const RESOLUTION_ACTION_RESCHEDULE = 'reschedule';
-
-    public const RESCHEDULE_STATUS_PENDING = 'pending';
-    public const RESCHEDULE_STATUS_DONE = 'done';
-    public const RESCHEDULE_STATUS_ABANDONED = 'abandoned';
+    public const ACTION_KEEP = 'keep';
+    public const ACTION_REPLACE = 'replace';
+    public const ACTION_CANCEL = 'cancel';
+    public const ACTION_RESCHEDULE_PREVIOUS_WEEK = 'reschedule_previous_week';
+    public const ACTION_RESCHEDULE_NEXT_WEEK = 'reschedule_next_week';
+    public const ACTION_RESCHEDULE_CUSTOM = 'reschedule_custom';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -44,37 +39,29 @@ class GridSlotArbitration
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ProgrammationRuleSlot $slot = null;
 
-    #[ORM\Column(name: 'starts_at', type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $startsAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $originalStartsAt = null;
 
-    #[ORM\Column(name: 'ends_at', type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $endsAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $originalEndsAt = null;
 
-    #[ORM\Column(length: 40)]
+    #[ORM\Column(length: 50)]
+    private string $type = self::TYPE_RULE_OVERLAP;
+
+    #[ORM\Column(length: 30)]
     private string $status = self::STATUS_PENDING;
 
-    #[ORM\Column(name: 'conflict_type', length: 50)]
-    private string $conflictType = self::CONFLICT_TYPE_RULE_OVERLAP;
+    #[ORM\Column(length: 50)]
+    private string $action = self::ACTION_KEEP;
 
-    #[ORM\Column(name: 'resolution_action', length: 40, nullable: true)]
-    private ?string $resolutionAction = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $rescheduledStartsAt = null;
 
-    #[ORM\Column(name: 'needs_reschedule')]
-    private bool $needsReschedule = false;
-
-    #[ORM\Column(name: 'reschedule_status', length: 20, nullable: true)]
-    private ?string $rescheduleStatus = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $rescheduledEndsAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $note = null;
-
-    /**
-     * Référence vers le créneau d’arbitrage qui a “pris la place”
-     * de celui-ci, si on veut garder une trace de remplacement.
-     */
-    #[ORM\ManyToOne(targetEntity: self::class)]
-    #[ORM\JoinColumn(name: 'replaced_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?self $replacedBy = null;
+    private ?string $notes = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
@@ -82,11 +69,59 @@ class GridSlotArbitration
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $updatedAt;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $resolvedAt = null;
+
     public function __construct()
     {
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
         $this->updatedAt = $now;
+    }
+
+    public function touch(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function markResolved(): void
+    {
+        $this->status = self::STATUS_RESOLVED;
+        $this->resolvedAt = new \DateTimeImmutable();
+        $this->touch();
+    }
+
+    public function markPending(): void
+    {
+        $this->status = self::STATUS_PENDING;
+        $this->resolvedAt = null;
+        $this->touch();
+    }
+
+    public function markCancelled(): void
+    {
+        $this->status = self::STATUS_CANCELLED;
+        $this->resolvedAt = null;
+        $this->touch();
+    }
+
+    public function isRescheduleAction(): bool
+    {
+        return \in_array($this->action, [
+            self::ACTION_RESCHEDULE_PREVIOUS_WEEK,
+            self::ACTION_RESCHEDULE_NEXT_WEEK,
+            self::ACTION_RESCHEDULE_CUSTOM,
+        ], true);
+    }
+
+    public function isCancelAction(): bool
+    {
+        return self::ACTION_CANCEL === $this->action;
+    }
+
+    public function isActiveDecision(): bool
+    {
+        return self::STATUS_CANCELLED !== $this->status;
     }
 
     public function getId(): ?int
@@ -99,41 +134,42 @@ class GridSlotArbitration
         return $this->slot;
     }
 
-    public function setSlot(?ProgrammationRuleSlot $slot): static
+    public function setSlot(?ProgrammationRuleSlot $slot): self
     {
         $this->slot = $slot;
-        $this->touch();
-
         return $this;
     }
 
-    public function getStartsAt(): ?\DateTimeImmutable
+    public function getOriginalStartsAt(): ?\DateTimeImmutable
     {
-        return $this->startsAt;
+        return $this->originalStartsAt;
     }
 
-    public function setStartsAt(\DateTimeImmutable $startsAt): static
+    public function setOriginalStartsAt(\DateTimeImmutable $originalStartsAt): self
     {
-        $this->startsAt = $startsAt;
-        $this->touch();
-
+        $this->originalStartsAt = $originalStartsAt;
         return $this;
     }
 
-    public function getEndsAt(): ?\DateTimeImmutable
+    public function getOriginalEndsAt(): ?\DateTimeImmutable
     {
-        return $this->endsAt;
+        return $this->originalEndsAt;
     }
 
-    public function setEndsAt(\DateTimeImmutable $endsAt): static
+    public function setOriginalEndsAt(\DateTimeImmutable $originalEndsAt): self
     {
-        if ($this->startsAt !== null && $endsAt <= $this->startsAt) {
-            throw new \InvalidArgumentException('endsAt doit être strictement supérieur à startsAt.');
-        }
+        $this->originalEndsAt = $originalEndsAt;
+        return $this;
+    }
 
-        $this->endsAt = $endsAt;
-        $this->touch();
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
+    public function setType(string $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 
@@ -142,144 +178,53 @@ class GridSlotArbitration
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(string $status): self
     {
-        $allowed = [
-            self::STATUS_PENDING,
-            self::STATUS_RESOLVED,
-            self::STATUS_CANCELLED,
-        ];
-
-        if (!in_array($status, $allowed, true)) {
-            throw new \InvalidArgumentException('status invalide.');
-        }
-
         $this->status = $status;
-        $this->touch();
-
         return $this;
     }
 
-    public function getConflictType(): string
+    public function getAction(): string
     {
-        return $this->conflictType;
+        return $this->action;
     }
 
-    public function setConflictType(string $conflictType): static
+    public function setAction(string $action): self
     {
-        $allowed = [
-            self::CONFLICT_TYPE_RULE_OVERLAP,
-            self::CONFLICT_TYPE_SPECIAL_EVENT_OVERRIDE,
-            self::CONFLICT_TYPE_MANUAL_OVERRIDE,
-        ];
-
-        if (!in_array($conflictType, $allowed, true)) {
-            throw new \InvalidArgumentException('conflictType invalide.');
-        }
-
-        $this->conflictType = $conflictType;
-        $this->touch();
-
+        $this->action = $action;
         return $this;
     }
 
-    public function getResolutionAction(): ?string
+    public function getRescheduledStartsAt(): ?\DateTimeImmutable
     {
-        return $this->resolutionAction;
+        return $this->rescheduledStartsAt;
     }
 
-    public function setResolutionAction(?string $resolutionAction): static
+    public function setRescheduledStartsAt(?\DateTimeImmutable $rescheduledStartsAt): self
     {
-        $allowed = [
-            null,
-            self::RESOLUTION_ACTION_KEEP,
-            self::RESOLUTION_ACTION_REPLACE,
-            self::RESOLUTION_ACTION_CANCEL,
-            self::RESOLUTION_ACTION_RESCHEDULE,
-        ];
-
-        if (!in_array($resolutionAction, $allowed, true)) {
-            throw new \InvalidArgumentException('resolutionAction invalide.');
-        }
-
-        $this->resolutionAction = $resolutionAction;
-        $this->touch();
-
+        $this->rescheduledStartsAt = $rescheduledStartsAt;
         return $this;
     }
 
-    public function needsReschedule(): bool
+    public function getRescheduledEndsAt(): ?\DateTimeImmutable
     {
-        return $this->needsReschedule;
+        return $this->rescheduledEndsAt;
     }
 
-    public function getNeedsReschedule(): bool
+    public function setRescheduledEndsAt(?\DateTimeImmutable $rescheduledEndsAt): self
     {
-        return $this->needsReschedule;
-    }
-
-    public function setNeedsReschedule(bool $needsReschedule): static
-    {
-        $this->needsReschedule = $needsReschedule;
-
-        if ($needsReschedule === false) {
-            $this->rescheduleStatus = null;
-        } elseif ($this->rescheduleStatus === null) {
-            $this->rescheduleStatus = self::RESCHEDULE_STATUS_PENDING;
-        }
-
-        $this->touch();
-
+        $this->rescheduledEndsAt = $rescheduledEndsAt;
         return $this;
     }
 
-    public function getRescheduleStatus(): ?string
+    public function getNotes(): ?string
     {
-        return $this->rescheduleStatus;
+        return $this->notes;
     }
 
-    public function setRescheduleStatus(?string $rescheduleStatus): static
+    public function setNotes(?string $notes): self
     {
-        $allowed = [
-            null,
-            self::RESCHEDULE_STATUS_PENDING,
-            self::RESCHEDULE_STATUS_DONE,
-            self::RESCHEDULE_STATUS_ABANDONED,
-        ];
-
-        if (!in_array($rescheduleStatus, $allowed, true)) {
-            throw new \InvalidArgumentException('rescheduleStatus invalide.');
-        }
-
-        $this->rescheduleStatus = $rescheduleStatus;
-        $this->touch();
-
-        return $this;
-    }
-
-    public function getNote(): ?string
-    {
-        return $this->note;
-    }
-
-    public function setNote(?string $note): static
-    {
-        $this->note = $note;
-        $this->touch();
-
-        return $this;
-    }
-
-    public function getReplacedBy(): ?self
-    {
-        return $this->replacedBy;
-    }
-
-    public function setReplacedBy(?self $replacedBy): static
-    {
-        $this->replacedBy = $replacedBy;
-        $this->touch();
-
+        $this->notes = $notes;
         return $this;
     }
 
@@ -293,44 +238,8 @@ class GridSlotArbitration
         return $this->updatedAt;
     }
 
-    public function isPending(): bool
+    public function getResolvedAt(): ?\DateTimeImmutable
     {
-        return $this->status === self::STATUS_PENDING;
-    }
-
-    public function isResolved(): bool
-    {
-        return $this->status === self::STATUS_RESOLVED;
-    }
-
-    public function isCancelled(): bool
-    {
-        return $this->status === self::STATUS_CANCELLED;
-    }
-
-    public function markResolved(
-        string $resolutionAction,
-        bool $needsReschedule = false,
-        ?string $note = null
-    ): static {
-        $this->setStatus(self::STATUS_RESOLVED);
-        $this->setResolutionAction($resolutionAction);
-        $this->setNeedsReschedule($needsReschedule);
-        $this->setNote($note);
-
-        return $this;
-    }
-
-    public function cancel(?string $note = null): static
-    {
-        $this->setStatus(self::STATUS_CANCELLED);
-        $this->setNote($note);
-
-        return $this;
-    }
-
-    private function touch(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
+        return $this->resolvedAt;
     }
 }

@@ -1,0 +1,212 @@
+<style>
+  .admin-card-grid {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .admin-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+
+    min-height: 180px;
+    padding: 20px;
+
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.10);
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .admin-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  }
+
+  .admin-card__top {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .admin-card__title {
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .admin-card__title a,
+  .admin-card__title span {
+    color: #E4013A;
+    text-decoration: none;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .admin-card__title a:hover {
+    color: #B81C61;
+    text-decoration: none;
+  }
+
+  .admin-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-card__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .admin-card__badge--primary {
+    background: rgba(228, 1, 58, 0.12);
+    color: #B81C61;
+  }
+
+  .admin-card__badge--secondary {
+    background: #f1f1f1;
+    color: #555;
+  }
+
+  .admin-card__content {
+    color: #333;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .admin-card__content p {
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .admin-card__content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .admin-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  .admin-card__actions .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 110px;
+    height: 40px;
+    padding: 8px 14px;
+
+    border: none;
+    border-radius: 8px;
+    background: #666;
+    color: #fff;
+    text-decoration: none;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .admin-card__actions .btn-action:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .admin-card__actions .btn-delete {
+    background: #E4013A;
+  }
+
+  @media (max-width: 900px) {
+    .admin-card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admin-card {
+      min-height: 0;
+      padding: 16px;
+    }
+
+    .admin-card__title a,
+    .admin-card__title span {
+      font-size: 18px;
+    }
+
+    .admin-card__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .admin-card__actions .btn-action {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+</style>
+
+<section class="admin-card {{ extraClass|default('') }}">
+  <div class="admin-card__top">
+    <h2 class="admin-card__title">
+      {% if titleUrl is defined and titleUrl %}
+        <a href="{{ titleUrl }}">{{ title }}</a>
+      {% else %}
+        <span>{{ title }}</span>
+      {% endif %}
+    </h2>
+
+    {% if badges is defined and badges is not empty %}
+      <div class="admin-card__badges">
+        {% for badge in badges %}
+          <span class="admin-card__badge {{ badge.class|default('admin-card__badge--secondary') }}">
+            {{ badge.label }}
+          </span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if content is defined and content %}
+      <div class="admin-card__content">
+        {{ content|raw }}
+      </div>
+    {% endif %}
+  </div>
+
+  {% if actions is defined and actions %}
+    <div class="admin-card__actions">
+      {{ actions|raw }}
+    </div>
+  {% endif %}
+</section>

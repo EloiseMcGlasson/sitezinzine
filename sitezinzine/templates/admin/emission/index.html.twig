@@ -1,254 +1,82 @@
 {% extends 'admin/admin.html.twig' %}
+
 {% block title %}
     Toutes les émissions !
 {% endblock %}
-{% block body %}
+{% block stylesheets %}
+    {{ parent() }}
     <style>
-       .emissions {
-        background-color: black;
-        color: white;
-        display: grid;
-        margin: 40px 80px;
-        align-items: center; 
-        }
 
-        .pagination nav {
-            background: transparent;
-        }
-
-        section {
-        border: solid;
-        border-collapse: collapse;
-        display: grid;
-        grid-template-columns: 1fr 4fr 1fr;
-    }
-    .col1 {
-        width: 150px;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .col1 img {
-        width: 150px;
-        margin: 10px;
-    }
-    .col2 {
-       
-    }
-    .col3 {
-        background-color: black;
-        display: grid;
-        grid-template-columns: auto auto;  /* Changé pour auto auto */
-        gap: 10px;
-        align-items: center;
-        padding: 10px;
-    }
-
-    .ecoute {
-        justify-self: start;  /* Aligne à gauche */
-    }
-
-   
-    .img {
-        padding: 10px;
-    }
-
-    a {
-        padding: 14px 16px;
-        color: white;
-        text-decoration: none;
-        font-weight: 800;
-    }
-    .btn-action {
-        width: 100%;
-        text-align: center;
-    }
-
-    a:hover {
-        padding: 14px 16px;
-        color: #E40039;
-        text-decoration: none;
-        font-weight: 800; 
-    }
-
-    .texte {
-        width: fit-content;
-        color: white;
-        margin: 20px;
-    }
-    
-    .titre {
-        margin: 10px;
-    }
-    
-    .date {
-        padding: 10px;
-    }
-
-    .cat {
-        padding: 10px;
-    }
-
-    .descriptif-content {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: all 0.3s ease;
+        /* Bouton normal (desktop) */
+.admin-emission-page .btn-create {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #E4013A;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  text-align: center;
 }
 
-.descriptif-content.expanded {
-  -webkit-line-clamp: unset;
+.imgbottom {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: -1px;
 }
 
-.descriptif-toggle-btn {
-  background: none;
-  color: #E40039;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  margin-top: 0.5em;
+/* Conteneur */
+.admin-emission-page .create {
+  text-align: left;
+  margin-bottom: 20px;
+  padding: 0 20px;
+
 }
 
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 768px) {
+  .admin-emission-page .btn-create {
+    display: block;
+    width: 100%;
+    max-width: 260px;   /* limite la largeur */
+    margin: 0 auto;     /* centre */
+    padding: 10px 12px; /* réduit */
+    font-size: 14px;
+    border-radius: 10px;
+  }
+}
+
+    </style>
+{% endblock %}
+{% block body %}
 
 
-    .url {
-        text-align: right;
-        padding: 10px;
-    }
-
-    .ecoute img {
-        width: 40px;
-        height: 40px;
-        align-content: right;
-    }
-
-    .create {
-        margin: auto;
-        padding: 20px;
-    }
-
-
-
-</style>
-    <div>
+    <div class="admin-emission-page">
         <p class="create">
             <a class="btn-create" href="{{ path('admin.emission.create') }}">
                 Créer une nouvelle émission
             </a>
         </p>
-        <h1>
-            Liste des émissions
-        </h1>
-        {% if emissions.pageCount > 1 %}
-            <div class="pagination">
-                {{ knp_pagination_render(emissions) }}
-            </div>
-        {% endif %}
-        <article>
-            <div class="emissions">
-                {% for emission in emissions %}
-                    {% set lastDiffusion = emission.lastDiffusion %}
-                    <section>
-                        <div class="col1">
-                            {% if emission.thumbnail %}
-                                <img
-                                src="{{ vich_uploader_asset(emission, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                    {% elseif emission.categorie.thumbnail %}
-                                    <img
-                                    src="{{ vich_uploader_asset(emission.categorie, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                        {% elseif emission.theme is defined and emission.theme.thumbnail is defined %}
-                                        <img
-                                        src="{{ vich_uploader_asset(emission.theme, 'thumbnailFile') }}" alt="Photo de {{ emission.titre }}">
-                                            {% else %}
-                                            <img src="/images/emission-zinzine.jpg">
-                                            {% endif %}
-                                        </div>
-                                        <div class="col2">
-                                            <div class="titre">
-                                                <a href="{{ path('admin.emission.show', {id: emission.id }) }}">
-                                                    {{ emission.titre }}
-                                                    -
-                                                    {% set usernames = emission.users|map(u => u.username)|join(', ') %}
-                                                    {% set anciens = emission.inviteOldAnimateurs
-                                                        |filter(a => a.ancienanimateur)
-                                                        |map(a => a ~ '')
-                                                        |join(', ') %}
-                                                    {% if usernames %}
-                                                        {{ usernames }}
-                                                        {% if anciens %}
-                                                            ,
-                                                            {{ anciens }}
-                                                        {% endif %}
-                                                    {% elseif anciens %}
-                                                        {{ anciens }}
-                                                    {% else %}
-                                                        Utilisateur inconnu
-                                                    {% endif %}
-                                                    -
-                                                    {{ emission.theme ? emission.theme.name : 'Thème inconnu' }}
-                                                </a>
-                                            </div>
-                                            <div class="cat">
-                                                <p>
-                                                    {{ emission.categorie.titre }}
-                                                </p>
-                                            </div>
-                                            <div data-controller="descriptif">
-                                                <div data-descriptif-target="content" class="descriptif-content">
-                                                    <p>
-                                                        {{ emission.descriptif|raw }}
-                                                    </p>
-                                                </div>
-                                                <button data-action="click->descriptif#toggle" data-descriptif-target="button" class="descriptif-toggle-btn" hidden>
-                                                    Lire la suite
-                                                </button>
-                                            </div>
-                                            <p>
-                                                {% if lastDiffusion is not null %}
-                                                    Dernière diffusion le :
-                                                    {{ lastDiffusion|format_datetime('medium', 'short', locale='fr') }}
-                                                {% else %}
-                                                    Aucune diffusion
-                                                {% endif %}
-                                            </p>
-                                        </div>
-                                        <div class="col3">
-                                            <div class='ecoute'>
-                                                {% if emission.url %}
-                                                    <a href="{{ emission.url }}">
-                                                        <img src="/images/lecteur.png" alt="écoutez l'émission"></a>
-                                                    {% else %}
-                                                        Pas de fichier audio disponible
-                                                    {% endif %}
-                                                </div>
-                                                <div class="actions-buttons">
-                                                    {% if is_granted('ROLE_ADMIN') or emission.users.contains(app.user) %}
-                                                        <a class="btn-action" href="{{ path('admin.emission.edit', { id: emission.id }) }}" data-controller="return" data-return-url-value="{{ path('admin.emission.edit', { id: emission.id }) }}" data-action="click->return#redirectWithReturnTo">
-                                                            Modifier
-                                                        </a>
-                                                    {% endif %}
-                                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                                        <form action="{{ path('admin.emission.delete', { id: emission.id }) }}" method="post" data-controller="return" data-action="submit->return#confirmBeforeSubmit submit->return#redirectWithReturnTo">
-                                                            <input type="hidden" name="_method" value="DELETE">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emission.id) }}">
-                                                                    <button type="submit" class="btn-action btn-delete">
-                                                                        Supprimer
-                                                                    </button>
-                                                                </form>
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-                                                </section>
-                                            {% endfor %}
-                                        </div>
-                                    </article>
-                                    {% if emissions.pageCount > 1 %}
-                                        <div class="pagination">
-                                            {{ knp_pagination_render(emissions) }}
-                                        </div>
-                                    {% endif %}
-                                {% endblock %}
-                                
+
+        <h1>Liste des émissions</h1>
+
+            <img class="imgbottom" src="/images/top-content-dechire-D.gif">
+
+        {% include 'partials/_emission_results.html.twig' with {
+            emissions: emissions,
+            resultsTitle: 'Résultats :',
+            noResultsText: 'Aucune émission trouvée.',
+            showNoResults: true,
+            useKnpPagination: true,
+            useLivePagination: false,
+            showRoute: 'admin.emission.show',
+            isAdmin: true,
+            showAdminActions: true,
+            editRoute: 'admin.emission.edit',
+            deleteRoute: 'admin.emission.delete'
+        } only %}
+    </div>
+{% endblock %}

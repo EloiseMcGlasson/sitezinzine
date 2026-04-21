@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\GridSlotArbitration;
@@ -14,44 +16,43 @@ class GridSlotArbitrationRepository extends ServiceEntityRepository
         parent::__construct($registry, GridSlotArbitration::class);
     }
 
-    public function findOneBySlotAndStartsAt(
+    /**
+     * Retourne les arbitrages utiles pour une semaine affichée.
+     *
+     * @return GridSlotArbitration[]
+     */
+    public function findRelevantForWeek(
+        \DateTimeImmutable $startOfWeek,
+        \DateTimeImmutable $endOfWeek
+    ): array {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.status != :cancelled')
+            ->andWhere(
+                '(a.originalStartsAt >= :start AND a.originalStartsAt < :end)
+                 OR
+                 (a.rescheduledStartsAt IS NOT NULL AND a.rescheduledStartsAt >= :start AND a.rescheduledStartsAt < :end)'
+            )
+            ->setParameter('cancelled', GridSlotArbitration::STATUS_CANCELLED)
+            ->setParameter('start', $startOfWeek)
+            ->setParameter('end', $endOfWeek)
+            ->orderBy('a.originalStartsAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneActiveForOccurrence(
         ProgrammationRuleSlot $slot,
-        \DateTimeImmutable $startsAt
+        \DateTimeImmutable $originalStartsAt
     ): ?GridSlotArbitration {
         return $this->createQueryBuilder('a')
             ->andWhere('a.slot = :slot')
-            ->andWhere('a.startsAt = :startsAt')
+            ->andWhere('a.originalStartsAt = :originalStartsAt')
+            ->andWhere('a.status != :cancelled')
             ->setParameter('slot', $slot)
-            ->setParameter('startsAt', $startsAt)
+            ->setParameter('originalStartsAt', $originalStartsAt)
+            ->setParameter('cancelled', GridSlotArbitration::STATUS_CANCELLED)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
-    }
-
-    public function findPendingForWeek(
-        \DateTimeImmutable $weekStart,
-        \DateTimeImmutable $weekEnd
-    ): array {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.startsAt >= :weekStart')
-            ->andWhere('a.startsAt < :weekEnd')
-            ->andWhere('a.status = :status')
-            ->setParameter('weekStart', $weekStart)
-            ->setParameter('weekEnd', $weekEnd)
-            ->setParameter('status', GridSlotArbitration::STATUS_PENDING)
-            ->orderBy('a.startsAt', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findToReschedule(): array
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.needsReschedule = :needsReschedule')
-            ->andWhere('a.rescheduleStatus = :status')
-            ->setParameter('needsReschedule', true)
-            ->setParameter('status', GridSlotArbitration::RESCHEDULE_STATUS_PENDING)
-            ->orderBy('a.startsAt', 'ASC')
-            ->getQuery()
-            ->getResult();
     }
 }

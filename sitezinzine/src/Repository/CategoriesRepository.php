@@ -78,30 +78,29 @@ class CategoriesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-public function findDistinctEditeursWithNames(): array
-{
-    return $this->createQueryBuilder('c')
-        ->select('DISTINCT c.editeur AS id, e.name AS name')
-        ->join(Editeur::class, 'e', 'WITH', 'e.id = c.editeur')
-        ->andWhere('c.editeur IS NOT NULL')
-        ->orderBy('e.name', 'ASC')
-        ->getQuery()
-        ->getArrayResult();
-}
-
-public function createActiveOrCurrentQueryBuilder(?Categories $currentCategorie): QueryBuilder
-{
-    $qb = $this->createQueryBuilder('c');
-
-    if ($currentCategorie !== null) {
-        $qb
-            ->where('c.isActive = true OR c.id = :currentId')
-            ->setParameter('currentId', $currentCategorie->getId());
-    } else {
-        $qb->where('c.isActive = true');
+    public function findDistinctEditeursWithNames(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('DISTINCT e.id AS id, e.name AS name')
+            ->join('c.editeur', 'e')
+            ->orderBy('e.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
     }
 
-    return $qb->orderBy('c.titre', 'ASC');
-}
 
+    public function createActiveOrCurrentQueryBuilder(?Categories $currentCategorie): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($currentCategorie !== null) {
+            $qb
+                ->where('c.isActive = true OR c.id = :currentId')
+                ->setParameter('currentId', $currentCategorie->getId());
+        } else {
+            $qb->where('c.isActive = true');
+        }
+
+        return $qb->orderBy('c.titre', 'ASC');
+    }
 }

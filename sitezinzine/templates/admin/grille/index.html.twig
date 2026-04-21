@@ -49,6 +49,15 @@
       --postit-rebroadcast-border: #b6c3d0;
       --postit-rebroadcast-text: #233241;
 
+      /* Post-it override / replanifié */
+      --postit-override: #2563eb;
+      --postit-override-border: #1d4ed8;
+      --postit-override-text: #ffffff;
+
+      --postit-rescheduled: #0f766e;
+      --postit-rescheduled-border: #115e59;
+      --postit-rescheduled-text: #ffffff;
+
       /* Badge interne des post-its */
       --badge-light-bg: rgba(255, 255, 255, 0.82);
       --badge-light-text: #222;
@@ -358,6 +367,18 @@
       border: 1px solid var(--postit-rebroadcast-border);
       cursor: not-allowed;
       opacity: 0.95;
+    }
+
+    .postit--override {
+      background: var(--postit-override);
+      color: var(--postit-override-text);
+      border: 1px solid var(--postit-override-border);
+    }
+
+    .postit--rescheduled {
+      background: var(--postit-rescheduled);
+      color: var(--postit-rescheduled-text);
+      border: 1px solid var(--postit-rescheduled-border);
     }
 
     .postit.assigned.postit--first {
@@ -682,6 +703,62 @@
       filter: brightness(0.96);
     }
 
+    .arbitration-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-arbitration {
+      width: 100%;
+      border: 1px solid #d6d6d6;
+      background: #fff;
+      color: #1c1c1a;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .btn-arbitration:hover {
+      background: #f8f8f8;
+    }
+
+    .btn-arbitration--danger {
+      border-color: #b9475a;
+      color: #b9475a;
+    }
+
+    .btn-arbitration--danger:hover {
+      background: #fff5f6;
+    }
+
+    .reschedule-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #ececec;
+    }
+
+    .reschedule-form input {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid #d6d6d6;
+      border-radius: 6px;
+      padding: 0 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .reschedule-form button {
+      width: 100%;
+    }
+
     .special-placeholder {
       font-size: 14px;
       line-height: 1.5;
@@ -879,6 +956,11 @@
               {% set conflictWith = seg.conflictWith|default([]) %}
               {% set endsAt = seg.endsAt|default('') %}
 
+              {% set isProjectedOverride = seg.isProjectedOverride|default(false) %}
+              {% set projectionType = seg.projectionType|default('') %}
+              {% set originalStartsAt = seg.originalStartsAt|default('') %}
+              {% set canBeRescheduled = seg.canBeRescheduled|default(false) %}
+
               {% set shortCategoryLabel = categorySlug ?: categoryTitle %}
 
               {% if slots == 1 and assignedEmissionTitle %}
@@ -895,13 +977,21 @@
               {% set variantClass =
                 isRebroadcast
                   ? 'postit--rebroadcast'
-                  : (isLive ? 'postit--live' : 'postit--first')
+                  : (
+                    isProjectedOverride
+                      ? 'postit--rescheduled'
+                      : (isLive ? 'postit--live' : 'postit--first')
+                  )
               %}
 
               {% set stateBadge =
                 isRebroadcast
                   ? '↺ Rediff ' ~ (broadcastRank - 1)
-                  : (isLive ? '● Direct' : '■ 1re diff')
+                  : (
+                    isProjectedOverride
+                      ? '↔ Déplacé'
+                      : (isLive ? '● Direct' : '■ 1re diff')
+                  )
               %}
 
               {% set postitClasses = [
@@ -924,6 +1014,8 @@
                 {% if assignedEmissionTitle %}| {{ assignedEmissionTitle }}{% endif %}
                 | {% if isRebroadcast %}
                     Rediffusion {{ broadcastRank - 1 }}
+                  {% elseif isProjectedOverride %}
+                    Occurrence déplacée
                   {% elseif isLive %}
                     Direct
                   {% else %}
@@ -961,6 +1053,10 @@
                 data-conflict-severity="{{ conflictSeverity }}"
                 data-conflict-count="{{ conflictCount }}"
                 data-conflict-with="{{ conflictWith|json_encode|e('html_attr') }}"
+                data-is-projected-override="{{ isProjectedOverride ? 'true' : 'false' }}"
+                data-projection-type="{{ projectionType }}"
+                data-original-starts-at="{{ originalStartsAt }}"
+                data-can-reschedule="{{ canBeRescheduled ? 'true' : 'false' }}"
                 data-action="click->grid#selectSlot"
                 title="{{ tooltipText|trim|replace({'  ': ' ', ' |': '|', '| ': ' | '}) }}"
                 draggable="{{ isRebroadcast ? 'false' : 'true' }}"
@@ -1044,6 +1140,8 @@
                 Retirer l’émission
               </button>
             </div>
+
+            <div class="arbitration-box" data-grid-target="arbitrationActions" style="display:none;"></div>
           </div>
 
           <div class="sidebar-section">

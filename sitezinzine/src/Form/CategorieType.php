@@ -22,6 +22,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use App\Entity\Editeur;
+use App\Repository\EditeurRepository;
 
 class CategorieType extends AbstractType
 {
@@ -38,7 +40,7 @@ class CategorieType extends AbstractType
         foreach ($editeursRaw as $row) {
             $editeursChoices[$row['name']] = (int) $row['id'];
         }
-                /** @var Categories|null $categorie */
+        /** @var Categories|null $categorie */
         $categorie = $builder->getData();
         $isEdit = $categorie && $categorie->getId() !== null;
 
@@ -76,11 +78,15 @@ class CategorieType extends AbstractType
                 'help' => 'Ex: SOC, ECO, POL… Utilisé pour ranger les MP3 : /uploads/mp3/<CODE>/<YYYY>/<MM>/',
             ])
 
-            ->add('editeur', ChoiceType::class, [
+            ->add('editeur', EntityType::class, [
+                'class' => Editeur::class,
                 'label' => 'Éditeur',
-                'choices' => $editeursChoices,
                 'placeholder' => 'Choisir un éditeur',
                 'required' => true,
+                'choice_label' => 'name',
+                'query_builder' => fn(EditeurRepository $er) => $er
+                    ->createQueryBuilder('e')
+                    ->orderBy('e.name', 'ASC'),
             ])
 
             ->add('duree', IntegerType::class, [
