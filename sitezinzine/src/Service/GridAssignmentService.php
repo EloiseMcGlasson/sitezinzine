@@ -37,17 +37,20 @@ class GridAssignmentService
                 }
 
                 $relatedStartsAt = $this->computeStartsAtFromAnchor($anchorDate, $relatedSlot);
+                $duration = $this->resolveDurationMinutes($relatedSlot, $emission);
 
                 $draft = $this->draftRepository->findOneBySlotAndHoraire($relatedSlot, $relatedStartsAt);
 
                 if (!$draft) {
                     $draft = new DiffusionDraft();
-                    $draft->setSlot($relatedSlot);
-                    $draft->setHoraireDiffusion($relatedStartsAt);
                 }
 
-                $draft->setEmission($emission);
-                $draft->setNombreDiffusion($relatedSlot->getBroadcastRank());
+                $draft
+                    ->setSlot($relatedSlot)
+                    ->setSchedule($relatedStartsAt, $duration)
+                    ->setEmission($emission)
+                    ->setNombreDiffusion($relatedSlot->getBroadcastRank())
+                    ->setDraftType(DiffusionDraft::TYPE_REGULAR);
 
                 $this->em->persist($draft);
             }
@@ -57,21 +60,39 @@ class GridAssignmentService
             return true;
         }
 
+        $duration = $this->resolveDurationMinutes($slot, $emission);
         $draft = $this->draftRepository->findOneBySlotAndHoraire($slot, $selectedDate);
 
         if (!$draft) {
             $draft = new DiffusionDraft();
-            $draft->setSlot($slot);
-            $draft->setHoraireDiffusion($selectedDate);
         }
 
-        $draft->setEmission($emission);
-        $draft->setNombreDiffusion($slot->getBroadcastRank());
+        $draft
+            ->setSlot($slot)
+            ->setSchedule($selectedDate, $duration)
+            ->setEmission($emission)
+            ->setNombreDiffusion($slot->getBroadcastRank())
+            ->setDraftType(DiffusionDraft::TYPE_REGULAR);
 
         $this->em->persist($draft);
         $this->em->flush();
 
         return false;
+    }
+
+    private function resolveDurationMinutes(ProgrammationRuleSlot $slot, Emission $emission): int
+    {
+        $slotDuration = $slot->getDurationMinutes();
+        if (\is_int($slotDuration) && $slotDuration > 0) {
+            return $slotDuration;
+        }
+
+        $emissionDuration = $emission->getDuree();
+        if (\is_int($emissionDuration) && $emissionDuration > 0) {
+            return $emissionDuration;
+        }
+
+        return 15;
     }
 
     private function computeStartsAtFromAnchor(

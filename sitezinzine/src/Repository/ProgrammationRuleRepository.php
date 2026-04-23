@@ -112,4 +112,20 @@ class ProgrammationRuleRepository extends ServiceEntityRepository
 
         return $result !== null ? (int) $result : 0;
     }
+
+    public function hasActiveRuleForCategory(Categories $category): bool
+    {
+        $result = $this->createQueryBuilder('r')
+            ->select('r.id')
+            ->andWhere('r.category = :category')
+            ->andWhere('r.isActive = :active')
+            ->andWhere('r.deletedAt IS NULL')
+            ->setParameter('category', $category)
+            ->setParameter('active', true)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return null !== $result;
+    }
 }

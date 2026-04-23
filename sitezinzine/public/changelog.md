@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.92] - 2026-04-23
+### Ajout
+- Ajout de la gestion des émissions non régulières.
+### Correction
+- Correction de la requête lastemission qui faisait planter la page d'accueil public.
+
+
 ## [1.0.91] - 2026-04-22
 ### Ajout
 - Ajout de l'ajustement de la programmation en cas de créneau bancal à cause des mois coupés.

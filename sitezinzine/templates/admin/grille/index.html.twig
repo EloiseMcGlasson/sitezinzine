@@ -8,48 +8,37 @@
   {{ parent() }}
 
   <style>
-    /* =========================
-       VARIABLES GLOBALES
-       ========================= */
     :root {
-      /* Dimensions principales */
       --slot-h: 14px;
       --head-h: 64px;
       --time-col-w: 78px;
-      --sidebar-w: 300px;
+      --sidebar-w: 320px;
 
-      /* Couleurs grille */
       --grid-bg: #ffffff;
       --grid-line: #e3e3e3;
       --grid-line-soft: #f1f1f1;
       --grid-line-strong: #cccccc;
 
-      /* Couleurs entêtes */
       --head-bg: #f7f7f8;
       --head-text: #1c1c1a;
       --head-subtext: #616161;
       --hour-text: #3a3a3a;
 
-      /* Post-it 1re diffusion */
       --postit-first: #d75a6f;
       --postit-first-border: #b9475a;
       --postit-first-text: #ffffff;
 
-      /* Post-it direct */
       --postit-live: #e4013a;
       --postit-live-border: #b3002e;
       --postit-live-text: #ffffff;
 
-      /* Post-it affecté */
       --postit-assigned: #8a3f9b;
       --postit-assigned-border: #6d2f7c;
 
-      /* Post-it rediffusion */
       --postit-rebroadcast: #dfe7ef;
       --postit-rebroadcast-border: #b6c3d0;
       --postit-rebroadcast-text: #233241;
 
-      /* Post-it override / replanifié */
       --postit-override: #2563eb;
       --postit-override-border: #1d4ed8;
       --postit-override-text: #ffffff;
@@ -58,20 +47,15 @@
       --postit-rescheduled-border: #115e59;
       --postit-rescheduled-text: #ffffff;
 
-      /* Badge interne des post-its */
       --badge-light-bg: rgba(255, 255, 255, 0.82);
       --badge-light-text: #222;
 
-      /* Conflits */
       --postit-conflict: #ffb300;
       --postit-conflict-strong: #e65100;
       --postit-conflict-bg: rgba(255, 179, 0, 0.12);
       --postit-conflict-resolved: #ffecb3;
     }
 
-    /* =========================
-       LAYOUT GENERAL
-       ========================= */
     .schedule-layout {
       display: flex;
       gap: 20px;
@@ -88,9 +72,6 @@
       flex: 0 0 var(--sidebar-w);
     }
 
-    /* =========================
-       NAVIGATION DE SEMAINE
-       ========================= */
     .week-nav {
       display: flex;
       flex-direction: column;
@@ -204,9 +185,6 @@
       filter: brightness(1.08);
     }
 
-    /* =========================
-       GRILLE
-       ========================= */
     .schedule-grid {
       display: grid;
       grid-template-columns: var(--time-col-w) repeat(7, minmax(0, 1fr));
@@ -319,9 +297,6 @@
       background: rgba(228, 1, 58, 0.03);
     }
 
-    /* =========================
-       POST-ITS
-       ========================= */
     .postit {
       position: absolute;
       top: 0;
@@ -461,9 +436,6 @@
       color: #233241;
     }
 
-    /* =========================
-       CRENEAU 15 MIN
-       ========================= */
     .postit[data-slots="1"] {
       padding: 1px 4px;
     }
@@ -488,9 +460,6 @@
       display: none;
     }
 
-    /* =========================
-       CRENEAU 30 MIN
-       ========================= */
     .postit[data-slots="2"] {
       padding: 2px 5px;
     }
@@ -538,9 +507,6 @@
       white-space: nowrap;
     }
 
-    /* =========================
-       SIDEBAR
-       ========================= */
     .sidebar h2 {
       font-size: 16px;
       margin: 0 0 8px;
@@ -600,8 +566,7 @@
       color: #1c1c1a;
     }
 
-    #slot-selection-empty,
-    #special-selection-empty {
+    #slot-selection-empty {
       background: #fff;
       border: 1px dashed #d0d0d0;
       border-radius: 8px;
@@ -620,13 +585,16 @@
       font-weight: 700;
     }
 
-    #emissions-pool {
+    #emissions-pool,
+    #emissions-pool-special {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      min-height: 40px;
     }
 
-    #emissions-pool.drop-pool-hover {
+    #emissions-pool.drop-pool-hover,
+    #emissions-pool-special.drop-pool-hover {
       background: #fff8f8;
       border: 2px dashed var(--postit-live);
       padding: 10px;
@@ -641,7 +609,7 @@
       border-radius: 6px;
       font-size: 12px;
       font-weight: 700;
-      cursor: pointer;
+      cursor: grab;
       user-select: none;
       margin-bottom: 8px;
     }
@@ -658,13 +626,70 @@
       border-color: var(--postit-live-border);
     }
 
+    .emission-card.is-live-proxy {
+      background: var(--postit-live);
+      border-color: var(--postit-live-border);
+    }
+
     .emission-card.is-selected {
       outline: 2px solid #1c1c1a;
       outline-offset: 1px;
     }
 
-    .slot-actions {
-      margin-top: 12px;
+    .special-filter-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1c1a;
+    }
+
+    .special-filter-select {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid #d6d6d6;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 14px;
+      background: #fff;
+      color: #1c1c1a;
+      box-sizing: border-box;
+    }
+
+    .special-filter-help {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #555;
+    }
+
+    .special-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .special-toolbar__status {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #555;
+    }
+
+    .btn-show-all {
+      width: 100%;
+      border: 1px solid #d6d6d6;
+      background: #fff;
+      color: #1c1c1a;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+
+    .btn-show-all:hover {
+      background: #f8f8f8;
     }
 
     .btn-remove-assignment {
@@ -704,9 +729,9 @@
     }
 
     .arbitration-box {
-      display: flex;
+      display: none;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       margin-top: 12px;
     }
 
@@ -753,6 +778,7 @@
       padding: 0 8px;
       font-size: 14px;
       background: #fff;
+      box-sizing: border-box;
     }
 
     .reschedule-form button {
@@ -769,12 +795,91 @@
       margin: 0 0 10px;
     }
 
-    /* =========================
-       RESPONSIVE
-       ========================= */
+    .slot-actions,
+    .conflict-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e6e6e6;
+    }
+
+    .slot-actions-title,
+    .conflict-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1c1c1a;
+    }
+
+    .conflict-title {
+      color: #b9475a;
+    }
+
+    .slot-actions-help,
+    .conflict-help,
+    .conflict-card__meta {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #555;
+    }
+
+    .conflict-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      border: 1px solid #e6e6e6;
+      border-left: 4px solid #b9475a;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .conflict-card--selected {
+      border-left-color: #1c1c1a;
+      background: #f5f5f5;
+    }
+
+    .conflict-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .conflict-card__title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1c1c1a;
+    }
+
+    .conflict-card__badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #1c1c1a;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .conflict-card__badge--other {
+      background: #b9475a;
+    }
+
+    .conflict-card__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
     @media (max-width: 1200px) {
       :root {
-        --sidebar-w: 280px;
+        --sidebar-w: 290px;
         --time-col-w: 72px;
       }
     }
@@ -891,7 +996,11 @@
     </div>
   </div>
 
-  <div class="schedule-layout" data-controller="grid">
+  <div
+    class="schedule-layout"
+    data-controller="grid"
+    data-grid-week-start="{{ startOfWeek|date('Y-m-d') }}"
+  >
     <div class="grid-area">
       <div class="schedule-grid">
         <div class="head hour" style="grid-column:1; grid-row:1;">
@@ -929,6 +1038,7 @@
           <div
             class="day-col"
             data-grid-target="day"
+            data-day-index="{{ dayIndex }}"
             style="grid-column: {{ 2 + dayIndex }};"
           >
             {% for i in 0..95 %}
@@ -940,7 +1050,6 @@
 
             {% for seg in (daySegments[dayIndex] ?? []) %}
               {% set slots = (seg.duration / 15)|round(0, 'ceil') %}
-              {% set displayTitle = seg.displayTitle|default(seg.title|default('Créneau')) %}
               {% set categoryTitle = seg.categoryTitle|default(seg.title|default('Catégorie inconnue')) %}
               {% set categorySlug = seg.categorySlug|default('') %}
               {% set assignedEmissionTitle = seg.emissionTitle|default('') %}
@@ -955,12 +1064,10 @@
               {% set conflictCount = seg.conflictCount|default(0) %}
               {% set conflictWith = seg.conflictWith|default([]) %}
               {% set endsAt = seg.endsAt|default('') %}
-
               {% set isProjectedOverride = seg.isProjectedOverride|default(false) %}
               {% set projectionType = seg.projectionType|default('') %}
               {% set originalStartsAt = seg.originalStartsAt|default('') %}
               {% set canBeRescheduled = seg.canBeRescheduled|default(false) %}
-
               {% set shortCategoryLabel = categorySlug ?: categoryTitle %}
 
               {% if slots == 1 and assignedEmissionTitle %}
@@ -1089,6 +1196,51 @@
                 </div>
               </div>
             {% endfor %}
+
+            {% for draft in (manualDraftsByDay[dayIndex] ?? []) %}
+              {% set slots = (draft.duration / 15)|round(0, 'ceil') %}
+              {% set isManualLive = draft.emissionIsAutoGenerated|default(false) %}
+              {% set draftVariantClass = isManualLive ? 'postit--live' : 'postit--override' %}
+              {% set draftBadge = isManualLive ? '● Direct ponctuel' : 'Ponctuelle' %}
+
+              <div
+                class="postit {{ draftVariantClass }} assigned"
+                style="
+                  top: calc({{ draft.startIndex }} * var(--slot-h));
+                  height: calc({{ slots }} * var(--slot-h) - 2px);
+                "
+                data-slots="{{ slots }}"
+                data-duration="{{ draft.duration }}"
+                data-starts-at="{{ draft.startsAt }}"
+                data-ends-at="{{ draft.endsAt|default('') }}"
+                data-category-title="{{ draft.categoryTitle }}"
+                data-category-slug="{{ draft.categorySlug|default('') }}"
+                data-assigned-emission-id="{{ draft.emissionId|default('') }}"
+                data-assigned-emission-title="{{ draft.title }}"
+                data-emission-is-auto-generated="{{ isManualLive ? 'true' : 'false' }}"
+                data-slot-locked="false"
+                data-has-conflict="false"
+                title="{{ draft.categoryTitle }} | {{ draft.title }} | {{ draftBadge }}"
+              >
+                <div class="postit__content">
+                  <span class="postit__label">
+                    {{ draft.categoryTitle }}
+                  </span>
+
+                  {% if slots > 1 %}
+                    <span class="postit__subline">
+                      {{ draft.title }}
+                    </span>
+                  {% endif %}
+
+                  {% if slots > 2 %}
+                    <span class="postit__badge">
+                      {{ draftBadge }}
+                    </span>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
           </div>
         {% endfor %}
       </div>
@@ -1141,7 +1293,7 @@
               </button>
             </div>
 
-            <div class="arbitration-box" data-grid-target="arbitrationActions" style="display:none;"></div>
+            <div class="arbitration-box" data-grid-target="arbitrationActions"></div>
           </div>
 
           <div class="sidebar-section">
@@ -1154,27 +1306,61 @@
       <div data-grid-target="specialPanel" style="display:none;">
         <h2>Émissions non régulières</h2>
 
-        <div id="special-selection-empty" data-grid-target="specialEmptyState">
-          Passe en mode « non régulières », puis clique un créneau de la grille pour préparer une programmation ponctuelle.
+        <div class="sidebar-section">
+          <h3>Filtre</h3>
+
+          <label for="special-category-select" class="special-filter-label">
+            Catégorie
+          </label>
+
+          <select
+            id="special-category-select"
+            class="special-filter-select"
+            data-grid-target="specialCategorySelect"
+            data-action="change->grid#loadSpecialCandidates"
+          >
+            <option value="">Choisir une catégorie</option>
+            {% for category in specialCategories %}
+              <option value="{{ category.id }}">
+                {{ category.titre }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <div class="special-filter-help">
+            Choisis une catégorie, puis glisse une émission dans la grille.
+          </div>
         </div>
 
-        <div data-grid-target="specialSidebarPanel" style="display:none;">
-          <div class="sidebar-section">
-            <h3>Créneau sélectionné</h3>
-            <div class="slot-summary" data-grid-target="specialSlotSummary"></div>
+        <div class="sidebar-section">
+          <div class="special-toolbar">
+            <h3>Émissions ponctuelles</h3>
+
+            <div class="special-toolbar__status" data-grid-target="specialStatus">
+              Sélectionne une catégorie pour charger les émissions.
+            </div>
+
+            <button
+              type="button"
+              class="btn-show-all"
+              data-grid-target="specialShowAllBtn"
+              data-action="click->grid#loadAllSpecialCandidates"
+            >
+              Afficher tout
+            </button>
           </div>
 
-          <div class="sidebar-section">
-            <div class="special-placeholder">
-              <p><strong>Programmation ponctuelle</strong></p>
-              <p>
-                Cette zone servira à programmer une émission non régulière, sans règle de programmation.
-              </p>
-              <p>
-                Tu pourras ensuite y brancher la recherche d’émissions et l’action d’affectation dédiée.
-              </p>
-            </div>
+          <div class="special-placeholder">
+            <p><strong>Mode non régulier</strong></p>
+            <p>
+              Glisse une émission de cette liste vers la grille pour créer une programmation ponctuelle.
+            </p>
+            <p>
+              La carte “Créer un direct” apparaîtra directement dans la liste chargée pour la catégorie.
+            </p>
           </div>
+
+          <div id="emissions-pool-special" data-grid-target="emissionsList"></div>
         </div>
       </div>
     </aside>

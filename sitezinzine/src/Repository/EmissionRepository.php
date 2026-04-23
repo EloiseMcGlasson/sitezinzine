@@ -2,27 +2,20 @@
 
 namespace App\Repository;
 
-use App\Entity\Emission;
 use App\Entity\Categories;
-use App\Entity\User;
-use App\Entity\Theme;
+use App\Entity\Emission;
 use App\Entity\ProgrammationRuleSlot;
+use App\Entity\Theme;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-
+use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @extends ServiceEntityRepository<Emission>
- * This repository is used to manage Emission entities.
- * It provides methods to paginate emissions, filter by user, and perform advanced searches.
- * It also includes methods for grouping emissions by themes and categories.
- * The repository uses the PaginatorInterface for pagination and supports complex queries with joins.
- * It is designed to work with the Emission entity and its related entities such as Categories and User.
- * The repository methods are used in various parts of the application, including the admin interface and public
  */
 class EmissionRepository extends ServiceEntityRepository
 {
@@ -33,18 +26,7 @@ class EmissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Emission::class);
     }
 
-    /**
-     * Paginate les émissions pour l'espace admin avec contrôle d'accès.
-     * Cette méthode est utilisée pour afficher les émissions dans l'espace admin.
-     * Elle exclut les émissions sans diffusion et celles dont l'URL correspond à excludeUrl
-     * ainsi que celles dont la catégorie a un ID de 0.
-     * @param int $page Le numéro de la page à paginer.
-     * @param string $excludeUrl L'URL à exclure des résultats.
-     * @param User|null $user L'utilisateur pour lequel on filtre les émissions (null pour toutes les émissions).
-     * @param bool $isAdmin Indique si l'utilisateur est un administrateur (true pour toutes les émissions, false pour celles de l'utilisateur).
-     * @return PaginationInterface La pagination des émissions.
-     */
-    public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false)
+    public function paginateEmissionsAdmin(int $page, string $excludeUrl, ?User $user = null, bool $isAdmin = false): PaginationInterface
     {
         $qb = $this->createQueryBuilder('e')
             ->select('e', 'c', '(SELECT MAX(d2.horaireDiffusion) FROM App\Entity\Diffusion d2 WHERE d2.emission = e) AS HIDDEN lastDiffusion')
@@ -67,7 +49,6 @@ class EmissionRepository extends ServiceEntityRepository
             'sortFieldAllowList' => ['e.titre'],
         ]);
 
-        // Hydrate manuellement la propriété lastDiffusion
         foreach ($pagination as $row) {
             $lastDiffusion = $this->createQueryBuilder('e2')
                 ->select('MAX(d.horaireDiffusion)')
@@ -83,20 +64,6 @@ class EmissionRepository extends ServiceEntityRepository
         return $pagination;
     }
 
-
-
-
-
-
-
-    /**
-     * Paginate les émissions publiques.
-     * Cette méthode est utilisée pour afficher les émissions sur le site public.
-     * Elle exclut les émissions sans diffusion et celles dont l'URL correspond à excludeUrl
-     * ainsi que celles dont la catégorie a un ID de 0.
-     * @param int $page Le numéro de la page à paginer.
-     * @param string $excludeUrl L'URL à exclure des résultats.
-     */
     public function paginateEmissions(int $page, string $excludeUrl): PaginationInterface
     {
         $qb = $this->createQueryBuilder('e')
@@ -115,53 +82,13 @@ class EmissionRepository extends ServiceEntityRepository
         ]);
     }
 
-
-
-
-
-
-    /**
-     * Émissions devant être diffusées dans les prochaines 24h pour le carrousel de la partial onde. à réactiver quand déploiement final
-     * Cette méthode est utilisée pour afficher les émissions à venir dans les 24 heures.
-     * Elle exclut les émissions dont l'URL correspond à excludeUrl et celles dont la catégorie a un ID de 0.
-     * @param string $excludeUrl L'URL à exclure des résultats.
-     * @return Emission[] Un tableau d'entités Emission correspondant aux émissions à venir.
-     */
-   /* public function upcomingEmissions(string $excludeUrl): array
-{
-    $now = new \DateTimeImmutable();
-    $in24Hours = $now->modify('+24 hours');
-
-    return $this->createQueryBuilder('e')
-        ->select('e', 'c', 'MIN(d.horaireDiffusion) AS next_diffusion')
-        ->leftJoin('e.categorie', 'c')
-        ->leftJoin('e.diffusions', 'd')
-        ->andWhere('e.url != :excludeUrl')
-        ->andWhere('c.id != 0')
-        ->andWhere('d.horaireDiffusion BETWEEN :now AND :in24Hours')
-        ->groupBy('e.id')
-        ->orderBy('next_diffusion', 'ASC')
-        ->setParameter('excludeUrl', $excludeUrl)
-        ->setParameter('now', $now)
-        ->setParameter('in24Hours', $in24Hours)
-        ->setMaxResults(6)
-        ->getQuery()
-        ->getResult();
-} */
-
-    /**
-     * fonction de remplacement pour upcomingEmissions, donne les émissions du jour, sur une date donnée spécifique.
-     * @param \DateTimeImmutable $specificDate La date spécifique pour laquelle on veut les émissions.
-     * @param string $excludeUrl L'URL à exclure des résultats. 
-     * @return Emission[] Un tableau d'entités Emission correspondant aux émissions du jour.
-     */
     public function findEmissionsByDate(\DateTime $date): array
     {
         $start = (clone $date)->setTime(0, 0, 0);
         $end = (clone $date)->setTime(23, 59, 59);
 
         return $this->createQueryBuilder('e')
-            ->addSelect('d', 'c') // jointures pour eager load
+            ->addSelect('d', 'c')
             ->join('e.diffusions', 'd')
             ->leftJoin('e.categorie', 'c')
             ->where('d.horaireDiffusion BETWEEN :start AND :end')
@@ -171,22 +98,6 @@ class EmissionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
-
-
-
-
-
-
-
-    /**
-     * Retourne les groupes de thèmes prédéfinis.
-     * Cette méthode est utilisée pour regrouper les thèmes en catégories logiques.
-     * utilisée dans la méthode lastEmissionsByGroupTheme
-     *
-     * @return array Un tableau associatif où les clés sont les noms des groupes de thèmes et les valeurs sont des tableaux d'IDs de thèmes.
-     */
 
     public function getThemeGroups(): array
     {
@@ -200,14 +111,6 @@ class EmissionRepository extends ServiceEntityRepository
         ];
     }
 
-    /**
-     * Recherche les émissions par groupe de thèmes.
-     * Cette méthode utilise une requête SQL complexe pour regrouper les émissions par thème et retourner les dernières diffusions de chaque groupe.
-     * utilisée dans la page home/show.html.twig
-     *
-     * @param array $themeIds Les IDs des thèmes à rechercher.
-     * @return Emission[] Un tableau d'entités Emission correspondant aux thèmes spécifiés.
-     */
     public function findEmissionsByThemeGroup(array $themeIds): array
     {
         $now = new \DateTimeImmutable();
@@ -215,19 +118,19 @@ class EmissionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e')
             ->select('e', 'c', 't')
             ->addSelect('
-            (SELECT MAX(d1.horaireDiffusion)
-             FROM App\Entity\Diffusion d1
-             WHERE d1.emission = e.id
-               AND d1.horaireDiffusion <= :now
-            ) AS lastDiffusion
-        ')
+                (SELECT MAX(d1.horaireDiffusion)
+                 FROM App\Entity\Diffusion d1
+                 WHERE d1.emission = e.id
+                   AND d1.horaireDiffusion <= :now
+                ) AS lastDiffusion
+            ')
             ->addSelect('
-            (SELECT MIN(d2.horaireDiffusion)
-             FROM App\Entity\Diffusion d2
-             WHERE d2.emission = e.id
-               AND d2.horaireDiffusion > :now
-            ) AS nextDiffusion
-        ')
+                (SELECT MIN(d2.horaireDiffusion)
+                 FROM App\Entity\Diffusion d2
+                 WHERE d2.emission = e.id
+                   AND d2.horaireDiffusion > :now
+                ) AS nextDiffusion
+            ')
             ->leftJoin('e.categorie', 'c')
             ->leftJoin('e.theme', 't')
             ->where('e.theme IN (:themeIds)')
@@ -237,12 +140,10 @@ class EmissionRepository extends ServiceEntityRepository
 
         $results = $qb->getQuery()->getResult();
 
-        // Injecter les dates dans chaque émission
         foreach ($results as $key => $row) {
-            // $row[0] est l’entité Emission
-            $emission = is_array($row) ? $row[0] : $row;
+            $emission = \is_array($row) ? $row[0] : $row;
 
-            if (is_array($row)) {
+            if (\is_array($row)) {
                 $last = $row['lastDiffusion'] ?? null;
                 $next = $row['nextDiffusion'] ?? null;
             } else {
@@ -263,10 +164,8 @@ class EmissionRepository extends ServiceEntityRepository
     {
         $now = new \DateTimeImmutable();
 
-        // Sécurise les IDs et évite le IN() vide
         $themeIds = array_values(array_map('intval', $themeIds));
-        if (empty($themeIds)) {
-            // retourne une pagination vide proprement
+        if ([] === $themeIds) {
             $qb = $this->createQueryBuilder('e')->andWhere('1 = 0');
             return $this->paginator->paginate($qb, max(1, $page), 12);
         }
@@ -291,20 +190,19 @@ class EmissionRepository extends ServiceEntityRepository
         return $pagination;
     }
 
-
     public function getLastDiffusion(Emission $emission, \DateTimeInterface $now): ?\DateTimeInterface
     {
         $result = $this->getEntityManager()
             ->createQuery('
-            SELECT MAX(d.horaireDiffusion)
-            FROM App\Entity\Diffusion d
-            WHERE d.emission = :emission AND d.horaireDiffusion <= :now
-        ')
+                SELECT MAX(d.horaireDiffusion)
+                FROM App\Entity\Diffusion d
+                WHERE d.emission = :emission AND d.horaireDiffusion <= :now
+            ')
             ->setParameter('emission', $emission)
             ->setParameter('now', $now)
             ->getSingleScalarResult();
 
-        if ($result === null) {
+        if (null === $result) {
             return null;
         }
 
@@ -315,110 +213,97 @@ class EmissionRepository extends ServiceEntityRepository
     {
         $result = $this->getEntityManager()
             ->createQuery('
-            SELECT MIN(d.horaireDiffusion)
-            FROM App\Entity\Diffusion d
-            WHERE d.emission = :emission AND d.horaireDiffusion > :now
-        ')
+                SELECT MIN(d.horaireDiffusion)
+                FROM App\Entity\Diffusion d
+                WHERE d.emission = :emission AND d.horaireDiffusion > :now
+            ')
             ->setParameter('emission', $emission)
             ->setParameter('now', $now)
             ->getSingleScalarResult();
 
-        if ($result === null) {
+        if (null === $result) {
             return null;
         }
 
         return new \DateTime($result);
     }
 
+public function lastEmissionsByGroupTheme(string $excludeUrl): array
+{
+    $themeGroups = $this->getThemeGroups();
 
+    $cases = [];
+    foreach ($themeGroups as $label => $ids) {
+        $idList = implode(', ', $ids);
+        $cases[] = "WHEN e.theme_id IN ($idList) THEN '$label'";
+    }
+    $caseSql = implode("\n", $cases);
 
+    $sql = "
+        WITH GroupedEmissions AS (
+            SELECT
+                e.id AS emission_id,
+                e.titre AS emission_titre,
+                MAX(d.horaire_diffusion) AS last_diffusion,
+                e.duree AS emission_duree,
+                e.url AS emission_url,
+                e.descriptif AS emission_descriptif,
+                e.thumbnail AS emission_thumbnail,
+                e.categorie_id AS emission_categorie_id,
+                e.theme_id AS emission_theme_id,
 
-    /**
-     * Dernières émissions par thème (1 par thème).
-     * Cette méthode utilise une requête SQL complexe pour regrouper les émissions par thème et retourner la dernière diffusion de chaque groupe.
-     * utilisée dans la page partial/lastemissions.html.twig
-     * @param string $excludeUrl L'URL à exclure des résultats. permet d'exclure les émissions n'ayant pas de fichier audio.
-     * @return array Un tableau associatif contenant les dernières émissions par thème, avec les informations
-     */
-    public function lastEmissionsByGroupTheme(string $excludeUrl): array
-    {
-        $themeGroups = $this->getThemeGroups();
+                c.id AS categorie_id,
+                c.titre AS categorie_titre,
+                c.editeur_id AS categorie_editeur_id,
+                c.duree AS categorie_duree,
+                c.descriptif AS categorie_descriptif,
+                c.thumbnail AS categorie_thumbnail,
+                c.active AS categorie_active,
 
-        // Construction dynamique du bloc CASE
-        $cases = [];
-        foreach ($themeGroups as $label => $ids) {
-            $idList = implode(', ', $ids);
-            $cases[] = "WHEN e.theme_id IN ($idList) THEN '$label'";
-        }
-        $caseSql = implode("\n", $cases);
+                t.id AS theme_id,
+                t.name AS theme_name,
+                t.thumbnail AS theme_thumbnail,
 
-        $sql = "
-   WITH GroupedEmissions AS (
-    SELECT 
-        e.id AS emission_id,
-        e.titre AS emission_titre,
-        MAX(d.horaire_diffusion) AS last_diffusion,
-        e.duree AS emission_duree,
-        e.url AS emission_url,
-        e.descriptif AS emission_descriptif,
-        e.thumbnail AS emission_thumbnail,
-        e.categorie_id AS emission_categorie_id,
-        e.theme_id AS emission_theme_id,
-
-        c.id AS categorie_id,
-        c.titre AS categorie_titre,
-        c.editeur AS categorie_editeur,
-        c.duree AS categorie_duree,
-        c.descriptif AS categorie_descriptif,
-        c.thumbnail AS categorie_thumbnail,
-        c.active AS categorie_active,
-
-        t.id AS theme_id,
-        t.name AS theme_name,
-        t.thumbnail AS theme_thumbnail,
-
-        CASE
-            $caseSql
-            ELSE 'autre'
-        END AS theme_group,
-
-        ROW_NUMBER() OVER (
-            PARTITION BY 
                 CASE
                     $caseSql
                     ELSE 'autre'
-                END
-            ORDER BY MAX(d.horaire_diffusion) DESC
-        ) AS rn
+                END AS theme_group,
 
-    FROM emission e
-    LEFT JOIN categories c ON e.categorie_id = c.id
-    LEFT JOIN theme t ON e.theme_id = t.id
-    LEFT JOIN diffusion d ON d.emission_id = e.id
-    WHERE e.url != :val 
-      AND e.theme_id != 0
-      AND d.horaire_diffusion IS NOT NULL
-      AND d.horaire_diffusion <= NOW()  -- Condition ajoutée ici pour exclure les émissions à venir
-    GROUP BY 
-        e.id, e.titre, e.duree, e.url, e.descriptif, e.thumbnail, e.categorie_id, e.theme_id,
-        c.id, c.titre, c.editeur, c.duree, c.descriptif, c.thumbnail, c.active,
-        t.id, t.name, t.thumbnail
-)
+                ROW_NUMBER() OVER (
+                    PARTITION BY
+                        CASE
+                            $caseSql
+                            ELSE 'autre'
+                        END
+                    ORDER BY MAX(d.horaire_diffusion) DESC
+                ) AS rn
 
-SELECT * FROM GroupedEmissions
-WHERE rn = 1 AND theme_group != 'autre'
-ORDER BY last_diffusion DESC
-LIMIT 6
+            FROM emission e
+            LEFT JOIN categories c ON e.categorie_id = c.id
+            LEFT JOIN theme t ON e.theme_id = t.id
+            LEFT JOIN diffusion d ON d.emission_id = e.id
+            WHERE e.url != :val
+              AND e.theme_id != 0
+              AND d.horaire_diffusion IS NOT NULL
+              AND d.horaire_diffusion <= NOW()
+            GROUP BY
+                e.id, e.titre, e.duree, e.url, e.descriptif, e.thumbnail, e.categorie_id, e.theme_id,
+                c.id, c.titre, c.editeur_id, c.duree, c.descriptif, c.thumbnail, c.active,
+                t.id, t.name, t.thumbnail
+        )
 
-";
+        SELECT * FROM GroupedEmissions
+        WHERE rn = 1 AND theme_group != 'autre'
+        ORDER BY last_diffusion DESC
+        LIMIT 6
+    ";
 
+    $conn = $this->getEntityManager()->getConnection();
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue('val', $excludeUrl);
 
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue('val', $excludeUrl);
-        return $stmt->executeQuery()->fetchAllAssociative();
-    }
-
+    return $stmt->executeQuery()->fetchAllAssociative();
+}
 
     public function findBySearchAdmin(array $criteria, int $page = 1): PaginationInterface
     {
@@ -427,7 +312,6 @@ LIMIT 6
             ->leftJoin('e.theme', 't')
             ->andWhere('c.id IS NOT NULL');
 
-        // Filtre par dates de diffusion via sous-requête
         if (!empty($criteria['dateDebut']) || !empty($criteria['dateFin'])) {
             $subQb = $this->getEntityManager()->createQueryBuilder()
                 ->select('IDENTITY(d2.emission)')
@@ -446,7 +330,7 @@ LIMIT 6
                 $qb->setParameter('dateFin', $criteria['dateFin']);
             }
 
-            if (!empty($havingConditions)) {
+            if ([] !== $havingConditions) {
                 $subQb->having(implode(' AND ', $havingConditions));
             }
 
@@ -455,7 +339,7 @@ LIMIT 6
                 $subQb->getQuery()->getScalarResult()
             );
 
-            if (empty($ids)) {
+            if ([] === $ids) {
                 return $this->paginator->paginate([], $page, 12);
             }
 
@@ -463,7 +347,6 @@ LIMIT 6
                 ->setParameter('ids', $ids);
         }
 
-        // Recherche texte robuste : mots entiers sur titre / descriptif / ref
         if (!empty($criteria['titre'])) {
             $search = trim((string) $criteria['titre']);
             $words = preg_split('/\s+/', mb_strtolower($search));
@@ -472,7 +355,7 @@ LIMIT 6
             foreach ($words as $word) {
                 $word = trim($word);
 
-                if ($word !== '' && mb_strlen($word) >= 3) {
+                if ('' !== $word && mb_strlen($word) >= 3) {
                     $validWords[] = $word;
                 }
             }
@@ -504,14 +387,14 @@ LIMIT 6
         if (!empty($criteria['personne'])) {
             $parts = explode(':', (string) $criteria['personne'], 2);
 
-            if (count($parts) === 2) {
+            if (2 === \count($parts)) {
                 [$type, $id] = $parts;
 
-                if ($type === 'user' && ctype_digit($id)) {
+                if ('user' === $type && ctype_digit($id)) {
                     $qb->innerJoin('e.users', 'u_filter')
                         ->andWhere('u_filter.id = :personId')
                         ->setParameter('personId', (int) $id);
-                } elseif ($type === 'old' && ctype_digit($id)) {
+                } elseif ('old' === $type && ctype_digit($id)) {
                     $qb->innerJoin('e.inviteOldAnimateurs', 'ioa_filter')
                         ->andWhere('ioa_filter.id = :personId')
                         ->setParameter('personId', (int) $id);
@@ -519,7 +402,6 @@ LIMIT 6
             }
         }
 
-        // Sous-requête pour trier par dernière diffusion sans GROUP BY global
         $lastDiffSubQuery = $this->getEntityManager()->createQueryBuilder()
             ->select('MAX(d3.horaireDiffusion)')
             ->from(\App\Entity\Diffusion::class, 'd3')
@@ -539,17 +421,16 @@ LIMIT 6
             ]
         );
 
-        // Hydrater lastDiffusion sur les émissions de la page en une seule requête
         $emissions = [];
         foreach ($pagination as $item) {
-            if ($item instanceof \App\Entity\Emission) {
+            if ($item instanceof Emission) {
                 $emissions[] = $item;
             }
         }
 
-        if (!empty($emissions)) {
+        if ([] !== $emissions) {
             $emissionIds = array_map(
-                fn(\App\Entity\Emission $emission) => $emission->getId(),
+                fn(Emission $emission) => $emission->getId(),
                 $emissions
             );
 
@@ -570,7 +451,7 @@ LIMIT 6
             foreach ($emissions as $emission) {
                 $lastDiff = $lastDiffByEmissionId[$emission->getId()] ?? null;
 
-                if ($lastDiff !== null) {
+                if (null !== $lastDiff) {
                     $emission->setLastDiffusion(new \DateTime($lastDiff));
                 }
             }
@@ -578,10 +459,6 @@ LIMIT 6
 
         return $pagination;
     }
-
-    /**
-     * Recherche avancée avec filtres multiples.
-     */
 
     public function findBySearch(array $criteria, int $page = 1): PaginationInterface
     {
@@ -593,7 +470,6 @@ LIMIT 6
             ->andWhere('c.id IS NOT NULL')
             ->setParameter('emptyUrl', '');
 
-        // Filtre par dates de diffusion via sous-requête
         if (!empty($criteria['dateDebut']) || !empty($criteria['dateFin'])) {
             $subQb = $this->getEntityManager()->createQueryBuilder()
                 ->select('IDENTITY(d2.emission)')
@@ -612,7 +488,7 @@ LIMIT 6
                 $qb->setParameter('dateFin', $criteria['dateFin']);
             }
 
-            if (!empty($havingConditions)) {
+            if ([] !== $havingConditions) {
                 $subQb->having(implode(' AND ', $havingConditions));
             }
 
@@ -621,7 +497,7 @@ LIMIT 6
                 $subQb->getQuery()->getScalarResult()
             );
 
-            if (empty($ids)) {
+            if ([] === $ids) {
                 return $this->paginator->paginate([], $page, 12);
             }
 
@@ -629,7 +505,6 @@ LIMIT 6
                 ->setParameter('ids', $ids);
         }
 
-        // Recherche texte robuste : mots entiers sur titre / descriptif / ref
         if (!empty($criteria['titre'])) {
             $search = trim((string) $criteria['titre']);
             $words = preg_split('/\s+/', mb_strtolower($search));
@@ -637,7 +512,7 @@ LIMIT 6
             $validWords = [];
             foreach ($words as $word) {
                 $word = trim($word);
-                if ($word !== '' && mb_strlen($word) >= 3) {
+                if ('' !== $word && mb_strlen($word) >= 3) {
                     $validWords[] = $word;
                 }
             }
@@ -669,16 +544,16 @@ LIMIT 6
         if (!empty($criteria['personne'])) {
             $parts = explode(':', (string) $criteria['personne'], 2);
 
-            if (count($parts) === 2) {
+            if (2 === \count($parts)) {
                 [$type, $id] = $parts;
 
-                if ($type === 'user' && ctype_digit($id)) {
+                if ('user' === $type && ctype_digit($id)) {
                     $qb->innerJoin('e.users', 'u_filter')
                         ->andWhere('u_filter.id = :personId')
                         ->setParameter('personId', (int) $id);
                 }
 
-                if ($type === 'old' && ctype_digit($id)) {
+                if ('old' === $type && ctype_digit($id)) {
                     $qb->innerJoin('e.inviteOldAnimateurs', 'ioa_filter')
                         ->andWhere('ioa_filter.id = :personId')
                         ->setParameter('personId', (int) $id);
@@ -686,7 +561,6 @@ LIMIT 6
             }
         }
 
-        // Sous-requête pour trier par dernière diffusion sans GROUP BY global
         $lastDiffSubQuery = $this->getEntityManager()->createQueryBuilder()
             ->select('MAX(d3.horaireDiffusion)')
             ->from(\App\Entity\Diffusion::class, 'd3')
@@ -706,9 +580,8 @@ LIMIT 6
             ]
         );
 
-        // Hydratation de la date de dernière diffusion sur chaque émission
         foreach ($pagination as $emission) {
-            if (!$emission instanceof \App\Entity\Emission) {
+            if (!$emission instanceof Emission) {
                 continue;
             }
 
@@ -720,7 +593,7 @@ LIMIT 6
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            if ($lastDiff !== null) {
+            if (null !== $lastDiff) {
                 $emission->setLastDiffusion(new \DateTime($lastDiff));
             }
         }
@@ -738,21 +611,17 @@ LIMIT 6
             ->getQuery()
             ->getSingleScalarResult();
 
-        if ($lastDateString === null) {
+        if (null === $lastDateString) {
             return null;
         }
 
         return new \DateTime($lastDateString);
     }
 
-    /**
-     * Retourne les 20 émissions d'une catégorie triées par dernière diffusion décroissante.
-     */
     public function findLatestByCategory(int $categoryId, int $limit = 20): array
     {
         $now = new \DateTimeImmutable();
 
-        // On sélectionne uniquement l'ID de l'émission et la date de la dernière diffusion
         $rows = $this->createQueryBuilder('e')
             ->select('e.id AS emissionId, MAX(d.horaireDiffusion) AS lastDiffusion')
             ->leftJoin('e.diffusions', 'd', 'WITH', 'd.horaireDiffusion <= :now')
@@ -763,28 +632,22 @@ LIMIT 6
             ->orderBy('lastDiffusion', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->getResult(Query::HYDRATE_ARRAY); // hydrate en tableau pour ne plus avoir d'objet à traiter comme un tableau
+            ->getResult(Query::HYDRATE_ARRAY);
 
-        // On transforme ces lignes en objets Emission en ajoutant la propriété lastDiffusion
         $emissions = [];
         foreach ($rows as $row) {
-            // $row['emissionId'] contient l'ID de l'émission sélectionnée
             $emission = $this->find($row['emissionId']);
-            $last     = $row['lastDiffusion'];
-            $emission->setLastDiffusion($last ? new \DateTime($last) : null);
-            $emissions[] = $emission;
+            $last = $row['lastDiffusion'];
+
+            if ($emission instanceof Emission) {
+                $emission->setLastDiffusion($last ? new \DateTime($last) : null);
+                $emissions[] = $emission;
+            }
         }
 
         return $emissions;
     }
 
-
-    /**
-     * Emissions avec une durée inférieure à une valeur donnée.
-     *
-     * @param int $duree
-     * @return Emission[]
-     */
     public function findWithDureeLowerThan(int $duree): array
     {
         return $this->createQueryBuilder('e')
@@ -804,7 +667,7 @@ LIMIT 6
             ->addSelect('c')
             ->andWhere('c.id = :catId')
             ->setParameter('catId', $categoryId)
-            ->orderBy('e.id', 'DESC'); // ou e.datepub si tu as un champ date fiable
+            ->orderBy('e.id', 'DESC');
     }
 
     public function findAssignableForCategory(Categories $category): array
@@ -822,10 +685,8 @@ LIMIT 6
             ->getResult();
     }
 
-    public function findLatestFirstPassCandidatesByCategory(
-        Categories $category,
-        int $limit = 20
-    ): array {
+    public function findLatestFirstPassCandidatesByCategory(Categories $category, int $limit = 20): array
+    {
         return $this->createQueryBuilder('e')
             ->innerJoin('e.categorie', 'c')
             ->andWhere('e.categorie = :category')
@@ -840,6 +701,155 @@ LIMIT 6
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Retourne un tableau de lignes structurées :
+     * [
+     *   'emission' => Emission,
+     *   'playCount' => int,
+     * ]
+     */
+    public function findSpecialCandidatesForRegularCategory(Categories $category, ?int $limit = 20): array
+    {
+        $rows = $this->createQueryBuilder('e')
+            ->select('e', 'COUNT(d.id) AS playCount')
+            ->leftJoin('e.diffusions', 'd')
+            ->innerJoin('e.categorie', 'c')
+            ->andWhere('e.categorie = :category')
+            ->andWhere('c.active = :active')
+            ->andWhere('c.softDelete = :softDelete')
+            ->andWhere('e.isAutoGenerated = :isAutoGenerated')
+            ->setParameter('category', $category)
+            ->setParameter('active', true)
+            ->setParameter('softDelete', false)
+            ->setParameter('isAutoGenerated', false)
+            ->groupBy('e.id')
+            ->having('COUNT(d.id) < 3')
+            ->orderBy('e.datepub', 'DESC')
+            ->addOrderBy('e.titre', 'ASC')
+            ->setMaxResults(null !== $limit ? $limit : null)
+            ->getQuery()
+            ->getResult();
+
+        return $this->normalizeSpecialCandidateRows($rows);
+    }
+
+    public function countSpecialCandidatesForRegularCategory(Categories $category): int
+    {
+        $rows = $this->createQueryBuilder('e')
+            ->select('e.id')
+            ->leftJoin('e.diffusions', 'd')
+            ->innerJoin('e.categorie', 'c')
+            ->andWhere('e.categorie = :category')
+            ->andWhere('c.active = :active')
+            ->andWhere('c.softDelete = :softDelete')
+            ->andWhere('e.isAutoGenerated = :isAutoGenerated')
+            ->setParameter('category', $category)
+            ->setParameter('active', true)
+            ->setParameter('softDelete', false)
+            ->setParameter('isAutoGenerated', false)
+            ->groupBy('e.id')
+            ->having('COUNT(d.id) < 3')
+            ->getQuery()
+            ->getScalarResult();
+
+        return \count($rows);
+    }
+
+    /**
+     * Retourne un tableau de lignes structurées :
+     * [
+     *   'emission' => Emission,
+     *   'playCount' => int,
+     * ]
+     */
+    public function findSpecialCandidatesForNonRegularCategory(Categories $category, ?int $limit = 20): array
+    {
+        $rows = $this->createQueryBuilder('e')
+            ->select('e', 'COUNT(d.id) AS playCount')
+            ->leftJoin('e.diffusions', 'd')
+            ->innerJoin('e.categorie', 'c')
+            ->andWhere('e.categorie = :category')
+            ->andWhere('c.active = :active')
+            ->andWhere('c.softDelete = :softDelete')
+            ->andWhere('e.isAutoGenerated = :isAutoGenerated')
+            ->setParameter('category', $category)
+            ->setParameter('active', true)
+            ->setParameter('softDelete', false)
+            ->setParameter('isAutoGenerated', false)
+            ->groupBy('e.id')
+            ->orderBy('e.datepub', 'DESC')
+            ->addOrderBy('e.titre', 'ASC')
+            ->setMaxResults(null !== $limit ? $limit : null)
+            ->getQuery()
+            ->getResult();
+
+        return $this->normalizeSpecialCandidateRows($rows);
+    }
+
+    public function countSpecialCandidatesForNonRegularCategory(Categories $category): int
+    {
+        return (int) $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->innerJoin('e.categorie', 'c')
+            ->andWhere('e.categorie = :category')
+            ->andWhere('c.active = :active')
+            ->andWhere('c.softDelete = :softDelete')
+            ->andWhere('e.isAutoGenerated = :isAutoGenerated')
+            ->setParameter('category', $category)
+            ->setParameter('active', true)
+            ->setParameter('softDelete', false)
+            ->setParameter('isAutoGenerated', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param array<int, mixed> $rows
+     * @return array<int, array{emission: Emission, playCount: int}>
+     */
+    private function normalizeSpecialCandidateRows(array $rows): array
+    {
+        $normalized = [];
+
+        foreach ($rows as $row) {
+            if ($row instanceof Emission) {
+                $normalized[] = [
+                    'emission' => $row,
+                    'playCount' => 0,
+                ];
+                continue;
+            }
+
+            if (!\is_array($row)) {
+                continue;
+            }
+
+            $emission = null;
+            $playCount = 0;
+
+            if (isset($row[0]) && $row[0] instanceof Emission) {
+                $emission = $row[0];
+            } elseif (isset($row['emission']) && $row['emission'] instanceof Emission) {
+                $emission = $row['emission'];
+            }
+
+            if (isset($row['playCount'])) {
+                $playCount = (int) $row['playCount'];
+            } elseif (isset($row[1]) && is_numeric($row[1])) {
+                $playCount = (int) $row[1];
+            }
+
+            if ($emission instanceof Emission) {
+                $normalized[] = [
+                    'emission' => $emission,
+                    'playCount' => $playCount,
+                ];
+            }
+        }
+
+        return $normalized;
     }
 
     public function findAutoGeneratedForSlotAndStartsAt(
@@ -889,28 +899,28 @@ LIMIT 6
     }
 
     public function findAllPendingCompletion(int $limit = 5): array
-{
-    return $this->createQueryBuilder('e')
-        ->leftJoin('e.categorie', 'c')
-        ->addSelect('c')
-        ->leftJoin('e.users', 'u')
-        ->addSelect('u')
-        ->andWhere('e.isPendingCompletion = :pending')
-        ->setParameter('pending', true)
-        ->orderBy('e.datepub', 'DESC')
-        ->addOrderBy('e.id', 'DESC')
-        ->setMaxResults($limit)
-        ->getQuery()
-        ->getResult();
-}
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.categorie', 'c')
+            ->addSelect('c')
+            ->leftJoin('e.users', 'u')
+            ->addSelect('u')
+            ->andWhere('e.isPendingCompletion = :pending')
+            ->setParameter('pending', true)
+            ->orderBy('e.datepub', 'DESC')
+            ->addOrderBy('e.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 
-public function countAllPendingCompletion(): int
-{
-    return (int) $this->createQueryBuilder('e')
-        ->select('COUNT(DISTINCT e.id)')
-        ->andWhere('e.isPendingCompletion = :pending')
-        ->setParameter('pending', true)
-        ->getQuery()
-        ->getSingleScalarResult();
-}
+    public function countAllPendingCompletion(): int
+    {
+        return (int) $this->createQueryBuilder('e')
+            ->select('COUNT(DISTINCT e.id)')
+            ->andWhere('e.isPendingCompletion = :pending')
+            ->setParameter('pending', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

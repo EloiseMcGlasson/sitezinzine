@@ -13,6 +13,9 @@ export default class extends Controller {
     'modeSpecialBtn',
     'regularPanel',
     'specialPanel',
+    'specialCategorySelect',
+    'specialShowAllBtn',
+    'specialStatus',
     'specialEmptyState',
     'specialSidebarPanel',
     'specialSlotSummary'
@@ -45,18 +48,32 @@ export default class extends Controller {
       day.addEventListener('drop', (e) => this.dropOnDay(e, day))
     })
 
-    const pool = this.element.querySelector('#emissions-pool')
-    if (pool) {
-      pool.addEventListener('dragover', (e) => {
+    const regularPool = this.element.querySelector('#emissions-pool')
+    if (regularPool) {
+      regularPool.addEventListener('dragover', (e) => {
         e.preventDefault()
-        pool.classList.add('drop-pool-hover')
+        regularPool.classList.add('drop-pool-hover')
       })
 
-      pool.addEventListener('dragleave', () => {
-        pool.classList.remove('drop-pool-hover')
+      regularPool.addEventListener('dragleave', () => {
+        regularPool.classList.remove('drop-pool-hover')
       })
 
-      pool.addEventListener('drop', (e) => this.dropBackToPool(e, pool))
+      regularPool.addEventListener('drop', (e) => this.dropBackToPool(e, regularPool))
+    }
+
+    const specialPool = this.element.querySelector('#emissions-pool-special')
+    if (specialPool) {
+      specialPool.addEventListener('dragover', (e) => {
+        e.preventDefault()
+        specialPool.classList.add('drop-pool-hover')
+      })
+
+      specialPool.addEventListener('dragleave', () => {
+        specialPool.classList.remove('drop-pool-hover')
+      })
+
+      specialPool.addEventListener('drop', (e) => this.dropBackToPool(e, specialPool))
     }
 
     this.showRegularMode()
@@ -72,6 +89,30 @@ export default class extends Controller {
 
     const parsed = parseFloat(rawValue.replace('px', ''))
     return Number.isNaN(parsed) ? 14 : parsed
+  }
+
+  getWeekStart() {
+    return this.element.dataset.gridWeekStart || ''
+  }
+
+  getCurrentEmissionsListTarget() {
+    const targets = this.emissionsListTargets || []
+
+    if (this.currentMode === 'special') {
+      return targets[1] || targets[0] || null
+    }
+
+    return targets[0] || null
+  }
+
+  setEmissionsListHtml(html) {
+    const emissionsList = this.getCurrentEmissionsListTarget()
+
+    if (!emissionsList) {
+      return
+    }
+
+    emissionsList.innerHTML = html
   }
 
   showRegularMode() {
@@ -98,6 +139,12 @@ export default class extends Controller {
 
     this.modeRegularBtnTarget.setAttribute('aria-pressed', 'false')
     this.modeSpecialBtnTarget.setAttribute('aria-pressed', 'true')
+
+    this.specialShowAllBtnTarget.style.display = 'none'
+    this.specialStatusTarget.textContent = 'Sélectionne une catégorie pour charger les émissions.'
+    this.specialEmptyStateTarget.style.display = 'block'
+    this.specialSidebarPanelTarget.style.display = 'none'
+    this.setEmissionsListHtml('')
   }
 
   durationToCells(duration) {
@@ -304,30 +351,30 @@ export default class extends Controller {
   }
 
   buildProjectionSummary(postit) {
-  const isProjectedOverride = postit.dataset.isProjectedOverride === 'true'
-  if (!isProjectedOverride) {
-    return ''
+    const isProjectedOverride = postit.dataset.isProjectedOverride === 'true'
+    if (!isProjectedOverride) {
+      return ''
+    }
+
+    const originalStartsAt = postit.dataset.originalStartsAt || ''
+    const projectionType = postit.dataset.projectionType || ''
+
+    let label = 'Déplacement'
+    if (projectionType === 'reschedule_previous_week') {
+      label = 'Déplacé depuis la semaine suivante'
+    } else if (projectionType === 'reschedule_next_week') {
+      label = 'Déplacé depuis la semaine précédente'
+    } else if (projectionType === 'reschedule_custom') {
+      label = 'Déplacé manuellement'
+    }
+
+    return `
+      <div style="margin-top:10px; padding-top:10px; border-top:1px solid #ececec;">
+        <div><span class="label">Exception locale :</span> ${this.escapeHtml(label)}</div>
+        ${originalStartsAt ? `<div><span class="label">Créneau d’origine :</span> ${this.escapeHtml(originalStartsAt)}</div>` : ''}
+      </div>
+    `
   }
-
-  const originalStartsAt = postit.dataset.originalStartsAt || ''
-  const projectionType = postit.dataset.projectionType || ''
-
-  let label = 'Déplacement'
-  if (projectionType === 'reschedule_previous_week') {
-    label = 'Déplacé depuis la semaine suivante'
-  } else if (projectionType === 'reschedule_next_week') {
-    label = 'Déplacé depuis la semaine précédente'
-  } else if (projectionType === 'reschedule_custom') {
-    label = 'Déplacé manuellement'
-  }
-
-  return `
-    <div style="margin-top:10px; padding-top:10px; border-top:1px solid #ececec;">
-      <div><span class="label">Exception locale :</span> ${this.escapeHtml(label)}</div>
-      ${originalStartsAt ? `<div><span class="label">Créneau d’origine :</span> ${this.escapeHtml(originalStartsAt)}</div>` : ''}
-    </div>
-  `
-}
 
   buildSlotSummary(postit, assignedEmissionTitle = '') {
     const categoryTitle = postit.dataset.categoryTitle || 'Catégorie inconnue'
@@ -356,14 +403,13 @@ export default class extends Controller {
   buildSpecialSlotSummary(postit) {
     const startsAt = postit.dataset.startsAt || ''
     const endsAt = postit.dataset.endsAt || ''
-    const categoryTitle = postit.dataset.categoryTitle || 'Catégorie inconnue'
+    const categoryTitle = postit.dataset.categoryTitle || 'Créneau manuel'
 
     return `
       <div><span class="label">Début :</span> ${this.escapeHtml(startsAt)}</div>
       ${endsAt ? `<div><span class="label">Fin :</span> ${this.escapeHtml(endsAt)}</div>` : ''}
-      <div><span class="label">Contexte grille :</span> ${this.escapeHtml(categoryTitle)}</div>
-      <div><span class="label">Type :</span> Programmation non régulière</div>
-      ${this.buildConflictSummary(postit)}
+      <div><span class="label">Contexte :</span> ${this.escapeHtml(categoryTitle)}</div>
+      <div><span class="label">Mode :</span> Programmation non régulière</div>
     `
   }
 
@@ -392,61 +438,274 @@ export default class extends Controller {
 
     if (isProjectedOverride && originalStartsAt) {
       return `
-        <button
-          type="button"
-          class="btn-arbitration"
-          data-action="click->grid#clearReschedule"
-        >
-          Revenir au créneau d’origine
-        </button>
+        <div class="slot-actions">
+          <div class="slot-actions-title">🎯 Créneau sélectionné</div>
+          <div class="slot-actions-help">
+            Cette occurrence a déjà été déplacée.
+          </div>
+
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#clearReschedule"
+          >
+            Revenir au créneau d’origine
+          </button>
+        </div>
       `
     }
 
     return `
-      <button
-        type="button"
-        class="btn-arbitration"
-        data-action="click->grid#reschedulePreviousWeek"
-      >
-        Décaler à la semaine précédente
-      </button>
+      <div class="slot-actions">
+        <div class="slot-actions-title">🎯 Créneau sélectionné</div>
+        <div class="slot-actions-help">
+          Ces actions s’appliquent uniquement au créneau actuellement sélectionné.
+        </div>
 
-      <button
-        type="button"
-        class="btn-arbitration"
-        data-action="click->grid#rescheduleNextWeek"
-      >
-        Décaler à la semaine suivante
-      </button>
-
-      <button
-        type="button"
-        class="btn-arbitration"
-        data-action="click->grid#toggleCustomRescheduleForm"
-      >
-        Choisir une autre date / heure
-      </button>
-
-      <div class="reschedule-form" data-grid-custom-reschedule-form style="display:none;">
-        <input type="date" data-grid-custom-date>
-        <input type="time" data-grid-custom-time step="900">
         <button
           type="button"
           class="btn-arbitration"
-          data-action="click->grid#submitCustomReschedule"
+          data-action="click->grid#reschedulePreviousWeek"
         >
-          Confirmer le déplacement
+          Décaler à la semaine précédente
+        </button>
+
+        <button
+          type="button"
+          class="btn-arbitration"
+          data-action="click->grid#rescheduleNextWeek"
+        >
+          Décaler à la semaine suivante
+        </button>
+
+        <button
+          type="button"
+          class="btn-arbitration"
+          data-action="click->grid#toggleCustomRescheduleForm"
+        >
+          Choisir une autre date / heure
+        </button>
+
+        <div class="reschedule-form" data-grid-custom-reschedule-form style="display:none;">
+          <input type="date" data-grid-custom-date>
+          <input type="time" data-grid-custom-time step="900">
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#submitCustomReschedule"
+          >
+            Confirmer le déplacement
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="btn-arbitration btn-arbitration--danger"
+          data-action="click->grid#cancelOccurrence"
+        >
+          Annuler ce créneau
         </button>
       </div>
-
-      <button
-        type="button"
-        class="btn-arbitration btn-arbitration--danger"
-        data-action="click->grid#cancelOccurrence"
-      >
-        Annuler cette occurrence
-      </button>
     `
+  }
+
+  buildSelectedOccurrenceItem(postit) {
+    return {
+      segmentKey: postit.dataset.segmentKey || '',
+      slotId: postit.dataset.slotId || '',
+      ruleId: postit.dataset.ruleId || '',
+      ruleDisplayName: postit.dataset.ruleDisplayName || '',
+      categoryTitle: postit.dataset.categoryTitle || 'Catégorie inconnue',
+      broadcastRank: parseInt(postit.dataset.broadcastRank || '1', 10),
+      startsAt: postit.dataset.startsAt || '',
+      endsAt: postit.dataset.endsAt || '',
+      isProjectedOverride: postit.dataset.isProjectedOverride === 'true',
+      projectionType: postit.dataset.projectionType || '',
+      isSelectedOccurrence: true
+    }
+  }
+
+  buildConflictGroup(postit) {
+    const selected = this.buildSelectedOccurrenceItem(postit)
+    const conflicts = this.parseConflictWith(postit)
+
+    const all = [selected, ...conflicts]
+    const deduped = []
+
+    all.forEach((item) => {
+      const key = item.segmentKey || `${item.slotId || ''}|${item.startsAt || ''}`
+      const exists = deduped.some((existing) => {
+        const existingKey = existing.segmentKey || `${existing.slotId || ''}|${existing.startsAt || ''}`
+        return existingKey === key
+      })
+
+      if (!exists) {
+        deduped.push(item)
+      }
+    })
+
+    return deduped
+  }
+
+  buildOccurrenceTypeLabel(item) {
+    const broadcastRank = parseInt(item.broadcastRank || '1', 10)
+    const isProjectedOverride = item.isProjectedOverride === true
+
+    if (isProjectedOverride) {
+      return 'Occurrence déplacée'
+    }
+
+    if (broadcastRank > 1) {
+      return `Rediffusion ${broadcastRank - 1}`
+    }
+
+    return '1re diffusion'
+  }
+
+  buildConflictArbitrationUI(postit) {
+    const hasConflict = postit.dataset.hasConflict === 'true'
+
+    if (!hasConflict) {
+      return ''
+    }
+
+    const occurrences = this.buildConflictGroup(postit)
+
+    if (!occurrences.length) {
+      return ''
+    }
+
+    let html = `
+      <div class="conflict-section">
+        <div class="conflict-title">⚠ Résolution du conflit</div>
+        <div class="conflict-help">
+          Choisis directement une action sur le créneau que tu veux modifier.
+        </div>
+    `
+
+    let otherConflictIndex = 0
+
+    occurrences.forEach((item) => {
+      const categoryTitle = item.categoryTitle || 'Catégorie inconnue'
+      const startsAt = item.startsAt || ''
+      const endsAt = item.endsAt || ''
+      const ruleDisplayName = item.ruleDisplayName || ''
+      const typeLabel = this.buildOccurrenceTypeLabel(item)
+      const badge = item.isSelectedOccurrence
+        ? '<span class="conflict-card__badge">Sélectionné</span>'
+        : '<span class="conflict-card__badge conflict-card__badge--other">En conflit</span>'
+
+      let actionsHtml = ''
+
+      if (item.isSelectedOccurrence) {
+        actionsHtml = `
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#reschedulePreviousWeek"
+          >
+            Décaler à la semaine précédente
+          </button>
+
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#rescheduleNextWeek"
+          >
+            Décaler à la semaine suivante
+          </button>
+
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#toggleCustomRescheduleForm"
+          >
+            Choisir une autre date / heure
+          </button>
+
+          <div class="reschedule-form" data-grid-custom-reschedule-form style="display:none;">
+            <input type="date" data-grid-custom-date>
+            <input type="time" data-grid-custom-time step="900">
+            <button
+              type="button"
+              class="btn-arbitration"
+              data-action="click->grid#submitCustomReschedule"
+            >
+              Confirmer le déplacement
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="btn-arbitration btn-arbitration--danger"
+            data-action="click->grid#cancelOccurrence"
+          >
+            Annuler ce créneau
+          </button>
+        `
+      } else {
+        actionsHtml = `
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#arbitratePreviousWeek"
+            data-conflict-index="${otherConflictIndex}"
+          >
+            Décaler -1 semaine
+          </button>
+
+          <button
+            type="button"
+            class="btn-arbitration"
+            data-action="click->grid#arbitrateNextWeek"
+            data-conflict-index="${otherConflictIndex}"
+          >
+            Décaler +1 semaine
+          </button>
+
+          <button
+            type="button"
+            class="btn-arbitration btn-arbitration--danger"
+            data-action="click->grid#arbitrateCancel"
+            data-conflict-index="${otherConflictIndex}"
+          >
+            Annuler ce créneau
+          </button>
+        `
+        otherConflictIndex++
+      }
+
+      html += `
+        <div class="conflict-card ${item.isSelectedOccurrence ? 'conflict-card--selected' : ''}">
+          <div class="conflict-card__header">
+            <div class="conflict-card__title">${this.escapeHtml(categoryTitle)}</div>
+            ${badge}
+          </div>
+
+          ${
+            ruleDisplayName
+              ? `<div class="conflict-card__meta">${this.escapeHtml(ruleDisplayName)}</div>`
+              : ''
+          }
+
+          <div class="conflict-card__meta">
+            ${this.escapeHtml(startsAt)}${endsAt ? ` → ${this.escapeHtml(endsAt)}` : ''}
+          </div>
+
+          <div class="conflict-card__meta">
+            ${this.escapeHtml(typeLabel)}
+          </div>
+
+          <div class="conflict-card__actions">
+            ${actionsHtml}
+          </div>
+        </div>
+      `
+    })
+
+    html += '</div>'
+
+    return html
   }
 
   getPostitLabels(postit, title = '') {
@@ -590,6 +849,102 @@ export default class extends Controller {
     this.fromStartIndex = startIndex
   }
 
+  getStartsAtFromDrop(dayEl, startIndex) {
+    const weekStart = this.getWeekStart()
+    const dayIndex = parseInt(dayEl.dataset.dayIndex || '0', 10)
+    const minutesFromMidnight = startIndex * this.CELL_MIN
+    const hours = Math.floor(minutesFromMidnight / 60)
+    const minutes = minutesFromMidnight % 60
+
+    const baseDate = new Date(`${weekStart}T00:00:00`)
+    baseDate.setDate(baseDate.getDate() + dayIndex)
+    baseDate.setHours(hours, minutes, 0, 0)
+
+    const yyyy = baseDate.getFullYear()
+    const mm = String(baseDate.getMonth() + 1).padStart(2, '0')
+    const dd = String(baseDate.getDate()).padStart(2, '0')
+    const hh = String(baseDate.getHours()).padStart(2, '0')
+    const mi = String(baseDate.getMinutes()).padStart(2, '0')
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${mi}:00`
+  }
+
+  async createSpecialDraftFromDrop(dayEl, startIndex) {
+    if (!this.dragged) {
+      return
+    }
+
+    const startsAt = this.getStartsAtFromDrop(dayEl, startIndex)
+    const itemType = this.dragged.dataset.specialItemType || ''
+
+    if (!startsAt || !itemType) {
+      alert('Impossible de déterminer le créneau de dépôt.')
+      return
+    }
+
+    try {
+      let response
+      let data
+
+      if (itemType === 'manual_live') {
+        const categoryId = this.dragged.dataset.categoryId || ''
+
+        if (!categoryId) {
+          throw new Error('Choisis d’abord une catégorie pour créer un direct.')
+        }
+
+        response = await fetch('/admin/grid-drafts/manual-live', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: new URLSearchParams({
+            categoryId,
+            startsAt
+          })
+        })
+
+        data = await response.json().catch(() => null)
+      } else {
+        const emissionId = this.dragged.dataset.emissionId || ''
+        const durationMinutes = this.dragged.dataset.emissionDuration || ''
+
+        if (!emissionId) {
+          throw new Error('Émission invalide.')
+        }
+
+        response = await fetch('/admin/grid-drafts/manual', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: new URLSearchParams({
+            emissionId,
+            startsAt,
+            durationMinutes: String(durationMinutes || ''),
+            draftType: 'manual_special'
+          })
+        })
+
+        data = await response.json().catch(() => null)
+      }
+
+      if (response.status === 409) {
+        throw new Error(data?.error || 'Conflit détecté sur ce créneau.')
+      }
+
+      if (!response.ok || !data?.success) {
+        throw new Error(data?.error || 'Impossible de créer la programmation.')
+      }
+
+      window.location.reload()
+    } catch (error) {
+      alert(error.message || 'Impossible de créer la programmation.')
+    }
+  }
+
   dropOnDay(e, dayEl) {
     dayEl.classList.remove('drag-over')
 
@@ -599,6 +954,12 @@ export default class extends Controller {
 
     const rect = dayEl.getBoundingClientRect()
     const startIndex = Math.floor((e.clientY - rect.top) / this.CELL_H)
+
+    if (this.currentMode === 'special' && this.dragged.dataset.source === 'pool') {
+      e.preventDefault()
+      this.createSpecialDraftFromDrop(dayEl, startIndex)
+      return
+    }
 
     this.placePostIt(dayEl, startIndex)
   }
@@ -640,17 +1001,25 @@ export default class extends Controller {
     }
 
     const assignedEmissionTitle = postit.dataset.assignedEmissionTitle || ''
+    const hasConflict = postit.dataset.hasConflict === 'true'
 
     this.emptyStateTarget.style.display = 'none'
     this.sidebarPanelTarget.style.display = 'block'
     this.slotSummaryTarget.innerHTML = this.buildSlotSummary(postit, assignedEmissionTitle)
 
+    if (hasConflict) {
+      this.arbitrationActionsTarget.innerHTML = this.buildConflictArbitrationUI(postit)
+    } else {
+      this.arbitrationActionsTarget.innerHTML = this.buildArbitrationActions(postit)
+    }
+
+    this.arbitrationActionsTarget.style.display =
+      this.arbitrationActionsTarget.innerHTML.trim() ? 'flex' : 'none'
+
     this.slotActionsTarget.style.display = !isLocked && assignedEmissionTitle ? 'block' : 'none'
-    this.arbitrationActionsTarget.innerHTML = this.buildArbitrationActions(postit)
-    this.arbitrationActionsTarget.style.display = this.arbitrationActionsTarget.innerHTML.trim() ? 'flex' : 'none'
 
     if (isLocked) {
-      this.emissionsListTarget.innerHTML = '<div>Ce créneau est verrouillé pour l’affectation, mais peut être ajusté via l’arbitrage.</div>'
+      this.setEmissionsListHtml('<div>Ce créneau est verrouillé pour l’affectation, mais peut être ajusté via l’arbitrage.</div>')
       return
     }
 
@@ -670,6 +1039,8 @@ export default class extends Controller {
         <div
           class="emission-card ${item.isAutoGenerated ? 'is-auto-generated' : ''}"
           data-emission-id="${item.id}"
+          data-emission-title="${this.escapeHtml(item.title)}"
+          data-emission-duration="${parseInt(item.durationMinutes || 0, 10) || 0}"
           data-action="click->grid#selectEmission"
         >
           ${this.escapeHtml(item.title)}
@@ -685,23 +1056,163 @@ export default class extends Controller {
       html += this.buildCreateLiveButton()
     }
 
-    this.emissionsListTarget.innerHTML = html
+    this.setEmissionsListHtml(html)
+  }
+
+  renderSpecialEmissions(data, allLoaded = false) {
+    const items = Array.isArray(data.items) ? data.items : []
+    const categoryId = this.specialCategorySelectTarget.value || ''
+
+    let html = ''
+
+    if (categoryId) {
+      html += `
+        <div
+          class="emission-card is-live-proxy"
+          data-special-item-type="manual_live"
+          data-category-id="${this.escapeHtml(categoryId)}"
+          data-emission-duration="60"
+        >
+          Créer un direct
+          <small>Glisse cette carte dans la grille</small>
+        </div>
+      `
+    }
+
+    if (items.length === 0) {
+      html += '<div>Aucune émission trouvée pour cette catégorie.</div>'
+    } else {
+      html += items.map((item) => `
+        <div
+          class="emission-card"
+          data-special-item-type="manual_emission"
+          data-emission-id="${item.id}"
+          data-emission-title="${this.escapeHtml(item.title)}"
+          data-emission-duration="${parseInt(item.durationMinutes || 0, 10) || 0}"
+        >
+          ${this.escapeHtml(item.title)}
+          <small>
+            ${this.escapeHtml(item.meta ?? '')}
+            ${item.playLabel ? ` • ${this.escapeHtml(item.playLabel)}` : ''}
+          </small>
+        </div>
+      `).join('')
+    }
+
+    this.setEmissionsListHtml(html)
+
+    const emissionsList = this.getCurrentEmissionsListTarget()
+    if (emissionsList) {
+      emissionsList.querySelectorAll('.emission-card').forEach((card) => {
+        this.makeDraggable(card, 'pool')
+      })
+    }
+
+    const total = parseInt(data.total || items.length || 0, 10)
+    const hasMore = data.hasMore === true && allLoaded === false
+
+    this.specialShowAllBtnTarget.style.display = hasMore ? 'block' : 'none'
+    this.specialStatusTarget.textContent = `${total} émission(s) disponible(s). Glisse une carte dans la grille.`
+  }
+
+  async loadSpecialCandidates() {
+    if (this.currentMode !== 'special') {
+      return
+    }
+
+    const categoryId = this.specialCategorySelectTarget.value || ''
+
+    if (!categoryId) {
+      this.specialShowAllBtnTarget.style.display = 'none'
+      this.specialStatusTarget.textContent = 'Sélectionne une catégorie pour charger les émissions.'
+      this.setEmissionsListHtml('')
+      return
+    }
+
+    this.specialStatusTarget.textContent = 'Chargement des émissions…'
+    this.setEmissionsListHtml('<div>Chargement…</div>')
+
+    try {
+      const url = `/admin/grille/special-candidates?categoryId=${encodeURIComponent(categoryId)}&all=0`
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Réponse invalide')
+      }
+
+      const data = await response.json()
+      this.renderSpecialEmissions(data, false)
+    } catch (error) {
+      this.specialShowAllBtnTarget.style.display = 'none'
+      this.specialStatusTarget.textContent = 'Impossible de charger les émissions.'
+      this.setEmissionsListHtml('<div>Impossible de charger les émissions.</div>')
+    }
+  }
+
+  async loadAllSpecialCandidates() {
+    if (this.currentMode !== 'special') {
+      return
+    }
+
+    const categoryId = this.specialCategorySelectTarget.value || ''
+
+    if (!categoryId) {
+      return
+    }
+
+    this.specialStatusTarget.textContent = 'Chargement complet des émissions…'
+    this.setEmissionsListHtml('<div>Chargement…</div>')
+
+    try {
+      const url = `/admin/grille/special-candidates?categoryId=${encodeURIComponent(categoryId)}&all=1`
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Réponse invalide')
+      }
+
+      const data = await response.json()
+      this.renderSpecialEmissions(data, true)
+    } catch (error) {
+      this.specialStatusTarget.textContent = 'Impossible de charger toutes les émissions.'
+      this.setEmissionsListHtml('<div>Impossible de charger les émissions.</div>')
+    }
+  }
+
+  async createSpecialLive() {
+    if (this.currentMode !== 'special') {
+      return
+    }
+
+    const categoryId = this.specialCategorySelectTarget.value || ''
+
+    if (!categoryId) {
+      alert('Choisis d’abord une catégorie.')
+      return
+    }
+
+    alert('Glisse la carte "Créer un direct" dans la grille au créneau souhaité.')
   }
 
   async selectEmission(event) {
     const card = event.currentTarget
     const emissionId = card.dataset.emissionId
+    const emissionsList = this.getCurrentEmissionsListTarget()
 
-    if (!this.selectedPostit || this.selectedPostit.dataset.slotLocked === 'true') {
+    if (this.currentMode === 'special') {
       return
     }
 
-    if (this.currentMode !== 'regular') {
-      return
-    }
-
-    const slotId = this.selectedPostit.dataset.slotId || ''
-    const startsAt = this.selectedPostit.dataset.startsAt || ''
+    const slotId = this.selectedPostit?.dataset.slotId || ''
+    const startsAt = this.selectedPostit?.dataset.startsAt || ''
 
     if (!slotId || !startsAt || !emissionId) {
       alert('Informations incomplètes pour affecter cette émission.')
@@ -747,8 +1258,9 @@ export default class extends Controller {
       this.slotSummaryTarget.innerHTML = this.buildSlotSummary(this.selectedPostit, data.emissionTitle)
       this.slotActionsTarget.style.display = 'block'
 
-      const cards = this.emissionsListTarget.querySelectorAll('.emission-card')
-      cards.forEach((el) => el.classList.remove('is-selected'))
+      if (emissionsList) {
+        emissionsList.querySelectorAll('.emission-card').forEach((el) => el.classList.remove('is-selected'))
+      }
       card.classList.add('is-selected')
 
       await this.loadCandidatesForSelectedPostit()
@@ -882,7 +1394,7 @@ export default class extends Controller {
 
   async loadCandidatesForSelectedPostit() {
     if (!this.selectedPostit) {
-      this.emissionsListTarget.innerHTML = '<div>Aucune émission compatible pour le moment.</div>'
+      this.setEmissionsListHtml('<div>Aucune émission compatible pour le moment.</div>')
       return
     }
 
@@ -892,11 +1404,11 @@ export default class extends Controller {
     const broadcastRank = parseInt(this.selectedPostit.dataset.broadcastRank || '1', 10)
 
     if (!slotId || !startsAt) {
-      this.emissionsListTarget.innerHTML = '<div>Impossible de charger les émissions.</div>'
+      this.setEmissionsListHtml('<div>Impossible de charger les émissions.</div>')
       return
     }
 
-    this.emissionsListTarget.innerHTML = '<div>Chargement…</div>'
+    this.setEmissionsListHtml('<div>Chargement…</div>')
 
     try {
       const url = `/admin/grille/candidates?slotId=${encodeURIComponent(slotId)}&startsAt=${encodeURIComponent(startsAt)}`
@@ -918,7 +1430,7 @@ export default class extends Controller {
         showCreateLive: !assignedEmissionTitle && broadcastRank === 1 && !hasAutoGeneratedCandidate
       })
     } catch (error) {
-      this.emissionsListTarget.innerHTML = '<div>Impossible de charger les émissions.</div>'
+      this.setEmissionsListHtml('<div>Impossible de charger les émissions.</div>')
     }
   }
 
@@ -977,6 +1489,10 @@ export default class extends Controller {
         throw new Error(data.error || 'Erreur inconnue')
       }
 
+      if (!data.targetWeekStart) {
+        throw new Error('Semaine cible manquante')
+      }
+
       window.location.href = `/admin/grille/${data.targetWeekStart}`
     } catch (error) {
       alert(`Erreur lors du déplacement : ${error.message}`)
@@ -1021,6 +1537,10 @@ export default class extends Controller {
 
       if (!response.ok || !data.success) {
         throw new Error(data.error || 'Erreur inconnue')
+      }
+
+      if (!data.targetWeekStart) {
+        throw new Error('Semaine cible manquante')
       }
 
       window.location.href = `/admin/grille/${data.targetWeekStart}`
@@ -1104,9 +1624,138 @@ export default class extends Controller {
         throw new Error(data.error || 'Erreur inconnue')
       }
 
+      if (!data.targetWeekStart) {
+        throw new Error('Semaine cible manquante')
+      }
+
       window.location.href = `/admin/grille/${data.targetWeekStart}`
     } catch (error) {
       alert(`Erreur lors du retour au créneau d’origine : ${error.message}`)
+    }
+  }
+
+  getConflictItem(index) {
+    if (!this.selectedPostit) {
+      return null
+    }
+
+    const occurrences = this.buildConflictGroup(this.selectedPostit)
+      .filter((item) => item.isSelectedOccurrence !== true)
+
+    const numericIndex = parseInt(index, 10)
+
+    if (Number.isNaN(numericIndex)) {
+      return null
+    }
+
+    return occurrences[numericIndex] || null
+  }
+
+  async arbitratePreviousWeek(event) {
+    const item = this.getConflictItem(event.currentTarget.dataset.conflictIndex)
+    if (!item) {
+      alert('Occurrence de conflit introuvable.')
+      return
+    }
+
+    await this.callConflictReschedule(item, 'previous')
+  }
+
+  async arbitrateNextWeek(event) {
+    const item = this.getConflictItem(event.currentTarget.dataset.conflictIndex)
+    if (!item) {
+      alert('Occurrence de conflit introuvable.')
+      return
+    }
+
+    await this.callConflictReschedule(item, 'next')
+  }
+
+  async arbitrateCancel(event) {
+    const item = this.getConflictItem(event.currentTarget.dataset.conflictIndex)
+    if (!item) {
+      alert('Occurrence de conflit introuvable.')
+      return
+    }
+
+    const confirmed = window.confirm('Annuler cette occurrence en conflit ?')
+    if (!confirmed) {
+      return
+    }
+
+    await this.callConflictCancel(item)
+  }
+
+  async callConflictReschedule(item, direction) {
+    const slotId = item.slotId || ''
+    const startsAt = item.startsAt || ''
+
+    if (!slotId || !startsAt) {
+      alert('Informations incomplètes pour déplacer cette occurrence en conflit.')
+      return
+    }
+
+    try {
+      const response = await fetch('/admin/grille/reschedule-week', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({
+          slotId,
+          startsAt,
+          direction
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Erreur inconnue')
+      }
+
+      if (!data.targetWeekStart) {
+        throw new Error('Semaine cible manquante')
+      }
+
+      window.location.href = `/admin/grille/${data.targetWeekStart}`
+    } catch (error) {
+      alert(`Erreur lors du déplacement du conflit : ${error.message}`)
+    }
+  }
+
+  async callConflictCancel(item) {
+    const slotId = item.slotId || ''
+    const startsAt = item.startsAt || ''
+
+    if (!slotId || !startsAt) {
+      alert('Informations incomplètes pour annuler cette occurrence en conflit.')
+      return
+    }
+
+    try {
+      const response = await fetch('/admin/grille/cancel-occurrence', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({
+          slotId,
+          startsAt
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Erreur inconnue')
+      }
+
+      window.location.reload()
+    } catch (error) {
+      alert(`Erreur lors de l’annulation du conflit : ${error.message}`)
     }
   }
 }

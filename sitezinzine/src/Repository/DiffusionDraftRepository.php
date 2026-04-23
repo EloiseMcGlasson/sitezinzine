@@ -38,4 +38,25 @@ class DiffusionDraftRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOverlappingDrafts(
+        \DateTimeImmutable $startsAt,
+        \DateTimeImmutable $endsAt,
+        ?int $excludeDraftId = null
+    ): array {
+        $qb = $this->createQueryBuilder('d')
+            ->andWhere('d.horaireDiffusion < :endsAt')
+            ->andWhere('d.endsAt > :startsAt')
+            ->setParameter('startsAt', $startsAt)
+            ->setParameter('endsAt', $endsAt)
+            ->orderBy('d.horaireDiffusion', 'ASC');
+
+        if (null !== $excludeDraftId) {
+            $qb
+                ->andWhere('d.id != :excludeDraftId')
+                ->setParameter('excludeDraftId', $excludeDraftId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -8,9 +8,11 @@ use App\Entity\DiffusionDraft;
 use App\Entity\Emission;
 use App\Entity\GridSlotArbitration;
 use App\Entity\ProgrammationRuleSlot;
+use App\Repository\CategoriesRepository;
 use App\Repository\DiffusionDraftRepository;
 use App\Repository\EmissionRepository;
 use App\Repository\GridSlotArbitrationRepository;
+use App\Repository\ProgrammationRuleRepository;
 use App\Repository\ProgrammationRuleSlotRepository;
 use App\Service\GridAssignmentService;
 use App\Service\GridConflictDetector;
@@ -34,14 +36,16 @@ class GrilleController extends AbstractController
         ProgrammationGridBuilder $programmationGridBuilder,
         DiffusionDraftRepository $draftRepository,
         GridOccurrenceProjectionService $gridOccurrenceProjectionService,
-        GridConflictDetector $gridConflictDetector
+        GridConflictDetector $gridConflictDetector,
+        CategoriesRepository $categoriesRepository
     ): Response {
         return $this->renderGrid(
             null,
             $programmationGridBuilder,
             $draftRepository,
             $gridOccurrenceProjectionService,
-            $gridConflictDetector
+            $gridConflictDetector,
+            $categoriesRepository
         );
     }
 
@@ -51,123 +55,204 @@ class GrilleController extends AbstractController
         ProgrammationGridBuilder $programmationGridBuilder,
         DiffusionDraftRepository $draftRepository,
         GridOccurrenceProjectionService $gridOccurrenceProjectionService,
-        GridConflictDetector $gridConflictDetector
+        GridConflictDetector $gridConflictDetector,
+        CategoriesRepository $categoriesRepository
     ): Response {
         return $this->renderGrid(
             $startOfWeek,
             $programmationGridBuilder,
             $draftRepository,
             $gridOccurrenceProjectionService,
-            $gridConflictDetector
+            $gridConflictDetector,
+            $categoriesRepository
         );
     }
 
     private function renderGrid(
-        ?string $startOfWeek,
-        ProgrammationGridBuilder $programmationGridBuilder,
-        DiffusionDraftRepository $draftRepository,
-        GridOccurrenceProjectionService $gridOccurrenceProjectionService,
-        GridConflictDetector $gridConflictDetector
-    ): Response {
-        $startDate = $startOfWeek
-            ? \DateTime::createFromFormat('Y-m-d', $startOfWeek)
-            : new \DateTime();
+    ?string $startOfWeek,
+    ProgrammationGridBuilder $programmationGridBuilder,
+    DiffusionDraftRepository $draftRepository,
+    GridOccurrenceProjectionService $gridOccurrenceProjectionService,
+    GridConflictDetector $gridConflictDetector,
+    CategoriesRepository $categoriesRepository
+): Response {
+    $startDate = $startOfWeek
+        ? \DateTime::createFromFormat('Y-m-d', $startOfWeek)
+        : new \DateTime();
 
-        if (!$startDate) {
-            throw $this->createNotFoundException('Date de semaine invalide.');
+    if (!$startDate) {
+        throw $this->createNotFoundException('Date de semaine invalide.');
+    }
+
+    $startOfWeekDate = (clone $startDate)
+        ->modify('this week')
+        ->modify('+1 day')
+        ->setTime(0, 0, 0);
+
+    $endOfWeekDate = (clone $startOfWeekDate)->modify('+7 days');
+
+    $jours = [];
+    for ($i = 0; $i < 7; $i++) {
+        $jours[] = (clone $startOfWeekDate)->modify("+$i days");
+    }
+
+    $startImmutable = \DateTimeImmutable::createFromMutable($startOfWeekDate);
+    $endImmutable = \DateTimeImmutable::createFromMutable($endOfWeekDate);
+
+    $daySegments = $programmationGridBuilder->buildForWeek($startImmutable, $endImmutable);
+    $daySegments = $gridOccurrenceProjectionService->applyForWeek(
+        $daySegments,
+        $startImmutable,
+        $endImmutable
+    );
+    $daySegments = $gridConflictDetector->detectForWeek($daySegments);
+
+    $drafts = $draftRepository->findByWeek($startImmutable, $endImmutable);
+
+    $draftIndex = [];
+    $manualDraftsByDay = array_fill(0, 7, []);
+
+    foreach ($drafts as $draft) {
+        if (!$draft instanceof DiffusionDraft) {
+            continue;
         }
 
-        $startOfWeekDate = (clone $startDate)
-            ->modify('this week')
-            ->modify('+1 day')
-            ->setTime(0, 0, 0);
-
-        $endOfWeekDate = (clone $startOfWeekDate)->modify('+7 days');
-
-        $jours = [];
-        for ($i = 0; $i < 7; $i++) {
-            $jours[] = (clone $startOfWeekDate)->modify("+$i days");
+        $startsAt = $draft->getHoraireDiffusion();
+        if (!$startsAt instanceof \DateTimeInterface) {
+            continue;
         }
 
-        $startImmutable = \DateTimeImmutable::createFromMutable($startOfWeekDate);
-        $endImmutable = \DateTimeImmutable::createFromMutable($endOfWeekDate);
-
-        // 1) segments théoriques
-        $daySegments = $programmationGridBuilder->buildForWeek($startImmutable, $endImmutable);
-
-        // 2) application des exceptions locales
-        $daySegments = $gridOccurrenceProjectionService->applyForWeek(
-            $daySegments,
-            $startImmutable,
-            $endImmutable
-        );
-
-        // 3) conflits visibles finaux
-        $daySegments = $gridConflictDetector->detectForWeek($daySegments);
-
-        // 4) drafts existants
-        $drafts = $draftRepository->findByWeek($startImmutable, $endImmutable);
-
-        $draftIndex = [];
-        foreach ($drafts as $draft) {
+        if ($draft->getSlot() instanceof ProgrammationRuleSlot) {
             $key = $this->buildDraftKey(
-                $draft->getSlot()?->getId(),
-                $draft->getHoraireDiffusion()
+                $draft->getSlot()->getId(),
+                $startsAt
             );
 
             if (null !== $key) {
                 $draftIndex[$key] = $draft;
             }
+
+            continue;
         }
 
-        foreach ($daySegments as &$segments) {
-            foreach ($segments as &$seg) {
-                $seg['assigned'] = false;
-                $seg['emissionId'] = null;
-                $seg['emissionTitle'] = null;
-                $seg['emissionIsAutoGenerated'] = false;
+        $dayIndex = $this->getManualDraftDayIndex($startsAt, $startImmutable, $endImmutable);
+        if (null === $dayIndex) {
+            continue;
+        }
 
-                $seg['categoryTitle'] = $seg['categoryTitle'] ?? ($seg['title'] ?? 'Catégorie inconnue');
-                $seg['categorySlug'] = $seg['categorySlug'] ?? null;
-                $seg['displayTitle'] = $seg['title'] ?? 'Créneau';
+        $duration = $draft->getDurationMinutes() ?? $draft->getEmission()?->getDuree() ?? 15;
+        if ($duration < 1) {
+            $duration = 15;
+        }
 
-                $slotId = $seg['slotId'] ?? null;
-                $startsAt = $seg['startsAt'] ?? null;
+        $minutesFromMidnight = ((int) $startsAt->format('H') * 60) + (int) $startsAt->format('i');
+        $startIndex = max(0, min(95, (int) floor($minutesFromMidnight / 15)));
 
-                if (!$slotId || !$startsAt) {
-                    continue;
-                }
+        $manualDraftsByDay[$dayIndex][] = [
+            'id' => $draft->getId(),
+            'startIndex' => $startIndex,
+            'duration' => $duration,
+            'startsAt' => $startsAt->format('Y-m-d H:i:s'),
+            'endsAt' => $draft->getEndsAt()?->format('Y-m-d H:i:s'),
+            'title' => $draft->getEmission()?->getTitre() ?? 'Émission',
+            'categoryTitle' => $draft->getEmission()?->getCategorie()?->getTitre() ?? 'Hors règle',
+            'categorySlug' => $draft->getEmission()?->getCategorie()?->getSlug() ?? '',
+            'draftType' => $draft->getDraftType(),
+            'emissionId' => $draft->getEmission()?->getId(),
+            'assigned' => true,
+            'isManualDraft' => true,
+            'emissionIsAutoGenerated' => $draft->getEmission()?->isAutoGenerated() ?? false,
+            'broadcastRank' => $draft->getNombreDiffusion(),
+        ];
+    }
 
-                $startsAtDate = $startsAt instanceof \DateTimeInterface
-                    ? \DateTimeImmutable::createFromInterface($startsAt)
-                    : new \DateTimeImmutable((string) $startsAt);
+    foreach ($manualDraftsByDay as &$draftsForDay) {
+        usort(
+            $draftsForDay,
+            static fn(array $a, array $b): int => strcmp($a['startsAt'], $b['startsAt'])
+        );
+    }
+    unset($draftsForDay);
 
-                $key = $this->buildDraftKey((int) $slotId, $startsAtDate);
+    foreach ($daySegments as &$segments) {
+        foreach ($segments as &$seg) {
+            $seg['assigned'] = false;
+            $seg['emissionId'] = null;
+            $seg['emissionTitle'] = null;
+            $seg['emissionIsAutoGenerated'] = false;
 
-                if (!isset($draftIndex[$key])) {
-                    continue;
-                }
+            $seg['categoryTitle'] = $seg['categoryTitle'] ?? ($seg['title'] ?? 'Catégorie inconnue');
+            $seg['categorySlug'] = $seg['categorySlug'] ?? null;
+            $seg['displayTitle'] = $seg['title'] ?? 'Créneau';
 
-                /** @var DiffusionDraft $draft */
-                $draft = $draftIndex[$key];
-                $emission = $draft->getEmission();
+            $slotId = $seg['slotId'] ?? null;
+            $startsAt = $seg['startsAt'] ?? null;
 
-                if ($emission instanceof Emission) {
-                    $seg['assigned'] = true;
-                    $seg['emissionId'] = $emission->getId();
-                    $seg['emissionTitle'] = $emission->getTitre();
-                    $seg['displayTitle'] = $emission->getTitre();
-                    $seg['emissionIsAutoGenerated'] = $emission->isAutoGenerated();
-                }
+            if (!$slotId || !$startsAt) {
+                continue;
+            }
+
+            $startsAtDate = $startsAt instanceof \DateTimeInterface
+                ? \DateTimeImmutable::createFromInterface($startsAt)
+                : new \DateTimeImmutable((string) $startsAt);
+
+            $key = $this->buildDraftKey((int) $slotId, $startsAtDate);
+
+            if (!isset($draftIndex[$key])) {
+                continue;
+            }
+
+            /** @var DiffusionDraft $draft */
+            $draft = $draftIndex[$key];
+            $emission = $draft->getEmission();
+
+            if ($emission instanceof Emission) {
+                $seg['assigned'] = true;
+                $seg['emissionId'] = $emission->getId();
+                $seg['emissionTitle'] = $emission->getTitre();
+                $seg['displayTitle'] = $emission->getTitre();
+                $seg['emissionIsAutoGenerated'] = $emission->isAutoGenerated();
             }
         }
-        unset($segments, $seg);
+    }
+    unset($segments, $seg);
 
-        return $this->render('admin/grille/index.html.twig', [
-            'startOfWeek' => $startOfWeekDate,
-            'jours' => $jours,
-            'daySegments' => $daySegments,
-        ]);
+    $specialCategories = $categoriesRepository->createQueryBuilder('c')
+        ->andWhere('c.active = :active')
+        ->andWhere('c.softDelete = :softDelete')
+        ->setParameter('active', true)
+        ->setParameter('softDelete', false)
+        ->orderBy('c.titre', 'ASC')
+        ->getQuery()
+        ->getResult();
+
+    return $this->render('admin/grille/index.html.twig', [
+        'startOfWeek' => $startOfWeekDate,
+        'jours' => $jours,
+        'daySegments' => $daySegments,
+        'manualDraftsByDay' => $manualDraftsByDay,
+        'specialCategories' => $specialCategories,
+    ]);
+}
+
+    private function getManualDraftDayIndex(
+        \DateTimeInterface $startsAt,
+        \DateTimeImmutable $weekStart,
+        \DateTimeImmutable $weekEnd
+    ): ?int {
+        $date = \DateTimeImmutable::createFromInterface($startsAt);
+
+        if ($date < $weekStart || $date >= $weekEnd) {
+            return null;
+        }
+
+        $diffDays = $weekStart->diff($date->setTime(0, 0, 0))->days;
+
+        if (false === $diffDays || $diffDays < 0 || $diffDays > 6) {
+            return null;
+        }
+
+        return $diffDays;
     }
 
     private function buildDraftKey(?int $slotId, ?\DateTimeInterface $horaire): ?string
@@ -270,6 +355,73 @@ class GrilleController extends AbstractController
         }
 
         return $this->json(['items' => $items]);
+    }
+
+    #[Route('/special-candidates', name: 'special_candidates', methods: ['GET'])]
+    public function specialCandidates(
+        Request $request,
+        CategoriesRepository $categoriesRepository,
+        EmissionRepository $emissionRepository,
+        ProgrammationRuleRepository $programmationRuleRepository
+    ): JsonResponse {
+        $categoryId = $request->query->getInt('categoryId');
+        $showAll = filter_var($request->query->get('all', false), FILTER_VALIDATE_BOOLEAN);
+        $limit = $showAll ? null : 20;
+
+        if ($categoryId <= 0) {
+            return $this->json([
+                'items' => [],
+                'total' => 0,
+                'hasMore' => false,
+            ], 400);
+        }
+
+        $category = $categoriesRepository->find($categoryId);
+
+        if (!$category || !$category->isActive() || $category->isSoftDelete()) {
+            return $this->json([
+                'items' => [],
+                'total' => 0,
+                'hasMore' => false,
+            ], 404);
+        }
+
+        $isRegularCategory = $programmationRuleRepository->hasActiveRuleForCategory($category);
+
+        if ($isRegularCategory) {
+            $rows = $emissionRepository->findSpecialCandidatesForRegularCategory($category, $limit);
+            $total = $emissionRepository->countSpecialCandidatesForRegularCategory($category);
+        } else {
+            $rows = $emissionRepository->findSpecialCandidatesForNonRegularCategory($category, $limit);
+            $total = $emissionRepository->countSpecialCandidatesForNonRegularCategory($category);
+        }
+
+        $items = array_map(static function (array $row): array {
+            /** @var Emission $emission */
+            $emission = $row['emission'];
+            $playCount = isset($row['playCount']) ? (int) $row['playCount'] : 0;
+
+            return [
+                'id' => $emission->getId(),
+                'title' => $emission->getTitre(),
+                'meta' => sprintf(
+                    '%s • %d min',
+                    $emission->getDatepub()?->format('d/m/Y') ?? 'date inconnue',
+                    $emission->getDuree() ?? 0
+                ),
+                'durationMinutes' => $emission->getDuree(),
+                'playCount' => $playCount,
+                'playLabel' => 0 === $playCount
+                    ? 'Jamais diffusée'
+                    : sprintf('Déjà diffusée %d fois', $playCount),
+            ];
+        }, $rows);
+
+        return $this->json([
+            'items' => $items,
+            'total' => $total,
+            'hasMore' => null !== $limit && $total > $limit,
+        ]);
     }
 
     #[Route('/assign', name: 'assign', methods: ['POST'])]
@@ -382,17 +534,20 @@ class GrilleController extends AbstractController
                     }
 
                     $relatedStartsAt = $this->computeStartsAtFromAnchor($date, $relatedSlot);
+                    $duration = $this->resolveDurationMinutes($relatedSlot, $emission);
 
                     $draft = $draftRepository->findOneBySlotAndHoraire($relatedSlot, $relatedStartsAt);
 
                     if (!$draft) {
                         $draft = new DiffusionDraft();
-                        $draft->setSlot($relatedSlot);
-                        $draft->setHoraireDiffusion($relatedStartsAt);
                     }
 
-                    $draft->setEmission($emission);
-                    $draft->setNombreDiffusion($relatedSlot->getBroadcastRank());
+                    $draft
+                        ->setSlot($relatedSlot)
+                        ->setSchedule($relatedStartsAt, $duration)
+                        ->setEmission($emission)
+                        ->setNombreDiffusion($relatedSlot->getBroadcastRank())
+                        ->setDraftType(DiffusionDraft::TYPE_REGULAR);
 
                     $em->persist($draft);
                 }
@@ -407,16 +562,19 @@ class GrilleController extends AbstractController
                 ]);
             }
 
+            $duration = $this->resolveDurationMinutes($slot, $emission);
             $draft = $draftRepository->findOneBySlotAndHoraire($slot, $date);
 
             if (!$draft) {
                 $draft = new DiffusionDraft();
-                $draft->setSlot($slot);
-                $draft->setHoraireDiffusion($date);
             }
 
-            $draft->setEmission($emission);
-            $draft->setNombreDiffusion($slot->getBroadcastRank());
+            $draft
+                ->setSlot($slot)
+                ->setSchedule($date, $duration)
+                ->setEmission($emission)
+                ->setNombreDiffusion($slot->getBroadcastRank())
+                ->setDraftType(DiffusionDraft::TYPE_REGULAR);
 
             $em->persist($draft);
             $em->flush();
@@ -513,154 +671,187 @@ class GrilleController extends AbstractController
     }
 
     #[Route('/reschedule-week', name: 'reschedule_week', methods: ['POST'])]
-public function rescheduleWeek(
-    Request $request,
-    ProgrammationRuleSlotRepository $slotRepository,
-    GridSlotArbitrationRepository $gridSlotArbitrationRepository,
-    EntityManagerInterface $em
-): JsonResponse {
-    $slotId = $request->request->get('slotId');
-    $startsAt = $request->request->get('startsAt');
-    $direction = $request->request->get('direction');
+    public function rescheduleWeek(
+        Request $request,
+        ProgrammationRuleSlotRepository $slotRepository,
+        GridSlotArbitrationRepository $gridSlotArbitrationRepository,
+        EntityManagerInterface $em,
+        ProgrammationGridBuilder $programmationGridBuilder
+    ): JsonResponse {
+        $slotId = $request->request->get('slotId');
+        $startsAt = $request->request->get('startsAt');
+        $direction = $request->request->get('direction');
 
-    if (!$slotId || !$startsAt || !\in_array($direction, ['previous', 'next'], true)) {
+        if (!$slotId || !$startsAt || !\in_array($direction, ['previous', 'next'], true)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Paramètres invalides',
+            ], 400);
+        }
+
+        $slot = $slotRepository->find($slotId);
+
+        if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Créneau invalide',
+            ], 404);
+        }
+
+        try {
+            $originalStartsAt = new \DateTimeImmutable($startsAt);
+        } catch (\Exception) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Date invalide',
+            ], 400);
+        }
+
+        if (!$this->occurrenceExistsForSlot($slot, $originalStartsAt, $programmationGridBuilder)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Cette occurrence n’existe pas pour ce créneau.',
+            ], 400);
+        }
+
+        $duration = $slot->getDurationMinutes() ?? 15;
+        if ($duration <= 0) {
+            $duration = 15;
+        }
+
+        $originalEndsAt = $originalStartsAt->modify(sprintf('+%d minutes', $duration));
+
+        $rescheduledStartsAt = 'previous' === $direction
+            ? $originalStartsAt->modify('-7 days')
+            : $originalStartsAt->modify('+7 days');
+
+        $rescheduledEndsAt = $rescheduledStartsAt->modify(sprintf('+%d minutes', $duration));
+
+        $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalStartsAt)
+            ?? new GridSlotArbitration();
+
+        $arbitration
+            ->setSlot($slot)
+            ->setOriginalStartsAt($originalStartsAt)
+            ->setOriginalEndsAt($originalEndsAt)
+            ->setType(GridSlotArbitration::TYPE_CALENDAR_ADJUSTMENT)
+            ->setAction(
+                'previous' === $direction
+                    ? GridSlotArbitration::ACTION_RESCHEDULE_PREVIOUS_WEEK
+                    : GridSlotArbitration::ACTION_RESCHEDULE_NEXT_WEEK
+            )
+            ->setRescheduledStartsAt($rescheduledStartsAt)
+            ->setRescheduledEndsAt($rescheduledEndsAt)
+            ->setStatus(GridSlotArbitration::STATUS_RESOLVED);
+
+        $arbitration->markResolved();
+
+        $em->persist($arbitration);
+        $em->flush();
+
         return $this->json([
-            'success' => false,
-            'error' => 'Paramètres invalides',
-        ], 400);
+            'success' => true,
+            'rescheduledStartsAt' => $rescheduledStartsAt->format('Y-m-d H:i:s'),
+            'rescheduledEndsAt' => $rescheduledEndsAt->format('Y-m-d H:i:s'),
+            'targetWeekStart' => $this->getRadioWeekStart($rescheduledStartsAt)->format('Y-m-d'),
+        ]);
     }
-
-    $slot = $slotRepository->find($slotId);
-
-    if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Créneau invalide',
-        ], 404);
-    }
-
-    try {
-        $originalStartsAt = new \DateTimeImmutable($startsAt);
-    } catch (\Exception) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Date invalide',
-        ], 400);
-    }
-
-    $duration = $slot->getDurationMinutes() ?? 15;
-    $originalEndsAt = $originalStartsAt->modify(sprintf('+%d minutes', $duration));
-
-    $rescheduledStartsAt = 'previous' === $direction
-        ? $originalStartsAt->modify('-7 days')
-        : $originalStartsAt->modify('+7 days');
-
-    $rescheduledEndsAt = $rescheduledStartsAt->modify(sprintf('+%d minutes', $duration));
-
-    $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalStartsAt)
-        ?? new GridSlotArbitration();
-
-    $arbitration
-        ->setSlot($slot)
-        ->setOriginalStartsAt($originalStartsAt)
-        ->setOriginalEndsAt($originalEndsAt)
-        ->setType(GridSlotArbitration::TYPE_CALENDAR_ADJUSTMENT)
-        ->setAction(
-            'previous' === $direction
-                ? GridSlotArbitration::ACTION_RESCHEDULE_PREVIOUS_WEEK
-                : GridSlotArbitration::ACTION_RESCHEDULE_NEXT_WEEK
-        )
-        ->setRescheduledStartsAt($rescheduledStartsAt)
-        ->setRescheduledEndsAt($rescheduledEndsAt)
-        ->setStatus(GridSlotArbitration::STATUS_RESOLVED);
-
-    $arbitration->markResolved();
-
-    $em->persist($arbitration);
-    $em->flush();
-
-    return $this->json([
-        'success' => true,
-        'rescheduledStartsAt' => $rescheduledStartsAt->format('Y-m-d H:i:s'),
-        'rescheduledEndsAt' => $rescheduledEndsAt->format('Y-m-d H:i:s'),
-        'targetWeekStart' => $this->getRadioWeekStart($rescheduledStartsAt)->format('Y-m-d'),
-    ]);
-}
 
     #[Route('/reschedule-custom', name: 'reschedule_custom', methods: ['POST'])]
-public function rescheduleCustom(
-    Request $request,
-    ProgrammationRuleSlotRepository $slotRepository,
-    GridSlotArbitrationRepository $gridSlotArbitrationRepository,
-    EntityManagerInterface $em
-): JsonResponse {
-    $slotId = $request->request->get('slotId');
-    $startsAt = $request->request->get('startsAt');
-    $newDate = $request->request->get('newDate');
-    $newTime = $request->request->get('newTime');
+    public function rescheduleCustom(
+        Request $request,
+        ProgrammationRuleSlotRepository $slotRepository,
+        GridSlotArbitrationRepository $gridSlotArbitrationRepository,
+        EntityManagerInterface $em,
+        ProgrammationGridBuilder $programmationGridBuilder
+    ): JsonResponse {
+        $slotId = $request->request->get('slotId');
+        $startsAt = $request->request->get('startsAt');
+        $newDate = $request->request->get('newDate');
+        $newTime = $request->request->get('newTime');
 
-    if (!$slotId || !$startsAt || !$newDate || !$newTime) {
+        if (!$slotId || !$startsAt || !$newDate || !$newTime) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Paramètres manquants',
+            ], 400);
+        }
+
+        $slot = $slotRepository->find($slotId);
+
+        if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Créneau invalide',
+            ], 404);
+        }
+
+        try {
+            $originalStartsAt = new \DateTimeImmutable($startsAt);
+            $rescheduledStartsAt = new \DateTimeImmutable(sprintf('%s %s:00', $newDate, $newTime));
+        } catch (\Exception) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Date invalide',
+            ], 400);
+        }
+
+        if (!$this->occurrenceExistsForSlot($slot, $originalStartsAt, $programmationGridBuilder)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Cette occurrence n’existe pas pour ce créneau.',
+            ], 400);
+        }
+
+        $minute = (int) $rescheduledStartsAt->format('i');
+        if ($minute % 15 !== 0) {
+            return $this->json([
+                'success' => false,
+                'error' => 'L’heure doit être alignée sur un quart d’heure.',
+            ], 400);
+        }
+
+        $duration = $slot->getDurationMinutes() ?? 15;
+        if ($duration <= 0) {
+            $duration = 15;
+        }
+
+        $originalEndsAt = $originalStartsAt->modify(sprintf('+%d minutes', $duration));
+        $rescheduledEndsAt = $rescheduledStartsAt->modify(sprintf('+%d minutes', $duration));
+
+        $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalStartsAt)
+            ?? new GridSlotArbitration();
+
+        $arbitration
+            ->setSlot($slot)
+            ->setOriginalStartsAt($originalStartsAt)
+            ->setOriginalEndsAt($originalEndsAt)
+            ->setType(GridSlotArbitration::TYPE_CALENDAR_ADJUSTMENT)
+            ->setAction(GridSlotArbitration::ACTION_RESCHEDULE_CUSTOM)
+            ->setRescheduledStartsAt($rescheduledStartsAt)
+            ->setRescheduledEndsAt($rescheduledEndsAt)
+            ->setStatus(GridSlotArbitration::STATUS_RESOLVED);
+
+        $arbitration->markResolved();
+
+        $em->persist($arbitration);
+        $em->flush();
+
         return $this->json([
-            'success' => false,
-            'error' => 'Paramètres manquants',
-        ], 400);
+            'success' => true,
+            'rescheduledStartsAt' => $rescheduledStartsAt->format('Y-m-d H:i:s'),
+            'rescheduledEndsAt' => $rescheduledEndsAt->format('Y-m-d H:i:s'),
+            'targetWeekStart' => $this->getRadioWeekStart($rescheduledStartsAt)->format('Y-m-d'),
+        ]);
     }
-
-    $slot = $slotRepository->find($slotId);
-
-    if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Créneau invalide',
-        ], 404);
-    }
-
-    try {
-        $originalStartsAt = new \DateTimeImmutable($startsAt);
-        $rescheduledStartsAt = new \DateTimeImmutable(sprintf('%s %s:00', $newDate, $newTime));
-    } catch (\Exception) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Date invalide',
-        ], 400);
-    }
-
-    $duration = $slot->getDurationMinutes() ?? 15;
-    $originalEndsAt = $originalStartsAt->modify(sprintf('+%d minutes', $duration));
-    $rescheduledEndsAt = $rescheduledStartsAt->modify(sprintf('+%d minutes', $duration));
-
-    $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalStartsAt)
-        ?? new GridSlotArbitration();
-
-    $arbitration
-        ->setSlot($slot)
-        ->setOriginalStartsAt($originalStartsAt)
-        ->setOriginalEndsAt($originalEndsAt)
-        ->setType(GridSlotArbitration::TYPE_CALENDAR_ADJUSTMENT)
-        ->setAction(GridSlotArbitration::ACTION_RESCHEDULE_CUSTOM)
-        ->setRescheduledStartsAt($rescheduledStartsAt)
-        ->setRescheduledEndsAt($rescheduledEndsAt)
-        ->setStatus(GridSlotArbitration::STATUS_RESOLVED);
-
-    $arbitration->markResolved();
-
-    $em->persist($arbitration);
-    $em->flush();
-
-    return $this->json([
-        'success' => true,
-        'rescheduledStartsAt' => $rescheduledStartsAt->format('Y-m-d H:i:s'),
-        'rescheduledEndsAt' => $rescheduledEndsAt->format('Y-m-d H:i:s'),
-        'targetWeekStart' => $this->getRadioWeekStart($rescheduledStartsAt)->format('Y-m-d'),
-    ]);
-}
 
     #[Route('/cancel-occurrence', name: 'cancel_occurrence', methods: ['POST'])]
     public function cancelOccurrence(
         Request $request,
         ProgrammationRuleSlotRepository $slotRepository,
         GridSlotArbitrationRepository $gridSlotArbitrationRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ProgrammationGridBuilder $programmationGridBuilder
     ): JsonResponse {
         $slotId = $request->request->get('slotId');
         $startsAt = $request->request->get('startsAt');
@@ -681,7 +872,18 @@ public function rescheduleCustom(
             return $this->json(['success' => false, 'error' => 'Date invalide'], 400);
         }
 
+        if (!$this->occurrenceExistsForSlot($slot, $originalStartsAt, $programmationGridBuilder)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Cette occurrence n’existe pas pour ce créneau.',
+            ], 400);
+        }
+
         $duration = $slot->getDurationMinutes() ?? 15;
+        if ($duration <= 0) {
+            $duration = 15;
+        }
+
         $originalEndsAt = $originalStartsAt->modify(sprintf('+%d minutes', $duration));
 
         $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalStartsAt)
@@ -726,6 +928,30 @@ public function rescheduleCustom(
             (int) $startTime->format('i'),
             0
         );
+    }
+
+    private function occurrenceExistsForSlot(
+        ProgrammationRuleSlot $slot,
+        \DateTimeImmutable $startsAt,
+        ProgrammationGridBuilder $programmationGridBuilder
+    ): bool {
+        $weekStart = $this->getRadioWeekStart($startsAt);
+        $weekEnd = $weekStart->modify('+7 days');
+
+        $daySegments = $programmationGridBuilder->buildForWeek($weekStart, $weekEnd);
+
+        foreach ($daySegments as $segments) {
+            foreach ($segments as $segment) {
+                if (
+                    ($segment['slotId'] ?? null) === $slot->getId()
+                    && ($segment['startsAt'] ?? null) === $startsAt->format('Y-m-d H:i:s')
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function getRadioWeekStart(\DateTimeImmutable $date): \DateTimeImmutable
@@ -782,56 +1008,71 @@ public function rescheduleCustom(
     }
 
     #[Route('/clear-reschedule', name: 'clear_reschedule', methods: ['POST'])]
-public function clearReschedule(
-    Request $request,
-    ProgrammationRuleSlotRepository $slotRepository,
-    GridSlotArbitrationRepository $gridSlotArbitrationRepository,
-    EntityManagerInterface $em
-): JsonResponse {
-    $slotId = $request->request->get('slotId');
-    $originalStartsAt = $request->request->get('originalStartsAt');
+    public function clearReschedule(
+        Request $request,
+        ProgrammationRuleSlotRepository $slotRepository,
+        GridSlotArbitrationRepository $gridSlotArbitrationRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $slotId = $request->request->get('slotId');
+        $originalStartsAt = $request->request->get('originalStartsAt');
 
-    if (!$slotId || !$originalStartsAt) {
+        if (!$slotId || !$originalStartsAt) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Paramètres manquants',
+            ], 400);
+        }
+
+        $slot = $slotRepository->find($slotId);
+
+        if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Créneau invalide',
+            ], 404);
+        }
+
+        try {
+            $originalDate = new \DateTimeImmutable($originalStartsAt);
+        } catch (\Exception) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Date invalide',
+            ], 400);
+        }
+
+        $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalDate);
+
+        if (!$arbitration instanceof GridSlotArbitration) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Aucune exception à annuler.',
+            ], 404);
+        }
+
+        $em->remove($arbitration);
+        $em->flush();
+
         return $this->json([
-            'success' => false,
-            'error' => 'Paramètres manquants',
-        ], 400);
+            'success' => true,
+            'restoredStartsAt' => $originalDate->format('Y-m-d H:i:s'),
+            'targetWeekStart' => $this->getRadioWeekStart($originalDate)->format('Y-m-d'),
+        ]);
     }
 
-    $slot = $slotRepository->find($slotId);
+    private function resolveDurationMinutes(ProgrammationRuleSlot $slot, Emission $emission): int
+    {
+        $slotDuration = $slot->getDurationMinutes();
+        if (\is_int($slotDuration) && $slotDuration > 0) {
+            return $slotDuration;
+        }
 
-    if (!$slot instanceof ProgrammationRuleSlot || $slot->isDeleted() || !$slot->isActive()) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Créneau invalide',
-        ], 404);
+        $emissionDuration = $emission->getDuree();
+        if (\is_int($emissionDuration) && $emissionDuration > 0) {
+            return $emissionDuration;
+        }
+
+        return 15;
     }
-
-    try {
-        $originalDate = new \DateTimeImmutable($originalStartsAt);
-    } catch (\Exception) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Date invalide',
-        ], 400);
-    }
-
-    $arbitration = $gridSlotArbitrationRepository->findOneActiveForOccurrence($slot, $originalDate);
-
-    if (!$arbitration instanceof GridSlotArbitration) {
-        return $this->json([
-            'success' => false,
-            'error' => 'Aucune exception à annuler.',
-        ], 404);
-    }
-
-    $em->remove($arbitration);
-    $em->flush();
-
-    return $this->json([
-        'success' => true,
-        'restoredStartsAt' => $originalDate->format('Y-m-d H:i:s'),
-        'targetWeekStart' => $this->getRadioWeekStart($originalDate)->format('Y-m-d'),
-    ]);
-}
 }
