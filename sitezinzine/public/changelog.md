@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.93] - 2026-04-23 bis
+### Ajout
+- Suppression dans la grille des émissions non régulière.
+
+
 ## [1.0.92] - 2026-04-23
 ### Ajout
 - Ajout de la gestion des émissions non régulières.

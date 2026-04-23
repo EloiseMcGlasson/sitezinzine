@@ -245,4 +245,57 @@ class GridDraftController extends AbstractController
             'draftType' => $draft->getDraftType(),
         ]);
     }
+
+    #[Route('/delete', name: 'delete', methods: ['POST'])]
+    public function delete(
+        Request $request,
+        DiffusionDraftRepository $draftRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (!\is_array($data)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Payload JSON invalide',
+            ], 400);
+        }
+
+        $draftId = $data['draftId'] ?? null;
+
+        if (null === $draftId || '' === $draftId) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Paramètre draftId manquant',
+            ], 400);
+        }
+
+        $draft = $draftRepository->find((int) $draftId);
+
+        if (!$draft instanceof DiffusionDraft) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Draft introuvable',
+            ], 404);
+        }
+
+        if (!\in_array($draft->getDraftType(), [
+            DiffusionDraft::TYPE_MANUAL_SPECIAL,
+            DiffusionDraft::TYPE_MANUAL_REBROADCAST,
+            DiffusionDraft::TYPE_MANUAL_LIVE,
+        ], true)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Ce draft ne peut pas être supprimé via cette action',
+            ], 403);
+        }
+
+        $em->remove($draft);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'draftId' => (int) $draftId,
+        ]);
+    }
 }

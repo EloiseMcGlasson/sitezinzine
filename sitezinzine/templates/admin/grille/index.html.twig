@@ -566,7 +566,8 @@
       color: #1c1c1a;
     }
 
-    #slot-selection-empty {
+    #slot-selection-empty,
+    #special-selection-empty {
       background: #fff;
       border: 1px dashed #d0d0d0;
       border-radius: 8px;
@@ -875,6 +876,30 @@
       flex-direction: column;
       gap: 8px;
       margin-top: 4px;
+    }
+
+    .trash-zone {
+      margin-top: 16px;
+      border: 2px dashed #b9475a;
+      background: #fff5f6;
+      color: #b9475a;
+      border-radius: 8px;
+      padding: 14px 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.2s ease;
+    }
+
+    .trash-zone.is-active {
+      background: #ffe8eb;
+      border-color: #8f3041;
+      color: #8f3041;
+      transform: scale(1.01);
+    }
+
+    .trash-zone.is-disabled {
+      opacity: 0.45;
     }
 
     @media (max-width: 1200px) {
@@ -1220,6 +1245,9 @@
                 data-emission-is-auto-generated="{{ isManualLive ? 'true' : 'false' }}"
                 data-slot-locked="false"
                 data-has-conflict="false"
+                data-is-manual-draft="true"
+                data-draft-id="{{ draft.id }}"
+                data-action="click->grid#selectSlot"
                 title="{{ draft.categoryTitle }} | {{ draft.title }} | {{ draftBadge }}"
               >
                 <div class="postit__content">
@@ -1332,6 +1360,17 @@
           </div>
         </div>
 
+        <div id="special-selection-empty" data-grid-target="specialEmptyState">
+          Sélectionne une catégorie pour charger des émissions, ou clique sur un draft manuel déjà posé dans la grille.
+        </div>
+
+        <div data-grid-target="specialSidebarPanel" style="display:none;">
+          <div class="sidebar-section">
+            <h3>Programmation sélectionnée</h3>
+            <div class="slot-summary" data-grid-target="specialSlotSummary"></div>
+          </div>
+        </div>
+
         <div class="sidebar-section">
           <div class="special-toolbar">
             <h3>Émissions ponctuelles</h3>
@@ -1361,6 +1400,17 @@
           </div>
 
           <div id="emissions-pool-special" data-grid-target="emissionsList"></div>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>Suppression</h3>
+
+          <div
+            class="trash-zone"
+            data-grid-target="trashZone"
+          >
+            🗑️ Glisser ici un draft manuel pour le supprimer
+          </div>
         </div>
       </div>
     </aside>
