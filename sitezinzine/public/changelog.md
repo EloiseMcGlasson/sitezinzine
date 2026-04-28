@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.94] - 2026-04-28
+### Correction
+- Correction du formulaire edit emission qui ne se validait plus à cause d'un bug de token csrf.
+
+
 ## [1.0.93] - 2026-04-23 bis
 ### Ajout
 - Suppression dans la grille des émissions non régulière.

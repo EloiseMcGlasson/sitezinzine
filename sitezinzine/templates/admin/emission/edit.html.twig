@@ -464,6 +464,7 @@
   {% endif %}
 
   {{ form_start(formEmission, { attr: { 'data-turbo': 'false' } }) }}
+  {{ form_errors(formEmission) }}
 
   {# Ligne 1 : Catégorie / Thème / Durée / Éditeur #}
   <div class="grid-4">
@@ -614,7 +615,9 @@
   <div class="form-actions">
     {{ form_row(formEmission.Sauvegarder) }}
   </div>
-
+{% if formEmission._token is defined %}
+  {{ form_row(formEmission._token) }}
+{% endif %}
   {{ form_end(formEmission, { render_rest: false }) }}
 </div>
 
