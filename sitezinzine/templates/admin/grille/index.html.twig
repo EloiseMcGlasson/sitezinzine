@@ -970,9 +970,12 @@
   <h1>Grille de programmation</h1>
 
   <div class="week-nav">
-    <h2 class="week-nav__title">
-      Semaine du {{ startOfWeek|date('d/m/Y') }}
-    </h2>
+    {% set weekNumber = startOfWeek|date('W') %}
+
+<h2 class="week-nav__title">
+  Semaine {{ weekNumber }}
+  — du {{ startOfWeek|date('d/m/Y') }}
+</h2>
 
     <div class="week-nav__bar">
       <a

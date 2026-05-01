@@ -10,8 +10,7 @@ class ProgrammationGridBuilder
 {
     public function __construct(
         private ProgrammationRuleRepository $programmationRuleRepository,
-    ) {
-    }
+    ) {}
 
     public function buildForWeek(\DateTimeImmutable $startOfWeek, \DateTimeImmutable $endOfWeek): array
     {
@@ -404,13 +403,30 @@ class ProgrammationGridBuilder
             return true;
         }
 
-        $weekNumber = (int) $date->format('W');
+        $radioWeekStart = $this->getRadioWeekStart($date);
+        $weekNumber = (int) $radioWeekStart->format('W');
 
         return match ($weekParity) {
             ProgrammationRuleSlot::WEEK_PARITY_EVEN => $weekNumber % 2 === 0,
             ProgrammationRuleSlot::WEEK_PARITY_ODD => $weekNumber % 2 === 1,
             default => true,
         };
+    }
+
+    private function getRadioWeekStart(\DateTimeImmutable $date): \DateTimeImmutable
+    {
+        $date = $date->setTime(0, 0);
+
+        // 1 = lundi, 2 = mardi, ..., 7 = dimanche
+        $dayOfWeek = (int) $date->format('N');
+
+        if ($dayOfWeek >= 2) {
+            // Mardi = 0 jour à retirer, mercredi = 1, ..., dimanche = 5
+            return $date->modify(sprintf('-%d days', $dayOfWeek - 2));
+        }
+
+        // Lundi appartient encore à la semaine radio commencée le mardi précédent
+        return $date->modify('-6 days');
     }
 
     private function dateMatchesRuleWindow(

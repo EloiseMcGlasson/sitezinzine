@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.95] - 2026-05-01
+### Ajout
+- Ajout du n° de la semaine sur la grille.
+### Correction
+- Correction du calcul des semaines paires ou impaire en tenant compte de la semaine radio (du mardi au lundi).
+
+
 ## [1.0.94] - 2026-04-28
 ### Correction
 - Correction du formulaire edit emission qui ne se validait plus à cause d'un bug de token csrf.
